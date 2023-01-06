@@ -37,10 +37,19 @@ function Tables() {
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
   return (
+    <>
     <DashboardLayout>
       <DashboardNavbar />
-      <Header>
-      <MDBox pt={6} pb={3}>
+      <Header/>
+      <Footer />
+    </DashboardLayout>
+    </>
+  );
+}
+
+export default Tables;
+
+ {/* <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
@@ -97,11 +106,4 @@ function Tables() {
             </Card>
           </Grid>
         </Grid>
-      </MDBox>
-      </Header>
-      <Footer />
-    </DashboardLayout>
-  );
-}
-
-export default Tables;
+      </MDBox> */}

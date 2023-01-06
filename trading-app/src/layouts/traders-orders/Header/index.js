@@ -37,6 +37,10 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 // Images
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
+import Tablestwo from "../TableTwo";
+import TableOne from "../TableOne";
+import Tabletwo from "../TableTwo";
+import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
 
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
@@ -62,16 +66,20 @@ function Header({ children }) {
     return () => window.removeEventListener("resize", handleTabsOrientation);
   }, [tabsOrientation]);
 
+
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
+
   return (
+   
     <MDBox position="relative" mb={5}>
+
       <MDBox
         display="flex"
         alignItems="center"
         position="relative"
         minHeight="18.75rem"
-        borderRadius="xl"
+        borderRadius="x1"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
             `${linearGradient(
@@ -92,41 +100,57 @@ function Header({ children }) {
           px: 2,
         }}
       >
-        <Grid container spacing={3} alignItems="center">
-          <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+        <Grid container spacing={6} alignItems="center">
+          <Grid item xs={12} md={6} lg={12} sx={{ ml: "auto" }}>
             <AppBar position="static">
+              {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}> */}
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Mock Trades"
+                  label="Mock Orders"
                   icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                    <Icon fontSize="small" sx={{ mt: -0.25}}>
                       home
                     </Icon>
                   }
                 />
                 <Tab
-                  label="Real Trades"
+                  label="Real Orders"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       email
                     </Icon>
                   }
                 />
-                {/* <Tab
-                  label="Settings"
+              <Tab
+                  label="Mock Orders"
                   icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      settings
+                    <Icon fontSize="small" sx={{ mt: -0.25}}>
+                      home
                     </Icon>
                   }
-                /> */}
+                />
+                <Tab
+                  label="Real Orders"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      email
+                    </Icon>
+                  }
+                />
+                
+                
               </Tabs>
             </AppBar>
+            <TabPanel value={tabValue} index={0}><TableOne/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><Tabletwo/> </TabPanel>
+            {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
-        {children}
+        {/* {children} */}
       </Card>
-    </MDBox>
+     </MDBox>
+   
+    
   );
 }
 
@@ -139,5 +163,19 @@ Header.defaultProps = {
 Header.propTypes = {
   children: PropTypes.node,
 };
+
+function TabPanel(props){
+  const{children,value,index}=props;
+  return(
+    <>
+    {
+      value === index &&
+      <h1>{children}</h1>
+    }
+     {/* <TableOne/> */}
+    </>
+   
+  )
+}
 
 export default Header;
