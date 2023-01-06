@@ -51,6 +51,18 @@ import SignIn from "./layouts/authentication/sign-in";
 import SignUp from "./layouts/authentication/sign-up";
 
 // @mui icons
+import PersonIcon from '@mui/icons-material/Person';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import TableViewIcon from '@mui/icons-material/TableView';
+import BusinessIcon from '@mui/icons-material/Business';
+import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
 import Icon from "@mui/material/Icon";
 
 const routes = [
@@ -58,7 +70,8 @@ const routes = [
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
+    // icon: <Icon fontSize="small">dashboard</Icon>,
+    icon: <DashboardIcon/>,
     route: "/dashboard",
     component: <Dashboard />,
   },
@@ -66,7 +79,8 @@ const routes = [
     type: "collapse",
     name: "Trader's Orders",
     key: "traders-orders",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <TableViewIcon/>,
     route: "/traders-orders",
     component: <TraderOrders />,
   },
@@ -74,7 +88,8 @@ const routes = [
     type: "collapse",
     name: "Company's Orders",
     key: "company-orders",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon:<BusinessIcon/>,
     route: "/company-orders",
     component: <CompanyOrders />,
   },
@@ -82,7 +97,8 @@ const routes = [
     type: "collapse",
     name: "Instruments",
     key: "instruments",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon:<CandlestickChartIcon/>,
     route: "/instruments",
     component: <Instruments />,
   },
@@ -90,7 +106,8 @@ const routes = [
     type: "collapse",
     name: "AlgoBox",
     key: "algobox",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <ManageAccountsIcon/>,
     route: "/algobox",
     component: <AlgoBox />,
   },
@@ -98,7 +115,8 @@ const routes = [
     type: "collapse",
     name: "Trading Accounts",
     key: "trading-accounts",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <AccountBalanceIcon/>,
     route: "/trading-accounts",
     component: <TradingAccount />,
   },
@@ -106,7 +124,8 @@ const routes = [
     type: "collapse",
     name: "Users",
     key: "users",
-    icon: <Icon fontSize="small">table_view</Icon>,
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <PersonIcon/>,
     route: "/users",
     component: <Users />,
   },
@@ -114,7 +133,8 @@ const routes = [
     type: "collapse",
     name: "Funds",
     key: "funds",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
+    // icon: <Icon fontSize="small">receipt_long</Icon>,
+    icon: <MonetizationOnIcon/>,
     route: "/funds",
     component: <Funds />,
   },
@@ -130,7 +150,8 @@ const routes = [
     type: "collapse",
     name: "Notifications",
     key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
+    // icon: <Icon fontSize="small">notifications</Icon>,
+    icon: <NotificationsActiveIcon/>,
     route: "/notifications",
     component: <Notifications />,
   },
@@ -138,7 +159,8 @@ const routes = [
     type: "collapse",
     name: "Profile",
     key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <AccountBoxIcon/>,
     route: "/profile",
     component: <Profile />,
   },
@@ -146,7 +168,8 @@ const routes = [
     type: "collapse",
     name: "Sign In",
     key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
+    // icon: <Icon fontSize="small">login</Icon>,
+    icon: <LoginIcon/>,
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
@@ -154,7 +177,8 @@ const routes = [
     type: "collapse",
     name: "Sign Up",
     key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
+    // icon: <Icon fontSize="small">assignment</Icon>,
+    icon:<LogoutIcon/>,
     route: "/authentication/sign-up",
     component: <SignUp />,
   },

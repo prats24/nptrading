@@ -22,6 +22,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
@@ -140,9 +141,10 @@ export default function App() {
       sx={{ cursor: "pointer" }}
       onClick={handleConfiguratorOpen}
     >
-      <Icon fontSize="small" color="inherit">
+      {/* <Icon fontSize="small" color="inherit">
         settings
-      </Icon>
+      </Icon> */}
+      <SettingsIcon/>
     </MDBox>
   );
 

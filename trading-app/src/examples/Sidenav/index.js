@@ -26,6 +26,7 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
+import CloseIcon from '@mui/icons-material/Close';
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
@@ -157,7 +158,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           sx={{ cursor: "pointer" }}
         >
           <MDTypography variant="h6" color="secondary">
-            <Icon sx={{ fontWeight: "bold" }}>close</Icon>
+            <CloseIcon sx={{ fontWeight: "bold" }}></CloseIcon>
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
