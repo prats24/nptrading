@@ -71,15 +71,19 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "companies", accessor: "companies", width: "45%", align: "left" },
-      { Header: "members", accessor: "members", width: "10%", align: "left" },
-      { Header: "budget", accessor: "budget", align: "center" },
-      { Header: "completion", accessor: "completion", align: "center" },
+      { Header: "contract date", accessor: "companies", width: "10%", align: "left" },
+      { Header: "instrument", accessor: "members", width: "10%", align: "left" },
+      { Header: "symbol", accessor: "budget", width: "10%", align: "center" },
+      { Header: "avg. price", accessor: "completion", width: "10%", align: "center" },
+      { Header: "ltp", accessor: "ltp", width: "10%", align: "center" },
+      { Header: "gross p&l", accessor: "gpnl", width: "10%", align: "center" },
+      { Header: "transaction cost", accessor: "tcost", width: "10%", align: "center" },
+      { Header: "net p&l", accessor: "npnl", width: "10%", align: "center" },
     ],
 
     rows: [
       {
-        companies: <Company image={logoXD} name="Material UI XD Version" />,
+        companies: <Company image={logoXD} name="Prateek Pawan" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -100,9 +104,19 @@ export default function data() {
             <MDProgress value={60} color="info" variant="gradient" label={false} />
           </MDBox>
         ),
+        instrument: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            NIFTY05JAN18500CE
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            COMPLETE
+          </MDTypography>
+        ),
       },
       {
-        companies: <Company image={logoAtlassian} name="Add Progress Track" />,
+        companies: <Company image={logoAtlassian} name="Anamika Verma" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -121,9 +135,19 @@ export default function data() {
             <MDProgress value={10} color="info" variant="gradient" label={false} />
           </MDBox>
         ),
+        instrument: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            NIFTY05JAN18500CE
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            COMPLETE
+          </MDTypography>
+        ),
       },
       {
-        companies: <Company image={logoSlack} name="Fix Platform Errors" />,
+        companies: <Company image={logoSlack} name="Shrikesh Kumar" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -142,9 +166,19 @@ export default function data() {
             <MDProgress value={100} color="success" variant="gradient" label={false} />
           </MDBox>
         ),
+        instrument: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            NIFTY05JAN18500CE
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            COMPLETE
+          </MDTypography>
+        ),
       },
       {
-        companies: <Company image={logoSpotify} name="Launch our Mobile App" />,
+        companies: <Company image={logoSpotify} name="Manav Yadav" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -165,9 +199,19 @@ export default function data() {
             <MDProgress value={100} color="success" variant="gradient" label={false} />
           </MDBox>
         ),
+        instrument: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            NIFTY05JAN18500CE
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            COMPLETE
+          </MDTypography>
+        ),
       },
       {
-        companies: <Company image={logoJira} name="Add the New Pricing Page" />,
+        companies: <Company image={logoJira} name="Monika Agarwal" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([[team4, "Jessica Doe"]])}
@@ -183,9 +227,19 @@ export default function data() {
             <MDProgress value={25} color="info" variant="gradient" label={false} />
           </MDBox>
         ),
+        instrument: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            NIFTY05JAN18500CE
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            COMPLETE
+          </MDTypography>
+        ),
       },
       {
-        companies: <Company image={logoInvesion} name="Redesign New Online Shop" />,
+        companies: <Company image={logoInvesion} name="Shivraj Mali" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -203,6 +257,16 @@ export default function data() {
           <MDBox width="8rem" textAlign="left">
             <MDProgress value={40} color="info" variant="gradient" label={false} />
           </MDBox>
+        ),
+        instrument: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            NIFTY05JAN18500CE
+          </MDTypography>
+        ),
+        status: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            COMPLETE
+          </MDTypography>
         ),
       },
     ],

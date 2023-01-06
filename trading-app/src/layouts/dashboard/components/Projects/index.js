@@ -64,7 +64,7 @@ function Projects() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Projects
+            Overall P&L(Mock)
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -77,7 +77,7 @@ function Projects() {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>30 done</strong> this month
+              &nbsp;<strong>last order at</strong> 11:10:23
             </MDTypography>
           </MDBox>
         </MDBox>

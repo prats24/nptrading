@@ -40,10 +40,12 @@ import reportsLineChartData from "./data/reportsLineChartData";
 // Dashboard components
 
 import Projects from "./components/Projects";
+import InstrumentDetails from "./components/InstrumentDetails";
+import OverallCompanyPNL from "./components/OverallCompantPNL";
 import OrdersOverview from "./components/OrdersOverview";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
+  const { pnl, pnlpoints } = reportsLineChartData;
 
   return (
     <DashboardLayout>
@@ -55,7 +57,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Bookings"
+                title="Booking"
                 count={281}
                 percentage={{
                   color: "success",
@@ -110,13 +112,28 @@ function Dashboard() {
             </MDBox>
           </Grid>
         </Grid>
+        <MDBox mt={1}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <InstrumentDetails />
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <OverallCompanyPNL />
+            </Grid>
+          </Grid>
+        </MDBox>
+
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
-                  title="website views"
+                  title="Daily Transaction Cost"
                   description="Last Campaign Performance"
                   date="campaign sent 2 days ago"
                   chart={reportsBarChartData}
@@ -127,14 +144,14 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
+                  title="daily net p&l"
                   description={
                     <>
                       (<strong>+15%</strong>) increase in today sales.
                     </>
                   }
                   date="updated 4 min ago"
-                  chart={sales}
+                  chart={pnl}
                 />
               </MDBox>
             </Grid>
@@ -142,10 +159,10 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="completed tasks"
+                  title="daily gross p&l"
                   description="Last Campaign Performance"
                   date="just updated"
-                  chart={tasks}
+                  chart={pnlpoints}
                 />
               </MDBox>
             </Grid>
@@ -153,14 +170,15 @@ function Dashboard() {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
+            <Grid item xs={12} md={6} lg={8} mb={3}>
               <Projects />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={4} mb={3}>
               <OrdersOverview />
             </Grid>
           </Grid>
         </MDBox>
+        
       </MDBox>
       <Footer />
     </DashboardLayout>
