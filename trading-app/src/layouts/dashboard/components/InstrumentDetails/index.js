@@ -18,6 +18,7 @@ import { useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -67,15 +68,15 @@ function InstrumentDetails() {
             Instrument Details
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
+            <CheckCircleIcon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
                 mt: -0.5,
               }}
             >
-              done
-            </Icon>
+            
+            </CheckCircleIcon>
             <MDTypography variant="button" fontWeight="regular" color="text">
               &nbsp;<strong>last order at</strong> 11:10:23
             </MDTypography>
