@@ -37,8 +37,8 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "./layouts/dashboard";
-import Tables from "./layouts/tables";
-import Billing from "./layouts/billing";
+import Tables from "./layouts/orders-mock";
+import Funds from "./layouts/funds";
 import RTL from "./layouts/rtl";
 import Notifications from "./layouts/notifications";
 import Profile from "./layouts/profile";
@@ -59,28 +59,68 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
+    name: "Orders(Mock)",
+    key: "orders-mock",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    route: "/orders-mock",
     component: <Tables />,
   },
   {
     type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    name: "Orders(Real)",
+    key: "orders-real",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/orders-real",
+    component: <Tables />,
   },
   {
     type: "collapse",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
+    name: "Instruments",
+    key: "instruments",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/instruments",
+    component: <Tables />,
   },
+  {
+    type: "collapse",
+    name: "AlgoBox",
+    key: "algobox",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/algobox",
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Trading Accounts",
+    key: "trading-accounts",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/trading-accounts",
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">table_view</Icon>,
+    route: "/users",
+    component: <Tables />,
+  },
+  {
+    type: "collapse",
+    name: "Funds",
+    key: "funds",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/funds",
+    component: <Funds />,
+  },
+  // {
+  //   type: "collapse",
+  //   name: "RTL",
+  //   key: "rtl",
+  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+  //   route: "/rtl",
+  //   component: <RTL />,
+  // },
   {
     type: "collapse",
     name: "Notifications",

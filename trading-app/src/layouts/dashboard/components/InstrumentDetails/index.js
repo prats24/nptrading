@@ -31,7 +31,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
 // Data
 import data from "./data";
 
-function Projects() {
+function InstrumentDetails() {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -64,7 +64,7 @@ function Projects() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Overall P&L(Mock)
+            Instrument Details
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -101,4 +101,4 @@ function Projects() {
   );
 }
 
-export default Projects;
+export default InstrumentDetails;
