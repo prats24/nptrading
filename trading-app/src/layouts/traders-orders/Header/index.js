@@ -30,6 +30,9 @@ import Icon from "@mui/material/Icon";
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import MDAvatar from "../../../components/MDAvatar";
+import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
+import Footer from "../../../examples/Footer";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "../../../assets/theme/base/breakpoints";
@@ -65,8 +68,9 @@ function Header({ children }) {
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
   return (
-    <MDBox position="relative" mb={5}>
-      <MDBox
+  
+    <MDBox pt={6} pb={3}>
+      {/* <MDBox
         display="flex"
         alignItems="center"
         position="relative"
@@ -82,8 +86,8 @@ function Header({ children }) {
           backgroundPosition: "50%",
           overflow: "hidden",
         }}
-      />
-      <Card
+      /> */}
+      {/* <Card
         sx={{
           position: "relative",
           mt: -8,
@@ -91,7 +95,7 @@ function Header({ children }) {
           py: 2,
           px: 2,
         }}
-      >
+      > */}
         <Grid container spacing={3} alignItems="center">
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
             <AppBar position="static">
@@ -125,7 +129,7 @@ function Header({ children }) {
           </Grid>
         </Grid>
         {children}
-      </Card>
+     
     </MDBox>
   );
 }

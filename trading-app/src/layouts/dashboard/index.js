@@ -44,7 +44,7 @@ import InstrumentDetails from "./components/InstrumentDetails";
 import OverallCompanyPNL from "./components/OverallCompantPNL";
 import OrdersOverview from "./components/OrdersOverview";
 
-function Dashboard() {
+function AdminDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
 
   return (
@@ -185,4 +185,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default AdminDashboard;
