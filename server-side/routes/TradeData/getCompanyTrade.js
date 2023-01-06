@@ -308,6 +308,29 @@ router.get("/readliveTradecompanyThisYear/:email", (req, res)=>{
     .catch((err)=>{
         return res.status(422).json({error : "date not found"})
     })
+
+router.get("/readlivetradecompanycount", (req, res)=>{
+        LiveCompanyTradeData.count((err, data)=>{
+            if(err){
+                return res.status(500).send(err);
+            }else{
+                res.json(data)
+            }
+        })
+    })
+
+})
+router.get("/readlivetradecompanycountToday", (req, res)=>{
+    let date = new Date();
+    let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
+
+    LiveCompanyTradeData.count({order_timestamp: {$regex: todayDate}},(err, data)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else{
+            res.json(data)
+        }
+    })
 })
 
 

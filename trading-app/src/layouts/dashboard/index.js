@@ -13,6 +13,10 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 // @mui material components
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
@@ -47,6 +51,57 @@ import OrdersOverview from "./components/OrdersOverview";
 function AdminDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
 
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+    const [todaymockcount, setTodayMockCount] = useState([]);
+    const [allmockcount, setAllMockCount] = useState([]);
+    const [todaylivecount, setTodayLiveCount] = useState([]);
+    const [alllivecount, setAllLiveCount] = useState([]);
+
+    useEffect(()=>{
+
+        axios.get(`${baseUrl}api/v1/readmocktradecompanytodaycount`)
+        .then((res)=>{
+            setTodayMockCount((res.data));            
+            //setOrderCountTodayCompany((res.data).length);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+
+        axios.get(`${baseUrl}api/v1/readlivetradecompanycountToday`)
+        .then((res)=>{
+            setTodayLiveCount((res.data));            
+            //setOrderCountTodayCompany((res.data).length);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+
+
+        axios.get(`${baseUrl}api/v1/readmocktradecompanycount`)
+        .then((res)=>{
+            setAllMockCount((res.data));            
+            //setOrderCountTodayCompany((res.data).length);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+
+        axios.get(`${baseUrl}api/v1/readlivetradecompanycount`)
+        .then((res)=>{
+            setAllLiveCount((res.data));            
+            //setOrderCountTodayCompany((res.data).length);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+    });
+    console.log(todaymockcount)
+    console.log(allmockcount)
+    console.log(todaylivecount)
+    console.log(alllivecount)
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -57,8 +112,8 @@ function AdminDashboard() {
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Booking"
-                count={281}
+                title="Today's Trades"
+                count={todaymockcount}
                 percentage={{
                   color: "success",
                   amount: "+55%",
@@ -71,8 +126,8 @@ function AdminDashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
+                title="Lifetime Trades"
+                count={allmockcount}
                 percentage={{
                   color: "success",
                   amount: "+3%",

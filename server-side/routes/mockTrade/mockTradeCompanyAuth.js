@@ -198,6 +198,35 @@ router.get("/readmocktradecompanycountToday", (req, res)=>{
     })
 })
 
+router.get("/readmocktradecompanyYesterday", (req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    console.log(date);
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log(todayDate);
+
+    let daytosubs = 2;
+    console.log("Days to Subs"+daytosubs);
+    
+    var day = new Date(todayDate);
+    console.log(day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - daytosubs);
+    //console.log(String(weekStartDay).slice(0,10));
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+
+
+    MockTradeDetails.count({order_timestamp: {$regex: yesterdayDate}},(err, data)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else{
+            res.json(data)
+        }
+    })
+
+})
+
 router.get("/readmocktradecompany/:id", (req, res)=>{
     console.log(req.params)
     const {id} = req.params
@@ -452,5 +481,20 @@ router.get("/updatemocktradedataamount", async(req, res)=>{
         }
     }
 })
+
+
+router.get("/readmocktradecompanytodaycount", (req, res)=>{
+    let date = new Date();
+    let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
+    let data = MockTradeDetails.find({order_timestamp: {$regex: todayDate}}).sort({trade_time: -1})
+    data.count((err, data)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else{
+            res.json(data)
+        }
+    })
+})
+
 
 module.exports = router;

@@ -15,6 +15,12 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+// import for backend
+
+// import Styles from "../Dashboard.module.css";
+
+// bacend imports ends
+
 // @mui material components
 import Tooltip from "@mui/material/Tooltip";
 import MDBox from "../../../../../components/MDBox";
@@ -35,16 +41,7 @@ import team3 from "../../../../../assets/images/team-3.jpg";
 import team4 from "../../../../../assets/images/team-4.jpg";
 
 export default function data() {
-
-  const Company = ({ image, name }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
-      <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-        {name}
-      </MDTypography>
-    </MDBox>
-  );
-
+    
   return {
     columns: [
       { Header: "contract date", accessor: "contractdate", width: "10%", align: "center" },
