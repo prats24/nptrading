@@ -26,21 +26,30 @@ import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
-import Header from "../traders-orders/Header";
+import Header from "./Header";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
+import companyOrdersmock from "./data/companyOrdersmock";
 import projectsTableData from "./data/projectsTableData";
 
 function Tables() {
-  const { columns, rows } = authorsTableData();
+  const { columns, rows } = companyOrdersmock();
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
   return (
+    <>
     <DashboardLayout>
       <DashboardNavbar />
-      <Header>
-      <MDBox pt={6} pb={3}>
+      <Header/>
+      <Footer />
+    </DashboardLayout>
+    </>
+  );
+}
+
+export default Tables;
+
+ {/* <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
@@ -97,11 +106,4 @@ function Tables() {
             </Card>
           </Grid>
         </Grid>
-      </MDBox>
-      </Header>
-      <Footer />
-    </DashboardLayout>
-  );
-}
-
-export default Tables;
+      </MDBox> */}

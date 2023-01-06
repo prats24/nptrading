@@ -205,7 +205,7 @@ router.get("/readmocktradecompanyYesterday", (req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log(todayDate);
 
-    let daytosubs = 2;
+    let daytosubs = 1;
     console.log("Days to Subs"+daytosubs);
     
     var day = new Date(todayDate);
@@ -213,11 +213,11 @@ router.get("/readmocktradecompanyYesterday", (req, res)=>{
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - daytosubs);
-    //console.log(String(weekStartDay).slice(0,10));
+    console.log(String(yesterday).slice(0,10));
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    console.log(yesterdayDate);
 
-
-    MockTradeDetails.count({order_timestamp: {$regex: yesterdayDate}},(err, data)=>{
+    MockTradeDetails.count({trade_time: {$regex: yesterdayDate}},(err, data)=>{
         if(err){
             return res.status(500).send(err);
         }else{

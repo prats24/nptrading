@@ -37,7 +37,7 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import AdminDashboard from "./layouts/dashboard";
-import TraderOrders from "./layouts/traders-orders";
+import Orders from "./layouts/orders";
 import CompanyOrders from "./layouts/company-orders";
 import Instruments from "./layouts/instruments";
 import TradingAccount from "./layouts/trading-account";
@@ -77,21 +77,12 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Trader's Orders",
-    key: "traders-orders",
+    name: "Orders",
+    key: "orders",
     // icon: <Icon fontSize="small">table_view</Icon>,
     icon: <TableViewIcon/>,
-    route: "/traders-orders",
-    component: <TraderOrders />,
-  },
-  {
-    type: "collapse",
-    name: "Company's Orders",
-    key: "company-orders",
-    // icon: <Icon fontSize="small">table_view</Icon>,
-    icon:<BusinessIcon/>,
-    route: "/company-orders",
-    component: <CompanyOrders />,
+    route: "/orders/companyordersmock",
+    component: <Orders />,
   },
   {
     type: "collapse",
@@ -164,24 +155,25 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
-  {
-    type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    // icon: <Icon fontSize="small">login</Icon>,
-    icon: <LoginIcon/>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    // icon: <Icon fontSize="small">assignment</Icon>,
-    icon:<LogoutIcon/>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Sign In",
+  //   key: "sign-in",
+  //   // icon: <Icon fontSize="small">login</Icon>,
+  //   icon: <LoginIcon/>,
+  //   route: "/authentication/sign-in",
+  //   component: <SignIn />,
+  // },
+  
+  // {
+  //   type: "collapse",
+  //   name: "Sign Up",
+  //   key: "sign-up",
+  //   // icon: <Icon fontSize="small">assignment</Icon>,
+  //   icon:<LogoutIcon/>,
+  //   route: "/authentication/sign-up",
+  //   component: <SignUp />,
+  // },
 ];
 
 export default routes;

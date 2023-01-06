@@ -12,8 +12,9 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-
-import { useState } from "react";
+import React from 'react'
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -44,8 +45,55 @@ import BasicLayout from "../components/BasicLayout";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
+  const [userId, setEmail] = useState(false);
+  const [pass, setPassword] = useState(false);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+    const navigate = useNavigate();
+    // const [userInfo, setUserInfo] = useState({
+    //     userId : "",
+    //     pass : ""
+    // });
+
+
+    async function logInButton(e){
+        e.preventDefault();
+        // setUserInfo(userInfo);
+  
+        // console.log("form submitted", userInfo);
+        console.log(userId, pass);
+        
+        // const {userId, pass} = userInfo;
+
+        const res = await fetch(`${baseUrl}api/v1/login`, {
+            method: "POST",
+            credentials:"include",
+            headers: {
+                "content-type" : "application/json",
+                "Access-Control-Allow-Credentials": true
+            },
+            body: JSON.stringify({
+                userId, pass
+            })
+        });
+        
+        const data = await res.json();
+        console.log(data);
+        if(data.status === 422 || data.error || !data){
+            window.alert(data.error);
+            console.log("invalid user details");
+        }else{
+            window.alert("Login succesfull");
+            console.log("entry succesfull");
+            navigate("/dashboard");
+        }
+    }
 
   return (
     <BasicLayout image={bgImage}>
@@ -85,10 +133,10 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput type="email" label="Email" onChange={handleEmailChange} fullWidth />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput type="password" label="Password" onChange={handlePasswordChange} fullWidth />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -103,11 +151,11 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" onClick={logInButton} fullWidth>
                 sign in
               </MDButton>
             </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
+            {/* <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Don&apos;t have an account?{" "}
                 <MDTypography
@@ -121,7 +169,7 @@ function Basic() {
                   Sign up
                 </MDTypography>
               </MDTypography>
-            </MDBox>
+            </MDBox> */}
           </MDBox>
         </MDBox>
       </Card>
