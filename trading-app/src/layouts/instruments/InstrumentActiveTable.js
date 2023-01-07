@@ -18,6 +18,7 @@ import authorsTableData from "./data/authorsTableData";
 // import companyOrdersmock from "./data/companyOrdersmock";
 import projectsTableData from "./data/projectsTableData";
 import MDButton from '../../components/MDButton';
+import InsrumentModel from './InsrumentModel';
 
 const InstrumentActiveTable = () => {
     const { columns, rows } = authorsTableData();
@@ -30,7 +31,7 @@ const InstrumentActiveTable = () => {
                                 <MDBox
                                     mx={2}
                                     mt={-3}
-                                    py={2}
+                                    py={1}
                                     px={2}
                                     variant="gradient"
                                     bgColor="info"
@@ -38,24 +39,13 @@ const InstrumentActiveTable = () => {
                                     coloredShadow="info"
                                     sx={{
                                         display: 'flex',
-                                        // flexDirection: 'row',
                                         justifyContent: "space-between",
                                       }}>
 
-                                    <MDTypography variant="h6" color="white" py={1}>
+                                    <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Instruments
                                     </MDTypography>
-                                    <MDButton 
-                                    // sx={{
-                                    //     display: 'flex',
-                                    //     flexDirection: 'row',
-
-                                    //     // mt: 0,
-                                    //     // mx: 3,
-                                    //     // py: 2,
-                                    //     // px: 2,
-                                    //   }}
-                                    >Add Instrument</MDButton>
+                                   <InsrumentModel />
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable
