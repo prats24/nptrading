@@ -1,11 +1,4 @@
-
-  // export default {
-  //   labels: ["M", "T", "W", "T", "F"],
-  //   datasets: { label: "Transaction Cost", data: [10,12,14,16,19] },
-  // };
-
-
-  import React from "react";
+import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
@@ -24,7 +17,7 @@ import Footer from "../../../examples/Footer";
 import DataTable from "../../../examples/Tables/DataTable";
 let Tdata = [];
 
-export default function TransactionCostData() {
+export function TransactionCostData() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -50,15 +43,12 @@ export default function TransactionCostData() {
     })
 },[])
 
-  console.log("TData"+Tdata);
+  console.log(Tdata);
 
   
-
-  return {
-    labels: ["M", "T", "W", "T", "F"],
-    datasets: { label: "Transaction Cost", data: Tdata },
-  };
-
+  // return {
+  //   labels: ["M", "T", "W", "T", "F"],
+  //   datasets: { label: "Transaction Cost", data: Tdata },
+  // };
 }
-
 

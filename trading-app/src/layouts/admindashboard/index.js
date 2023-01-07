@@ -48,6 +48,7 @@ import OrdersOverview from "./components/OrdersOverview";
 
 function AdminDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
+  const {labels, datasets} = reportsBarChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -62,6 +63,8 @@ function AdminDashboard() {
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
+    const [Tdata, setTdata] = useState([]);
+
    
     useEffect(()=>{
 
@@ -120,15 +123,78 @@ function AdminDashboard() {
             return new Error(err);
         })
     });
+
+    useEffect(()=>{
+      axios.get(`${baseUrl}api/v1/tcmocktradecompanylastfivedays`)
+      // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+      .then((res)=>{
+          // setTCost(res.data);
+          setTdata(res.data) 
+      }).catch((err)=>{
+          window.alert("Server Down");
+          return new Error(err);
+      })
+  },[])
+  
+    console.log("TData"+Tdata);
     console.log(todaymockcount)
     console.log(allmockcount)
     console.log(todaylivecount)
     console.log(alllivecount)
+    // console.log(reportsBarChartData.labels)
+    // console.log(reportsBarChartData.datasets.data())
+    // console.log(reportsBarChartData.datasets)
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
+
+      <MDBox mb={1}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="info"
+                  title="Daily Transaction Cost"
+                  description="Last Campaign Performance"
+                  date="campaign sent 2 days ago"
+                  chart={{
+                    labels: ["M", "T", "W", "T", "F"],
+                    datasets: { label: "Transaction Cost", data: Tdata },
+                  }}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="success"
+                  title="daily net p&l"
+                  description={
+                    <>
+                      (<strong>+15%</strong>) increase in today sales.
+                    </>
+                  }
+                  date="updated 4 min ago"
+                  chart={pnl}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="dark"
+                  title="daily gross p&l"
+                  description="Last Campaign Performance"
+                  date="just updated"
+                  chart={pnlpoints}
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+
         <Grid container spacing={3} mb={2}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
@@ -326,47 +392,7 @@ function AdminDashboard() {
         </Grid>
         {/* Second Grid Ends */}
 
-        <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Daily Transaction Cost"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily net p&l"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={pnl}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="daily gross p&l"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={pnlpoints}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
+        
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8} mb={3}>
