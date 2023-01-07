@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { io } from "socket.io-client";
 // @mui material components
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
@@ -52,11 +52,36 @@ function AdminDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
+  let socket;
+  try{
+      socket = io.connect(`${baseUrl1}`)
+  } catch(err){
+      throw new Error(err);
+  }
 
     const [todaymockcount, setTodayMockCount] = useState([]);
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
+   
+    useEffect(()=>{
+
+        console.log(socket);
+        socket.on("connect", ()=>{
+            console.log(socket.id);
+            socket.emit("hi",true)
+        })
+        socket.on("noToken", (data)=>{
+            console.log("no token");
+            window.alert(data);
+        })
+        socket.on("wrongToken", (data)=>{
+            console.log("wrong Token");
+            window.alert(data);
+        })
+
+    }, []);
 
     useEffect(()=>{
 
@@ -170,14 +195,14 @@ function AdminDashboard() {
         <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <InstrumentDetails />
+              <InstrumentDetails socket={socket}/>
             </Grid>
           </Grid>
         </MDBox>
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <OverallCompanyPNL />
+              <OverallCompanyPNL socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
