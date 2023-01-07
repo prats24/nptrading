@@ -30,6 +30,7 @@ import DataTable from "../../examples/Tables/DataTable";
 // Data
 import authorsTableData from "./data/authorsTableData";
 import projectsTableData from "./data/projectsTableData";
+import MDButton from "../../components/MDButton";
 
 function Tables() {
   const { columns, rows } = authorsTableData();
@@ -52,9 +53,14 @@ function Tables() {
                 borderRadius="lg"
                 coloredShadow="info"
               >
-                <MDTypography variant="h6" color="white">
+                <MDBox display="flex" justify-content="space-between">
+                <MDTypography variant="h6" color="white" display="flex-start">
                   Today's Orders(Mock)
                 </MDTypography>
+                <MDButton color="outlined" display="flex-end">
+                  Create
+                </MDButton>
+                </MDBox>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
