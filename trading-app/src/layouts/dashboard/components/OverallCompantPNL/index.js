@@ -33,7 +33,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
 // Data
 import data from "./data";
 
-function OverallCompantPNL() {
+function OverallCompantPNL({socket}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
