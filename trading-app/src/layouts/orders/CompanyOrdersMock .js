@@ -45,6 +45,7 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
+                                        addButton={true}
                                     />
                                 </MDBox>
                             </Card>
@@ -72,6 +73,7 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
+                                        addButton={false}
                                     />
                                 </MDBox>
                             </Card>

@@ -106,14 +106,23 @@ function AdminDashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} mb={2}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                title="Today's Trades"
-                count={todaymockcount}
+                heading="Today's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={todaymockcount}
+                tcost={todaymockcount}
+                npnl={todaymockcount}
+                traders={todaymockcount}
+                trades={todaymockcount}
                 percentage={{
                   color: "success",
                   amount: "+55%",
@@ -126,8 +135,17 @@ function AdminDashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                title="Lifetime Trades"
-                count={allmockcount}
+                heading="Week's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -141,8 +159,17 @@ function AdminDashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Revenue"
-                count="34k"
+                heading="Months's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
                 percentage={{
                   color: "success",
                   amount: "+1%",
@@ -156,8 +183,17 @@ function AdminDashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Followers"
-                count="+91"
+                heading="Years's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -167,6 +203,106 @@ function AdminDashboard() {
             </MDBox>
           </Grid>
         </Grid>
+        {/* Second Grid Start */}
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="dark"
+                icon="weekend"
+                heading="Yesterday's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
+                percentage={{
+                  color: "success",
+                  amount: "+55%",
+                  label: "than lask week",
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                icon="leaderboard"
+                heading="Last Week's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
+                percentage={{
+                  color: "success",
+                  amount: "+3%",
+                  label: "than last month",
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="success"
+                icon="store"
+                heading="Last Month's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
+                percentage={{
+                  color: "success",
+                  amount: "+1%",
+                  label: "than yesterday",
+                }}
+              />
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6} lg={3}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                heading="Last Year's Summary"
+                titlegpnl="Gross P&L"
+                titletcost="Transaction Cost"
+                titlenpnl="Net P&L"
+                titletraders="# of Traders"
+                titletrades="# of Trades"
+                gpnl={allmockcount}
+                tcost={allmockcount}
+                npnl={allmockcount}
+                traders={allmockcount}
+                trades={allmockcount}
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: "Just updated",
+                }}
+              />
+            </MDBox>
+          </Grid>
+        </Grid>
+        {/* Second Grid Ends */}
+
         <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
