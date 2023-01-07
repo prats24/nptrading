@@ -91,7 +91,7 @@ const routes = [
     key: "orders",
     // icon: <Icon fontSize="small">table_view</Icon>,
     icon: <TableViewIcon/>,
-    route: "/orders/companyordersmock",
+    route: "/orders",
     component: <Orders />,
   },
   {
