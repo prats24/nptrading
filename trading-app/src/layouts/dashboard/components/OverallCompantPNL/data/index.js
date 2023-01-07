@@ -44,7 +44,7 @@ export default function data() {
     
   return {
     columns: [
-      { Header: "contract date", accessor: "contractdate", width: "10%", align: "center" },
+      { Header: "Product", accessor: "contractdate", width: "10%", align: "center" },
       { Header: "instrument", accessor: "instrument", width: "10%", align: "center" },
       { Header: "symbol", accessor: "symbol", width: "10%", align: "center" },
       { Header: "avg. price", accessor: "avgprice", width: "10%", align: "center" },

@@ -133,75 +133,7 @@ export default function Data() {
     ],
 
     rows: instrumentDetailArr
-    // [
-    //   {
-    //     contractdate: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         12-01-2023
-    //       </MDTypography>
-    //     ),
-    //     instrument: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         NIFTY05JAN18500CE
-    //       </MDTypography>
-    //     ),
-    //     symbol: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         18500 CE
-    //       </MDTypography>
-    //     ),
-    //     ltp: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         ₹148.56
-    //       </MDTypography>
-    //     ),
-    //     pchange: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         +3%
-    //       </MDTypography>
-    //     ),
-       
-    //   },
-    //   {
-    //     contractdate: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         12-01-2023
-    //       </MDTypography>
-    //     ),
-    //     instrument: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         NIFTY05JAN18500CE
-    //       </MDTypography>
-    //     ),
-    //     symbol: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         18500 CE
-    //       </MDTypography>
-    //     ),
-    //     ltp: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         ₹140.56
-    //       </MDTypography>
-    //     ),
-    //     pchange: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         +5%
-    //       </MDTypography>
-    //     ),
-    //     buy: (
-    //       <MDButton href="/authentication/sign-in" variant="contained" color="info" fullWidth>
-    //             BUY
-    //       </MDButton>     
-    //     ),
-    //     sell: (
-    //       <MDButton href="/authentication/sign-in" variant="contained" color="error" fullWidth>
-    //       SELL
-    //       </MDButton> 
-    //     ),
-    //   },
-
-    // ],
-    
+  
 
   };
 }
