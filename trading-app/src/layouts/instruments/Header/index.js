@@ -25,7 +25,7 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
@@ -41,10 +41,8 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 // Images
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
-import CompanyOrdersMock from "../CompanyOrdersMock ";
-import CompanyOrdersReal from "../CompanyOrdersReal";
-import TradersOrdersMock from "../TradersOrdersMock";
-import TradersOrdersReal from "../TradersOrdersReal";
+import InstrumentActiveTable from "../InstrumentActiveTable";
+import InstrumentInactiveTable from "../InstrumentInactiveTable";
 
 
 function Header({ children }) {
@@ -112,43 +110,24 @@ function Header({ children }) {
               {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}> */}
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Company Orders(Mock)"
+                  label="Active Instruments"
                   icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25}}>
-                      home
-                    </Icon>
+                    <CandlestickChartIcon fontSize="small" sx={{ mt: -0.25 }}/>
                   }
                 />
                 <Tab
-                  label="Company Orders(Real)"
+                  label="Inactive Instruments"
                   icon={
-                    <AddShoppingCartIcon fontSize="small" sx={{ mt: -0.25 }}/>
-                  }
-                />
-              <Tab
-                  label="Traders Orders(Mock)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25}}>
-                      home
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Traders Orders(Real)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
-                    </Icon>
+                    <CandlestickChartIcon fontSize="small" sx={{ mt: -0.25 }}/>
+                    
                   }
                 />
                 
                 
               </Tabs>
             </AppBar>
-            <TabPanel value={tabValue} index={0}><CompanyOrdersMock/> </TabPanel>
-            <TabPanel value={tabValue} index={1}><CompanyOrdersReal/> </TabPanel>
-            <TabPanel value={tabValue} index={2}><TradersOrdersMock/> </TabPanel>
-            <TabPanel value={tabValue} index={3}><TradersOrdersReal/> </TabPanel>
+            <TabPanel value={tabValue} index={0}><InstrumentActiveTable/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><InstrumentInactiveTable/> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
