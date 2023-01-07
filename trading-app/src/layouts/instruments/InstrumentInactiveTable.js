@@ -14,12 +14,13 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersMock from "./data/companyOrdersmock";
-import allcompanyOrdersMock from "./data/allcompanyOrdersmock";
+import inactiveinstrumentsData from "./data/inactiveInstrumentsData";
+// import companyOrdersmock from "./data/companyOrdersmock";
 import projectsTableData from "./data/projectsTableData";
-const TableOne = () => {
-    const { columns, rows } = companyOrdersMock();
-    const { columns: pColumns, rows: pRows } = allcompanyOrdersMock();
+
+const InstrumentInactiveTable = () => {
+    const { columns, rows } = inactiveinstrumentsData();
+    const { columns: pColumns, rows: pRows } = projectsTableData();
     return (
                 <MDBox pt={6} pb={3}>
                     <Grid container spacing={6}>
@@ -36,7 +37,7 @@ const TableOne = () => {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Today's Company Orders(Mock)
+                                        Inactive Instruments
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
@@ -46,12 +47,11 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
-                                        addButton={false}
                                     />
                                 </MDBox>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
+                        {/* <Grid item xs={12} md={12} lg={12}>
                             <Card>
                                 <MDBox
                                     mx={2}
@@ -64,7 +64,7 @@ const TableOne = () => {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Histroical Company Orders(Mock)
+                                        Histroical Traders Orders(Mock)
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
@@ -74,14 +74,13 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
-                                        addButton={false}
                                     />
                                 </MDBox>
                             </Card>
-                        </Grid>
-                    </Grid>
+                        </Grid>*/}
+                    </Grid> 
                 </MDBox> 
     )
 }
 
-export default TableOne;
+export default InstrumentInactiveTable;
