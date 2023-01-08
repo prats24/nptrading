@@ -63,7 +63,8 @@ function AdminDashboard() {
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
-    const [Tdata, setTdata] = useState([]);
+    let [Tdata, setTdata] = useState([]);
+    let tempData = [];
 
    
     useEffect(()=>{
@@ -125,15 +126,20 @@ function AdminDashboard() {
     });
 
     useEffect(()=>{
-      axios.get(`${baseUrl}api/v1/tcmocktradecompanylastfivedays`)
-      // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
-      .then((res)=>{
-          // setTCost(res.data);
-          setTdata(res.data) 
-      }).catch((err)=>{
-          window.alert("Server Down");
-          return new Error(err);
-      })
+      let day = 4;
+      for(let i = 0; i <= day; i++){
+        axios.get(`${baseUrl}api/v1/tcmocktradecompanydayminu/${i}`)
+        // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+        .then((res)=>{
+            console.log(res.data)
+            // setTCost(res.data);
+            tempData.push(res.data)
+            setTdata(JSON.parse(JSON.stringify(tempData))) 
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+      }
   },[])
   
     console.log("TData"+Tdata);
