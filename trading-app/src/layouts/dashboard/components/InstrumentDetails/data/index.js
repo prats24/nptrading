@@ -1,19 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 // @mui material components
 import Tooltip from "@mui/material/Tooltip";
@@ -23,17 +7,6 @@ import MDTypography from "../../../../../components/MDTypography";
 import MDAvatar from "../../../../../components/MDAvatar";
 import MDProgress from "../../../../../components/MDProgress";
 
-// Images
-import logoXD from "../../../../../assets/images/small-logos/logo-xd.svg";
-import logoAtlassian from "../../../../../assets/images/small-logos/logo-atlassian.svg";
-import logoSlack from "../../../../../assets/images/small-logos/logo-slack.svg";
-import logoSpotify from "../../../../../assets/images/small-logos/logo-spotify.svg";
-import logoJira from "../../../../../assets/images/small-logos/logo-jira.svg";
-import logoInvesion from "../../../../../assets/images/small-logos/logo-invision.svg";
-import team1 from "../../../../../assets/images/team-1.jpg";
-import team2 from "../../../../../assets/images/team-2.jpg";
-import team3 from "../../../../../assets/images/team-3.jpg";
-import team4 from "../../../../../assets/images/team-4.jpg";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -75,13 +48,16 @@ export default function Data() {
   instrumentData.map((elem)=>{
     let instrumentDetailObj = {}
 
+    const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
+    const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
+
     instrumentDetailObj.instrument = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
         {elem.instrument}
       </MDTypography>
     );
     instrumentDetailObj.symbol = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
         {elem.symbol}
       </MDTypography>
     );
@@ -97,7 +73,7 @@ export default function Data() {
     );
     instrumentDetailObj.avgprice = (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {elem.average_price}
+        ₹{elem.average_price}
       </MDTypography>
     );
     instrumentDetailObj.buy = (
@@ -128,80 +104,10 @@ export default function Data() {
       { Header: "instrument", accessor: "instrument", width: "10%", align: "center" },
       { Header: "ltp", accessor: "last_price", width: "10%", align: "center" },
       { Header: "Change(%)", accessor: "change", width: "10%", align: "center" },
-      { Header: "", accessor: "buy", width: "5%", align: "center" },
-      { Header: "", accessor: "sell", width: "5%", align: "center" },
+      { Header: "buy", accessor: "buy", width: "5%", align: "center" },
+      { Header: "sell", accessor: "sell", width: "5%", align: "center" },
     ],
 
     rows: instrumentDetailArr
-    // [
-    //   {
-    //     contractdate: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         12-01-2023
-    //       </MDTypography>
-    //     ),
-    //     instrument: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         NIFTY05JAN18500CE
-    //       </MDTypography>
-    //     ),
-    //     symbol: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         18500 CE
-    //       </MDTypography>
-    //     ),
-    //     ltp: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         ₹148.56
-    //       </MDTypography>
-    //     ),
-    //     pchange: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         +3%
-    //       </MDTypography>
-    //     ),
-       
-    //   },
-    //   {
-    //     contractdate: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         12-01-2023
-    //       </MDTypography>
-    //     ),
-    //     instrument: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         NIFTY05JAN18500CE
-    //       </MDTypography>
-    //     ),
-    //     symbol: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         18500 CE
-    //       </MDTypography>
-    //     ),
-    //     ltp: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         ₹140.56
-    //       </MDTypography>
-    //     ),
-    //     pchange: (
-    //       <MDTypography variant="caption" color="text" fontWeight="medium">
-    //         +5%
-    //       </MDTypography>
-    //     ),
-    //     buy: (
-    //       <MDButton href="/authentication/sign-in" variant="contained" color="info" fullWidth>
-    //             BUY
-    //       </MDButton>     
-    //     ),
-    //     sell: (
-    //       <MDButton href="/authentication/sign-in" variant="contained" color="error" fullWidth>
-    //       SELL
-    //       </MDButton> 
-    //     ),
-    //   },
-
-    // ],
-    
-
   };
 }

@@ -62,25 +62,27 @@ function InstrumentDetails({socket}) {
 
   console.log("marketData", marketData)
   let ltpArr = [];
+  
   rows.map((elem)=>{
     let ltpObj = {};
     marketData.map((subelem)=>{
+      const percentagechangecolor = ((subelem.last_price - subelem.average_price) / subelem.average_price) > 0 ? "success" : "error"
       if(elem.instrumentToken.props.children === subelem.instrument_token){
         elem.last_price = (
             <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-              {subelem.last_price}
+              ₹{subelem.last_price.toFixed(2)}
             </MDTypography>
           );
           if(subelem.change){
             elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
                 {((subelem.change).toFixed(2))+"%"}
               </MDTypography>
             );
           } else{
             elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                {(Math.abs((subelem.last_price - subelem.average_price) / subelem.average_price)).toFixed(2)+"%"}
+              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
+                {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
               </MDTypography>
             );
           }
@@ -133,8 +135,8 @@ function InstrumentDetails({socket}) {
             >
             
             </CheckCircleIcon>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last order at</strong> 11:10:23
+            <MDTypography variant="button" fontWeight="regular" color="success">
+              &nbsp;<strong>System Live</strong>
             </MDTypography>
           </MDBox>
         </MDBox>

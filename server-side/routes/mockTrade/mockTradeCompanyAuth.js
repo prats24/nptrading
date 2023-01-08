@@ -609,6 +609,140 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
 //     })
 // })
 
+router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
+    console.log("Inside Aggregate API")
+    const days = 7
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log(todayDate)
+    var day = new Date(todayDate);
+    console.log("Day"+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - days);
+    console.log("StartDate"+yesterday);
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    let x = await MockTradeDetails.aggregate([
+        { $match: { trade_time: {$gte:yesterdayDate,$lt:todayDate} } },
+        { $group: { _id : '$date_part', brokerage : { $sum : {$toDouble : "$brokerage"} } }} ,
+        { $sort:{ _id: 1 }}
+            ])
+            
+                console.log(x)
+            
+    //console.log("Data"+x)
+    // .then((data)=>{
+
+        res.status(201).json(x);
+        
+    // })
+    // .catch((err)=>{
+    //     return res.status(422).json({error : "date not found"})
+    // })
+})
+
+
+router.get("/updatemocktradedatadatefield", async(req, res)=>{
+    // let date = new Date();
+    // let id = data._id;
+    // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
+    // const {email} = req.params
+    // console.log(todayDate)
+    let datatoupdate = await MockTradeDetails.find()
+   
+    //console.log(datatoupdate);
+
+
+        for(let i = 0; i< datatoupdate.length; i++ ){
+            // console.log(datatoupdate[i]);
+            if(!datatoupdate[i].date_part){
+            let datetime = datatoupdate[i].trade_time.split(" ");
+            let datepart = datetime[0];
+            
+            let date_part = datepart;
+            console.log(date_part);
+
+            await MockTradeDetails.findByIdAndUpdate(datatoupdate[i]._id, {date_part : datepart},
+                function (err, data) {
+                    if (err){
+                        console.log(err)
+                    }
+                    else{
+                        console.log("Date Part : ", data);
+                    }
+        }).clone();
+        }
+    }
+})
+
+router.get("/readmocktradecompanyagg",async (req, res)=>{
+   let x = await MockTradeDetails.aggregate([
+        { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
+        { $sort:{ _id: -1 }}
+     ])
+                console.log(x)
+
+        res.status(201).json(x);
+})
+
+router.get("/readmocktradecompanytodayagg",async (req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let x = await MockTradeDetails.aggregate([
+         { $match: {date_part: todayDate} },
+         { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
+         { $sort:{ _id: -1 }}
+      ])
+                 console.log(x)
+ 
+         res.status(201).json(x);
+ })
+
+ router.get("/getpnlmocktradecompanylastfivedays", async(req, res)=>{
+    console.log("Inside Aggregate API")
+    const days = 7
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log(todayDate)
+    var day = new Date(todayDate);
+    console.log("Day"+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - days);
+    console.log("StartDate"+yesterday);
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    let x = await MockTradeDetails.aggregate([
+        { $match: { date_part : {$gte :yesterdayDate, $lte: todayDate }} },
+        { $group: { _id: {
+                                "date": "$date_part",
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    }} 
+                    },
+        { $sort: {_id: 1}}
+            ])
+            
+                console.log(x)
+            
+    //console.log("Data"+x)
+    // .then((data)=>{
+
+        res.status(201).json(x);
+        
+    // })
+    // .catch((err)=>{
+    //     return res.status(422).json({error : "date not found"})
+    // })
+})
 
 
 
