@@ -1,21 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-//
-// import Styles from "../Dashboard.module.css";
-
-//
 import {useState} from "react"
 // @mui material components
 import Card from "@mui/material/Card";
@@ -33,7 +15,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
 // Data
 import data from "./data";
 
-function OverallCompantPNL() {
+function MockTraderwiseCompantPNL() {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -66,7 +48,7 @@ function OverallCompantPNL() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Overall Company P&L
+            Traderwise Company P&L(Mock)
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -102,4 +84,4 @@ function OverallCompantPNL() {
     </Card>
   );
             }
-export default OverallCompantPNL;
+export default MockTraderwiseCompantPNL;
