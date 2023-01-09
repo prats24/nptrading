@@ -232,20 +232,26 @@ function MockOverallCompantPNL({socket}) {
 
       let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
 
+      const instrumentcolor = subelem.symbol.slice(-2) == "CE" ? "success" : "error"
+      const quantitycolor = subelem.Quantity > 0 ? "success" : "error"
+      const gpnlcolor = updatedValue > 0 ? "success" : "error"
+      const pchangecolor = (liveDetail[index]?.change) > 0 ? "success" : "error"
+      const productcolor =  subelem.Product === "NRML" ? "info" : subelem.Product == "MIS" ? "warning" : "error"
+
       obj.Product = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={productcolor} fontWeight="medium">
           {(subelem.Product)}
         </MDTypography>
       );
 
       obj.symbol = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
           {(subelem.symbol)}
         </MDTypography>
       );
 
       obj.Quantity = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={quantitycolor} fontWeight="medium">
           {subelem.totalBuyLot + subelem.totalSellLot}
         </MDTypography>
       );
@@ -258,7 +264,7 @@ function MockOverallCompantPNL({socket}) {
 
       if((liveDetail[index]?.last_price).toFixed(2)){
         obj.last_price = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
             {"₹"+(liveDetail[index]?.last_price).toFixed(2)}
           </MDTypography>
         );
@@ -271,14 +277,14 @@ function MockOverallCompantPNL({socket}) {
       }
 
       obj.grossPnl = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={gpnlcolor} fontWeight="medium">
           {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
         </MDTypography>
       );
 
       if((liveDetail[index]?.change)){
         obj.change = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" href="#" variant="caption" color={pchangecolor} fontWeight="medium">
             {(liveDetail[index]?.change).toFixed(2)+"%"}
           </MDTypography>
         );
