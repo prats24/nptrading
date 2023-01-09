@@ -40,12 +40,11 @@ export default function Data() {
     }).catch((err) => {
         return new Error(err);
     })
-    console.log("hii");
   }, [])
 
-  let instrumentDetailArr = [];
-  console.log("instrumentData", instrumentData)
-  instrumentData.map((elem)=>{
+    let instrumentDetailArr = [];
+    console.log("instrumentData", instrumentData)
+    instrumentData.map((elem)=>{
     let instrumentDetailObj = {}
 
     const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
