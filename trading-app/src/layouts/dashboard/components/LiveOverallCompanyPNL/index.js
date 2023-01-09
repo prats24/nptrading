@@ -209,6 +209,13 @@ function LiveOverallCompantPNL({socket}) {
 
   }, [marketData])
 
+  useEffect(() => {
+    return () => {
+        console.log('closing');
+        socket.close();
+    }
+  }, [])
+
   tradeData.map((elem)=>{
       totalTransactionCost += Number(elem.brokerage);
   })
@@ -283,11 +290,9 @@ function LiveOverallCompantPNL({socket}) {
           </MDTypography>
         );
       }
-// ₹{(liveDetail[index]?.last_price).toFixed(2)}
       console.log(obj)
       rows.push(obj);
     })
-  // })
 
   console.log("rows", rows);
 
@@ -352,5 +357,5 @@ function LiveOverallCompantPNL({socket}) {
       </MDBox>
     </Card>
   );
-            }
+}
 export default LiveOverallCompantPNL;
