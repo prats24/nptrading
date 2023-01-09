@@ -34,7 +34,8 @@ import DataTable from "../../../../examples/Tables/DataTable";
 // Data
 import data from "./data";
 
-function OverallCompantPNL({socket}) {
+// function OverallCompantPNL({socket}) {
+function LiveOverallCompantPNL({socket}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -316,7 +317,7 @@ function OverallCompantPNL({socket}) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Overall Company P&L
+            Overall Company P&L(Live)
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
@@ -352,4 +353,4 @@ function OverallCompantPNL({socket}) {
     </Card>
   );
             }
-export default OverallCompantPNL;
+export default LiveOverallCompantPNL;

@@ -45,7 +45,10 @@ import reportsLineChartData from "./data/reportsLineChartData";
 
 import Projects from "./components/Projects";
 import InstrumentDetails from "./components/InstrumentDetails";
-import OverallCompanyPNL from "./components/OverallCompantPNL";
+import MockOverallCompanyPNL from "./components/MockOverallCompanyPNL";
+import LiveOverallCompanyPNL from "./components/LiveOverallCompanyPNL";
+import MockTraderwiseCompanyPNL from "./components/MockTraderwiseCompanyPNL";
+import LiveTraderwiseCompanyPNL from "./components/LiveTraderwiseCompanyPNL";
 import OrdersOverview from "./components/OrdersOverview";
 
 function AdminDashboard() {
@@ -142,7 +145,28 @@ function AdminDashboard() {
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <OverallCompanyPNL socket={socket} />
+              <MockOverallCompanyPNL socket={socket} />
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <LiveOverallCompanyPNL socket={socket} />
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <MockTraderwiseCompanyPNL socket={socket} />
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <LiveTraderwiseCompanyPNL socket={socket} />
             </Grid>
           </Grid>
         </MDBox>

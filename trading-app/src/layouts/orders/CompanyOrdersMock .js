@@ -47,6 +47,7 @@ const TableOne = () => {
                                         showTotalEntries={false}
                                         noEndBorder
                                         addButton={false}
+                                        canSearch={true}
                                     />
                                 </MDBox>
                             </Card>
@@ -75,6 +76,7 @@ const TableOne = () => {
                                         showTotalEntries={false}
                                         noEndBorder
                                         addButton={false}
+                                        canSearch={true}
                                     />
                                 </MDBox>
                             </Card>

@@ -128,35 +128,8 @@ function AdminDashboard() {
             return new Error(err);
         })
     });
-//  Transaction Cost Chart Code Starts
-    useEffect(()=>{
-      axios.get(`${baseUrl}api/v1/gettcostmocktradecompanylastfivedays`)
-      // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
-      .then((res)=>{
-          // setTCost(res.data);
-          setTdata(res.data) 
-          for(let item of res.data)
-          {
-            // tcostarray.push(item.brokerage)
-            setTcostarray((prev)=>{return[...prev,item.brokerage]})
-            console.log(tcostarray);
-            setTcostdate((prev)=>{return[...prev,item._id]})
-          }
-      }).catch((err)=>{
-          window.alert("Server Down");
-          return new Error(err);
-      })
-  },[])
 
-  tcostdate.map((elem)=>{
-    const date = new Date(elem);
-    const dayOfWeek = date.getDay();
-    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-    console.log(weekday);  // Output: "Sunday"
-    dayname.push(weekday.slice(0,3))
-  })
 
-  //  Transaction Cost Chart Code Ends
 
   //  PNL Chart Code Starts
   useEffect(()=>{
@@ -184,6 +157,14 @@ let datepartpnl = [];
 pnldate.map((elem)=>{
   // const date = new Date(elem);
   datepartpnl.push(elem.slice(-2));
+})
+
+pnldate.map((elem)=>{
+  const date = new Date(elem);
+  const dayOfWeek = date.getDay();
+  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+  console.log(weekday);  // Output: "Sunday"
+  dayname.push(weekday.slice(0,3))
 })
 
 
@@ -239,7 +220,7 @@ pnldate.map((elem)=>{
                   date="campaign sent 2 days ago"
                   chart={{
                     labels: dayname,
-                    datasets: { label: "Transaction Cost", data: tcostarray },
+                    datasets: { label: "Transaction Cost", data: brokerage },
                   }}
                 />
               </MDBox>
