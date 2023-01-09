@@ -18,6 +18,7 @@ getKiteCred.getAccess().then((data)=>{
   createNewTicker(data.getApiKey, data.getAccessToken);
 });
 
+
 io.on("connection", (socket) => {
   console.log('client socket is' + socket.id);
   // socket1 = socket;
@@ -69,6 +70,7 @@ app.use('/api/v1', require('./routes/TradeData/getCompanyTrade'));
 app.use('/api/v1', require('./routes/AlgoBox/exchangeMappingAuth'));
 app.use('/api/v1', require('./routes/AlgoBox/instrumentAlgoAuth'));
 app.use('/api/v1', require('./routes/AlgoBox/productMappingAuth'));
+// app.use('/api/v1', require('./routes/CronJobsRouter/InstrumentTicksHistoryData'));
 app.use('/api/v1', require('./routes/AlgoBox/tradingAlgoAuth'));
 app.use('/api/v1', require("./marketData/getRetrieveOrder"));
 app.use('/api/v1', require('./marketData/placeOrder'));

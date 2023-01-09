@@ -1,12 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const transactioncostcalculation = require("../transactioncostcalculation");
+const instrumenttickshistorydatafunction = require("../../marketData/getinstrumenttickshistorydata");
 require("../../db/conn");
 const MockTradeDetails = require("../../models/mock-trade/mockTradeCompanySchema");
 const MockTradeDetailsUser = require("../../models/mock-trade/mockTradeUserSchema");
 const BrokerageDetail = require("../../models/Trading Account/brokerageSchema");
 const LiveTradeDetails = require("../../models/TradeDetails/liveTradeSchema");
 const axios = require('axios');
+const getKiteCred = require('../../marketData/getKiteCred');
+
+router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+    getKiteCred.getAccess().then((data)=>{
+        console.log("this is code ",data);
+        let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
+        console.log(ticksdata)
+      });
+    
+})
 
 router.post("/mocktradecompany", async (req, res)=>{
 
@@ -983,6 +994,28 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
 
         res.status(201).json(pnlDetails);
  
+})
+
+
+router.get("/getlastestmocktradecompany", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Year")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
+                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1  } },
+                    { $sort: { "trade_time": -1 }}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(x[0]);
+
+        res.status(201).json(x[0]);
+        
 })
 
 module.exports = router;

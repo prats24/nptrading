@@ -50,6 +50,13 @@ function MockOverallCompantPNL({socket}) {
   const [marketData, setMarketData] = useState([]);
   const [instrumentData, setInstrumentData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
+  const [lastestTradeTime, setLatestTradeTime] = useState([]);
+  const [lastestTradeBy, setLatestTradeBy] = useState([]);
+  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
+  const [lastestTradeType, setLatestTradeType] = useState([]);
+  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  // const lastestTradeTime = '';
 
 
   var Total = 0;
@@ -57,6 +64,12 @@ function MockOverallCompantPNL({socket}) {
   let liveDetailsArr = [];
   let overallPnl = [];
   
+
+
+
+
+  // Get Latest Trade Time Stamp code ends
+
   useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
@@ -88,6 +101,8 @@ function MockOverallCompantPNL({socket}) {
   }, [])
 
   useEffect(()=>{
+
+   
 
     axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
     .then((res) => {
@@ -197,13 +212,30 @@ function MockOverallCompantPNL({socket}) {
           })
       })
 
+         // Get Lastest Trade timestamp
+    axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
+    // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+    .then((res)=>{
+        console.log(res.data);
+        setLatestTradeTimearr(res.data);
+        setLatestTradeTime(res.data.trade_time) ;
+        setLatestTradeBy(res.data.createdBy) ;
+        setLatestTradeType(res.data.buyOrSell) ;
+        setLatestTradeQuantity(res.data.Quantity) ;
+        setLatestTradeSymbol(res.data.symbol) ;
+          console.log(lastestTradeTimearr);
+    }).catch((err) => {
+      return new Error(err);
+  })
+
+      setLatestTradeTime(lastestTradeTime);
 
       setOverallPnlArr(overallPnl);
 
       setLiveDetail(liveDetailsArr);
 
 
-
+      
       // reRender ? setReRender(false) : setReRender(true)
 
   }, [marketData])
@@ -341,7 +373,7 @@ function MockOverallCompantPNL({socket}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last order at</strong> 11:10:23
+              &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol}
             </MDTypography>
           </MDBox>
         </MDBox>
