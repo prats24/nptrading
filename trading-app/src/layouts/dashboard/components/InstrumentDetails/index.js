@@ -46,7 +46,7 @@ function InstrumentDetails({socket}) {
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        console.log("live price data", res)
+        //console.log("live price data", res)
         setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
@@ -54,13 +54,13 @@ function InstrumentDetails({socket}) {
     })
 
     socket.on("tick", (data) => {
-      console.log("this is live market data", data);
+      //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
     })
   }, [])
 
-  console.log("marketData", marketData)
+  //console.log("marketData", marketData)
   let ltpArr = [];
   
   rows.map((elem)=>{
@@ -92,7 +92,7 @@ function InstrumentDetails({socket}) {
   })
 
   const newRows = rows.concat(ltpArr);
-  console.log("row", rows, ltpArr, newRows)
+  //console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);

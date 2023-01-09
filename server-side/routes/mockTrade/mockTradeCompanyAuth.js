@@ -954,8 +954,8 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
 router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
     // console.log("Inside Aggregate API")
     // const days = 7
-    // let date = new Date();
-    // let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     // console.log(todayDate)
     // var day = new Date(todayDate);
     // console.log("Day"+day); // Apr 30 2000
@@ -966,12 +966,13 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
 
     // let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time : {$regex: "2023-01-06"}} },
-        { $sort: {trade_time: -1}},
+        { $match: { trade_time : {$regex: todayDate}} },
+        
         { $group: { _id: {
                                 "traderId": "$userId",
                                 "buyOrSell": "$buyOrSell",
-                                "traderName": "$createdBy"
+                                "traderName": "$createdBy",
+                                "symbol": "$instrumentToken"
                             },
                     amount: {
                         $sum: "$amount"
@@ -982,11 +983,11 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
                     lots: {
                         $sum: {$toInt : "$Quantity"}
                     },
-                    average_price: {
-                        $sum: {$toInt : "$average_price"}
-                        // average_price: "$average_price"
-                    },
+                    trades: {
+                        $count: {}
+                    }
                     }},
+            { $sort: {_id: -1}},
         
             ])
             

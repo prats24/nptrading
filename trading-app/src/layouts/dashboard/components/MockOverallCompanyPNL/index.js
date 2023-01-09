@@ -74,7 +74,7 @@ function MockOverallCompantPNL({socket}) {
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        console.log("live price data", res)
+        //console.log("live price data", res)
         setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
@@ -82,7 +82,7 @@ function MockOverallCompantPNL({socket}) {
     })
 
     socket.on("tick", (data) => {
-      console.log("this is live market data", data);
+      //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
     })
@@ -106,13 +106,13 @@ function MockOverallCompantPNL({socket}) {
 
     axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
     .then((res) => {
-        console.log("data", res.data)
+        //console.log("data", res.data)
         setTradeData(res.data);
     }).catch((err) => {
         return new Error(err);
     })
 
-      console.log(tradeData);
+      //console.log(tradeData);
       let AvgPriceHash = new Map();
       avgPriceArr.push(tradeData[0])
       for(let i = 0; i < tradeData.length; i++){
@@ -122,7 +122,7 @@ function MockOverallCompantPNL({socket}) {
           }
       }
       setAvgPrice(avgPriceArr)
-      console.log("avgPriceArr", avgPriceArr);
+      //console.log("avgPriceArr", avgPriceArr);
       
 
       let hash = new Map();
@@ -148,7 +148,7 @@ function MockOverallCompantPNL({socket}) {
                       obj.totalBuyLot = obj.totalBuyLot + (Number(tradeData[i].lots)) 
                   }
 
-                  console.log("obj.totalBuy", obj.totalBuy, "totalBuyLot", obj.totalBuyLot)
+                  //console.log("obj.totalBuy", obj.totalBuy, "totalBuyLot", obj.totalBuyLot)
               } if(tradeData[i]._id.buyOrSell === "SELL"){
                   if( obj.totalSell === undefined || obj.totalSellLot === undefined){
 
@@ -160,7 +160,7 @@ function MockOverallCompantPNL({socket}) {
                       obj.totalSellLot = obj.totalSellLot + (Number(tradeData[i].lots)) 
                   }
 
-                  console.log("obj.totalSell", obj.totalSell, "totalSellLot", obj.totalSellLot)
+                  //console.log("obj.totalSell", obj.totalSell, "totalSellLot", obj.totalSellLot)
               }
           }  else{
               if(tradeData[i]._id.buyOrSell === "BUY"){
@@ -188,7 +188,7 @@ function MockOverallCompantPNL({socket}) {
               }
           }
       }
-      console.log(hash);
+      //console.log(hash);
 
       
       for (let value of hash.values()){
@@ -197,14 +197,14 @@ function MockOverallCompantPNL({socket}) {
 
       
       overallPnl.map((elem)=>{
-          console.log("52");
+          //console.log("52");
           instrumentData.map((element)=>{
-              console.log("53");
+              //console.log("53");
               if(element.symbol === elem.symbol){
-                  console.log("line 54");
+                  //console.log("line 54");
                   marketData.map((subElem)=>{
                       if(subElem !== undefined && subElem.instrument_token === element.instrumentToken){
-                          console.log(subElem);
+                          //console.log(subElem);
                           liveDetailsArr.push(subElem)
                       }
                   })
@@ -242,7 +242,7 @@ function MockOverallCompantPNL({socket}) {
 
   useEffect(() => {
     return () => {
-        console.log('closing');
+        //console.log('closing');
         socket.close();
     }
   }, [])
@@ -251,9 +251,9 @@ function MockOverallCompantPNL({socket}) {
       totalTransactionCost += Number(elem.brokerage);
   })
 
-  console.log("totalTransactionCost", totalTransactionCost, avgPrice, liveDetail);
-  console.log(liveDetail);
-  console.log("details array", overallPnlArr);
+  //console.log("totalTransactionCost", totalTransactionCost, avgPrice, liveDetail);
+  //console.log(liveDetail);
+  //console.log("details array", overallPnlArr);
 
   // rows.map((elem)=>{
     overallPnlArr.map((subelem, index)=>{
@@ -327,11 +327,11 @@ function MockOverallCompantPNL({socket}) {
           </MDTypography>
         );
       }
-      console.log(obj)
+      //console.log(obj)
       rows.push(obj);
     })
 
-  console.log("rows", rows);
+  //console.log("rows", rows);
 
   const renderMenu = (
     <Menu
