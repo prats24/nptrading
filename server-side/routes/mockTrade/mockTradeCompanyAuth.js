@@ -583,31 +583,7 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
     })
 })
 
-// router.get("/tcmocktradecompanylastfivedaysv1", (req, res)=>{
-//     const days = 5
-//     let date = new Date();
-//     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-//     console.log(todayDate)
-//     var day = new Date(todayDate);
-//     console.log("Day"+day); // Apr 30 2000
 
-//     var yesterday = new Date(day);
-//     yesterday.setDate(day.getDate() - days);
-//     console.log("StartDate"+yesterday);
-
-//     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-//     let tcost = [];
-//     MockTradeDetails.find({trade_time: {$gte:yesterdayDate,$lt:todayDate}})
-//     .then((data)=>{
-//         console.log("Data"+data)
-//         tcost = transactioncostcalculation(data);
-//         res.status(201).json(tcost);
-        
-//     })
-//     .catch((err)=>{
-//         return res.status(422).json({error : "date not found"})
-//     })
-// })
 
 router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
     console.log("Inside Aggregate API")
@@ -731,17 +707,188 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
         { $sort: {_id: 1}}
             ])
             
-                console.log(x)
-            
-    //console.log("Data"+x)
-    // .then((data)=>{
+                console.log(x);
 
         res.status(201).json(x);
         
-    // })
-    // .catch((err)=>{
-    //     return res.status(422).json({error : "date not found"})
-    // })
+})
+
+
+router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Week")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    var day = new Date(todayDate);
+    console.log("Day "+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - 1);
+    console.log("Yesterday "+yesterday);
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+
+    var startday = new Date(day);
+    startday.setDate(day.getDate() - days);
+    console.log("StartDate "+startday);
+
+    let startdayDate = `${(startday.getFullYear())}-${String(startday.getMonth() + 1).padStart(2, '0')}-${String(startday.getDate()).padStart(2, '0')}`
+    let pipeline = [{ $match: { date_part : {$gte :'2023-01-01', $lte: '2023-01-07' }} },
+                    { $group: { _id: {},
+                                amount: {
+                                    $sum: { $round : [{$toDouble : "$amount"}, 0]}
+                                },
+                                brokerage: {
+                                    $sum: { $round : [{$toDouble : "$brokerage"}, 0]}
+                                },
+                                trades: {
+                                    $count: {}
+                                }} 
+                                },
+                    { $sort: {_id: 1}},
+                    { $project: {_id : 0} }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/getmocktradecompanydetailsthismonth", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Month")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    var day = new Date(todayDate);
+    console.log("Day "+day); // Apr 30 2000
+
+    var month = day.getMonth();
+    var year = day.getFullYear();
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - 1);
+    console.log("Yesterday "+yesterday);
+    let monthStartDate = `${(day.getFullYear())}-${String(day.getMonth() + 1).padStart(2, '0')}-"01"`
+
+    var startday = new Date(day);
+    startday.setDate(day.getDate() - days);
+    console.log("StartDate "+startday);
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    let pipeline = [{ $match: { date_part : {$gte :monthStartDate, $lte: yesterdayDate }} },
+                    { $group: { _id: {},
+                                amount: {
+                                    $sum: { $round : [{$toDouble : "$amount"}, 0]}
+                                },
+                                brokerage: {
+                                    $sum: { $round : [{$toDouble : "$brokerage"}, 0]}
+                                },
+                                trades: {
+                                    $count: {}
+                                }} 
+                                },
+                    { $sort: {_id: 1}},
+                    { $project: {_id : 0} }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/getmocktradecompanydetailsthisyear", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Year")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    var day = new Date(todayDate);
+    console.log("Day "+day); // Apr 30 2000
+
+    var month = day.getMonth();
+    var year = day.getFullYear();
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - 1);
+    console.log("Yesterday "+yesterday);
+    let monthStartDate = `${(day.getFullYear())}-01-01`
+
+    var startday = new Date(day);
+    startday.setDate(day.getDate() - days);
+    console.log("StartDate "+startday);
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    let pipeline = [{ $match: { date_part : {$gte :monthStartDate, $lte: yesterdayDate }} },
+                    { $group: { _id: {},
+                                amount: {
+                                    $sum: { $round : [{$toDouble : "$amount"}, 0]}
+                                },
+                                brokerage: {
+                                    $sum: { $round : [{$toDouble : "$brokerage"}, 0]}
+                                },
+                                trades: {
+                                    $count: {}
+                                }} 
+                                },
+                    { $sort: {_id: 1}},
+                    { $project: {_id : 0} }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Yesterday")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    var day = new Date(todayDate);
+    console.log("Day "+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - 1);
+    console.log("Yesterday "+yesterday);
+
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    console.log("Yesterday Date :"+yesterdayDate)
+    let pipeline = [{ $match: { date_part : yesterdayDate } },
+                    { $group: { _id: {},
+                                amount: {
+                                    $sum: { $round : [{$toDouble : "$amount"}, 0]}
+                                },
+                                brokerage: {
+                                    $sum: { $round : [{$toDouble : "$brokerage"}, 0]}
+                                },
+                                trades: {
+                                    $count: {}
+                                }} 
+                                },
+                    { $sort: {_id: 1}},
+                    { $project: {_id : 0} }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
 })
 
 
