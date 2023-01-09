@@ -333,5 +333,75 @@ router.get("/readlivetradecompanycountToday", (req, res)=>{
     })
 })
 
+router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        { $match: { trade_time : {$regex: todayDate}} },
+        
+        { $group: { _id: {
+                                "symbol": "$symbol",
+                                "Product": "$Product",
+                                "buyOrSell": "$buyOrSell"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    average_price: {
+                        $sum: {$toInt : "$average_price"}
+                        // average_price: "$average_price"
+                    },
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        { $match: { trade_time : {$regex: todayDate}} },
+        
+        { $group: { _id: {
+                                "traderId": "$userId",
+                                "buyOrSell": "$buyOrSell",
+                                "traderName": "$createdBy",
+                                "symbol": "$instrumentToken"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    trades: {
+                        $count: {}
+                    }
+                    }},
+            { $sort: {_id: -1}},
+        
+            ])
+            
+                console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
 
 module.exports = router;

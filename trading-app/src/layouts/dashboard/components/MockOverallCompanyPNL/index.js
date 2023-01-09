@@ -106,13 +106,11 @@ function MockOverallCompantPNL({socket}) {
 
     axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
     .then((res) => {
-        //console.log("data", res.data)
         setTradeData(res.data);
     }).catch((err) => {
         return new Error(err);
     })
 
-      //console.log(tradeData);
       let AvgPriceHash = new Map();
       avgPriceArr.push(tradeData[0])
       for(let i = 0; i < tradeData.length; i++){
@@ -122,19 +120,8 @@ function MockOverallCompantPNL({socket}) {
           }
       }
       setAvgPrice(avgPriceArr)
-      //console.log("avgPriceArr", avgPriceArr);
-      
 
       let hash = new Map();
-      // for(let i = tradeData.length-1; i >= 0 ; i--){
-
-      // }
-
-      // tradeData.map((elem)=>{
-      //   let tempObj = {};
-
-      // })
-
 
       for(let i = tradeData.length-1; i >= 0 ; i--){ 
           if(hash.has(tradeData[i]._id.symbol + " " + tradeData[i]._id.Product)){
@@ -188,7 +175,6 @@ function MockOverallCompantPNL({socket}) {
               }
           }
       }
-      //console.log(hash);
 
       
       for (let value of hash.values()){
@@ -234,15 +220,10 @@ function MockOverallCompantPNL({socket}) {
 
       setLiveDetail(liveDetailsArr);
 
-
-      
-      // reRender ? setReRender(false) : setReRender(true)
-
   }, [marketData])
 
   useEffect(() => {
     return () => {
-        //console.log('closing');
         socket.close();
     }
   }, [])
@@ -251,11 +232,7 @@ function MockOverallCompantPNL({socket}) {
       totalTransactionCost += Number(elem.brokerage);
   })
 
-  //console.log("totalTransactionCost", totalTransactionCost, avgPrice, liveDetail);
-  //console.log(liveDetail);
-  //console.log("details array", overallPnlArr);
 
-  // rows.map((elem)=>{
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
       let tempavgPriceArr = avgPrice.filter((element)=>{
@@ -331,7 +308,6 @@ function MockOverallCompantPNL({socket}) {
       rows.push(obj);
     })
 
-  //console.log("rows", rows);
 
   const renderMenu = (
     <Menu

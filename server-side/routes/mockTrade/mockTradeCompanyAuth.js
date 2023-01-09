@@ -907,19 +907,9 @@ router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
 
 
 router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
-    // console.log("Inside Aggregate API")
-    // const days = 7
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    // console.log(todayDate)
-    // var day = new Date(todayDate);
-    // console.log("Day"+day); // Apr 30 2000
-
-    // var yesterday = new Date(day);
-    // yesterday.setDate(day.getDate() - days);
-    // console.log("StartDate"+yesterday);
-
-    // let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    
     let pnlDetails = await MockTradeDetails.aggregate([
         { $match: { trade_time : {$regex: todayDate}} },
         
@@ -952,19 +942,8 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
 })
 
 router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
-    // console.log("Inside Aggregate API")
-    // const days = 7
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    // console.log(todayDate)
-    // var day = new Date(todayDate);
-    // console.log("Day"+day); // Apr 30 2000
-
-    // var yesterday = new Date(day);
-    // yesterday.setDate(day.getDate() - days);
-    // console.log("StartDate"+yesterday);
-
-    // let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let pnlDetails = await MockTradeDetails.aggregate([
         { $match: { trade_time : {$regex: todayDate}} },
         

@@ -47,30 +47,9 @@ function MockTraderwiseCompantPNL({socket}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
-  const [userDetail, setUserDetail] = useState([]);
   const [allTrade, setAllTrade] = useState([]);
   const [marketData, setMarketData] = useState([]);
-  const [instrumentData, setInstrumentData] = useState([]);
-  const [tradeData, setTradeData] = useState([]);
 
-
-  let detailPnl = [];
-
-  let date = new Date();
-  let todayDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
-  // let fake_date = "2022-12-16";
-  let fake_date = "16-12-2022";
-  let totalPnl = 0;
-  let transactionCost = 0;
-  let numberOfTrade = 0;
-  let lotUsed = 0;
-  let runninglots = 0;
-  let totalOverAllPnl = 0;
-  let totalNumberTrade = 0;
-  let totalLotsUsed = 0;
-  let totalrunninglots = 0;
-  let totalTransCost = 0;
-  let totalNetPnl = 0;
   useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
@@ -90,24 +69,6 @@ function MockTraderwiseCompantPNL({socket}) {
   }, [])
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
-    .then((res) => {
-        let dataArr = (res.data).filter((elem) => {
-            return elem.status === "Active"
-        })
-        setInstrumentData(dataArr)
-    }).catch((err) => {
-        return new Error(err);
-    })
-  }, [])
-
-  useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readuserdetails`)
-    .then((res) => {
-        setUserDetail(res.data);
-    }).catch((err)=>{
-        return new Error(err);
-    })
 
     axios.get(`${baseUrl}api/v1/gettraderwisepnlmocktradecompanytoday`)
     .then((res) => {
@@ -125,13 +86,8 @@ function MockTraderwiseCompantPNL({socket}) {
     }
   }, [])
 
-  // userDetail.map((elem)=>{
 
-  //     let data = allTrade.filter((element)=>{
-  //         return elem.email === element.userId;
-  //     })
 
- console.log("allTrade", allTrade)
       let hash = new Map();
 
       for(let i = allTrade.length-1; i >= 0 ; i--){
@@ -193,27 +149,12 @@ function MockTraderwiseCompantPNL({socket}) {
           }
       }
 
-      console.log("hash", hash)
       let overallPnl = [];
       for (let value of hash.values()){
           overallPnl.push(value);
       }
-      console.log("overallpnl arr", overallPnl, )
-      console.log("marketData", marketData)
-      let liveDetailsArr = [];
-      // overallPnl.map((elem)=>{
-      //     // tradeData.map((element)=>{
-      //     //     if(element.symbol === elem.symbol){
-      //             marketData.map((subElem)=>{
-      //                 if(subElem !== undefined && subElem.instrument_token == elem.symbol){
-      //                     liveDetailsArr.push(subElem)
-      //                 }
-      //             })
-      //     //     }
-      //     // })
-      // })
 
-      // console.log(liveDetailsArr)
+
       let mapForParticularUser = new Map();
       for(let i = 0; i < overallPnl.length; i++){
         // console.log(overallPnl[i])
@@ -249,15 +190,7 @@ function MockTraderwiseCompantPNL({socket}) {
       }
 
       console.log("mapForParticularUser", mapForParticularUser)
-      let name = "";
-      // overallPnl.map((elem, index)=>{
-      //     name = elem.name;
-      //     console.log(elem.totalBuy,elem.totalSell,elem.totalBuyLot,elem.totalSellLot, liveDetailsArr[index]?.last_price)
-      //     totalPnl += (-(elem.totalBuy+elem.totalSell-(elem.totalBuyLot+elem.totalSellLot)*liveDetailsArr[index]?.last_price))
-      //     lotUsed += Math.abs(elem.totalBuyLot) + Math.abs(elem.totalSellLot);
-      //     runninglots += elem.totalBuyLot + elem.totalSellLot;
-      //     console.log(runninglots);
-      // })
+
       let finalTraderPnl = [];
       for (let value of mapForParticularUser.values()){
         finalTraderPnl.push(value);
