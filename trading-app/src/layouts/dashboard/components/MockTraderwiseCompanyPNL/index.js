@@ -109,7 +109,7 @@ function MockTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-    axios.get(`${baseUrl}api/v1/readmocktradecompanyDate`)
+    axios.get(`${baseUrl}api/v1/gettraderwisepnlmocktradecompanytoday`)
     .then((res) => {
         setAllTrade(res.data);
     }).catch((err)=>{
@@ -125,118 +125,203 @@ function MockTraderwiseCompantPNL({socket}) {
     }
   }, [])
 
-  userDetail.map((elem)=>{
+  // userDetail.map((elem)=>{
 
-      let data = allTrade.filter((element)=>{
-          return elem.email === element.userId;
-      })
+  //     let data = allTrade.filter((element)=>{
+  //         return elem.email === element.userId;
+  //     })
 
-
+ console.log("allTrade", allTrade)
       let hash = new Map();
 
-      for(let i = data.length-1; i >= 0 ; i--){
-          numberOfTrade += 1;
-          transactionCost += Number(data[i].brokerage);
-          if(hash.has(data[i].symbol)){
-              let obj = hash.get(data[i].symbol);
-              if(data[i].buyOrSell === "BUY"){
+      for(let i = allTrade.length-1; i >= 0 ; i--){
+          // numberOfTrade += 1;
+          // transactionCost += Number(allTrade[i].brokerage);
+          if(hash.has(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId)){
+              let obj = hash.get(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId);
+              if(allTrade[i]._id.buyOrSell === "BUY"){
                   if(obj.totalBuy === undefined || obj.totalBuyLot === undefined){
-                      obj.totalBuy = Number(data[i].average_price) * (Number(data[i].Quantity))
-                      obj.totalBuyLot = (Number(data[i].Quantity))
+                      obj.totalBuy = Number(allTrade[i].amount)
+                      obj.totalBuyLot = (Number(allTrade[i].lots))
                   } else{
-                      obj.totalBuy = obj.totalBuy + Number(data[i].average_price) * (Number(data[i].Quantity))
-                      obj.totalBuyLot = obj.totalBuyLot + (Number(data[i].Quantity)) 
+                      obj.totalBuy = obj.totalBuy + Number(allTrade[i].amount)
+                      obj.totalBuyLot = obj.totalBuyLot + (Number(allTrade[i].lots))
                   }
+                  obj.noOfTrade += allTrade[i].trades
 
-              } if(data[i].buyOrSell === "SELL"){
+              } if(allTrade[i]._id.buyOrSell === "SELL"){
                   if( obj.totalSell === undefined || obj.totalSellLot === undefined){
 
-                      obj.totalSell = Number(data[i].average_price) * (Number(data[i].Quantity))
-                      obj.totalSellLot = (Number(data[i].Quantity)) 
+                      obj.totalSell = Number(allTrade[i].amount)
+                      obj.totalSellLot = (Number(allTrade[i].lots))
                   } else{
 
-                      obj.totalSell = obj.totalSell + Number(data[i].average_price) * (Number(data[i].Quantity))
-                      obj.totalSellLot = obj.totalSellLot + (Number(data[i].Quantity)) 
+                      obj.totalSell = obj.totalSell + Number(allTrade[i].amount)
+                      obj.totalSellLot = obj.totalSellLot + (Number(allTrade[i].lots))
                   }
+                  obj.noOfTrade += allTrade[i].trades
 
               }
           }  else{
-              if(data[i].buyOrSell === "BUY"){
-                  hash.set(data[i].symbol, {
-                      totalBuy : Number(data[i].average_price) * (Number(data[i].Quantity)),
-                      totalBuyLot : (Number(data[i].Quantity)) ,
+              if(allTrade[i]._id.buyOrSell === "BUY"){
+                  hash.set(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId, {
+                      totalBuy : Number(allTrade[i].amount),
+                      totalBuyLot : (Number(allTrade[i].lots)) ,
                       totalSell: 0,
                       totalSellLot: 0,
-                      symbol: data[i].symbol,
-                      Product: data[i].Product,
-                      name: data[0].createdBy
+                      symbol: allTrade[i]._id.symbol,
+                      // Product: allTrade[i].Product,
+                      name: allTrade[i]._id.traderName,
+                      userId: allTrade[i]._id.traderId,
+                      brokerage: allTrade[i].brokerage,
+                      noOfTrade: allTrade[i].trades
                   })
-              }if(data[i].buyOrSell === "SELL"){
-                  hash.set(data[i].symbol, {
-                      totalSell : Number(data[i].average_price) * (Number(data[i].Quantity)),
-                      totalSellLot : (Number(data[i].Quantity)) ,
+              }if(allTrade[i]._id.buyOrSell === "SELL"){
+                  hash.set(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId, {
+                      totalSell : Number(allTrade[i].amount),
+                      totalSellLot : (Number(allTrade[i].lots)) ,
                       totalBuy : 0,
                       totalBuyLot: 0,
-                      symbol: data[i].symbol,
-                      Product: data[i].Product,
-                      name: data[0].createdBy
+                      symbol: allTrade[i]._id.symbol,
+                      // Product: allTrade[i].Product,
+                      name: allTrade[i]._id.traderName,
+                      userId: allTrade[i]._id.traderId,
+                      brokerage: allTrade[i].brokerage ,
+                      noOfTrade: allTrade[i].trades                    
                   })
               }
           }
       }
 
+      console.log("hash", hash)
       let overallPnl = [];
       for (let value of hash.values()){
           overallPnl.push(value);
       }
-      console.log("overallpnl arr", overallPnl)
+      console.log("overallpnl arr", overallPnl, )
+      console.log("marketData", marketData)
       let liveDetailsArr = [];
-      overallPnl.map((elem)=>{
-          tradeData.map((element)=>{
-              if(element.symbol === elem.symbol){
-                  marketData.map((subElem)=>{
-                      if(subElem !== undefined && subElem.instrument_token === element.instrumentToken){
-                          liveDetailsArr.push(subElem)
-                      }
-                  })
-              }
+      // overallPnl.map((elem)=>{
+      //     // tradeData.map((element)=>{
+      //     //     if(element.symbol === elem.symbol){
+      //             marketData.map((subElem)=>{
+      //                 if(subElem !== undefined && subElem.instrument_token == elem.symbol){
+      //                     liveDetailsArr.push(subElem)
+      //                 }
+      //             })
+      //     //     }
+      //     // })
+      // })
+
+      // console.log(liveDetailsArr)
+      let mapForParticularUser = new Map();
+      for(let i = 0; i < overallPnl.length; i++){
+        // console.log(overallPnl[i])
+        if(mapForParticularUser.has(overallPnl[i].userId)){
+          let marketDataInstrument = marketData.filter((elem)=>{
+            return elem.instrument_token == overallPnl[i].symbol
           })
-      })
 
-      
-      let name = "";
-      overallPnl.map((elem, index)=>{
-          name = elem.name;
-          console.log(elem.totalBuy,elem.totalSell,elem.totalBuyLot,elem.totalSellLot, liveDetailsArr[index]?.last_price)
-          totalPnl += (-(elem.totalBuy+elem.totalSell-(elem.totalBuyLot+elem.totalSellLot)*liveDetailsArr[index]?.last_price))
-          lotUsed += Math.abs(elem.totalBuyLot) + Math.abs(elem.totalSellLot);
-          runninglots += elem.totalBuyLot + elem.totalSellLot;
-          console.log(runninglots);
-      })
+          let obj = mapForParticularUser.get(overallPnl[i].userId)
+          // console.log(marketDataInstrument)
+          obj.totalPnl += (-(overallPnl[i].totalBuy+overallPnl[i].totalSell-(overallPnl[i].totalBuyLot+overallPnl[i].totalSellLot)*marketDataInstrument[0]?.last_price));
+          obj.lotUsed += Math.abs(overallPnl[i].totalBuyLot) + Math.abs(overallPnl[i].totalSellLot);
+          obj.runninglots += overallPnl[i].totalBuyLot + overallPnl[i].totalSellLot;
+          obj.brokerage += overallPnl[i].brokerage;
+          obj.noOfTrade += overallPnl[i].noOfTrade
 
-      let newObj = {
-          brokerage: transactionCost,
-          pnl: totalPnl,
-          name: name,
-          numberOfTrade: numberOfTrade,
-          lotUsed: lotUsed,
-          runninglots: runninglots
+        } else{
+          let marketDataInstrument = marketData.filter((elem)=>{
+            return elem.instrument_token == overallPnl[i].symbol
+          })
+          // console.log(marketDataInstrument)
+          mapForParticularUser.set(overallPnl[i].userId, {
+            name : overallPnl[i].name,
+            totalPnl : (-(overallPnl[i].totalBuy+overallPnl[i].totalSell-(overallPnl[i].totalBuyLot+overallPnl[i].totalSellLot)*marketDataInstrument[0]?.last_price)),
+            lotUsed : Math.abs(overallPnl[i].totalBuyLot) + Math.abs(overallPnl[i].totalSellLot),
+            runninglots : overallPnl[i].totalBuyLot + overallPnl[i].totalSellLot,
+            brokerage: overallPnl[i].brokerage,
+            noOfTrade: overallPnl[i].noOfTrade
+  
+          })
+        }
+
       }
-      console.log(transactionCost, totalPnl, name, runninglots);
-      detailPnl.push(JSON.parse(JSON.stringify(newObj)));
-      transactionCost = 0;
-      totalPnl = 0;
-      numberOfTrade = 0;
-      lotUsed = 0;
-      runninglots = 0;
-      // runninglots = 0;
+
+      console.log("mapForParticularUser", mapForParticularUser)
+      let name = "";
+      // overallPnl.map((elem, index)=>{
+      //     name = elem.name;
+      //     console.log(elem.totalBuy,elem.totalSell,elem.totalBuyLot,elem.totalSellLot, liveDetailsArr[index]?.last_price)
+      //     totalPnl += (-(elem.totalBuy+elem.totalSell-(elem.totalBuyLot+elem.totalSellLot)*liveDetailsArr[index]?.last_price))
+      //     lotUsed += Math.abs(elem.totalBuyLot) + Math.abs(elem.totalSellLot);
+      //     runninglots += elem.totalBuyLot + elem.totalSellLot;
+      //     console.log(runninglots);
+      // })
+      let finalTraderPnl = [];
+      for (let value of mapForParticularUser.values()){
+        finalTraderPnl.push(value);
+      }
+
+      finalTraderPnl.sort((a, b)=> {
+        return (b.totalPnl-b.brokerage)-(a.totalPnl-a.brokerage)
+      });
+
+      console.log(finalTraderPnl)
+
+ 
+  finalTraderPnl.map((subelem, index)=>{
+    let obj = {};
+ 
+    obj.traderName = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {(subelem.name)}
+      </MDTypography>
+    );
+
+    obj.grossPnl = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {(subelem.totalPnl) > 0.00 ? "+₹" + ((subelem.totalPnl).toFixed(2)): "-₹" + ((-(subelem.totalPnl)).toFixed(2))}
+      </MDTypography>
+    );
+
+    obj.noOfTrade = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {subelem.noOfTrade}
+      </MDTypography>
+    );
+
+    obj.runningLots = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {subelem.runninglots}
+      </MDTypography>
+    );
+
+    obj.lotUsed = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {subelem.lotUsed}
+      </MDTypography>
+    );
+
+    obj.brokerage = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {"₹"+(subelem.brokerage).toFixed(2)}
+      </MDTypography>
+    );
+
+    obj.netPnl = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {((subelem.totalPnl)-(subelem.brokerage)) > 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
+      </MDTypography>
+    );
+
+    //console.log(obj)
+    rows.push(obj);
   })
 
-  detailPnl.sort((a, b)=> {
-  return (b.pnl-b.brokerage)-(a.pnl-a.brokerage)
-  });
 
-  console.log(detailPnl);
+
+  // console.log(detailPnl);
 
 
   return (
