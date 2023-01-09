@@ -50,6 +50,13 @@ function MockOverallCompantPNL({socket}) {
   const [marketData, setMarketData] = useState([]);
   const [instrumentData, setInstrumentData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
+  const [lastestTradeTime, setLatestTradeTime] = useState([]);
+  const [lastestTradeBy, setLatestTradeBy] = useState([]);
+  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
+  const [lastestTradeType, setLatestTradeType] = useState([]);
+  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  // const lastestTradeTime = '';
 
 
   var Total = 0;
@@ -57,6 +64,12 @@ function MockOverallCompantPNL({socket}) {
   let liveDetailsArr = [];
   let overallPnl = [];
   
+
+
+
+
+  // Get Latest Trade Time Stamp code ends
+
   useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
@@ -88,6 +101,8 @@ function MockOverallCompantPNL({socket}) {
   }, [])
 
   useEffect(()=>{
+
+   
 
     axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
     .then((res) => {
@@ -183,6 +198,23 @@ function MockOverallCompantPNL({socket}) {
           })
       })
 
+         // Get Lastest Trade timestamp
+    axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
+    // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+    .then((res)=>{
+        console.log(res.data);
+        setLatestTradeTimearr(res.data);
+        setLatestTradeTime(res.data.trade_time) ;
+        setLatestTradeBy(res.data.createdBy) ;
+        setLatestTradeType(res.data.buyOrSell) ;
+        setLatestTradeQuantity(res.data.Quantity) ;
+        setLatestTradeSymbol(res.data.symbol) ;
+          console.log(lastestTradeTimearr);
+    }).catch((err) => {
+      return new Error(err);
+  })
+
+      setLatestTradeTime(lastestTradeTime);
 
       setOverallPnlArr(overallPnl);
 
@@ -209,20 +241,26 @@ function MockOverallCompantPNL({socket}) {
 
       let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
 
+      const instrumentcolor = subelem.symbol.slice(-2) == "CE" ? "success" : "error"
+      const quantitycolor = subelem.Quantity > 0 ? "success" : "error"
+      const gpnlcolor = updatedValue > 0 ? "success" : "error"
+      const pchangecolor = (liveDetail[index]?.change) > 0 ? "success" : "error"
+      const productcolor =  subelem.Product === "NRML" ? "info" : subelem.Product == "MIS" ? "warning" : "error"
+
       obj.Product = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={productcolor} fontWeight="medium">
           {(subelem.Product)}
         </MDTypography>
       );
 
       obj.symbol = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
           {(subelem.symbol)}
         </MDTypography>
       );
 
       obj.Quantity = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={quantitycolor} fontWeight="medium">
           {subelem.totalBuyLot + subelem.totalSellLot}
         </MDTypography>
       );
@@ -235,7 +273,7 @@ function MockOverallCompantPNL({socket}) {
 
       if((liveDetail[index]?.last_price).toFixed(2)){
         obj.last_price = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
             {"₹"+(liveDetail[index]?.last_price).toFixed(2)}
           </MDTypography>
         );
@@ -248,14 +286,14 @@ function MockOverallCompantPNL({socket}) {
       }
 
       obj.grossPnl = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" href="#" variant="caption" color={gpnlcolor} fontWeight="medium">
           {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
         </MDTypography>
       );
 
       if((liveDetail[index]?.change)){
         obj.change = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" href="#" variant="caption" color={pchangecolor} fontWeight="medium">
             {(liveDetail[index]?.change).toFixed(2)+"%"}
           </MDTypography>
         );
@@ -311,7 +349,7 @@ function MockOverallCompantPNL({socket}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last order at</strong> 11:10:23
+              &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol}
             </MDTypography>
           </MDBox>
         </MDBox>

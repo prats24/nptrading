@@ -74,6 +74,7 @@ const InstrumentModel = () => {
             labelId="demo-simple-select-standard-label"
             id="demo-simple-select-standard"
             label="Status"
+            sx={{margin: 1, padding : 1, width:"300px"}}
             >
             <MenuItem value="active">Active</MenuItem>
             <MenuItem value="inactive">Inctive</MenuItem>

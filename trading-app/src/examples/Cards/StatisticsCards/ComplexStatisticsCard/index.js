@@ -50,11 +50,10 @@ function ComplexStatisticsCard({ color, heading, titlegpnl, titletcost, titlenpn
           <MDTypography variant="h6" fontWeight="light" color="text">
             {heading}
           </MDTypography>
-          <MDTypography variant="h6">{titlegpnl}-{gpnl}</MDTypography>
-          <MDTypography variant="h6">{titletcost}-{tcost}</MDTypography>
-          <MDTypography variant="h6">{titlenpnl}-{npnl}</MDTypography>
-          <MDTypography variant="h6">{titletraders}-{traders}</MDTypography>
-          <MDTypography variant="h6">{titletrades}-{trades}</MDTypography>
+          <MDTypography variant="h6">{titlegpnl} : {gpnl}</MDTypography>
+          <MDTypography variant="h6">{titletcost} : {tcost}</MDTypography>
+          <MDTypography variant="h6">{titlenpnl} : {npnl}</MDTypography>
+          <MDTypography variant="h6">{titletrades} : {trades}</MDTypography>
         </MDBox>
       </MDBox>
       <Divider />
@@ -97,8 +96,8 @@ ComplexStatisticsCard.propTypes = {
     "light",
     "dark",
   ]),
-  title: PropTypes.string.isRequired,
-  count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  title: PropTypes.string,
+  count: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   percentage: PropTypes.shape({
     color: PropTypes.oneOf([
       "primary",
@@ -113,7 +112,7 @@ ComplexStatisticsCard.propTypes = {
     amount: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     label: PropTypes.string,
   }),
-  icon: PropTypes.node.isRequired,
+  icon: PropTypes.node,
 };
 
 export default ComplexStatisticsCard;

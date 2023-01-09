@@ -234,7 +234,7 @@ function LiveOverallCompantPNL({socket}) {
         </MDTypography>
       );
 
-      if((liveDetail[index]?.last_price).toFixed(2)){
+      if((liveDetail[index]?.last_price)){
         obj.last_price = (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
             {"₹"+(liveDetail[index]?.last_price).toFixed(2)}
