@@ -14,13 +14,17 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersMock from "./data/companyOrdersmock";
-import allcompanyOrdersMock from "./data/allcompanyOrdersmock";
+// import authorsTableData from "./data/authorsTableData";
+import activeInstrumentsData from "./data/activeInstrumentsData";
 import projectsTableData from "./data/projectsTableData";
-const TableOne = () => {
-    const { columns, rows } = companyOrdersMock();
-    const { columns: pColumns, rows: pRows } = allcompanyOrdersMock();
-    return (
+import MDButton from '../../components/MDButton';
+import InstrumentModel from './InstrumentModel';
+
+const InstrumentActiveTable = () => {
+    // const { columns, rows } = authorsTableData();
+    const { columns, rows } = activeInstrumentsData();
+    const { columns: pColumns, rows: pRows } = projectsTableData();
+    return (<>
                 <MDBox pt={6} pb={3}>
                     <Grid container spacing={6}>
                         <Grid item xs={12} md={12} lg={12}>
@@ -28,16 +32,21 @@ const TableOne = () => {
                                 <MDBox
                                     mx={2}
                                     mt={-3}
-                                    py={3}
+                                    py={1}
                                     px={2}
                                     variant="gradient"
                                     bgColor="info"
                                     borderRadius="lg"
                                     coloredShadow="info"
-                                >
-                                    <MDTypography variant="h6" color="white">
-                                        Today's Company Orders(Mock)
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: "space-between",
+                                      }}>
+
+                                    <MDTypography variant="h6" color="white" py={2.5}>
+                                        Active Instruments
                                     </MDTypography>
+                                   <InstrumentModel />
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable
@@ -46,12 +55,11 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
-                                        addButton={false}
                                     />
                                 </MDBox>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
+                        {/* <Grid item xs={12} md={12} lg={12}>
                             <Card>
                                 <MDBox
                                     mx={2}
@@ -64,7 +72,7 @@ const TableOne = () => {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Histroical Company Orders(Mock)
+                                        Histroical Traders Orders(Mock)
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
@@ -74,14 +82,14 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
-                                        addButton={false}
                                     />
                                 </MDBox>
                             </Card>
-                        </Grid>
-                    </Grid>
+                        </Grid>*/}
+                    </Grid> 
                 </MDBox> 
+                </>
     )
 }
 
-export default TableOne;
+export default InstrumentActiveTable;

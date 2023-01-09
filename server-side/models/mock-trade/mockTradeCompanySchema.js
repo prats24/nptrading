@@ -88,6 +88,10 @@ const mockTradeCompanySchema = new mongoose.Schema({
         type: String,
         required: true        
     },
+    date_part:{
+        type: String,
+        required : true
+    },
     algoBox:{
         algoName:{
             type: String,
@@ -117,6 +121,7 @@ const mockTradeCompanySchema = new mongoose.Schema({
             type: String,
             required : true
         }
+        
     }
 })
 

@@ -2,14 +2,10 @@
 =========================================================
 * Material Dashboard 2 React - v2.1.0
 =========================================================
-
 * Product Page: https://www.creative-tim.com/product/material-dashboard-react
 * Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
 Coded by www.creative-tim.com
-
  =========================================================
-
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
@@ -63,9 +59,17 @@ function AdminDashboard() {
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
-    let [Tdata, setTdata] = useState([]);
-    let tempData = [];
+    const [Tdata, setTdata] = useState([]);
+    const [tcostarray, setTcostarray] = useState([]);
+    const [tcostdate, setTcostdate] = useState([]);
+    const [PNLData, setPNLData] = useState([]);
+    const [gpnl, setGpnlarray] = useState([]);
+    const [npnl, setNpnlarray] = useState([]);
+    const [brokerage, setBrokeragearray] = useState([]);
+    const [pnldate, setPNLDatearray] = useState([]);
 
+    
+    let dayname = [];
    
     useEffect(()=>{
 
@@ -124,29 +128,75 @@ function AdminDashboard() {
             return new Error(err);
         })
     });
-
+//  Transaction Cost Chart Code Starts
     useEffect(()=>{
-      let day = 4;
-      for(let i = 0; i <= day; i++){
-        axios.get(`${baseUrl}api/v1/tcmocktradecompanydayminu/${i}`)
-        // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
-        .then((res)=>{
-            console.log(res.data)
-            // setTCost(res.data);
-            tempData.push(res.data)
-            setTdata(JSON.parse(JSON.stringify(tempData))) 
-        }).catch((err)=>{
-            window.alert("Server Down");
-            return new Error(err);
-        })
-      }
+      axios.get(`${baseUrl}api/v1/gettcostmocktradecompanylastfivedays`)
+      // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+      .then((res)=>{
+          // setTCost(res.data);
+          setTdata(res.data) 
+          for(let item of res.data)
+          {
+            // tcostarray.push(item.brokerage)
+            setTcostarray((prev)=>{return[...prev,item.brokerage]})
+            console.log(tcostarray);
+            setTcostdate((prev)=>{return[...prev,item._id]})
+          }
+      }).catch((err)=>{
+          window.alert("Server Down");
+          return new Error(err);
+      })
   },[])
+
+  tcostdate.map((elem)=>{
+    const date = new Date(elem);
+    const dayOfWeek = date.getDay();
+    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+    console.log(weekday);  // Output: "Sunday"
+    dayname.push(weekday.slice(0,3))
+  })
+
+  //  Transaction Cost Chart Code Ends
+
+  //  PNL Chart Code Starts
+  useEffect(()=>{
+    axios.get(`${baseUrl}api/v1/getpnlmocktradecompanylastfivedays`)
+    // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+    .then((res)=>{
+        // setTCost(res.data);
+        setPNLData(res.data) 
+        for(let item of res.data)
+        {
+          // tcostarray.push(item.brokerage)
+          setBrokeragearray((prev)=>{return[...prev,item.brokerage]})
+          setPNLDatearray((prev)=>{return[...prev,item._id.date]})
+          setGpnlarray((prev)=>{return[...prev,-item.amount]})
+          setNpnlarray((prev)=>{return[...prev,(-item.amount)-item.brokerage]})
+          
+        }
+    }).catch((err)=>{
+        window.alert("Server Down");
+        return new Error(err);
+    })
+},[])
+
+let datepartpnl = [];
+pnldate.map((elem)=>{
+  // const date = new Date(elem);
+  datepartpnl.push(elem.slice(-2));
+})
+
+
+  //  PNL Chart Code Ends
+  
   
     console.log("TData"+Tdata);
     console.log(todaymockcount)
     console.log(allmockcount)
     console.log(todaylivecount)
     console.log(alllivecount)
+    console.log(tcostarray)
+    console.log(tcostdate)
     // console.log(reportsBarChartData.labels)
     // console.log(reportsBarChartData.datasets.data())
     // console.log(reportsBarChartData.datasets)
@@ -158,43 +208,56 @@ function AdminDashboard() {
 
       <MDBox mb={1}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Daily Transaction Cost"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={{
-                    labels: ["M", "T", "W", "T", "F"],
-                    datasets: { label: "Transaction Cost", data: Tdata },
-                  }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+
+          <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily net p&l"
+                  title="Last 5 days net p&l"
                   description={
                     <>
                       (<strong>+15%</strong>) increase in today sales.
                     </>
                   }
                   date="updated 4 min ago"
-                  chart={pnl}
+                  chart={
+                    {
+                      labels: datepartpnl,
+                      datasets: { label: "Net P&L", data: npnl },
+                    }
+                  }
                 />
               </MDBox>
             </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="info"
+                  title="Last 5 days Transaction Cost"
+                  description="Last Campaign Performance"
+                  date="campaign sent 2 days ago"
+                  chart={{
+                    labels: dayname,
+                    datasets: { label: "Transaction Cost", data: tcostarray },
+                  }}
+                />
+              </MDBox>
+            </Grid>
+            
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="daily gross p&l"
+                  title="Last 5 days gross p&l"
                   description="Last Campaign Performance"
                   date="just updated"
-                  chart={pnlpoints}
+                  chart={
+                    {
+                      labels: datepartpnl,
+                      datasets: { label: "Gross P&L", data: gpnl },
+                    }
+                  }
                 />
               </MDBox>
             </Grid>

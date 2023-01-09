@@ -25,8 +25,38 @@ import MDBadge from "../../../components/MDBadge";
 import team2 from "../../../assets/images/team-2.jpg";
 import team3 from "../../../assets/images/team-3.jpg";
 import team4 from "../../../assets/images/team-4.jpg";
+import { useEffect, useState } from "react";
 
 export default function data() {
+//   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+//   const [activeData, setActiveData] = useState([]);
+//   const [inactiveData, setInActiveData] = useState([]);
+//   const [reRender, setReRender] = useState(true);
+
+
+//   useEffect(() => {
+//     axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
+//         .then((res) => {
+//             let data = res.data;
+//             let active = data.filter((elem) => {
+//                 console.log(elem.createdOn, createdOn);
+//                 return elem.status === "Active"
+//             })
+//             setActiveData(active);
+//             console.log(active);
+
+//             let inActive = data.filter((elem) => {
+//                 return elem.status === "Inactive"
+//             })
+//             setInActiveData(inActive);
+//             console.log(inactiveData);
+//         }).catch((err)=>{
+//             window.alert("Server Down");
+//             return new Error(err);
+//         })
+// }, [reRender])
+  
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -50,11 +80,14 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
-      { Header: "action", accessor: "action", align: "center" },
+      { Header: "Instruments", accessor: "Instruments", align: "center" },
+      { Header: "Contract Date", accessor: "Contract Date", align: "center" },
+      { Header: "Exchange", accessor: "Exchange", align: "center" },
+      { Header: "Lot Size", accessor: "Lot Size", align: "center" },
+      { Header: "Max Quantity", accessor: "Max Quantity", align: "center" },
+      { Header: "Status", accessor: "Status", align: "center" },
+      { Header: "Created On", accessor: "Created On", align: "center" },
+      { Header: "Action", accessor: "Action", align: "center" },
     ],
 
     rows: [
@@ -69,101 +102,6 @@ export default function data() {
         employed: (
           <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
             23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            11/01/19
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        function: <Job title="Executive" description="Projects" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            19/09/17
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            24/12/08
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-        function: <Job title="Manager" description="Executive" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            04/10/21
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            14/09/20
           </MDTypography>
         ),
         action: (
