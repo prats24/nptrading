@@ -43,11 +43,8 @@ import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
 import Accounts from "../Accounts";
 import Brokerage from "../Brokerage";
-import TradingARTonken from "../TradingARTonken";
-// import TradingAlgo from "../TradingAlgo";
-// import InstrumentMapping from "../InstrumentMapping";
-// import ExchangeMapping from "../ExchangeMapping";
-// import ProductMapping from "../ProductMapping";
+import TradingARToken from "../TradingARToken";
+
 
 
 function TradingAccountHeader({ children }) {
@@ -125,8 +122,10 @@ function TradingAccountHeader({ children }) {
                 <Tab
                   label="Brokerage"
                   icon={
-                    <AddShoppingCartIcon fontSize="small" sx={{ mt: -0.25 }}/>
-                  }
+                    <Icon fontSize="small" sx={{ mt: -0.25}}>
+                      home
+                    </Icon>
+                     }
                 />
               <Tab
                   label="Trading access request token"
@@ -142,7 +141,7 @@ function TradingAccountHeader({ children }) {
             </AppBar>
             <TabPanel value={tabValue} index={0}><Accounts/> </TabPanel>
             <TabPanel value={tabValue} index={1}><Brokerage/> </TabPanel>
-            <TabPanel value={tabValue} index={2}><TradingARTonken/> </TabPanel>
+            <TabPanel value={tabValue} index={2}><TradingARToken/> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>

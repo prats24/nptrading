@@ -15,7 +15,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
 
-const TradingAlgoModel = () => {
+const BrokerageModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -31,7 +31,7 @@ const TradingAlgoModel = () => {
   return (
     <div>
       <MDButton variant="outlined" onClick={handleClickOpen}>
-        Create Trading Alog
+        Create Brokerage Details
       </MDButton>
       <Dialog
         fullScreen={fullScreen}
@@ -45,7 +45,7 @@ const TradingAlgoModel = () => {
         <DialogContent>
           <DialogContentText sx={{ display: "flex", flexDirection: "column" }}>
             <TextField
-              id="outlined-basic" label="Algo Name" variant="standard"
+              id="outlined-basic" label="Broker" variant="standard"
               sx={{ margin: 1, padding: 1, width: "300px" }} />
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -56,21 +56,24 @@ const TradingAlgoModel = () => {
                 label="Transaction"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
               >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
+                <MenuItem value="BUY">BUY</MenuItem>
+                <MenuItem value="SELL">SELL</MenuItem>
               </Select>
             </FormControl>
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Instrument</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">Type</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
-                label="Instrument"
+                label="Type"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
               >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
+                <MenuItem value="Stocks">Stocks</MenuItem>
+                <MenuItem value="Option">Option</MenuItem>
+                <MenuItem value="Futures">Futures</MenuItem>
+                <MenuItem value="Currency">Currency</MenuItem>
+                <MenuItem value="Commodities">Commodities</MenuItem>
               </Select>
             </FormControl>
 
@@ -82,44 +85,42 @@ const TradingAlgoModel = () => {
                 label="Exchange"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
               >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Product</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Product"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-              >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
+                <MenuItem value="NSE">NSE</MenuItem>
+                <MenuItem value="BSE">BSE</MenuItem>
               </Select>
             </FormControl>
 
             <TextField
-              id="outlined-basic" label="Multipler" variant="standard" type="number"
+              id="outlined-basic" label="Brokerage Change" variant="standard" type="number"
               sx={{ margin: 1, padding: 1, width: "300px" }} />
 
             <TextField
-              id="outlined-basic" label="Trading Account" variant="standard"
+              id="outlined-basic" label="Exchange Charge" variant="standard" type="number"
               sx={{ margin: 1, padding: 1, width: "300px" }} />
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Status"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-              >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="inactive">Inctive</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              id="outlined-basic" label="GST" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
+            
+            <TextField
+              id="outlined-basic" label="SEBI Charges" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
+
+            <TextField
+              id="outlined-basic" label="Stamp Duty Charges" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
+
+            <TextField
+              id="outlined-basic" label="SST" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
+
+            <TextField
+              id="outlined-basic" label="CTT" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
+
+            <TextField
+              id="outlined-basic" label="DP Charges" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -135,4 +136,4 @@ const TradingAlgoModel = () => {
   );
 }
 
-export default TradingAlgoModel
+export default BrokerageModel

@@ -15,12 +15,14 @@ import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
+// import authorsTableData from "./data/authorsTableData";
 import projectsTableData from "./data/projectsTableData";
 import AlgoHeader from "./Header";
+import BrokerageData from './data/BrokerageData';
+import BrokerageModel from './BrokerageModel';
 
 const Brokerage = () => {
-  const { columns, rows } = authorsTableData();
+  const { columns, rows } = BrokerageData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
   return (
     <>
@@ -45,7 +47,7 @@ const Brokerage = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Brokerage Details
                                     </MDTypography>
-                                    
+                                    <BrokerageModel/>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable

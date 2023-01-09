@@ -15,7 +15,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 
 
-const TradingAlgoModel = () => {
+const TradingARTokenModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -31,7 +31,7 @@ const TradingAlgoModel = () => {
   return (
     <div>
       <MDButton variant="outlined" onClick={handleClickOpen}>
-        Create Trading Alog
+        Generate Access & Request Token
       </MDButton>
       <Dialog
         fullScreen={fullScreen}
@@ -45,67 +45,15 @@ const TradingAlgoModel = () => {
         <DialogContent>
           <DialogContentText sx={{ display: "flex", flexDirection: "column" }}>
             <TextField
-              id="outlined-basic" label="Algo Name" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
-
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Transaction</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Transaction"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-              >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Instrument</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Instrument"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-              >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Exchange</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Exchange"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-              >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Product</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Product"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-              >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
-              </Select>
-            </FormControl>
-
-            <TextField
-              id="outlined-basic" label="Multipler" variant="standard" type="number"
+              id="outlined-basic" label="Account ID" variant="standard"
               sx={{ margin: 1, padding: 1, width: "300px" }} />
 
             <TextField
-              id="outlined-basic" label="Trading Account" variant="standard"
+              id="outlined-basic" label="Access Token" variant="standard" type="number"
+              sx={{ margin: 1, padding: 1, width: "300px" }} />
+
+            <TextField
+              id="outlined-basic" label="Request Token" variant="standard"
               sx={{ margin: 1, padding: 1, width: "300px" }} />
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -135,4 +83,4 @@ const TradingAlgoModel = () => {
   );
 }
 
-export default TradingAlgoModel
+export default TradingARTokenModel

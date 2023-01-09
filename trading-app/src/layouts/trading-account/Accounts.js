@@ -15,13 +15,16 @@ import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
-import projectsTableData from "./data/projectsTableData";
+// import authorsTableData from "./data/authorsTableData";
+// import projectsTableData from "./data/projectsTableData";
 import AlgoHeader from "./Header";
+import AccountsModel from './AccountsModel';
+import AccountsData from './data/AccountsData';
+import AccountsDataInactive from './data/AccountsDataInactive';
 
 const Accounts = () => {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns, rows } = AccountsData();
+  const { columns: pColumns, rows: pRows } = AccountsDataInactive();
   return (
     <>
                 <MDBox pt={6} pb={3}>
@@ -45,7 +48,7 @@ const Accounts = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Company Trading Account
                                     </MDTypography>
-                                    
+                                    <AccountsModel/>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable

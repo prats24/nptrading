@@ -15,13 +15,16 @@ import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
-import projectsTableData from "./data/projectsTableData";
+// import authorsTableData from "./data/authorsTableData";
+// import projectsTableData from "./data/projectsTableData";
 import AlgoHeader from "./Header";
+import TradingARTokenData from './data/TradingARTokenData';
+import TradingARTokenDataExpired from './data/TradingARTokenDataExpired';
+import TradingARTokenModel from './TradingARTokenModel';
 
-const TradingARTonken = () => {
-  const { columns, rows } = authorsTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+const TradingARToken = () => {
+  const { columns, rows } = TradingARTokenData();
+  const { columns: pColumns, rows: pRows } = TradingARTokenDataExpired();
   return (
     <>
                 <MDBox pt={6} pb={3}>
@@ -45,6 +48,7 @@ const TradingARTonken = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Access & Request Token
                                     </MDTypography>
+                                    <TradingARTokenModel/>
                                     
                                 </MDBox>
                                 <MDBox pt={3}>
@@ -91,4 +95,4 @@ const TradingARTonken = () => {
   )
 }
 
-export default TradingARTonken;
+export default TradingARToken;
