@@ -256,7 +256,7 @@ router.get("/readmocktradecompanyDate", (req, res)=>{
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     const {email} = req.params
     console.log(todayDate)
-    MockTradeDetails.find({order_timestamp: {$regex: todayDate}}).sort({trade_time: -1})
+    MockTradeDetails.find({order_timestamp: {$regex: "06-01-2023"}}).sort({trade_time: -1})
     .then((data)=>{
         return res.status(200).send(data);
     })
@@ -535,27 +535,27 @@ router.get("/tcmocktradecompanyyesterday", (req, res)=>{
     })
 })
 
-router.get("/tcmocktradecompanydayminu/:days", (req, res)=>{
-    const {days} = req.params
-    let date = new Date();
-    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate)
-    var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+// router.get("/tcmocktradecompanydayminu/:days", (req, res)=>{
+//     const {days} = req.params
+//     let date = new Date();
+//     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+//     console.log(todayDate)
+//     var day = new Date(todayDate);
+//     console.log(day); // Apr 30 2000
 
-    var yesterday = new Date(day);
-    yesterday.setDate(day.getDate() - days);
-    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    let tcost = 0;
-    MockTradeDetails.find({trade_time: {$regex: yesterdayDate}})
-    .then((data)=>{
-        tcost = transactioncostcalculation(data);
-        res.status(201).json(tcost);
-    })
-    .catch((err)=>{
-        return res.status(422).json({error : "date not found"})
-    })
-})
+//     var yesterday = new Date(day);
+//     yesterday.setDate(day.getDate() - days);
+//     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+//     let tcost = 0;
+//     MockTradeDetails.find({trade_time: {$regex: yesterdayDate}})
+//     .then((data)=>{
+//         tcost = transactioncostcalculation(data);
+//         res.status(201).json(tcost);
+//     })
+//     .catch((err)=>{
+//         return res.status(422).json({error : "date not found"})
+//     })
+// })
 
 router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
     const days = 5
@@ -571,7 +571,10 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let tcost = [];
-    MockTradeDetails.find({trade_time: {$gte:yesterdayDate,$lt:todayDate}})
+    MockTradeDetails.aggregate(
+        {trade_time: {$gte:yesterdayDate,$lt:todayDate}},
+        
+        )
     .then((data)=>{
         console.log("Data"+data)
         tcost = transactioncostcalculation(data);
@@ -889,6 +892,52 @@ router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
 
         res.status(201).json(x);
         
+})
+
+
+router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
+    // console.log("Inside Aggregate API")
+    // const days = 7
+    // let date = new Date();
+    // let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    // console.log(todayDate)
+    // var day = new Date(todayDate);
+    // console.log("Day"+day); // Apr 30 2000
+
+    // var yesterday = new Date(day);
+    // yesterday.setDate(day.getDate() - days);
+    // console.log("StartDate"+yesterday);
+
+    // let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time : {$regex: "2023-01-06"}} },
+        { $sort: {trade_time: -1}},
+        { $group: { _id: {
+                                "symbol": "$symbol",
+                                "Product": "$Product",
+                                "buyOrSell": "$buyOrSell"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    average_price: {
+                        $sum: {$toInt : "$average_price"}
+                        // average_price: "$average_price"
+                    },
+                    }},
+        
+            ])
+            
+                console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
 })
 
 

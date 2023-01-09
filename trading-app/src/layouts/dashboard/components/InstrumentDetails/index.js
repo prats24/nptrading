@@ -70,7 +70,7 @@ function InstrumentDetails({socket}) {
       if(elem.instrumentToken.props.children === subelem.instrument_token){
         elem.last_price = (
             <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-              ₹{subelem.last_price.toFixed(2)}
+              {"₹"+(subelem.last_price).toFixed(2)}
             </MDTypography>
           );
           if(subelem.change){
