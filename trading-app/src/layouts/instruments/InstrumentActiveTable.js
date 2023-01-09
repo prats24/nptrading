@@ -14,14 +14,15 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
-// import companyOrdersmock from "./data/companyOrdersmock";
+// import authorsTableData from "./data/authorsTableData";
+import activeInstrumentsData from "./data/activeInstrumentsData";
 import projectsTableData from "./data/projectsTableData";
 import MDButton from '../../components/MDButton';
-import InsrumentModel from './InsrumentModel';
+import InstrumentModel from './InstrumentModel';
 
 const InstrumentActiveTable = () => {
-    const { columns, rows } = authorsTableData();
+    // const { columns, rows } = authorsTableData();
+    const { columns, rows } = activeInstrumentsData();
     const { columns: pColumns, rows: pRows } = projectsTableData();
     return (<>
                 <MDBox pt={6} pb={3}>
@@ -45,7 +46,7 @@ const InstrumentActiveTable = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Instruments
                                     </MDTypography>
-                                   <InsrumentModel />
+                                   <InstrumentModel />
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable

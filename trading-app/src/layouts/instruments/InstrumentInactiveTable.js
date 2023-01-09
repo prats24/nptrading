@@ -14,12 +14,12 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
+import inactiveinstrumentsData from "./data/inactiveInstrumentsData";
 // import companyOrdersmock from "./data/companyOrdersmock";
 import projectsTableData from "./data/projectsTableData";
 
 const InstrumentInactiveTable = () => {
-    const { columns, rows } = authorsTableData();
+    const { columns, rows } = inactiveinstrumentsData();
     const { columns: pColumns, rows: pRows } = projectsTableData();
     return (
                 <MDBox pt={6} pb={3}>

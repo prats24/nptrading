@@ -15,10 +15,11 @@ import Header from "./Header";
 
 // Data
 import companyOrdersMock from "./data/companyOrdersmock";
+import allcompanyOrdersMock from "./data/allcompanyOrdersmock";
 import projectsTableData from "./data/projectsTableData";
 const TableOne = () => {
     const { columns, rows } = companyOrdersMock();
-    const { columns: pColumns, rows: pRows } = projectsTableData();
+    const { columns: pColumns, rows: pRows } = allcompanyOrdersMock();
     return (
                 <MDBox pt={6} pb={3}>
                     <Grid container spacing={6}>
@@ -45,6 +46,8 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
+                                        addButton={false}
+                                        canSearch={true}
                                     />
                                 </MDBox>
                             </Card>
@@ -72,6 +75,8 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
+                                        addButton={false}
+                                        canSearch={true}
                                     />
                                 </MDBox>
                             </Card>

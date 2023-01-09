@@ -38,6 +38,7 @@ import MDPagination from "../../../components/MDPagination";
 // Material Dashboard 2 React example components
 import DataTableHeadCell from "./DataTableHeadCell";
 import DataTableBodyCell from "./DataTableBodyCell";
+import MDButton from "../../../components/MDButton";
 
 function DataTable({
   entriesPerPage,
@@ -47,6 +48,7 @@ function DataTable({
   pagination,
   isSorted,
   noEndBorder,
+  addButton,
 }) {
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
@@ -110,6 +112,8 @@ function DataTable({
 
   // Search input value state
   const [search, setSearch] = useState(globalFilter);
+  const nextbutton = "Next"
+  const prevbutton = "Prev"
 
   // Search input state handle
   const onSearchChange = useAsyncDebounce((value) => {
@@ -215,8 +219,11 @@ function DataTable({
                   </DataTableBodyCell>
                 ))}
               </TableRow>
+              
             );
+            
           })}
+         
         </TableBody>
       </Table>
 
@@ -262,6 +269,31 @@ function DataTable({
             )}
           </MDPagination>
         )}
+        {addButton && (
+            <MDBox 
+            display="flex"
+            flexDirection={{ xs: "column", sm: "row", lg: "row" }}
+            justifyContent="space-between"
+            alignItems={{ xs: "flex-start", sm:"centre",lg:"flex" }}
+            >
+              <MDButton
+                fullWidth
+                variant="contained"
+                color="info"
+              >
+                Prev
+              </MDButton>
+              <MDButton
+                fullWidth
+                variant="contained"
+                color="info"
+              >
+                Next
+              </MDButton>
+              
+              
+            </MDBox>
+          )}
       </MDBox>
     </TableContainer>
   );
@@ -275,6 +307,7 @@ DataTable.defaultProps = {
   pagination: { variant: "gradient", color: "info" },
   isSorted: true,
   noEndBorder: false,
+  addButton:false
 };
 
 // Typechecking props for the DataTable
@@ -287,6 +320,7 @@ DataTable.propTypes = {
     PropTypes.bool,
   ]),
   canSearch: PropTypes.bool,
+  addButton: PropTypes.bool,
   showTotalEntries: PropTypes.bool,
   table: PropTypes.objectOf(PropTypes.array).isRequired,
   pagination: PropTypes.shape({

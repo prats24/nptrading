@@ -393,6 +393,24 @@ router.get("/pnlcalucationmocktradeusertoday", async(req, res)=>{
 
 })
 
+router.get("/pnlcalucationmocktradealluserthismonth", (req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let monthStartDate = '2023-01-01';
+    const {email} = req.params
+    MockTradeDetails.find({trade_time: {$gte:monthStartDate,$lt:todayDate}})
+    .then((data)=>{
+
+            let overallnewpnl = pnlcalucationnorunninglots(data);
+            console.log(overallnewpnl);
+    
+        return res.status(200).send(overallnewpnl);
+    })
+    .catch((err)=>{
+        return res.status(422).json({error : "date not found"})
+    })
+})
+
 
 
 module.exports = router;

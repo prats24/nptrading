@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { io } from "socket.io-client";
 // @mui material components
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
@@ -45,18 +45,46 @@ import reportsLineChartData from "./data/reportsLineChartData";
 
 import Projects from "./components/Projects";
 import InstrumentDetails from "./components/InstrumentDetails";
-import OverallCompanyPNL from "./components/OverallCompantPNL";
+import MockOverallCompanyPNL from "./components/MockOverallCompanyPNL";
+import LiveOverallCompanyPNL from "./components/LiveOverallCompanyPNL";
+import MockTraderwiseCompanyPNL from "./components/MockTraderwiseCompanyPNL";
+import LiveTraderwiseCompanyPNL from "./components/LiveTraderwiseCompanyPNL";
 import OrdersOverview from "./components/OrdersOverview";
 
 function AdminDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
+  let socket;
+  try{
+      socket = io.connect(`${baseUrl1}`)
+  } catch(err){
+      throw new Error(err);
+  }
 
     const [todaymockcount, setTodayMockCount] = useState([]);
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
+   
+    useEffect(()=>{
+
+        console.log(socket);
+        socket.on("connect", ()=>{
+            console.log(socket.id);
+            socket.emit("hi",true)
+        })
+        socket.on("noToken", (data)=>{
+            console.log("no token");
+            window.alert(data);
+        })
+        socket.on("wrongToken", (data)=>{
+            console.log("wrong Token");
+            window.alert(data);
+        })
+
+    }, []);
 
     useEffect(()=>{
 
@@ -106,133 +134,43 @@ function AdminDashboard() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Today's Trades"
-                count={todaymockcount}
-                percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Lifetime Trades"
-                count={allmockcount}
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
-            </MDBox>
-          </Grid>
-        </Grid>
+
         <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <InstrumentDetails />
+              <InstrumentDetails socket={socket}/>
             </Grid>
           </Grid>
         </MDBox>
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <OverallCompanyPNL />
+              <MockOverallCompanyPNL socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
-
-        <MDBox mt={4.5}>
+        <MDBox mt={2}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="Daily Transaction Cost"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily net p&l"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={pnl}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="daily gross p&l"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={pnlpoints}
-                />
-              </MDBox>
+            <Grid item xs={12} md={6} lg={12}>
+              <LiveOverallCompanyPNL socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox>
+        <MDBox mt={2}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8} mb={3}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4} mb={3}>
-              <OrdersOverview />
+            <Grid item xs={12} md={6} lg={12}>
+              <MockTraderwiseCompanyPNL socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
+        <MDBox mt={2}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <LiveTraderwiseCompanyPNL socket={socket} />
+            </Grid>
+          </Grid>
+        </MDBox>
+       
         
       </MDBox>
       <Footer />

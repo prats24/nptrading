@@ -18,7 +18,6 @@ import { useState } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -31,68 +30,10 @@ import DataTable from "../../../../examples/Tables/DataTable";
 
 // Data
 import data from "./data";
-import { useEffect } from "react";
-import axios from "axios";
 
-function InstrumentDetails({socket}) {
-
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-
+function Projects() {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
-  const [marketData, setMarketData] = useState([]);
-
-  useEffect(()=>{
-
-    axios.get(`${baseUrl}api/v1/getliveprice`)
-    .then((res) => {
-        console.log("live price data", res)
-        setMarketData(res.data);
-        // setDetails.setMarketData(data);
-    }).catch((err) => {
-        return new Error(err);
-    })
-
-    socket.on("tick", (data) => {
-      console.log("this is live market data", data);
-      setMarketData(data);
-      // setDetails.setMarketData(data);
-    })
-  }, [])
-
-  console.log("marketData", marketData)
-  let ltpArr = [];
-  
-  rows.map((elem)=>{
-    let ltpObj = {};
-    marketData.map((subelem)=>{
-      const percentagechangecolor = ((subelem.last_price - subelem.average_price) / subelem.average_price) > 0 ? "success" : "error"
-      if(elem.instrumentToken.props.children === subelem.instrument_token){
-        elem.last_price = (
-            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-              ₹{subelem.last_price.toFixed(2)}
-            </MDTypography>
-          );
-          if(subelem.change){
-            elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-                {((subelem.change).toFixed(2))+"%"}
-              </MDTypography>
-            );
-          } else{
-            elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-                {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
-              </MDTypography>
-            );
-          }
-      }
-    })
-    ltpArr.push(ltpObj);
-  })
-
-  const newRows = rows.concat(ltpArr);
-  console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
@@ -123,20 +64,20 @@ function InstrumentDetails({socket}) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Instrument Details
+            Overall P&L(Mock)
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <CheckCircleIcon
+            <Icon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
                 mt: -0.5,
               }}
             >
-            
-            </CheckCircleIcon>
-            <MDTypography variant="button" fontWeight="regular" color="success">
-              &nbsp;<strong>System Live</strong>
+              done
+            </Icon>
+            <MDTypography variant="button" fontWeight="regular" color="text">
+              &nbsp;<strong>last order at</strong> 11:10:23
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -160,6 +101,4 @@ function InstrumentDetails({socket}) {
   );
 }
 
-export default InstrumentDetails;
-
-
+export default Projects;
