@@ -9,6 +9,8 @@ import MDProgress from "../../../../../components/MDProgress";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BuyModel from "./BuyModel";
+import SellModel from "./SellModel";
 
 export default function Data() {
 
@@ -51,40 +53,38 @@ export default function Data() {
     const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
 
     instrumentDetailObj.instrument = (
-      <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+      <MDTypography variant="caption" color={instrumentcolor} fontWeight="medium">
         {elem.instrument}
       </MDTypography>
     );
     instrumentDetailObj.symbol = (
-      <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+      <MDTypography variant="caption" color={instrumentcolor} fontWeight="medium">
         {elem.symbol}
       </MDTypography>
     );
     instrumentDetailObj.quantity = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography variant="caption" color="text" fontWeight="medium">
         {elem.Quantity}
       </MDTypography>
     );
     instrumentDetailObj.contractDate = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography variant="caption" color="text" fontWeight="medium">
         {elem.contractDate}
       </MDTypography>
     );
     instrumentDetailObj.avgprice = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography variant="caption" color="text" fontWeight="medium">
         ₹{elem.average_price}
       </MDTypography>
     );
     instrumentDetailObj.buy = (
-      <MDButton href="../../authentication/sign-in" variant="contained" color="info" fullWidth>
-        BUY
-      </MDButton>     
+        <BuyModel/>
     );
+    
     instrumentDetailObj.sell = (
-      <MDButton href="../../authentication/sign-in" variant="contained" color="error" fullWidth>
-        SELL
-      </MDButton> 
+      <SellModel />
     );
+
     instrumentDetailObj.instrumentToken = (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         {elem.instrumentToken}
