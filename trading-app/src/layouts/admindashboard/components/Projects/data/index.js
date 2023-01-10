@@ -71,19 +71,17 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "contract date", accessor: "companies", width: "10%", align: "left" },
-      { Header: "instrument", accessor: "members", width: "10%", align: "left" },
-      { Header: "symbol", accessor: "budget", width: "10%", align: "center" },
-      { Header: "avg. price", accessor: "completion", width: "10%", align: "center" },
-      { Header: "ltp", accessor: "ltp", width: "10%", align: "center" },
-      { Header: "gross p&l", accessor: "gpnl", width: "10%", align: "center" },
+      { Header: "Trader Name", accessor: "trader", width: "10%", align: "left" },
+      { Header: "gross p&l", accessor: "tgpnl", width: "10%", align: "left" },
       { Header: "transaction cost", accessor: "tcost", width: "10%", align: "center" },
-      { Header: "net p&l", accessor: "npnl", width: "10%", align: "center" },
+      { Header: "net p&l", accessor: "tnpnl", width: "10%", align: "center" },
+      { Header: "# of traders", accessor: "trades", width: "10%", align: "center" },
+      { Header: "avg. daily loss", accessor: "avgdl", width: "10%", align: "center" },
     ],
 
     rows: [
       {
-        companies: <Company image={logoXD} name="Prateek Pawan" />,
+        trader: <Company image={team2} name="Prateek Pawan" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -94,29 +92,34 @@ export default function data() {
             ])}
           </MDBox>
         ),
-        budget: (
+        tgpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $14,000
+            -₹1,70,000
           </MDTypography>
         ),
-        completion: (
-          <MDBox width="8rem" textAlign="left">
-            <MDProgress value={60} color="info" variant="gradient" label={false} />
-          </MDBox>
-        ),
-        instrument: (
+        // tcost: (
+        //   <MDBox width="8rem" textAlign="left">
+        //     <MDProgress value={60} color="info" variant="gradient" label={false} />
+        //   </MDBox>
+        // ),
+        tcost: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            NIFTY05JAN18500CE
+            ₹1,00,000
           </MDTypography>
         ),
-        status: (
+        tnpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            COMPLETE
+            -₹1,00,000
+          </MDTypography>
+        ),
+        tnpnl: (
+          <MDTypography variant="caption" color="text" fontWeight="medium">
+            -₹1,00,000
           </MDTypography>
         ),
       },
       {
-        companies: <Company image={logoAtlassian} name="Anamika Verma" />,
+        trader: <Company image={team1} name="Anamika Verma" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -125,29 +128,29 @@ export default function data() {
             ])}
           </MDBox>
         ),
-        budget: (
+        tgpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $3,000
+            -₹1,40,000
           </MDTypography>
         ),
-        completion: (
-          <MDBox width="8rem" textAlign="left">
-            <MDProgress value={10} color="info" variant="gradient" label={false} />
-          </MDBox>
-        ),
-        instrument: (
+        // tcost: (
+        //   <MDBox width="8rem" textAlign="left">
+        //     <MDProgress value={10} color="info" variant="gradient" label={false} />
+        //   </MDBox>
+        // ),
+        tcost: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            NIFTY05JAN18500CE
+            ₹1,00,000
           </MDTypography>
         ),
-        status: (
+        tnpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            COMPLETE
+            -₹1,00,000
           </MDTypography>
         ),
       },
       {
-        companies: <Company image={logoSlack} name="Shrikesh Kumar" />,
+        trader: <Company image={team4} name="Shrikesh Kumar" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -156,29 +159,29 @@ export default function data() {
             ])}
           </MDBox>
         ),
-        budget: (
+        tgpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            Not set
+            -₹1,20,000
           </MDTypography>
         ),
-        completion: (
-          <MDBox width="8rem" textAlign="left">
-            <MDProgress value={100} color="success" variant="gradient" label={false} />
-          </MDBox>
-        ),
-        instrument: (
+        // tcost: (
+        //   <MDBox width="8rem" textAlign="left">
+        //     <MDProgress value={100} color="success" variant="gradient" label={false} />
+        //   </MDBox>
+        // ),
+        tcost: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            NIFTY05JAN18500CE
+            ₹1,00,000
           </MDTypography>
         ),
-        status: (
+        tnpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            COMPLETE
+            -₹1,00,000
           </MDTypography>
         ),
       },
       {
-        companies: <Company image={logoSpotify} name="Manav Yadav" />,
+        trader: <Company image={team2} name="Manav Yadav" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([
@@ -189,83 +192,52 @@ export default function data() {
             ])}
           </MDBox>
         ),
-        budget: (
+        tgpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $20,500
+            -₹1,00,000
           </MDTypography>
         ),
-        completion: (
-          <MDBox width="8rem" textAlign="left">
-            <MDProgress value={100} color="success" variant="gradient" label={false} />
-          </MDBox>
-        ),
-        instrument: (
+        // tcost: (
+        //   <MDBox width="8rem" textAlign="left">
+        //     <MDProgress value={100} color="success" variant="gradient" label={false} />
+        //   </MDBox>
+        // ),
+        tcost: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            NIFTY05JAN18500CE
+            ₹1,00,000
           </MDTypography>
         ),
-        status: (
+        tnpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            COMPLETE
+            -₹1,00,000
           </MDTypography>
         ),
       },
       {
-        companies: <Company image={logoJira} name="Monika Agarwal" />,
+        trader: <Company image={team3} name="Monika Agarwal" />,
         members: (
           <MDBox display="flex" py={1}>
             {avatars([[team4, "Jessica Doe"]])}
           </MDBox>
         ),
-        budget: (
+        tgpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            $500
+            -₹40,000
           </MDTypography>
         ),
-        completion: (
-          <MDBox width="8rem" textAlign="left">
-            <MDProgress value={25} color="info" variant="gradient" label={false} />
-          </MDBox>
-        ),
-        instrument: (
+        // tcost: (
+        //   <MDBox width="8rem" textAlign="left">
+        //     <MDProgress value={25} color="info" variant="gradient" label={false} />
+        //   </MDBox>
+        // ),
+        tcost: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            NIFTY05JAN18500CE
+            ₹1,00,000
           </MDTypography>
         ),
-        status: (
+        tnpnl: (
           <MDTypography variant="caption" color="text" fontWeight="medium">
-            COMPLETE
-          </MDTypography>
-        ),
-      },
-      {
-        companies: <Company image={logoInvesion} name="Shivraj Mali" />,
-        members: (
-          <MDBox display="flex" py={1}>
-            {avatars([
-              [team1, "Ryan Tompson"],
-              [team4, "Jessica Doe"],
-            ])}
-          </MDBox>
-        ),
-        budget: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            $2,000
-          </MDTypography>
-        ),
-        completion: (
-          <MDBox width="8rem" textAlign="left">
-            <MDProgress value={40} color="info" variant="gradient" label={false} />
-          </MDBox>
-        ),
-        instrument: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            NIFTY05JAN18500CE
-          </MDTypography>
-        ),
-        status: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            COMPLETE
+            -₹1,00,000
           </MDTypography>
         ),
       },

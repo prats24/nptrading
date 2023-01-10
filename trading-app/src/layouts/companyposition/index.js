@@ -51,7 +51,7 @@ import MockTraderwiseCompanyPNL from "./components/MockTraderwiseCompanyPNL";
 import LiveTraderwiseCompanyPNL from "./components/LiveTraderwiseCompanyPNL";
 import OrdersOverview from "./components/OrdersOverview";
 
-function AdminDashboard() {
+function CompanyPosition() {
   const { pnl, pnlpoints } = reportsLineChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -178,4 +178,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default CompanyPosition;

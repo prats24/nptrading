@@ -64,7 +64,7 @@ function Projects() {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Overall P&L(Mock)
+            Top 5 loss making traders this month
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon
