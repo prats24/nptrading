@@ -42,7 +42,7 @@ import reportsLineChartData from "./data/reportsLineChartData";
 import Projects from "./components/Projects";
 import OrdersOverview from "./components/OrdersOverview";
 
-function AdminDashboard() {
+function UserDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
   const {labels, datasets} = reportsBarChartData;
 
@@ -623,4 +623,4 @@ pnldate.map((elem)=>{
   );
 }
 
-export default AdminDashboard;
+export default UserDashboard;

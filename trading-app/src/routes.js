@@ -69,6 +69,8 @@ import Icon from "@mui/material/Icon";
 import UserOrders from "./layouts/userorders";
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import UserPosition from "./layouts/User Position";
+import UserDashboard from "./layouts/userdashboard";
+import UserReport from "./layouts/userreports";
 
 
 const routes = [
@@ -222,6 +224,25 @@ const routes = [
     route: "/Position",
     component: <UserPosition />,
   },
+  {
+    type: "collapse",
+    name: "Dashboard",
+    key: "userdashboard",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <AccountBoxIcon/>,
+    route: "/userdashboard",
+    component: <UserDashboard />,
+  },
+  {
+    type: "collapse",
+    name: "User Report",
+    key: "userreport",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <AccountBoxIcon/>,
+    route: "/userreport",
+    component: <UserReport />,
+  },
+
 ];
 
 export default routes;
