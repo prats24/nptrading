@@ -998,4 +998,36 @@ router.get("/getlastestmocktradecompany", async(req, res)=>{
         
 })
 
+router.get("/getavgpricemocktradecompany", async(req, res)=>{
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
+
+                    { $sort: { "trade_time": 1 }},
+                   { $group:
+                            {
+                                _id: {
+                     
+                                    "product": "$Product",
+                                    "symbol": "$symbol"
+                                },
+                                average_price: { $last: "$average_price" }
+                            }
+                        },
+                        { $sort: { "_id": 1 }}
+                    
+                ]
+
+    let getAvgPrice = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(getAvgPrice);
+
+        res.status(201).json(getAvgPrice);
+        
+})
+
 module.exports = router;

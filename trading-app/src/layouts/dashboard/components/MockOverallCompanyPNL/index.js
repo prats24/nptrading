@@ -42,8 +42,6 @@ function MockOverallCompantPNL({socket}) {
   const closeMenu = () => setMenu(null);
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-  let date = new Date();
-  let totalTransactionCost = 0;
   const [overallPnlArr, setOverallPnlArr] = useState([]);
   const [liveDetail, setLiveDetail] = useState([]);
   const [avgPrice, setAvgPrice] = useState([]);
@@ -56,6 +54,7 @@ function MockOverallCompantPNL({socket}) {
   const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
   const [lastestTradeType, setLatestTradeType] = useState([]);
   const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
   // const lastestTradeTime = '';
 
 
@@ -63,6 +62,8 @@ function MockOverallCompantPNL({socket}) {
   let avgPriceArr = [];
   let liveDetailsArr = [];
   let overallPnl = [];
+  let totalTransactionCost = 0;
+  let totalGrossPnl = 0;
   
 
 
@@ -102,7 +103,12 @@ function MockOverallCompantPNL({socket}) {
 
   useEffect(()=>{
 
-   
+    axios.get(`${baseUrl}api/v1/getavgpricemocktradecompany`)
+    .then((res) => {
+      setLastAvgPriceArr(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
 
     axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
     .then((res) => {
@@ -111,15 +117,15 @@ function MockOverallCompantPNL({socket}) {
         return new Error(err);
     })
 
-      let AvgPriceHash = new Map();
-      avgPriceArr.push(tradeData[0])
-      for(let i = 0; i < tradeData.length; i++){
-          if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
-              avgPriceArr.push(tradeData[i]);
-              break;
-          }
-      }
-      setAvgPrice(avgPriceArr)
+      // let AvgPriceHash = new Map();
+      // avgPriceArr.push(tradeData[0])
+      // for(let i = 0; i < tradeData.length; i++){
+      //     if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
+      //         avgPriceArr.push(tradeData[i]);
+      //         break;
+      //     }
+      // }
+      // setAvgPrice(avgPriceArr)
 
       let hash = new Map();
 
@@ -232,15 +238,17 @@ function MockOverallCompantPNL({socket}) {
       totalTransactionCost += Number(elem.brokerage);
   })
 
-
+  console.log("lastAvgPriceArr", lastAvgPriceArr, overallPnlArr, tradeData)
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
-      let tempavgPriceArr = avgPrice.filter((element)=>{
-        return subelem.symbol === element._id.symbol;
+      let tempavgPriceArr = lastAvgPriceArr.filter((element)=>{
+        return (subelem.symbol === element._id.symbol) && (subelem.Product === element._id.product);
       })
 
-      let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
+      console.log("tempavgPriceArr", tempavgPriceArr)
 
+      let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
+      totalGrossPnl += updatedValue;
       const instrumentcolor = subelem.symbol.slice(-2) == "CE" ? "success" : "error"
       const quantitycolor = subelem.Quantity > 0 ? "success" : "error"
       const gpnlcolor = updatedValue > 0 ? "success" : "error"
@@ -330,6 +338,57 @@ function MockOverallCompantPNL({socket}) {
     </Menu>
   );
 
+  let obj = {};
+
+  obj.Product = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {}
+    </MDTypography>
+  );
+
+  obj.symbol = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {}
+    </MDTypography>
+  );
+
+  obj.Quantity = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      Transaction Cost
+    </MDTypography>
+  );
+
+  obj.avgPrice = (
+    <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      {"₹"+(totalTransactionCost).toFixed(2)}
+    </MDTypography>
+  );
+
+  obj.last_price = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {/* {"₹"+(liveDetail[index]?.last_price).toFixed(2)} */}Gross P&L
+    </MDTypography>
+  );
+
+
+  obj.grossPnl = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {totalGrossPnl > 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+    </MDTypography>
+  );
+
+  obj.change = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {/* {(liveDetail[index]?.change).toFixed(2)+"%"} */}Net P&L : {(totalGrossPnl-totalTransactionCost) > 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+    </MDTypography>
+  );
+
+  //console.log(obj)
+  rows.push(obj);
+
+
+  let totalColumns, totalRows;
+
 
   return (
     <Card>
@@ -368,6 +427,13 @@ function MockOverallCompantPNL({socket}) {
           noEndBorder
           entriesPerPage={false}
         />
+        {/* <DataTable
+          table={{ totalColumns, totalRows }}
+          showTotalEntries={false}
+          isSorted={false}
+          noEndBorder
+          entriesPerPage={false}
+        /> */}
       </MDBox>
     </Card>
   );

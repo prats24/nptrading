@@ -104,6 +104,7 @@ function MockTraderwiseCompantPNL({socket}) {
                       obj.totalBuyLot = obj.totalBuyLot + (Number(allTrade[i].lots))
                   }
                   obj.noOfTrade += allTrade[i].trades
+                  obj.brokerage += allTrade[i].brokerage
 
               } if(allTrade[i]._id.buyOrSell === "SELL"){
                   if( obj.totalSell === undefined || obj.totalSellLot === undefined){
@@ -116,6 +117,7 @@ function MockTraderwiseCompantPNL({socket}) {
                       obj.totalSellLot = obj.totalSellLot + (Number(allTrade[i].lots))
                   }
                   obj.noOfTrade += allTrade[i].trades
+                  obj.brokerage += allTrade[i].brokerage
 
               }
           }  else{
@@ -202,10 +204,12 @@ function MockTraderwiseCompantPNL({socket}) {
 
       console.log(finalTraderPnl)
 
- 
+ let totalGrossPnl = 0;
+ let totalTransactionCost = 0;
   finalTraderPnl.map((subelem, index)=>{
     let obj = {};
- 
+    totalGrossPnl += (subelem.totalPnl);
+    totalTransactionCost += (subelem.brokerage);
     obj.traderName = (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         {(subelem.name)}
@@ -251,6 +255,54 @@ function MockTraderwiseCompantPNL({socket}) {
     //console.log(obj)
     rows.push(obj);
   })
+
+  let obj = {};
+
+  obj.traderName = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {}
+    </MDTypography>
+  );
+
+  obj.grossPnl = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {}
+    </MDTypography>
+  );
+
+  obj.noOfTrade = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      Transaction Cost
+    </MDTypography>
+  );
+
+  obj.runningLots = (
+    <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      {"₹"+(totalTransactionCost).toFixed(2)}
+    </MDTypography>
+  );
+
+  obj.lotUsed = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {/* {"₹"+(liveDetail[index]?.last_price).toFixed(2)} */}Gross P&L
+    </MDTypography>
+  );
+
+
+  obj.brokerage = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {totalGrossPnl > 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+    </MDTypography>
+  );
+
+  obj.netPnl = (
+    <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      {/* {(liveDetail[index]?.change).toFixed(2)+"%"} */}Net P&L : {(totalGrossPnl-totalTransactionCost) > 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+    </MDTypography>
+  );
+
+  //console.log(obj)
+  rows.push(obj);
 
 
 

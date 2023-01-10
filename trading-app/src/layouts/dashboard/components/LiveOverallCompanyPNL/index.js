@@ -51,12 +51,15 @@ function LiveOverallCompantPNL({socket}) {
   const [marketData, setMarketData] = useState([]);
   const [instrumentData, setInstrumentData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
+
 
 
   var Total = 0;
   let avgPriceArr = [];
   let liveDetailsArr = [];
   let overallPnl = [];
+  let totalGrossPnl = 0;
   
   useEffect(()=>{
 
@@ -90,6 +93,13 @@ function LiveOverallCompantPNL({socket}) {
 
   useEffect(()=>{
 
+    axios.get(`${baseUrl}api/v1/getavgpricelivetradecompany`)
+    .then((res) => {
+      setLastAvgPriceArr(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
+
     axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday`)
     .then((res) => {
         setTradeData(res.data);
@@ -97,15 +107,15 @@ function LiveOverallCompantPNL({socket}) {
         return new Error(err);
     })
 
-      let AvgPriceHash = new Map();
-      avgPriceArr.push(tradeData[0])
-      for(let i = 0; i < tradeData.length; i++){
-          if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
-              avgPriceArr.push(tradeData[i]);
-              break;
-          }
-      }
-      setAvgPrice(avgPriceArr)
+      // let AvgPriceHash = new Map();
+      // avgPriceArr.push(tradeData[0])
+      // for(let i = 0; i < tradeData.length; i++){
+      //     if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
+      //         avgPriceArr.push(tradeData[i]);
+      //         break;
+      //     }
+      // }
+      // setAvgPrice(avgPriceArr)
 
       let hash = new Map();
 
@@ -204,12 +214,12 @@ function LiveOverallCompantPNL({socket}) {
 
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
-      let tempavgPriceArr = avgPrice.filter((element)=>{
-        return subelem.symbol === element._id.symbol;
+      let tempavgPriceArr = lastAvgPriceArr.filter((element)=>{
+        return (subelem.symbol === element._id.symbol) && (subelem.Product === element._id.product);
       })
 
       let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
-
+      totalGrossPnl += updatedValue;
       obj.Product = (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
           {(subelem.Product)}
@@ -270,6 +280,56 @@ function LiveOverallCompantPNL({socket}) {
       //console.log(obj)
       rows.push(obj);
     })
+
+
+    let obj = {};
+
+    obj.Product = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {}
+      </MDTypography>
+    );
+  
+    obj.symbol = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {}
+      </MDTypography>
+    );
+  
+    obj.Quantity = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        Transaction Cost
+      </MDTypography>
+    );
+  
+    obj.avgPrice = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {"₹"+(totalTransactionCost).toFixed(2)}
+      </MDTypography>
+    );
+  
+    obj.last_price = (
+      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+        {/* {"₹"+(liveDetail[index]?.last_price).toFixed(2)} */}Gross P&L
+      </MDTypography>
+    );
+  
+  
+    obj.grossPnl = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {totalGrossPnl > 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+      </MDTypography>
+    );
+  
+    obj.change = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {/* {(liveDetail[index]?.change).toFixed(2)+"%"} */}Net P&L : {(totalGrossPnl-totalTransactionCost) > 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+      </MDTypography>
+    );
+  
+    //console.log(obj)
+    rows.push(obj);
+  
 
 
   const renderMenu = (
