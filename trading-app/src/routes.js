@@ -68,6 +68,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Icon from "@mui/material/Icon";
 import UserOrders from "./layouts/userorders";
 import ContactPageIcon from '@mui/icons-material/ContactPage';
+import UserPosition from "./layouts/User Position";
 
 
 const routes = [
@@ -211,6 +212,15 @@ const routes = [
     icon: <ContactPageIcon/>,
     route: "/userorders",
     component: <UserOrders />,
+  },
+  {
+    type: "collapse",
+    name: "Position",
+    key: "Position",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <AccountBoxIcon/>,
+    route: "/Position",
+    component: <UserPosition />,
   },
 ];
 
