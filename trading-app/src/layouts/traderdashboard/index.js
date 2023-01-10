@@ -41,6 +41,7 @@ import reportsLineChartData from "./data/reportsLineChartData";
 
 import Projects from "./components/Projects";
 import OrdersOverview from "./components/OrdersOverview";
+import { height } from "@mui/system";
 
 function AdminDashboard() {
   const { pnl, pnlpoints } = reportsLineChartData;
@@ -104,9 +105,18 @@ function AdminDashboard() {
     const [lastweekbrokerage, setLastWeekBrokerage] = useState([]);
     const [lastweektrades, setLastWeekTrades] = useState([]);
     const [lastweeknpnl, setLastWeekNPNL] = useState([]);
+    let dayname = [];
+
+  // constant for trader dashbaord
+    const [thismonthtraderwisePNLData, setthismonthtraderwisePNLData] = useState([]);
+    const [thismonthtraderwisegpnl, setthismonthtraderwiseGPNL] = useState([]);
+    const [thismonthtraderwisebrokerage, setthismonthtraderwiseBrokerage] = useState([]);
+    const [thismonthtraderwisetrades, setthismonthtraderwiseTrades] = useState([]);
+    const [thismonthtraderwisenpnl, setthismonthtraderwiseNPNL] = useState([]);
+    const [tradername, settradername] = useState([]);
+    
 
     
-    let dayname = [];
    
     useEffect(()=>{
 
@@ -125,7 +135,42 @@ function AdminDashboard() {
         })
 
     }, []);
-    
+  
+  // Codes for Trader Dashboard
+
+  useEffect(()=>{
+    axios.get(`${baseUrl}api/v1/gettraderwisepnldetailsthismonth`)
+    .then((res)=>{
+        console.log(res.data);
+            for(let item of res.data)
+            {
+              if(tradername == '')
+              {
+              settradername((prev)=>{return[...prev,(item._id)]})
+              setthismonthtraderwiseGPNL((prev)=>{return[...prev,-item.gpnl]})
+              setthismonthtraderwiseBrokerage((prev)=>{return[...prev,item.brokerage]})
+              setthismonthtraderwiseNPNL((prev)=>{return[...prev,(-item.gpnl)-item.brokerage]})
+              setthismonthtraderwiseTrades((prev)=>{return[...prev,(-item.trades)]}) 
+              } 
+            }
+            }).catch((err)=>{
+                window.alert("Server Down");
+                return new Error(err);
+            })
+},[])
+
+console.log("Trader Name "+tradername);
+console.log("GPNL "+thismonthtraderwisegpnl);
+console.log("Brokerage "+thismonthtraderwisebrokerage);
+console.log("NPNL "+thismonthtraderwisenpnl);
+console.log("Trades "+thismonthtraderwisetrades);
+
+  // Code Ends
+
+
+
+
+   ////// COde used in Company Dashboard 
    //This week pnl details code starts
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisweek`)
@@ -368,48 +413,53 @@ pnldate.map((elem)=>{
       <MDBox mb={1}>
           <Grid container spacing={3}>
 
-          <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="Last 5 days net p&l"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase than previous last 5 days.
-                    </>
-                  }
-                  date="updated yesterday"
-                  chart={
-                    {
-                      labels: datepartpnl,
-                      datasets: { label: "Net P&L", data: npnl },
-                    }
-                  }
-                />
-              </MDBox>
-            </Grid>
-
-            <Grid item xs={12} md={6} lg={4}>
+          <Grid item xs={12} md={6} lg={12}>
               <MDBox mb={3}>
                 <ReportsBarChart
-                  color="info"
-                  colorheight="12.5rem"
-                  title="Last 5 days Transaction Cost"
+                  color="success"
+                  colorheight={"25rem"}
+                  title="Current Month's Traderwise Net P&L"
                   description={
                     <>
                       (<strong>+20%</strong>) increase than previous last 5 days.
                     </>
                   }
                   date="updated yesterday"
-                  chart={{
-                    labels: dayname,
-                    datasets: { label: "Transaction Cost", data: brokerage },
-                  }}
+                  chart={
+                    {
+                      labels: tradername,
+                      datasets: { label: "Gross P&L", data: thismonthtraderwisenpnl }
+                    }
+                  }
                 />
               </MDBox>
             </Grid>
+
+          <Grid item xs={12} md={6} lg={12}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="info"
+                  colorheight={"25rem"}
+                  title="Current Month's Traderwise Transaction Cost"
+                  description={
+                    <>
+                      (<strong>+20%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
+                  chart={
+                    {
+                      labels: tradername,
+                      datasets: { label: "Gross P&L", data: thismonthtraderwisebrokerage }
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+
             
-            <Grid item xs={12} md={6} lg={4}>
+            
+            {/* <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
@@ -428,7 +478,7 @@ pnldate.map((elem)=>{
                   }
                 />
               </MDBox>
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
 

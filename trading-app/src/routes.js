@@ -38,6 +38,7 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React layouts
 import CompanyPosition from "./layouts/companyposition";
 import AdminDashboard from "./layouts/admindashboard";
+import TraderDashboard from "./layouts/traderdashboard";
 import Orders from "./layouts/orders";
 import CompanyOrders from "./layouts/company-orders";
 import Instruments from "./layouts/instruments";
@@ -87,12 +88,21 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Admin Dashboard",
+    name: "Company Dashboard",
     key: "admindashboard",
     // icon: <Icon fontSize="small">dashboard</Icon>,
     icon: <DashboardIcon/>,
     route: "/admindashboard",
     component: <AdminDashboard />,
+  },
+  {
+    type: "collapse",
+    name: "Trader Dashboard",
+    key: "traderdashboard",
+    // icon: <Icon fontSize="small">dashboard</Icon>,
+    icon: <DashboardIcon/>,
+    route: "/traderdashboard",
+    component: <TraderDashboard />,
   },
   {
     type: "collapse",
@@ -196,10 +206,10 @@ const routes = [
   {
     type: "collapse",
     name: "User Orders",
-    key: "user-orders",
+    key: "userorders",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <ContactPageIcon/>,
-    route: "/UserOrders",
+    route: "/userorders",
     component: <UserOrders />,
   },
 ];

@@ -48,7 +48,7 @@ app.get('/api/v1/data', fetch);
 
 // app.get('/ws', kiteConnect);
 // app.get('/data', fetch);
-let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "http://localhost:ACCESSCONTROLORIGIN"
+let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "http://localhost:3000"
 app.use(cors({
   credentials:true,
 

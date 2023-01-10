@@ -411,6 +411,42 @@ router.get("/pnlcalucationmocktradealluserthismonth", (req, res)=>{
     })
 })
 
+router.get("/gettraderwisepnldetailsthismonth", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Day Before Yesterday")
+    var day = new Date()
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - 2);
+    console.log("Yesterday "+yesterday);
+    // let todayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    console.log("Yesterday Date :"+yesterdayDate)
+    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-10 23:59:59'} } },
+                    { $project: { "createdBy" : 1 , "amount" : 1, "brokerage" : 1, "trade_time" : 1 }},
+                    { $group: {
+                                    _id: "$createdBy",
+                                    gpnl: {
+                                    $sum: "$amount"
+                                    },
+                                    brokerage: {
+                                    $sum: {$toDouble : "$brokerage"}
+                                    },
+                                    trades: {
+                                    $count: {}
+                                    }
+                                    
+                                } 
+                                },
+                    { $sort: {gpnl: -1}}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
 
 
 module.exports = router;
