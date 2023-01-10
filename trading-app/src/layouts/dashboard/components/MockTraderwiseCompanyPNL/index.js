@@ -49,6 +49,12 @@ function MockTraderwiseCompantPNL({socket}) {
     
   const [allTrade, setAllTrade] = useState([]);
   const [marketData, setMarketData] = useState([]);
+  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
+  const [lastestTradeTime, setLatestTradeTime] = useState([]);
+  const [lastestTradeBy, setLatestTradeBy] = useState([]);
+  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
+  const [lastestTradeType, setLatestTradeType] = useState([]);
+  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
 
   useEffect(()=>{
 
@@ -154,6 +160,24 @@ function MockTraderwiseCompantPNL({socket}) {
           overallPnl.push(value);
       }
 
+        // Get Lastest Trade timestamp
+    axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
+    // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+    .then((res)=>{
+        console.log(res.data);
+        setLatestTradeTimearr(res.data);
+        setLatestTradeTime(res.data.trade_time) ;
+        setLatestTradeBy(res.data.createdBy) ;
+        setLatestTradeType(res.data.buyOrSell) ;
+        setLatestTradeQuantity(res.data.Quantity) ;
+        setLatestTradeSymbol(res.data.symbol) ;
+          console.log(lastestTradeTimearr);
+    }).catch((err) => {
+      return new Error(err);
+  })
+
+      // setLatestTradeTime(lastestTradeTime);
+
 
       let mapForParticularUser = new Map();
       for(let i = 0; i < overallPnl.length; i++){
@@ -205,45 +229,51 @@ function MockTraderwiseCompantPNL({socket}) {
  
   finalTraderPnl.map((subelem, index)=>{
     let obj = {};
+    let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
+    let tradercolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
+    let gpnlcolor = (subelem.totalPnl) >= 0 ? "success" : "error"
+    let runninglotscolor = subelem.runninglots != 0 ? "info" : "dark"
+    let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
+    console.log(traderbackgroundcolor)
  
     obj.traderName = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor}>
         {(subelem.name)}
       </MDTypography>
     );
 
     obj.grossPnl = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
         {(subelem.totalPnl) > 0.00 ? "+₹" + ((subelem.totalPnl).toFixed(2)): "-₹" + ((-(subelem.totalPnl)).toFixed(2))}
       </MDTypography>
     );
 
     obj.noOfTrade = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {subelem.noOfTrade}
       </MDTypography>
     );
 
     obj.runningLots = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={runninglotscolor} fontWeight="medium">
         {subelem.runninglots}
       </MDTypography>
     );
 
     obj.lotUsed = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {subelem.lotUsed}
       </MDTypography>
     );
 
     obj.brokerage = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {"₹"+(subelem.brokerage).toFixed(2)}
       </MDTypography>
     );
 
     obj.netPnl = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
         {((subelem.totalPnl)-(subelem.brokerage)) > 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
       </MDTypography>
     );
@@ -275,7 +305,7 @@ function MockTraderwiseCompantPNL({socket}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last order at</strong> 11:10:23
+            &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime}
             </MDTypography>
           </MDBox>
         </MDBox>
@@ -292,7 +322,9 @@ function MockTraderwiseCompantPNL({socket}) {
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
-          entriesPerPage={false}
+          entriesPerPage="5"
+          // pagination={false}
+          options={{count: 5}}
         />
       </MDBox>
     </Card>
