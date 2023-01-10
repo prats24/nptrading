@@ -46,7 +46,7 @@ function InstrumentDetails({socket}) {
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        console.log("live price data", res)
+        //console.log("live price data", res)
         setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
@@ -54,22 +54,22 @@ function InstrumentDetails({socket}) {
     })
 
     socket.on("tick", (data) => {
-      console.log("this is live market data", data);
+      //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
     })
   }, [])
 
-  console.log("marketData", marketData)
+  //console.log("marketData", marketData)
   let ltpArr = [];
   
   rows.map((elem)=>{
     let ltpObj = {};
     marketData.map((subelem)=>{
-      const percentagechangecolor = ((subelem.last_price - subelem.average_price) / subelem.average_price) > 0 ? "success" : "error"
+      const percentagechangecolor = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) > 0 ? "success" : "error"
       if(elem.instrumentToken.props.children === subelem.instrument_token){
         elem.last_price = (
-            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+            <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
               {"₹"+(subelem.last_price).toFixed(2)}
             </MDTypography>
           );
@@ -92,7 +92,7 @@ function InstrumentDetails({socket}) {
   })
 
   const newRows = rows.concat(ltpArr);
-  console.log("row", rows, ltpArr, newRows)
+  //console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);

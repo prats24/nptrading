@@ -84,6 +84,26 @@ function AdminDashboard() {
     const [thisyesterdaybrokerage, setThisYesterdayBrokerage] = useState([]);
     const [thisyesterdaytrades, setThisYesterdayTrades] = useState([]);
     const [thisyesterdaynpnl, setThisYesterdayNPNL] = useState([]);
+    const [ThisDayBeforeYesterdayPNLData, setThisDayBeforeYesterdayPNLData] = useState([]);
+    const [thisDayBeforeyesterdaygpnl, setThisDayBeforeYesterdayGPNL] = useState([]);
+    const [thisDayBeforeyesterdaybrokerage, setThisDayBeforeYesterdayBrokerage] = useState([]);
+    const [thisDayBeforeyesterdaytrades, setThisDayBeforeYesterdayTrades] = useState([]);
+    const [thisDayBeforeyesterdaynpnl, setThisDayBeforeYesterdayNPNL] = useState([]);
+    const [LastMonthPNLData, setLastMonthPNLData] = useState([]);
+    const [lastmonthgpnl, setLastMonthGPNL] = useState([]);
+    const [lastmonthbrokerage, setLastMonthBrokerage] = useState([]);
+    const [lastmonthtrades, setLastMonthTrades] = useState([]);
+    const [lastmonthnpnl, setLastMonthNPNL] = useState([]);
+    const [LastYearPNLData, setLastYearPNLData] = useState([]);
+    const [lastyeargpnl, setLastYearGPNL] = useState([]);
+    const [lastyearbrokerage, setLastYearBrokerage] = useState([]);
+    const [lastyeartrades, setLastYearTrades] = useState([]);
+    const [lastyearnpnl, setLastYearNPNL] = useState([]);
+    const [LastWeekPNLData, setLastWeekPNLData] = useState([]);
+    const [lastweekgpnl, setLastWeekGPNL] = useState([]);
+    const [lastweekbrokerage, setLastWeekBrokerage] = useState([]);
+    const [lastweektrades, setLastWeekTrades] = useState([]);
+    const [lastweeknpnl, setLastWeekNPNL] = useState([]);
 
     
     let dayname = [];
@@ -114,7 +134,7 @@ function AdminDashboard() {
         console.log(res.data);
           if(res.data)
           {
-          setThisWeekPNLData(res.data) 
+          // setThisWeekPNLData(res.data) 
           console.log(ThisWeekPNLData);
           setThisWeekBrokerage((res.data[0]).brokerage)
           console.log((res.data[0]).brokerage)
@@ -130,6 +150,33 @@ function AdminDashboard() {
     })
 },[])
 
+//Last Week Code
+
+useEffect(()=>{
+  axios.get(`${baseUrl}api/v1/getmocktradecompanydetailslastweek`)
+  // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+  .then((res)=>{
+      console.log(res.data);
+        if(res.data)
+        {
+        // setLastWeekPNLData(res.data) 
+        console.log(LastWeekPNLData);
+        setLastWeekBrokerage((res.data[0]).brokerage)
+        console.log((res.data[0]).brokerage)
+        setLastWeekGPNL((-(res.data[0]).amount))
+        console.log(-(res.data[0]).amount)
+        setLastWeekTrades((res.data[0]).trades)
+        setLastWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+        console.log(lastweeknpnl)
+        }
+  }).catch((err)=>{
+      window.alert("Server Down");
+      return new Error(err);
+  })
+},[])
+
+//Last week code ends
+
   // This week pnl details code ends
   
 
@@ -141,7 +188,7 @@ function AdminDashboard() {
     .then((res)=>{
         console.log(res.data);
           if(res.data){
-          setThisMonthPNLData(res.data) 
+          // setThisMonthPNLData(res.data) 
           console.log(ThisMonthPNLData);
           setThisMonthBrokerage((res.data[0]).brokerage)
           console.log((res.data[0]).brokerage)
@@ -153,6 +200,31 @@ function AdminDashboard() {
           }
     })
 },[])
+
+// Last MOnths COde
+
+
+useEffect(()=>{
+  axios.get(`${baseUrl}api/v1/readmocktradecompanyLastMonth`)
+  // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+  .then((res)=>{
+      console.log(res.data);
+        if(res.data){
+        // setLastMonthPNLData(res.data) 
+        console.log(LastMonthPNLData);
+        setLastMonthBrokerage((res.data[0]).brokerage)
+        console.log((res.data[0]).brokerage)
+        setLastMonthGPNL((-(res.data[0]).amount))
+        console.log(-(res.data[0]).amount)
+        setLastMonthTrades((res.data[0]).trades)
+        setLastMonthNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+        console.log(lastmonthnpnl)
+        }
+  })
+},[])
+
+//Code Ends
+
 
   // This month pnl details code start
   
@@ -166,7 +238,7 @@ function AdminDashboard() {
         console.log(res.data);
           if(res.data)
           {
-          setThisYearPNLData(res.data) 
+          // setThisYearPNLData(res.data) 
           console.log(ThisYearPNLData);
           setThisYearBrokerage((res.data[0]).brokerage)
           console.log((res.data[0]).brokerage)
@@ -179,8 +251,31 @@ function AdminDashboard() {
     })
 },[])
 
-  // This year pnl details code ends
+//Last Year Code
 
+useEffect(()=>{
+  axios.get(`${baseUrl}api/v1/getmocktradecompanydetailslastyear`)
+  // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+  .then((res)=>{
+      console.log(res.data);
+        if(res.data)
+        {
+        // setThisYearPNLData(res.data) 
+        console.log(LastYearPNLData);
+        setLastYearBrokerage((res.data[0]).brokerage)
+        console.log((res.data[0]).brokerage)
+        setLastYearGPNL((-(res.data[0]).amount))
+        console.log(-(res.data[0]).amount)
+        setLastYearTrades((res.data[0]).trades)
+        setLastYearNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+        console.log(lastyearnpnl)
+        }
+  })
+},[])
+
+// Code Ends
+
+  // This year pnl details code ends
   
   // Yesterday's pnl details code start
 
@@ -190,7 +285,7 @@ function AdminDashboard() {
     .then((res)=>{
         console.log(res.data);
           
-          setThisYesterdayPNLData(res.data) 
+          // setThisYesterdayPNLData(res.data) 
           console.log(ThisYesterdayPNLData);
           setThisYesterdayBrokerage((res.data[0]).brokerage)
           console.log((res.data[0]).brokerage)
@@ -202,6 +297,29 @@ function AdminDashboard() {
           
     })
 },[])
+
+// Day before yesterday 
+
+useEffect(()=>{
+  axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsdaybeforeyesterday`)
+  // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+  .then((res)=>{
+      console.log(res.data);
+        
+        // setThisDayBeforeYesterdayPNLData(res.data) 
+        console.log(ThisDayBeforeYesterdayPNLData);
+        setThisDayBeforeYesterdayBrokerage((res.data[0]).brokerage)
+        console.log((res.data[0]).brokerage)
+        setThisDayBeforeYesterdayGPNL((-(res.data[0]).amount))
+        console.log(-(res.data[0]).amount)
+        setThisDayBeforeYesterdayTrades((res.data[0]).trades)
+        setThisDayBeforeYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+        console.log(thisDayBeforeyesterdaynpnl)
+        
+  })
+},[])
+
+// Code Ends
 
   // Yesterday's pnl details code ends
 
@@ -235,6 +353,8 @@ pnldate.map((elem)=>{
   // console.log(weekday);  // Output: "Sunday"
   dayname.push(weekday.slice(0,3))
 })
+
+// setThisYesterdayBrokerage(thisyesterdaybrokerage);
 //chart data code ends
     // console.log(reportsBarChartData.labels)
     // console.log(reportsBarChartData.datasets.data())
@@ -314,10 +434,10 @@ pnldate.map((elem)=>{
                 titletcost="Transaction Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
-                gpnl={!thisyesterdaygpnl ? (thisyesterdaygpnl >= 0 ? "+₹"+ thisyesterdaygpnl : "-₹"+ (-thisyesterdaygpnl)) : "₹" + 0}
-                tcost={!thisyesterdaybrokerage ? "₹"+thisyesterdaybrokerage : "₹" + 0}
-                npnl={!thisyesterdaynpnl ? (thisyesterdaynpnl >= 0 ? "+₹"+thisyesterdaynpnl : "-₹"+ (-thisyesterdaynpnl)) : "₹" + 0}
-                trades={!thisyesterdaytrades ? thisyesterdaytrades : 0}
+                gpnl={thisyesterdaygpnl >= 0 ? "+₹"+ thisyesterdaygpnl : "-₹"+ (-thisyesterdaygpnl)}
+                tcost={"₹"+thisyesterdaybrokerage}
+                npnl={thisyesterdaynpnl >= 0 ? "+₹"+thisyesterdaynpnl : "-₹"+ (-thisyesterdaynpnl)}
+                trades={thisyesterdaytrades}
                 percentage={{
                   color: "success",
                   amount: "+55%",
@@ -330,7 +450,7 @@ pnldate.map((elem)=>{
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 icon="leaderboard"
-                heading="Week's Summary"
+                heading="Week's Summary(Till Yesterday)"
                 titlegpnl="Gross P&L "
                 titletcost="Transaction Cost "
                 titlenpnl="Net P&L "
@@ -351,7 +471,7 @@ pnldate.map((elem)=>{
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                heading="Month's Summary"
+                heading="Month's Summary(Till Yesterday)"
                 icon="store"
                 titlegpnl="Gross P&L "
                 titletcost="Transaction Cost "
@@ -374,7 +494,7 @@ pnldate.map((elem)=>{
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                heading="Years's Summary"
+                heading="Years's Summary(Till Yesterday)"
                 titlegpnl="Gross P&L "
                 titletcost="Transaction Cost "
                 titlenpnl="Net P&L "
@@ -399,15 +519,15 @@ pnldate.map((elem)=>{
               <ComplexStatisticsCard
                 color="dark"
                 icon="weekend"
-                heading="Yesterday's Summary"
-                titlegpnl="Gross P&L"
-                titletcost="Transaction Cost"
-                titlenpnl="Net P&L"
-                titletrades="# of Trades"
-                gpnl={allmockcount}
-                tcost={allmockcount}
-                npnl={allmockcount}
-                trades={allmockcount}
+                heading="Day Before Yesterday's Summary"
+                titlegpnl="Gross P&L "
+                titletcost="Transaction Cost "
+                titlenpnl="Net P&L "
+                titletrades="# of Trades "
+                gpnl={thisDayBeforeyesterdaygpnl != 0 ? (thisDayBeforeyesterdaygpnl > 0 ? "+₹"+ thisDayBeforeyesterdaygpnl : "-₹"+ (-thisDayBeforeyesterdaygpnl)) : "₹" + 0}
+                tcost={thisDayBeforeyesterdaybrokerage != 0 ? "₹"+thisDayBeforeyesterdaybrokerage : "₹" + 0}
+                npnl={thisDayBeforeyesterdaynpnl != 0 ? (thisDayBeforeyesterdaynpnl > 0 ? "+₹"+thisDayBeforeyesterdaynpnl : "-₹"+ (-thisDayBeforeyesterdaynpnl)) : "₹" + 0}
+                trades={thisDayBeforeyesterdaytrades != 0 ? thisDayBeforeyesterdaytrades : 0}
                 percentage={{
                   color: "success",
                   amount: "+55%",
@@ -421,14 +541,14 @@ pnldate.map((elem)=>{
               <ComplexStatisticsCard
                 icon="leaderboard"
                 heading="Last Week's Summary"
-                titlegpnl="Gross P&L"
-                titletcost="Transaction Cost"
-                titlenpnl="Net P&L"
-                titletrades="# of Trades"
-                gpnl={allmockcount}
-                tcost={allmockcount}
-                npnl={allmockcount}
-                trades={allmockcount}
+                titlegpnl="Gross P&L "
+                titletcost="Transaction Cost "
+                titlenpnl="Net P&L "
+                titletrades="# of Trades "
+                gpnl={lastweekgpnl >= 0 ? "+₹"+ lastweekgpnl : "-₹"+ (-lastweekgpnl)}
+                tcost={"₹"+lastweekbrokerage}
+                npnl={lastweeknpnl >= 0 ? "+₹"+lastweeknpnl : "-₹"+ (-lastweeknpnl)}
+                trades={lastweektrades}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -443,14 +563,14 @@ pnldate.map((elem)=>{
                 color="success"
                 icon="store"
                 heading="Last Month's Summary"
-                titlegpnl="Gross P&L"
-                titletcost="Transaction Cost"
-                titlenpnl="Net P&L"
-                titletrades="# of Trades"
-                gpnl={allmockcount}
-                tcost={allmockcount}
-                npnl={allmockcount}
-                trades={allmockcount}
+                titlegpnl="Gross P&L "
+                titletcost="Transaction Cost "
+                titlenpnl="Net P&L "
+                titletrades="# of Trades "
+                gpnl={lastmonthgpnl >= 0 ? "+₹"+ lastmonthgpnl : "-₹"+ (-lastmonthgpnl)}
+                tcost={"₹"+lastmonthbrokerage}
+                npnl={lastmonthnpnl >= 0 ? "+₹"+lastmonthnpnl : "-₹"+ (-lastmonthnpnl)}
+                trades={lastmonthtrades}
                 percentage={{
                   color: "success",
                   amount: "+1%",
@@ -465,14 +585,14 @@ pnldate.map((elem)=>{
                 color="primary"
                 icon="person_add"
                 heading="Last Year's Summary"
-                titlegpnl="Gross P&L"
-                titletcost="Transaction Cost"
-                titlenpnl="Net P&L"
-                titletrades="# of Trades"
-                gpnl={allmockcount}
-                tcost={allmockcount}
-                npnl={allmockcount}
-                trades={allmockcount}
+                titlegpnl="Gross P&L "
+                titletcost="Transaction Cost "
+                titlenpnl="Net P&L "
+                titletrades="# of Trades "
+                gpnl={lastyeargpnl >= 0 ? "+₹"+ lastyeargpnl : "-₹"+ (-lastyeargpnl)}
+                tcost={"₹"+lastyearbrokerage}
+                npnl={lastyearnpnl >= 0 ? "+₹"+lastyearnpnl : "-₹"+ (-lastyearnpnl)}
+                trades={lastyeartrades}
                 percentage={{
                   color: "success",
                   amount: "",

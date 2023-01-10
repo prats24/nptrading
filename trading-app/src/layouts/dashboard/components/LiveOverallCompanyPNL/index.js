@@ -51,18 +51,21 @@ function LiveOverallCompantPNL({socket}) {
   const [marketData, setMarketData] = useState([]);
   const [instrumentData, setInstrumentData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
+
 
 
   var Total = 0;
   let avgPriceArr = [];
   let liveDetailsArr = [];
   let overallPnl = [];
+  let totalGrossPnl = 0;
   
   useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        console.log("live price data", res)
+        //console.log("live price data", res)
         setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
@@ -70,7 +73,7 @@ function LiveOverallCompantPNL({socket}) {
     })
 
     socket.on("tick", (data) => {
-      console.log("this is live market data", data);
+      //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
     })
@@ -90,37 +93,31 @@ function LiveOverallCompantPNL({socket}) {
 
   useEffect(()=>{
 
-    axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
+    axios.get(`${baseUrl}api/v1/getavgpricelivetradecompany`)
     .then((res) => {
-        console.log("data", res.data)
+      setLastAvgPriceArr(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
+
+    axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday`)
+    .then((res) => {
         setTradeData(res.data);
     }).catch((err) => {
         return new Error(err);
     })
 
-      console.log(tradeData);
-      let AvgPriceHash = new Map();
-      avgPriceArr.push(tradeData[0])
-      for(let i = 0; i < tradeData.length; i++){
-          if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
-              avgPriceArr.push(tradeData[i]);
-              break;
-          }
-      }
-      setAvgPrice(avgPriceArr)
-      console.log("avgPriceArr", avgPriceArr);
-      
+      // let AvgPriceHash = new Map();
+      // avgPriceArr.push(tradeData[0])
+      // for(let i = 0; i < tradeData.length; i++){
+      //     if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
+      //         avgPriceArr.push(tradeData[i]);
+      //         break;
+      //     }
+      // }
+      // setAvgPrice(avgPriceArr)
 
       let hash = new Map();
-      // for(let i = tradeData.length-1; i >= 0 ; i--){
-
-      // }
-
-      // tradeData.map((elem)=>{
-      //   let tempObj = {};
-
-      // })
-
 
       for(let i = tradeData.length-1; i >= 0 ; i--){ 
           if(hash.has(tradeData[i]._id.symbol + " " + tradeData[i]._id.Product)){
@@ -134,7 +131,7 @@ function LiveOverallCompantPNL({socket}) {
                       obj.totalBuyLot = obj.totalBuyLot + (Number(tradeData[i].lots)) 
                   }
 
-                  console.log("obj.totalBuy", obj.totalBuy, "totalBuyLot", obj.totalBuyLot)
+                  //console.log("obj.totalBuy", obj.totalBuy, "totalBuyLot", obj.totalBuyLot)
               } if(tradeData[i]._id.buyOrSell === "SELL"){
                   if( obj.totalSell === undefined || obj.totalSellLot === undefined){
 
@@ -146,7 +143,7 @@ function LiveOverallCompantPNL({socket}) {
                       obj.totalSellLot = obj.totalSellLot + (Number(tradeData[i].lots)) 
                   }
 
-                  console.log("obj.totalSell", obj.totalSell, "totalSellLot", obj.totalSellLot)
+                  //console.log("obj.totalSell", obj.totalSell, "totalSellLot", obj.totalSellLot)
               }
           }  else{
               if(tradeData[i]._id.buyOrSell === "BUY"){
@@ -174,7 +171,6 @@ function LiveOverallCompantPNL({socket}) {
               }
           }
       }
-      console.log(hash);
 
       
       for (let value of hash.values()){
@@ -183,14 +179,14 @@ function LiveOverallCompantPNL({socket}) {
 
       
       overallPnl.map((elem)=>{
-          console.log("52");
+          //console.log("52");
           instrumentData.map((element)=>{
-              console.log("53");
+              //console.log("53");
               if(element.symbol === elem.symbol){
-                  console.log("line 54");
+                  //console.log("line 54");
                   marketData.map((subElem)=>{
                       if(subElem !== undefined && subElem.instrument_token === element.instrumentToken){
-                          console.log(subElem);
+                          //console.log(subElem);
                           liveDetailsArr.push(subElem)
                       }
                   })
@@ -203,29 +199,27 @@ function LiveOverallCompantPNL({socket}) {
 
       setLiveDetail(liveDetailsArr);
 
-
-
-      // reRender ? setReRender(false) : setReRender(true)
-
   }, [marketData])
+
+  useEffect(() => {
+    return () => {
+        socket.close();
+    }
+  }, [])
 
   tradeData.map((elem)=>{
       totalTransactionCost += Number(elem.brokerage);
   })
 
-  console.log("totalTransactionCost", totalTransactionCost, avgPrice, liveDetail);
-  console.log(liveDetail);
-  console.log("details array", overallPnlArr);
 
-  // rows.map((elem)=>{
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
-      let tempavgPriceArr = avgPrice.filter((element)=>{
-        return subelem.symbol === element._id.symbol;
+      let tempavgPriceArr = lastAvgPriceArr.filter((element)=>{
+        return (subelem.symbol === element._id.symbol) && (subelem.Product === element._id.product);
       })
 
       let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
-
+      totalGrossPnl += updatedValue;
       obj.Product = (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
           {(subelem.Product)}
@@ -283,13 +277,60 @@ function LiveOverallCompantPNL({socket}) {
           </MDTypography>
         );
       }
-// ₹{(liveDetail[index]?.last_price).toFixed(2)}
-      console.log(obj)
+      //console.log(obj)
       rows.push(obj);
     })
-  // })
 
-  console.log("rows", rows);
+
+    let obj = {};
+
+    obj.Product = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {}
+      </MDTypography>
+    );
+  
+    obj.symbol = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {}
+      </MDTypography>
+    );
+  
+    obj.Quantity = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        Transaction Cost
+      </MDTypography>
+    );
+  
+    obj.avgPrice = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {"₹"+(totalTransactionCost).toFixed(2)}
+      </MDTypography>
+    );
+  
+    obj.last_price = (
+      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+        {/* {"₹"+(liveDetail[index]?.last_price).toFixed(2)} */}Gross P&L
+      </MDTypography>
+    );
+  
+  
+    obj.grossPnl = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {totalGrossPnl > 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+      </MDTypography>
+    );
+  
+    obj.change = (
+      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+        {/* {(liveDetail[index]?.change).toFixed(2)+"%"} */}Net P&L : {(totalGrossPnl-totalTransactionCost) > 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+      </MDTypography>
+    );
+  
+    //console.log(obj)
+    rows.push(obj);
+  
+
 
   const renderMenu = (
     <Menu
@@ -311,6 +352,8 @@ function LiveOverallCompantPNL({socket}) {
       <MenuItem onClick={closeMenu}>Something else</MenuItem>
     </Menu>
   );
+
+
 
   return (
     <Card>
@@ -352,5 +395,5 @@ function LiveOverallCompantPNL({socket}) {
       </MDBox>
     </Card>
   );
-            }
+}
 export default LiveOverallCompantPNL;

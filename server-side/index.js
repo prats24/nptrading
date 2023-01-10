@@ -18,6 +18,7 @@ getKiteCred.getAccess().then((data)=>{
   createNewTicker(data.getApiKey, data.getAccessToken);
 });
 
+
 io.on("connection", (socket) => {
   console.log('client socket is' + socket.id);
   // socket1 = socket;
@@ -47,7 +48,7 @@ app.get('/api/v1/data', fetch);
 
 // app.get('/ws', kiteConnect);
 // app.get('/data', fetch);
-let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "http://localhost:4000"
+let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "http://localhost:3000"
 app.use(cors({
   credentials:true,
 
@@ -69,6 +70,8 @@ app.use('/api/v1', require('./routes/TradeData/getCompanyTrade'));
 app.use('/api/v1', require('./routes/AlgoBox/exchangeMappingAuth'));
 app.use('/api/v1', require('./routes/AlgoBox/instrumentAlgoAuth'));
 app.use('/api/v1', require('./routes/AlgoBox/productMappingAuth'));
+app.use('/api/v1', require('./routes/CronJobsRouter/getHistoryData'));
+app.use('/api/v1', require('./routes/CronJobsRouter/historyTrade'));
 app.use('/api/v1', require('./routes/AlgoBox/tradingAlgoAuth'));
 app.use('/api/v1', require("./marketData/getRetrieveOrder"));
 app.use('/api/v1', require('./marketData/placeOrder'));

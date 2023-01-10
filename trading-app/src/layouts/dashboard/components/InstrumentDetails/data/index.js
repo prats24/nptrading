@@ -47,7 +47,7 @@ export default function Data() {
   }, [])
 
     let instrumentDetailArr = [];
-    console.log("instrumentData", instrumentData)
+    //console.log("instrumentData", instrumentData)
     instrumentData.map((elem)=>{
     let instrumentDetailObj = {}
 
@@ -93,8 +93,8 @@ export default function Data() {
       </MDTypography>
     );
 
-    console.log(typeof(instrumentDetailObj));
-    console.log(instrumentDetailObj)
+    //console.log(typeof(instrumentDetailObj));
+    //console.log(instrumentDetailObj)
     instrumentDetailArr.push(instrumentDetailObj)
   })
 
