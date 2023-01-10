@@ -9,12 +9,13 @@ router.post("/login", async (req, res)=>{
     const {userId, pass} = req.body;
 
     if(!userId || !pass){
-        console.log("data nhi h pura");
         return res.status(422).json({error : "please fill all the field..."})
     }
-    if(pass !== "DMT"){
-        return res.status(422).json({error : "invalid details"})
-    }
+
+    //TODO --> hashing password and comparing
+    // if(pass !== "DMT"){
+    //     return res.status(422).json({error : "invalid details"})
+    // }
 
     // if(pass !== process.env.PASSWORD){
     //     return res.status(422).json({error : "invalid details"})
@@ -22,9 +23,11 @@ router.post("/login", async (req, res)=>{
 
     const userLogin = await UserDetail.findOne({email : userId})
     console.log(userLogin);
-    if(!userLogin){
+    if(!userLogin && !(await userLogin.correctPassword(pass, userLogin.password))){
         return res.status(422).json({error : "invalid details"})
     }else{
+        
+
         const token = await userLogin.generateAuthToken();
         console.log(token);
         

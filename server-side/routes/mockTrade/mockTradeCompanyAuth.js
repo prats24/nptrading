@@ -10,14 +10,14 @@ const LiveTradeDetails = require("../../models/TradeDetails/liveTradeSchema");
 const axios = require('axios');
 const getKiteCred = require('../../marketData/getKiteCred');
 
-router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-    getKiteCred.getAccess().then((data)=>{
-        console.log("this is code ",data);
-        let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-        console.log(ticksdata)
-      });
+// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+//     getKiteCred.getAccess().then( (data)=>{
+//         console.log("this is code ",data);
+//         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
+//         console.log("ticksdata", ticksdata)
+//       });
     
-})
+// })
 
 router.post("/mocktradecompany", async (req, res)=>{
 
@@ -547,7 +547,6 @@ router.get("/updatemocktradedataamount", async(req, res)=>{
     }
 })
 
-
 router.get("/readmocktradecompanytodaycount", (req, res)=>{
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
@@ -650,8 +649,6 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
     })
 })
 
-
-
 router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
     console.log("Inside Aggregate API")
     const days = 5
@@ -684,7 +681,6 @@ router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
     //     return res.status(422).json({error : "date not found"})
     // })
 })
-
 
 router.get("/updatemocktradedatadatefield", async(req, res)=>{
     // let date = new Date();
@@ -780,11 +776,10 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
         
 })
 
-
 router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
     console.log("Inside Aggregate API - Mock Trade Details Week")
     
-    let date = new Date();
+    let date = new Date(); 
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log("Today "+todayDate)
@@ -1051,7 +1046,6 @@ router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
         
 })
 
-
 router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -1122,7 +1116,6 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
  
 })
 
-
 router.get("/getlastestmocktradecompany", async(req, res)=>{
     console.log("Inside Aggregate API - Mock Trade Details Year")
     
@@ -1173,11 +1166,14 @@ router.get("/getavgpricemocktradecompany", async(req, res)=>{
                 console.log(getAvgPrice);
 
         res.status(201).json(getAvgPrice);
-    })
+})
 
 router.get("/getmocktradecompanydetailsdaybeforeyesterday", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Day Before Yesterday")
-    var day = new Date()
+    console.log("Inside Aggregate API - Mock Trade Details Yesterday")
+
+    var day = new Date(todayDate);
+    console.log("Day "+day); // Apr 30 2000
+
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 2);
     console.log("Yesterday "+yesterday);

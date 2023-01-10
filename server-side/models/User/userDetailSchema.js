@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs")
 
 const userDetailSchema = new mongoose.Schema({
     status:{
@@ -69,11 +70,19 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    password:{
+        type: String,
+        // required: true
+    },
+    passwordChangedAt:{
+        type: String,
+        // required: true
+    },
     tokens: [
         {
             token: {
                 type: String,
-                required: true
+                // required: true
             }
         }
     ],
@@ -82,12 +91,25 @@ const userDetailSchema = new mongoose.Schema({
               
     }
 })
+userDetailSchema.pre("save", async function(next){
+    if(!this.isModified('password')){
+        return next();
+    } 
+    this.password = await bcrypt.hash(this.password, 10)
+    next();
+})
+
+userDetailSchema.methods.correctPassword = async function (
+    candidatePassword,
+    userPassword
+  ) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+  };
 
 // generating jwt token
 userDetailSchema.methods.generateAuthToken = async function(){
     try{
-        // let token = jwt.sign({_id: this._id}, process.env.SECRET_KEY);
-        let token = jwt.sign({_id: this._id}, "NINEPOINTER");
+        let token = jwt.sign({_id: this._id}, process.env.SECRET_KEY);
         this.tokens = this.tokens.concat({token: token});
         return token;
     } catch (err){
