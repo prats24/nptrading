@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "kiteconnect": "^4.0.1",
     "mongoose": "^6.7.1",
+    "node-cron": "^3.0.2",
     "node-fetch": "^3.2.10",
     "nodemon": "^2.0.20",
     "socket.io": "^4.5.3",
