@@ -37,7 +37,7 @@ router.post("/login", async (req, res)=>{
     }
 })
 
-router.get("/dashboard", authentication, (req, res)=>{
+router.get("/companyposition", authentication, (req, res)=>{
     console.log("hello my about");
     res.send(req.user);
 })

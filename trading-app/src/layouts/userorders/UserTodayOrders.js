@@ -14,11 +14,12 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersmock from "./data/companyOrdersmock";
-import projectsTableData from "./data/projectsTableData";
-const TableOne = () => {
-    const { columns, rows } = companyOrdersmock();
-    const { columns: pColumns, rows: pRows } = projectsTableData();
+
+import UserHistoryTradeData from './data/UserHistoryTradeData';
+import UserTodayTradeData from './data/UserTodayTradeData';
+const UserTodayOrders = () => {
+    const { columns, rows } = UserHistoryTradeData();
+    const { columns: pColumns, rows: pRows } = UserTodayTradeData();
     return (
                 <MDBox pt={6} pb={3}>
                     <Grid container spacing={6}>
@@ -35,34 +36,7 @@ const TableOne = () => {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Today's Traders Orders(Mock)
-                                    </MDTypography>
-                                </MDBox>
-                                <MDBox pt={3}>
-                                    <DataTable
-                                        table={{ columns, rows }}
-                                        isSorted={false}
-                                        entriesPerPage={false}
-                                        showTotalEntries={false}
-                                        noEndBorder
-                                    />
-                                </MDBox>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
-                            <Card>
-                                <MDBox
-                                    mx={2}
-                                    mt={-3}
-                                    py={3}
-                                    px={2}
-                                    variant="gradient"
-                                    bgColor="info"
-                                    borderRadius="lg"
-                                    coloredShadow="info"
-                                >
-                                    <MDTypography variant="h6" color="white">
-                                        Histroical Traders Orders(Mock)
+                                        Today Orders
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
@@ -72,6 +46,8 @@ const TableOne = () => {
                                         entriesPerPage={false}
                                         showTotalEntries={false}
                                         noEndBorder
+                                        addButton={false}
+                                        canSearch={true}
                                     />
                                 </MDBox>
                             </Card>
@@ -81,4 +57,4 @@ const TableOne = () => {
     )
 }
 
-export default TableOne;
+export default UserTodayOrders;

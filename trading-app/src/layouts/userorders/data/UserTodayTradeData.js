@@ -1,20 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-//
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -32,7 +15,7 @@ import team3 from "../../../assets/images/team-3.jpg";
 import team4 from "../../../assets/images/team-4.jpg";
 import { json } from "react-router-dom";
 
-export default function CompanyOrdersMock() {
+export default function UserTodayTradeData() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -42,20 +25,20 @@ export default function CompanyOrdersMock() {
   let numberOfClickForRemoveNext = 0
   const limit = 10;
 
-  useEffect(()=>{
+  // useEffect(()=>{
 
-      // axios.get(`${baseUrl}api/v1/readmocktradecompanypagination/${skip}/${limit}`)
-      axios.get(`${baseUrl}api/v1/readmocktradecompanytodayagg`)
-      .then((res)=>{
+  //     // axios.get(`${baseUrl}api/v1/readmocktradecompanypagination/${skip}/${limit}`)
+  //     axios.get(`${baseUrl}api/v1/readmocktradecompanyagg`)
+  //     .then((res)=>{
 
-          setData(res.data);
-      }).catch((err)=>{
-          window.alert("Server Down");
-          return new Error(err);
-      })
-  },[])
+  //         setData(res.data);
+  //     }).catch((err)=>{
+  //         window.alert("Server Down");
+  //         return new Error(err);
+  //     })
+  // },[])
 
-  console.log(data);
+  // console.log(data);
 
   
   // numberOfClickForRemoveNext = Math.ceil(((orderCountHistoryCompany))/limit);

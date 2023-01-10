@@ -65,16 +65,25 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Icon from "@mui/material/Icon";
+import UserOrders from "./layouts/userorders";
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+
 
 const routes = [
   {
     type: "collapse",
     name: "Company Position",
     key: "companyposition",
+    icon: <BusinessIcon/>,
     // icon: <Icon fontSize="small">dashboard</Icon>,
-    icon: <DashboardIcon/>,
+    // icon: <DashboardIcon/>,
     route: "/companyposition",
     component: <CompanyPosition />,
+    // key: "dashboard",
+    // icon: <Icon fontSize="small">dashboard</Icon>,
+    
+    // route: "/dashboard",
+    // component: <Dashboard />,
   },
   {
     type: "collapse",
@@ -184,6 +193,15 @@ const routes = [
   //   route: "/authentication/sign-up",
   //   component: <SignUp />,
   // },
+  {
+    type: "collapse",
+    name: "User Orders",
+    key: "user-orders",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <ContactPageIcon/>,
+    route: "/UserOrders",
+    component: <UserOrders />,
+  },
 ];
 
 export default routes;

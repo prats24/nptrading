@@ -29,12 +29,8 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersmock from "./data/companyOrdersmock";
-import projectsTableData from "./data/projectsTableData";
 
-function Tables() {
-  const { columns, rows } = companyOrdersmock();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+function UserOrders() {
 
   return (
     <>
@@ -47,7 +43,7 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default UserOrders;
 
  {/* <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>

@@ -746,7 +746,7 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
     console.log("Inside Aggregate API - Last 5 days chart data")
     const days = 6
     let date = new Date();
-    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     console.log(todayDate)
     var day = new Date(todayDate);
     console.log("Day"+day); // Apr 30 2000
