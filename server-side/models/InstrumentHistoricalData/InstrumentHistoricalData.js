@@ -9,7 +9,7 @@ const instrumentHistoricalDataSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    instrumenttoken:{
+    instrumentToken:{
         type: String,
         required: true
     },

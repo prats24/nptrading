@@ -1,16 +1,20 @@
 const express = require('express');
+const nodeCron = require("node-cron");
 const router = express.Router();
 const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv');
 // const kiteConnect = require('./marketData/kiteConnect');
 const fetch = require('./marketData/placeOrder');
+// const job = require("./routes/CronJobsRouter/runChroneJob")
 app.use(require("cookie-parser")());
-
+// app.use(job)
 const fetchData = require('./marketData/fetchToken');
 const io = require('./marketData/socketio');
 const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, onError} = require('./marketData/kiteTicker');
 const getKiteCred = require('./marketData/getKiteCred'); 
+const cronJobForHistoryData = require("./marketData/getinstrumenttickshistorydata");
+
 
 
 getKiteCred.getAccess().then((data)=>{
@@ -95,6 +99,19 @@ process.on('unhandledRejection', (err) => {
   });
 });
 
-const PORT = 5000;
+  let date = new Date();
+  let weekDay = date.getDay();
+  if(weekDay > 0 && weekDay < 6){
+      const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+  }
 
-app.listen(PORT);
+
+// issue fix --> if enviournment variable path is not work
+// const path = require('path')
+// require('dotenv').config({ path: path.resolve(__dirname, '') })
+
+app.use(require("./utils/errorHandler"));
+
+const PORT = process.env.PORT;
+
+const server = app.listen(PORT);
