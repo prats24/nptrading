@@ -42,7 +42,7 @@ const HeaderSell = () => {
   return (
     <div>
       <MDButton variant="contained" color="error" onClick={handleClickOpen} fullWidth>
-        BUY
+        SELL
       </MDButton>
       <Dialog
         fullScreen={fullScreen}

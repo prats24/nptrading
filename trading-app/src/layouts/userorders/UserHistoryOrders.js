@@ -29,18 +29,17 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersmock from "./data/companyOrdersmock";
-import projectsTableData from "./data/projectsTableData";
+import UserHistoryTradeData from "./data/UserHistoryTradeData";
 
-function Tabletwo() {
-  const { columns, rows } = companyOrdersmock();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+function UserHistoryOrders() {
+  const { columns, rows } = UserHistoryTradeData();
+  const { columns: pColumns, rows: pRows } = UserHistoryTradeData();
 
   return (
    
     <MDBox pt={6} pb={3}>
       <Grid container spacing={6}>
-        <Grid item xs={12} md={6} lg={12} >
+        {/* <Grid item xs={12} md={6} lg={12} >
           <Card>
             <MDBox
               mx={2}
@@ -66,7 +65,7 @@ function Tabletwo() {
               />
             </MDBox>
           </Card>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} md={12} lg={12}>
           <Card>
             <MDBox
@@ -80,16 +79,18 @@ function Tabletwo() {
               coloredShadow="info"
             >
               <MDTypography variant="h6" color="white">
-                Histroical Company Orders(Real)
+                Histroical Orders
               </MDTypography>
             </MDBox>
             <MDBox pt={3}>
               <DataTable
-                table={{ columns: pColumns, rows: pRows }}
-                isSorted={false}
-                entriesPerPage={false}
-                showTotalEntries={false}
-                noEndBorder
+                 table={{ columns: pColumns, rows: pRows }}
+                 isSorted={false}
+                 entriesPerPage={false}
+                 showTotalEntries={false}
+                 noEndBorder
+                 addButton={false}
+                 canSearch={true}
               />
             </MDBox>
           </Card>
@@ -100,4 +101,4 @@ function Tabletwo() {
   )
 }
 
-export default Tabletwo;
+export default UserHistoryOrders;

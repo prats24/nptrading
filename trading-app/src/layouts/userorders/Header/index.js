@@ -41,10 +41,11 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 // Images
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
-import CompanyOrdersMock from "../CompanyOrdersMock ";
-import CompanyOrdersReal from "../CompanyOrdersReal";
-import TradersOrdersMock from "../TradersOrdersMock";
-import TradersOrdersReal from "../TradersOrdersReal";
+import CompanyOrdersMock from "../UserTodayOrders";
+import CompanyOrdersReal from "../UserHistoryOrders";
+import UserTodayOrders from "../UserTodayOrders";
+import UserHistoryOrders from "../UserHistoryOrders";
+
 
 
 function Header({ children }) {
@@ -112,7 +113,7 @@ function Header({ children }) {
               {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}> */}
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Company Orders(Mock)"
+                  label="Today Orders"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25}}>
                       home
@@ -120,44 +121,22 @@ function Header({ children }) {
                   }
                 />
                 <Tab
-                  label="Company Orders(Real)"
+                  label="History Orders"
                   icon={
                     <AddShoppingCartIcon fontSize="small" sx={{ mt: -0.25 }}/>
                   }
                 />
-              <Tab
-                  label="Traders Orders(Mock)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25}}>
-                      home
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Traders Orders(Real)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
-                    </Icon>
-                  }
-                />
-                
-                
               </Tabs>
             </AppBar>
-            <TabPanel value={tabValue} index={0}><CompanyOrdersMock/> </TabPanel>
-            <TabPanel value={tabValue} index={1}><CompanyOrdersReal/> </TabPanel>
-            <TabPanel value={tabValue} index={2}><TradersOrdersMock/> </TabPanel>
-            <TabPanel value={tabValue} index={3}><TradersOrdersReal/> </TabPanel>
+            <TabPanel value={tabValue} index={0}><UserTodayOrders/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><UserHistoryOrders/> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
         </Card>
         {/* {children} */}
      
-     </MDBox>
-   
-    
+     </MDBox> 
   );
 }
 
