@@ -110,7 +110,7 @@ process.on('unhandledRejection', (err) => {
 // const path = require('path')
 // require('dotenv').config({ path: path.resolve(__dirname, '') })
 
-app.use(require("./utils/errorHandler"));
+// app.use(require("./utils/errorHandler"));
 
 const PORT = process.env.PORT;
 
