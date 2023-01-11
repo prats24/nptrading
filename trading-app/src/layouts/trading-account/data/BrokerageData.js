@@ -1,72 +1,140 @@
-// Material Dashboard 2 React components
-import MDBox from "../../../components/MDBox";
-import MDTypography from "../../../components/MDTypography";
-import MDAvatar from "../../../components/MDAvatar";
-import MDBadge from "../../../components/MDBadge";
+import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 // Images
 import team2 from "../../../assets/images/team-2.jpg";
 import team3 from "../../../assets/images/team-3.jpg";
 import team4 from "../../../assets/images/team-4.jpg";
 
-export default function BrokerageData() {
-  const Author = ({ image, name, email }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
-      <MDBox ml={2} lineHeight={1}>
-        <MDTypography display="block" variant="button" fontWeight="medium">
-          {name}
-        </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
-      </MDBox>
-    </MDBox>
-  );
+import MDTypography from "../../../components/MDTypography";
+import MDButton from "../../../components/MDButton";
+import EditSharpIcon from '@mui/icons-material/EditSharp';
 
-  const Job = ({ title, description }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
+export default function AllActiveBrokerages() {
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+  const [activeData, setActiveData] = useState([]);
+  const [inactiveData, setInactiveData] = useState([]);
+
+  useEffect(()=>{
+
+      // axios.get(`${baseUrl}api/v1/readmocktradecompanypagination/${skip}/${limit}`)
+      axios.get(`${baseUrl}api/v1/readBrokerage`)
+      .then((res)=>{
+        // let data = res.data;
+                setActiveData(res.data);
+                console.log(activeData);
+      }).catch((err)=>{
+          window.alert("Server Down");
+          return new Error(err);
+      })
+  },[])
+
+  console.log(activeData);
+
+  
+  // numberOfClickForRemoveNext = Math.ceil(((orderCountHistoryCompany))/limit);
+  // console.log(numberOfClickForRemoveNext, clickToRemove, orderCountHistoryCompany)
+
+  let activebrokeragearr = [];
+  
+  activeData.map((elem)=>{
+    let activebrokerage = {}
+    // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
+    const statuscolor = elem.status == "Active" ? "success" : "error"
+    // const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
+
+    activebrokerage.edit = (
+        <MDButton variant="Contained" color="info" fontWeight="medium">
+          <EditSharpIcon/>
+        </MDButton>
+      );
+    activebrokerage.broker = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.brokerName}
       </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
+    );
+    activebrokerage.transaction = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.transaction}
+      </MDTypography>
+    );
+    activebrokerage.type = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.type}
+      </MDTypography>
+    );
+    activebrokerage.exchange = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.exchange}
+      </MDTypography>
+    );
+    activebrokerage.brokeragecharge = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.brokerageCharge}
+      </MDTypography>
+    );
+    activebrokerage.exchangecharge = (
+      <MDTypography component="a" variant="caption" color={statuscolor} fontWeight="medium">
+        {elem.exchangeCharge}
+      </MDTypography>
+    );
+    activebrokerage.gst = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.gst}
+      </MDTypography>
+    );
+    activebrokerage.sebicharges = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.sebiCharge}
+      </MDTypography>
+    );
+    activebrokerage.stampdutycharges = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.stampDuty}
+      </MDTypography>
+    );
+    activebrokerage.sst = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.sst}
+      </MDTypography>
+    );
+    activebrokerage.ctt = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.ctt}
+      </MDTypography>
+    );
+    activebrokerage.dpcharges = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.dpCharge}
+      </MDTypography>
+    );
+   
+    
+    console.log(typeof(activebrokerage));
+    console.log(activebrokerage)
+    activebrokeragearr.push(activebrokerage)
+  })
 
   return {
     columns: [
-      { Header: "Broker", accessor: "Broker", align: "center" },
-      { Header: "Transaction", accessor: "Transaction", align: "center" },
-      { Header: "Type", accessor: "Type", align: "center" },
-      { Header: "Exchange", accessor: "Exchange", align: "center" },
-      { Header: "Brokerage Charge", accessor: "Brokerage Charge", align: "center" },
-      { Header: "Exchange Charge", accessor: "Exchange Charge", align: "center" },
-      { Header: "GST(%)", accessor: "GST(%)", align: "center" },
-      { Header: "SEBI Charges", accessor: "SEBI Charges", align: "center" },
-      { Header: "Stamp Duty Charges", accessor: "Stamp Duty Charges", align: "center" },
-      { Header: "SST", accessor: "SST", align: "center" },
-      { Header: "CTT", accessor: "CTT", align: "center" },
-      { Header: "DP Charges", accessor: "DP Charges", align: "center" },
+      { Header: "Edit", accessor: "edit", align: "center" },
+      { Header: "Broker", accessor: "broker", align: "center" },
+      { Header: "Transaction", accessor: "transaction", align: "center" },
+      { Header: "Type", accessor: "type", align: "center" },
+      { Header: "Exchange", accessor: "exchange", align: "center" },
+      { Header: "Brokerage Charge", accessor: "brokeragecharge", align: "center" },
+      { Header: "Exchange Charge", accessor: "exchangecharge", align: "center" },
+      { Header: "GST(%)", accessor: "gst", align: "center" },
+      { Header: "SEBI Charges", accessor: "sebicharges", align: "center" },
+      { Header: "Stamp Duty Charges", accessor: "stampdutycharges", align: "center" },
+      { Header: "SST", accessor: "sst", align: "center" },
+      { Header: "CTT", accessor: "ctt", align: "center" },
+      { Header: "DP Charges", accessor: "dpcharges", align: "center" },
     ],
 
-    rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-    ],
+    rows: activebrokeragearr,
   };
 }

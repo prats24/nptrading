@@ -12,7 +12,7 @@ import MDTypography from "../../components/MDTypography";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
-import DataTable from "../../examples/Tables/DataTable";
+import DataTable from "../../examples/Tables/DataTable"; 
 
 // Data
 // import authorsTableData from "./data/authorsTableData";
