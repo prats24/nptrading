@@ -18,13 +18,16 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { Box, Typography } from '@mui/material';
+import { useState } from 'react';
 
 const BuyModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const [regularSwitch, setRegularSwitch] = React.useState(true);
+  const [buyFormDetails, setBuyFormDetails]= useState({})
+
+
 
   const [value, setValue] = React.useState('NRML');
   const handleChange = (event) => {
@@ -54,7 +57,6 @@ const BuyModel = () => {
           <DialogContentText sx={{ display: "flex", flexDirection: "column", marginLeft: 2, marginTop: 1 }}>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: 2 }}><Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600 }}>Symbol</Box> &nbsp; &nbsp; &nbsp; <Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600 }}>LTP</Box></Box>
             <FormControl >
-
               <FormLabel id="demo-controlled-radio-buttons-group" sx={{ width: "300px" }}></FormLabel>
               <RadioGroup
                 aria-labelledby="demo-controlled-radio-buttons-group"

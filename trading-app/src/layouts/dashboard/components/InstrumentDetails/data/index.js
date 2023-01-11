@@ -80,11 +80,11 @@ export default function Data() {
       </MDTypography>
     );
     instrumentDetailObj.buy = (
-        <HeaderBuy/>
+        <BuyModel/>
     );
     
     instrumentDetailObj.sell = (
-      <HeaderSell />
+        <SellModel/>
     );
 
     instrumentDetailObj.instrumentToken = (
