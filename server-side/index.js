@@ -91,13 +91,13 @@ app.use('/api/v1', require("./routes/mockTrade/mockTradeUserAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
 require('./db/conn');
 
-process.on('unhandledRejection', (err) => {
-  console.log(err.name, err.message);
-  console.log('UNHANDLED REJECTION! Shutting Down...');
-  server.close(() => {
-    process.exit(1);
-  });
-});
+// process.on('unhandledRejection', (err) => {
+//   console.log(err.name, err.message);
+//   console.log('UNHANDLED REJECTION! Shutting Down...');
+//   server.close(() => {
+//     process.exit(1);
+//   });
+// });
 
   let date = new Date();
   let weekDay = date.getDay();

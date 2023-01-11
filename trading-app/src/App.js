@@ -23,6 +23,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 import SettingsIcon from '@mui/icons-material/Settings';
+import AuthContext from "./AuthContext";
 
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
@@ -53,6 +54,8 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "./
 // Images
 import brandWhite from "./assets/images/logo-ct.png";
 import brandDark from "./assets/images/logo-ct-dark.png";
+import SignIn from "./layouts/authentication/sign-in"
+import NewMain from "./NewMain"
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -149,10 +152,37 @@ export default function App() {
   );
 
   return direction === "rtl" ? (
-    <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
+    <AuthContext >
+      <CacheProvider value={rtlCache}>
+        <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
+          <CssBaseline />
+          {layout === "companyposition" && (
+            <>
+              <Sidenav
+                color={sidenavColor}
+                brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+                brandName="ninepointer"
+                routes={routes}
+                onMouseEnter={handleOnMouseEnter}
+                onMouseLeave={handleOnMouseLeave}
+              />
+              <Configurator />
+              {configsButton}
+            </>
+          )}
+          {layout === "vr" && <Configurator />}
+          <Routes>
+            {getRoutes(routes)}
+            <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+          </Routes>
+        </ThemeProvider>
+      </CacheProvider>
+    </AuthContext>
+  ) : (
+    <AuthContext>
+      <ThemeProvider theme={darkMode ? themeDark : theme}>
         <CssBaseline />
-        {layout === "companyposition" && (
+        {layout === "dashboard" && (
           <>
             <Sidenav
               color={sidenavColor}
@@ -166,35 +196,14 @@ export default function App() {
             {configsButton}
           </>
         )}
-        {layout === "vr" && <Configurator />}
+        {layout === "companyposition" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+          {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
+          <Route path="*" element={<SignIn />} />
+          <Route path='*' element={<NewMain />}></Route>
         </Routes>
       </ThemeProvider>
-    </CacheProvider>
-  ) : (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="ninepointer"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-          <Configurator />
-          {configsButton}
-        </>
-      )}
-      {layout === "companyposition" && <Configurator />}
-      <Routes>
-        {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/companyposition" />} />
-      </Routes>
-    </ThemeProvider>
+    </AuthContext>
   );
-}
+} // 

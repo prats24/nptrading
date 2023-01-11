@@ -11,7 +11,7 @@ import MDTypography from "../../../components/MDTypography";
 import MDButton from "../../../components/MDButton";
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 
-export default function AllActiveBrokerages() {
+export default function AllInActiveUsers() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -21,120 +21,112 @@ export default function AllActiveBrokerages() {
   useEffect(()=>{
 
       // axios.get(`${baseUrl}api/v1/readmocktradecompanypagination/${skip}/${limit}`)
-      axios.get(`${baseUrl}api/v1/readBrokerage`)
+      axios.get(`${baseUrl}api/v1/readuserdetails`)
       .then((res)=>{
-        // let data = res.data;
-                setActiveData(res.data);
-                console.log(activeData);
+        let data = res.data;
+          console.log(data);
+                let inActive = data.filter((elem) => {
+                    return elem.status === "Inactive"
+                })
+                setInactiveData(inActive);
+                //console.log(inactiveData);
       }).catch((err)=>{
           window.alert("Server Down");
           return new Error(err);
       })
   },[])
 
-  console.log(activeData);
+  console.log(inactiveData);
 
   
   // numberOfClickForRemoveNext = Math.ceil(((orderCountHistoryCompany))/limit);
   // console.log(numberOfClickForRemoveNext, clickToRemove, orderCountHistoryCompany)
 
-  let activebrokeragearr = [];
+  let inactiveusersarr = [];
   
-  activeData.map((elem)=>{
-    let activebrokerage = {}
+  inactiveData.map((elem)=>{
+    let inactiveusers = {}
     // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
     const statuscolor = elem.status == "Active" ? "success" : "error"
     // const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
 
-    activebrokerage.edit = (
+    inactiveusers.edit = (
         <MDButton variant="Contained" color="info" fontWeight="medium">
           <EditSharpIcon/>
         </MDButton>
       );
-    activebrokerage.broker = (
+      inactiveusers.name = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.brokerName}
+        {elem.name}
       </MDTypography>
     );
-    activebrokerage.transaction = (
+    inactiveusers.designation = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.transaction}
+        {elem.designation}
       </MDTypography>
     );
-    activebrokerage.type = (
+    inactiveusers.email = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.type}
+        {elem.email}
       </MDTypography>
     );
-    activebrokerage.exchange = (
+    inactiveusers.mobile = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.exchange}
+        {elem.mobile}
       </MDTypography>
     );
-    activebrokerage.brokeragecharge = (
+    inactiveusers.gender = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.brokerageCharge}
+        {elem.gender}
       </MDTypography>
     );
-    activebrokerage.exchangecharge = (
+    inactiveusers.tradingexp = (
       <MDTypography component="a" variant="caption" color={statuscolor} fontWeight="medium">
-        {elem.exchangeCharge}
+        {elem.trading_exp}
       </MDTypography>
     );
-    activebrokerage.gst = (
+    inactiveusers.location = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.gst}
+        {elem.location}
       </MDTypography>
     );
-    activebrokerage.sebicharges = (
+    inactiveusers.doj = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.sebiCharge}
+        {elem.joining_date}
       </MDTypography>
     );
-    activebrokerage.stampdutycharges = (
+    inactiveusers.role = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.stampDuty}
+        {elem.role}
       </MDTypography>
     );
-    activebrokerage.sst = (
+    inactiveusers.status = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.sst}
-      </MDTypography>
-    );
-    activebrokerage.ctt = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.ctt}
-      </MDTypography>
-    );
-    activebrokerage.dpcharges = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.dpCharge}
+        {elem.status}
       </MDTypography>
     );
    
     
-    console.log(typeof(activebrokerage));
-    console.log(activebrokerage)
-    activebrokeragearr.push(activebrokerage)
+    console.log(typeof(inactiveusers));
+    console.log(inactiveusers)
+    inactiveusersarr.push(inactiveusers)
   })
 
   return {
     columns: [
-      { Header: "Edit", accessor: "edit", align: "center" },
-      { Header: "Broker", accessor: "broker", align: "center" },
-      { Header: "Transaction", accessor: "transaction", align: "center" },
-      { Header: "Type", accessor: "type", align: "center" },
-      { Header: "Exchange", accessor: "exchange", align: "center" },
-      { Header: "Brokerage Charge", accessor: "brokeragecharge", align: "center" },
-      { Header: "Exchange Charge", accessor: "exchangecharge", align: "center" },
-      { Header: "GST(%)", accessor: "gst", align: "center" },
-      { Header: "SEBI Charges", accessor: "sebicharges", align: "center" },
-      { Header: "Stamp Duty Charges", accessor: "stampdutycharges", align: "center" },
-      { Header: "SST", accessor: "sst", align: "center" },
-      { Header: "CTT", accessor: "ctt", align: "center" },
-      { Header: "DP Charges", accessor: "dpcharges", align: "center" },
+      { Header: "Edit", accessor: "edit",align: "center" },
+      { Header: "Name", accessor: "name",align: "center" },
+      { Header: "Designation", accessor: "designation",align: "center" },
+      { Header: "Email ID", accessor: "email", align: "center"},
+      { Header: "Mobile No.", accessor: "mobile", align: "center"},
+      { Header: "Gender", accessor: "gender", align: "center"},
+      { Header: "Trading Exp.", accessor: "tradingexp",align: "center" },
+      { Header: "Location", accessor: "location",align: "center" },
+      { Header: "Date of Joining", accessor: "doj", align: "center"},
+      { Header: "Role", accessor: "role", align: "center"},
+      { Header: "Status", accessor: "status", align: "center"},
     ],
 
-    rows: activebrokeragearr,
+    rows: inactiveusersarr,
   };
 }

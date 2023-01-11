@@ -12,7 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
@@ -42,14 +42,18 @@ import BasicLayout from "../components/BasicLayout";
 
 // Images
  import bgImage from "../../../assets/images/bg-sign-in-basic.jpeg";
+import { userContext } from '../../../AuthContext';
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [userId, setEmail] = useState(false);
   const [pass, setPassword] = useState(false);
+  const setDetails = useContext(userContext);
+  const [info, setInfo] = useState({});
+  let data;
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-
+  console.log("sign componenet")
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
@@ -60,6 +64,34 @@ function Basic() {
     //     userId : "",
     //     pass : ""
     // });
+
+    const dashboardPage = async ()=>{
+      try{
+          console.log("inside try")
+          const res = await fetch(`${baseUrl}api/v1/dashboard`, {
+              method: "GET",
+              headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+              },
+              credentials: "include"
+          });
+  
+          data = await res.json();
+          // setter(data);
+          setInfo(data)
+          setDetails.setUserDetail(data);
+        //   setter(data);
+          console.log("this is data of particular user", data);
+  
+          if(!res.status === 200){
+              throw new Error(res.error);
+          }
+      } catch(err){
+          console.log("Fail to fetch data of user");
+          console.log(err);
+      }
+    }
 
 
     async function logInButton(e){
@@ -91,7 +123,16 @@ function Basic() {
         }else{
             window.alert("Login succesfull");
             console.log("entry succesfull");
-            navigate("/dashboard");
+
+            console.log("rendering")
+
+
+            // dashboardPage();
+
+
+
+
+            navigate("/companyposition");
         }
     }
 

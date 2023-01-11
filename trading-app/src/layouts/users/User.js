@@ -19,12 +19,14 @@ import DataTable from "../../examples/Tables/DataTable";
 import projectsTableData from "./data/projectsTableData";
 import UserModel from './UserModel';
 import UserData from './data/UserData';
+import InactiveUserData from './data/InactiveUserData';
 
 
 
 const User = () => {
     const { columns, rows } = UserData();
-    const { columns: pColumns, rows: pRows } = projectsTableData();
+    // const { icolumns, irows } = InactiveUserData();
+    const { icolumns, irows } = InactiveUserData();
     return (
         <>
             <MDBox pt={6} pb={3}>
@@ -45,7 +47,7 @@ const User = () => {
                                     justifyContent: "space-between",
                                 }}>
                                 <MDTypography variant="h6" color="white" py={2.5}>
-                                    User Details
+                                    User Details (Active Users)
                                 </MDTypography>
                                 <UserModel />
                             </MDBox>
@@ -60,6 +62,37 @@ const User = () => {
                             </MDBox>
                         </Card>
                     </Grid>
+                    {/* <Grid item xs={12} md={12} lg={12}>
+                        <Card>
+                            <MDBox
+                                mx={2}
+                                mt={-3}
+                                py={1}
+                                px={2}
+                                variant="gradient"
+                                bgColor="info"
+                                borderRadius="lg"
+                                coloredShadow="info"
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: "space-between",
+                                }}>
+                                <MDTypography variant="h6" color="white" py={2.5}>
+                                    User Details (Inactive Users)
+                                </MDTypography>
+                                <UserModel />
+                            </MDBox>
+                            <MDBox pt={3}>
+                                <DataTable
+                                    table={{ icolumns, irows }}
+                                    isSorted={false}
+                                    entriesPerPage={false}
+                                    showTotalEntries={false}
+                                    noEndBorder
+                                />
+                            </MDBox>
+                        </Card>
+                    </Grid> */}
                 </Grid>
             </MDBox>
         </>
