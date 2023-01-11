@@ -39,13 +39,6 @@ const SellModel = () => {
     setValidity(event.target.value);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <div>
