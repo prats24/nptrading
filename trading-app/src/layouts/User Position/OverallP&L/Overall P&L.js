@@ -52,35 +52,17 @@ export default function OverallPL() {
 
   return {
     columns: [
-      { Header: "Product", accessor: "Product", align: "center" },
-      { Header: "Instrument", accessor: "Instrument", align: "center" },
-      { Header: "Quantity", accessor: "Quantity", align: "center" },
-      { Header: "Avg. Price", accessor: "Avg. Price", align: "center" },
-      { Header: "LTP", accessor: "LTP", align: "center" },
-      { Header: "Gross P&L", accessor: "Gross P&L", align: "center" },
-      { Header: "Change(%)", accessor: "Change(%)", align: "center" },
+      { Header: "Product", accessor: "Product", width: "10%", align: "center" },
+      { Header: "Instrument", accessor: "symbol", width: "10%", align: "center" },
+      { Header: "Quantity", accessor: "Quantity", width: "10%", align: "center" },
+      { Header: "Avg. Price", accessor: "avgPrice", width: "10%", align: "center" },
+      { Header: "LTP", accessor: "last_price", width: "10%", align: "center" },
+      { Header: "Gross P&L", accessor: "grossPnl", width: "10%", align: "center" },
+      { Header: "Change(%)", accessor: "change", width: "10%", align: "center" },
     ],
 
     rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
+
     ],
   };
 }

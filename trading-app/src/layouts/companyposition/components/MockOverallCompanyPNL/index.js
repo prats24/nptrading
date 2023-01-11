@@ -335,7 +335,7 @@ function MockOverallCompantPNL({socket}) {
 
   obj.grossPnl = (
     <MDTypography component="a" variant="caption" color={totalGrossPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      {totalGrossPnl > 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+      {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
     </MDTypography>
   );
 
@@ -346,9 +346,6 @@ function MockOverallCompantPNL({socket}) {
   );
 
   rows.push(obj);
-
-
-  let totalColumns, totalRows;
 
 
   return (

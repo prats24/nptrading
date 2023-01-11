@@ -13,7 +13,8 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
+import axios from "axios"
 
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
@@ -23,7 +24,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 import SettingsIcon from '@mui/icons-material/Settings';
-import AuthContext from "./AuthContext";
+
 
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
@@ -47,6 +48,8 @@ import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
 import routes from "./routes";
+// import adminRoutes from "./routes";
+import userRoutes from "./routesUser";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "./context";
@@ -56,6 +59,7 @@ import brandWhite from "./assets/images/logo-ct.png";
 import brandDark from "./assets/images/logo-ct-dark.png";
 import SignIn from "./layouts/authentication/sign-in"
 import NewMain from "./NewMain"
+import { userContext } from "./AuthContext";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -71,7 +75,35 @@ export default function App() {
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
+  // const [routes1, setRoutes] = useState();
+  const [detailUser, setDetailUser] = useState({});
   const { pathname } = useLocation();
+
+  //get userdetail who is loggedin
+  const setDetails = useContext(userContext);
+  const getDetails = useContext(userContext);
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  
+  useEffect(()=>{
+        axios.get(`${baseUrl}api/v1/loginDetail`, {
+            withCredentials: true,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Credentials": true
+            },
+        })
+        .then((res)=>{
+          setDetails.setUserDetail(res.data);
+          setDetailUser((res.data));
+  
+        }).catch((err)=>{
+          console.log("Fail to fetch data of user");
+          console.log(err);
+        })
+                
+  }, [])
 
   // Cache for the rtl
   useMemo(() => {
@@ -105,13 +137,14 @@ export default function App() {
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
-  }, [direction]);
+  }, [direction, getDetails]);
 
   // Setting page scroll to 0 when changing the route
   useEffect(() => {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-  }, [pathname]);
+  }, [pathname, getDetails]);
+
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
@@ -152,7 +185,7 @@ export default function App() {
   );
 
   return direction === "rtl" ? (
-    <AuthContext >
+    
       <CacheProvider value={rtlCache}>
         <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
           <CssBaseline />
@@ -162,7 +195,7 @@ export default function App() {
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
                 brandName="ninepointer"
-                routes={routes}
+                routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes}
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
@@ -172,14 +205,14 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
-            {getRoutes(routes)}
+          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : getRoutes(userRoutes)} 
             <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
           </Routes>
         </ThemeProvider>
       </CacheProvider>
-    </AuthContext>
+    
   ) : (
-    <AuthContext>
+    
       <ThemeProvider theme={darkMode ? themeDark : theme}>
         <CssBaseline />
         {layout === "dashboard" && (
@@ -188,7 +221,7 @@ export default function App() {
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="ninepointer"
-              routes={routes}
+              routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
@@ -198,12 +231,11 @@ export default function App() {
         )}
         {layout === "companyposition" && <Configurator />}
         <Routes>
-          {getRoutes(routes)}
+          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : getRoutes(userRoutes)} 
           {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
           <Route path="*" element={<SignIn />} />
-          <Route path='*' element={<NewMain />}></Route>
         </Routes>
       </ThemeProvider>
-    </AuthContext>
+    
   );
 } // 
