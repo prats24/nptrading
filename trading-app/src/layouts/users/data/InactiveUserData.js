@@ -11,12 +11,12 @@ import MDTypography from "../../../components/MDTypography";
 import MDButton from "../../../components/MDButton";
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 
-export default function AllActiveUsers() {
+export default function AllInActiveUsers() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const [activeData, setActiveData] = useState([]);
-  // const [inactiveData, setInactiveData] = useState([]);
+  const [inactiveData, setInactiveData] = useState([]);
 
   useEffect(()=>{
 
@@ -24,98 +24,92 @@ export default function AllActiveUsers() {
       axios.get(`${baseUrl}api/v1/readuserdetails`)
       .then((res)=>{
         let data = res.data;
-                let active = data.filter((elem) => {
-                    return elem.status === "Active"
+          console.log(data);
+                let inActive = data.filter((elem) => {
+                    return elem.status === "Inactive"
                 })
-                setActiveData(active);
-                console.log(active);
-
-                // let inActive = data.filter((elem) => {
-                //     return elem.status === "Inactive"
-                // })
-                // setInactiveData(inActive);
-                // console.log(inactiveData);
+                setInactiveData(inActive);
+                //console.log(inactiveData);
       }).catch((err)=>{
           window.alert("Server Down");
           return new Error(err);
       })
   },[])
 
-  console.log(activeData);
-  // console.log(inactiveData);
+  console.log(inactiveData);
 
   
   // numberOfClickForRemoveNext = Math.ceil(((orderCountHistoryCompany))/limit);
   // console.log(numberOfClickForRemoveNext, clickToRemove, orderCountHistoryCompany)
 
-  let activeusersarr = [];
+  let inactiveusersarr = [];
   
-  activeData.map((elem)=>{
-    let activeusers = {}
+  inactiveData.map((elem)=>{
+    let inactiveusers = {}
     // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
     const statuscolor = elem.status == "Active" ? "success" : "error"
     // const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
 
-    activeusers.edit = (
+    inactiveusers.edit = (
         <MDButton variant="Contained" color="info" fontWeight="medium">
           <EditSharpIcon/>
         </MDButton>
       );
-    activeusers.name = (
+      inactiveusers.name = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.name}
       </MDTypography>
     );
-    activeusers.designation = (
+    inactiveusers.designation = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.designation}
       </MDTypography>
     );
-    activeusers.email = (
+    inactiveusers.email = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.email}
       </MDTypography>
     );
-    activeusers.mobile = (
+    inactiveusers.mobile = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.mobile}
       </MDTypography>
     );
-    activeusers.gender = (
+    inactiveusers.gender = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.gender}
       </MDTypography>
     );
-    activeusers.tradingexp = (
+    inactiveusers.tradingexp = (
       <MDTypography component="a" variant="caption" color={statuscolor} fontWeight="medium">
         {elem.trading_exp}
       </MDTypography>
     );
-    activeusers.location = (
+    inactiveusers.location = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.location}
       </MDTypography>
     );
-    activeusers.doj = (
+    inactiveusers.doj = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.joining_date}
       </MDTypography>
     );
-    activeusers.role = (
+    inactiveusers.role = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.role}
       </MDTypography>
     );
-    activeusers.status = (
+    inactiveusers.status = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.status}
       </MDTypography>
     );
    
     
-    console.log(typeof(activeusers));
-    console.log(activeusers)
-    activeusersarr.push(activeusers)
+    console.log(typeof(inactiveusers));
+    console.log(inactiveusers)
+    inactiveusersarr.push(inactiveusers)
   })
 
   return {
@@ -133,6 +127,6 @@ export default function AllActiveUsers() {
       { Header: "Status", accessor: "status", align: "center"},
     ],
 
-    rows: activeusersarr,
+    rows: inactiveusersarr,
   };
 }

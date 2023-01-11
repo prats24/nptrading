@@ -778,7 +778,7 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
 
 router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
     console.log("Inside Aggregate API - Mock Trade Details Week")
-    
+     
     let date = new Date(); 
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -1170,7 +1170,7 @@ router.get("/getavgpricemocktradecompany", async(req, res)=>{
 
 router.get("/getmocktradecompanydetailsdaybeforeyesterday", async(req, res)=>{
     console.log("Inside Aggregate API - Mock Trade Details Yesterday")
-
+    let todayDate = new Date();
     var day = new Date(todayDate);
     console.log("Day "+day); // Apr 30 2000
 

@@ -91,13 +91,13 @@ app.use('/api/v1', require("./routes/mockTrade/mockTradeUserAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
 require('./db/conn');
 
-process.on('unhandledRejection', (err) => {
-  console.log(err.name, err.message);
-  console.log('UNHANDLED REJECTION! Shutting Down...');
-  server.close(() => {
-    process.exit(1);
-  });
-});
+// process.on('unhandledRejection', (err) => {
+//   console.log(err.name, err.message);
+//   console.log('UNHANDLED REJECTION! Shutting Down...');
+//   server.close(() => {
+//     process.exit(1);
+//   });
+// });
 
   let date = new Date();
   let weekDay = date.getDay();
@@ -110,7 +110,7 @@ process.on('unhandledRejection', (err) => {
 // const path = require('path')
 // require('dotenv').config({ path: path.resolve(__dirname, '') })
 
-app.use(require("./utils/errorHandler"));
+// app.use(require("./utils/errorHandler"));
 
 const PORT = process.env.PORT;
 
