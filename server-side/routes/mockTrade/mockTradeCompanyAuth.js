@@ -262,6 +262,7 @@ router.get("/readmocktradecompanyemail/:email", (req, res)=>{
     })
 })
 
+
 router.get("/readmocktradecompanyDate", (req, res)=>{
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
