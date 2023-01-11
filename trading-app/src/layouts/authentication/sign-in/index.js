@@ -15,6 +15,7 @@ Coded by www.creative-tim.com
 import React, { useContext } from 'react'
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -49,8 +50,6 @@ function Basic() {
   const [userId, setEmail] = useState(false);
   const [pass, setPassword] = useState(false);
   const setDetails = useContext(userContext);
-  const [info, setInfo] = useState({});
-  let data;
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   console.log("sign componenet")
@@ -60,29 +59,22 @@ function Basic() {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     const navigate = useNavigate();
-    // const [userInfo, setUserInfo] = useState({
-    //     userId : "",
-    //     pass : ""
-    // });
+    let userData ;
 
-    const dashboardPage = async ()=>{
+    const userDetail = async ()=>{
       try{
-          console.log("inside try")
-          const res = await fetch(`${baseUrl}api/v1/dashboard`, {
-              method: "GET",
+          const res = await axios.get(`${baseUrl}api/v1/loginDetail`, {
+              withCredentials: true,
               headers: {
                   Accept: "application/json",
-                  "Content-Type": "application/json"
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Credentials": true
               },
-              credentials: "include"
           });
-  
-          data = await res.json();
-          // setter(data);
-          setInfo(data)
-          setDetails.setUserDetail(data);
-        //   setter(data);
-          console.log("this is data of particular user", data);
+                   
+          setDetails.setUserDetail(res.data);
+          userData = res.data;
+          console.log("this is data of particular user", res.data);
   
           if(!res.status === 200){
               throw new Error(res.error);
@@ -96,13 +88,8 @@ function Basic() {
 
     async function logInButton(e){
         e.preventDefault();
-        // setUserInfo(userInfo);
-  
-        // console.log("form submitted", userInfo);
         console.log(userId, pass);
         
-        // const {userId, pass} = userInfo;
-
         const res = await fetch(`${baseUrl}api/v1/login`, {
             method: "POST",
             credentials:"include",
@@ -124,15 +111,15 @@ function Basic() {
             window.alert("Login succesfull");
             console.log("entry succesfull");
 
-            console.log("rendering")
+            // this function is extracting data of user who is logged in
+            await userDetail();
 
-
-            // dashboardPage();
-
-
-
-
-            navigate("/companyposition");
+            if(userData.role === "admin"){
+              navigate("/companyposition");
+            } else if(userData.role === "user"){
+              navigate("/Position");
+            }
+            
         }
     }
 

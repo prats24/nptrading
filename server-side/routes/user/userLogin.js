@@ -40,9 +40,10 @@ router.post("/login", async (req, res)=>{
     }
 })
 
-router.get("/companyposition", authentication, (req, res)=>{
-    console.log("hello my about");
-    res.send(req.user);
+router.get("/loginDetail", authentication, (req, res)=>{
+    console.log("hello my about", req.user);
+    // res.json({message: "data"});
+    res.json(req.user);
 })
 
 
