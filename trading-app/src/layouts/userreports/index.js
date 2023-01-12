@@ -242,8 +242,8 @@ function UserReport() {
       </MDTypography>
     );
     obj.grossPnl = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(0)): "-₹" + ((-updatedValue).toFixed(0))}
+      <MDTypography component="a" href="#" variant="caption" color={gpnlcolor}  fontWeight="medium">
+        {updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(0)): "-₹" + ((-updatedValue).toFixed(0))}
       </MDTypography>
     );
     obj.brokerage = (
@@ -252,7 +252,7 @@ function UserReport() {
       </MDTypography>
     );
     obj.netPnl = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" href="#" variant="caption" color={npnlcolor} fontWeight="medium">
         {/* {((updatedValue)-(elem.brokerage)).toFixed(0)} */}
         {((updatedValue)-(elem.brokerage)) > 0.00 ? "+₹" + (((updatedValue)-(elem.brokerage)).toFixed(0)): "-₹" + ((-((updatedValue)-(elem.brokerage))).toFixed(0))}
       </MDTypography>
@@ -303,7 +303,7 @@ function UserReport() {
             <Card sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-around', marginTop: 1 }}>
               <MDBox >
                 <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Gross P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
-                <MDTypography variant="h6" textAlign="center" color={totalpnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalPnl >= 0 ? "+₹" + totalPnl.toFixed(0) : "-₹" + (-totalPnl).toFixed(0)}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" color={totalpnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{-totalPnl >= 0 ? "+₹" + -totalPnl.toFixed(0) : "-₹" + (totalPnl).toFixed(0)}</MDTypography>
               </MDBox>
               <MDBox >
                 <MDTypography variant="h6" textAlign="center" py={1}>Transaction Cost</MDTypography>
@@ -311,7 +311,7 @@ function UserReport() {
               </MDBox>
               <MDBox >
                 <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Net P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
-                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" color={totalnpnlcolor} py={1}>{(totalPnl-totalTransactionCost) >= 0 ? "+₹" + (totalPnl-totalTransactionCost).toFixed(0) : "-₹" + -(totalPnl-totalTransactionCost).toFixed(0)}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" color={totalnpnlcolor} py={1}>{((-totalPnl)-totalTransactionCost) >= 0 ? "+₹" + ((-totalPnl)-totalTransactionCost).toFixed(0) : "-₹" + -((-totalPnl)-totalTransactionCost).toFixed(0)}</MDTypography>
               </MDBox>
               <MDBox >
                 <MDTypography variant="h6" textAlign="center" py={1}>Total Trades</MDTypography>
