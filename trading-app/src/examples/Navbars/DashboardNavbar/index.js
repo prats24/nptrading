@@ -13,7 +13,8 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { userContext } from "../../../AuthContext";
 
 // react-router components
 import { useLocation, Link } from "react-router-dom";
@@ -55,6 +56,7 @@ import {
 } from "../../../context";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const getDetails = useContext(userContext);
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -137,7 +139,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              <MDInput label="Search here" />
+              Hello {getDetails.userDetails.name}!
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               {/* <Link to="/authentication/sign-in/basic">

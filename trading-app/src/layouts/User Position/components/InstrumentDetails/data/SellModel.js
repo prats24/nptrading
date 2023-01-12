@@ -443,7 +443,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ display: "flex", flexDirection: "column", marginLeft: 2, marginTop: 1 }}>
-            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: 2 }}><Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600 }}>{symbolName}</Box> &nbsp; &nbsp; &nbsp; <Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600 }}>{ltp}</Box></Box>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: 2 }}><Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600, padding:"5px", borderRadius:"5px" }}>{symbolName}</Box> &nbsp; &nbsp; &nbsp; <Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600, padding:"5px", borderRadius:"5px" }}>₹{ltp}</Box></Box>
             <FormControl >
 
               <FormLabel id="demo-controlled-radio-buttons-group" sx={{ width: "300px" }}></FormLabel>
@@ -454,8 +454,8 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
                 onChange={handleChange}
                 sx={{ display: "flex", flexDirection: "row" }}
               >
-                <FormControlLabel value="MIS" control={<Radio />} label="Intraday MIS" />
-                <FormControlLabel value="NRML" control={<Radio />} label="Overnight NRML" />
+                <FormControlLabel value="MIS" control={<Radio />} label="Intraday (MIS)" />
+                <FormControlLabel value="NRML" control={<Radio />} label="Overnight (NRML)" />
               </RadioGroup>
             </FormControl>
 

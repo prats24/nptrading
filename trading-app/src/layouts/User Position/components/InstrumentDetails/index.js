@@ -71,7 +71,8 @@ function InstrumentDetails({socket}) {
       return elem.instrumentToken.props.children == element.instrumentToken
     })
     marketData.map((subelem)=>{
-      const percentagechangecolor = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) > 0 ? "success" : "error"
+      const percentagechangecolor = subelem.change >= 0 ? "success" : "error"
+      const percentagechangecolor1 = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
       if(elem.instrumentToken.props.children === subelem.instrument_token){
         elem.last_price = (
             <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
@@ -81,13 +82,13 @@ function InstrumentDetails({socket}) {
           if(subelem.change){
             elem.change = (
               <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-                {((subelem.change).toFixed(2))+"%"}
+                {subelem.change >= 0 ? "+" + ((subelem.change).toFixed(2))+"%" : ((subelem.change).toFixed(2))+"%"}
               </MDTypography>
             );
           } else{
             elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-                {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
+              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
+                {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "+" + (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%" : (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
               </MDTypography>
             );
           }
