@@ -77,6 +77,15 @@ import AdminReport from "./layouts/adminreport";
 const routes = [
   {
     type: "collapse",
+    name: "Company Dashboard",
+    key: "admindashboard",
+    // icon: <Icon fontSize="small">dashboard</Icon>,
+    icon: <DashboardIcon/>,
+    route: "/admindashboard",
+    component: <AdminDashboard />,
+  },
+  {
+    type: "collapse",
     name: "Company Position",
     key: "companyposition",
     icon: <BusinessIcon/>,
@@ -90,15 +99,7 @@ const routes = [
     // route: "/dashboard",
     // component: <Dashboard />,
   },
-  {
-    type: "collapse",
-    name: "Company Dashboard",
-    key: "admindashboard",
-    // icon: <Icon fontSize="small">dashboard</Icon>,
-    icon: <DashboardIcon/>,
-    route: "/admindashboard",
-    component: <AdminDashboard />,
-  },
+  
   {
     type: "collapse",
     name: "Admin Report",

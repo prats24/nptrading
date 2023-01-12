@@ -42,7 +42,7 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
 import CompanyDailyPNLTWise from "../CompanyDailyPNLTWise";
-import CompanyDailyPNL from "../CompanyDailyPNL";
+import MockCompanyPNL from "../MockCompanyPNL"
 import TraderPNL from "../TraderPNL";
 import TraderMatrix from "../TraderMatrix";
 
@@ -145,7 +145,7 @@ function AdminReportHeader({ children }) {
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><CompanyDailyPNLTWise /> </TabPanel>
-            <TabPanel value={tabValue} index={1}><CompanyDailyPNL /> </TabPanel>
+            <TabPanel value={tabValue} index={1}><MockCompanyPNL /> </TabPanel>
             <TabPanel value={tabValue} index={2}><TraderPNL /> </TabPanel>
             <TabPanel value={tabValue} index={3}><TraderMatrix /> </TabPanel>
             {/* <TabPaneltwo/> */}

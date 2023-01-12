@@ -37,6 +37,7 @@ import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProject
 // Overview page components
 import Header from "./components/Header";
 import PlatformSettings from "./components/PlatformSettings";
+import MockCompanyPNL from "./MockCompanyPNL"
 
 // Data
 import profilesListData from "./data/profilesListData";

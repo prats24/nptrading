@@ -377,32 +377,32 @@ pnldate.map((elem)=>{
 console.log(LastFiveTradesarr);
 // setCreatedBy(CreatedBy);
 let buysell1 = Type[0] == "BUY" ? "bought" : "sold"
-let title1 = `${CreatedBy[0]} ${buysell1} ${Quantity[0]} quantity of ${Symbol[0]}`
+let title1 = `${CreatedBy[0]} ${buysell1} ${Math.abs(Quantity[0])} quantity of ${Symbol[0]}`
 let title1_time = String(TradeTime[0]).split(" ")
 title1_time = title1_time[1]
 console.log(Symbol[0])
 //let instrumentcolor1 = Symbol[0].slice(-2) == "CE" ? "success" : "error"
 
 let buysell2 = Type[1] == "BUY" ? "bought" : "sold"
-let title2 = `${CreatedBy[1]} ${buysell2} ${Quantity[1]} quantity of ${Symbol[1]}`
+let title2 = `${CreatedBy[1]} ${buysell2} ${Math.abs(Quantity[1])} quantity of ${Symbol[1]}`
 let title2_time = String(TradeTime[1]).split(" ")
 title2_time = title2_time[1]
 //let instrumentcolor2 = Symbol[1].slice(-2) == "CE" ? "success" : "error"
 
 let buysell3 = Type[2] == "BUY" ? "bought" : "sold"
-let title3 = `${CreatedBy[2]} ${buysell3} ${Quantity[2]} quantity of ${Symbol[2]}`
+let title3 = `${CreatedBy[2]} ${buysell3} ${Math.abs(Quantity[2])} quantity of ${Symbol[2]}`
 let title3_time = String(TradeTime[2]).split(" ")
 title3_time = title3_time[1]
 //let instrumentcolor3 = Symbol[2].slice(-2) == "CE" ? "success" : "error"
 
 let buysell4 = Type[3] == "BUY" ? "bought" : "sold"
-let title4 = `${CreatedBy[3]} ${buysell4} ${Quantity[3]} quantity of ${Symbol[3]}`
+let title4 = `${CreatedBy[3]} ${buysell4} ${Math.abs(Quantity[3])} quantity of ${Symbol[3]}`
 let title4_time = String(TradeTime[3]).split(" ")
 title4_time = title4_time[1]
 //let instrumentcolor4 = Symbol[3].slice(-2) == "CE" ? "success" : "error"
 
 let buysell5 = Type[4] == "BUY" ? "bought" : "sold"
-let title5 = `${CreatedBy[4]} ${buysell5} ${Quantity[4]} quantity of ${Symbol[4]}`
+let title5 = `${CreatedBy[4]} ${buysell5} ${Math.abs(Quantity[4])} quantity of ${Symbol[4]}`
 let title5_time = String(TradeTime[4]).split(" ")
 title5_time = title5_time[1]
 //let instrumentcolor5 = Symbol[4].slice(-2) == "CE" ? "success" : "error"

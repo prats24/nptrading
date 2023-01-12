@@ -25,6 +25,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
+import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
@@ -201,6 +202,8 @@ function UserReport() {
     })
   }
 
+  const totalpnlcolor = -totalPnl >= 0 ? "success" : "error"
+  const totalnpnlcolor = ((-totalPnl)-totalTransactionCost) >= 0 ? "success" : "error"
   console.log(overallPnl)
 
   overallPnl.sort((a, b) => {
@@ -219,47 +222,54 @@ function UserReport() {
     return 0;
   });
 
+  let graphdatearray = []
+  let graphbrokeragearray = []
+
   overallPnl.map((elem)=>{
     let obj={}
     let updatedValue = (-(elem.totalBuy+elem.totalSell));
 
+    const gpnlcolor = -(elem.totalBuy+elem.totalSell) >= 0 ? "success" : "error"
+    const npnlcolor = -((elem.totalBuy+elem.totalSell)-(elem.brokerage)) >= 0 ? "success" : "error"
     obj.name = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         {getDetails.userDetails.name}
       </MDTypography>
     );
     obj.date = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         {elem.date}
       </MDTypography>
     );
     obj.grossPnl = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
+        {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(0)): "-₹" + ((-updatedValue).toFixed(0))}
       </MDTypography>
     );
     obj.brokerage = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {"₹"+(elem.brokerage).toFixed(2)}
+        {"₹"+(elem.brokerage).toFixed(0)}
       </MDTypography>
     );
     obj.netPnl = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {/* {((updatedValue)-(elem.brokerage)).toFixed(2)} */}
-        {((updatedValue)-(elem.brokerage)) > 0.00 ? "+₹" + (((updatedValue)-(elem.brokerage)).toFixed(2)): "-₹" + ((-((updatedValue)-(elem.brokerage))).toFixed(2))}
+        {/* {((updatedValue)-(elem.brokerage)).toFixed(0)} */}
+        {((updatedValue)-(elem.brokerage)) > 0.00 ? "+₹" + (((updatedValue)-(elem.brokerage)).toFixed(0)): "-₹" + ((-((updatedValue)-(elem.brokerage))).toFixed(0))}
       </MDTypography>
     );
     obj.noOfTrade = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         {elem.noOfTrade}
       </MDTypography>
     );
     obj.lotUsed = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         {Math.abs(elem.totalBuyLot)+Math.abs(elem.totalSellLot)}
       </MDTypography>
     );
 
+    graphdatearray.push(elem.date);
+    graphbrokeragearray.push(elem.brokerage);
     rows.push(obj);
     
   })
@@ -281,7 +291,7 @@ function UserReport() {
                 sx={{ margin: 1, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
            
               <MDBox >
-                <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>End Date</Typography>
+                <Typography color="dark" sx={{ margin: 1, padding: 1, fontSize: 19 }}>End Date</Typography>
                 </MDBox>
               <TextField
                 id="outlined-basic" variant="standard" type="date"
@@ -292,24 +302,24 @@ function UserReport() {
           <Grid item xs={12} md={12} xl={12} >
             <Card sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-around', marginTop: 1 }}>
               <MDBox >
-                <MDTypography variant="h6" py={1}>Gross P&L</MDTypography>
-                <MDTypography variant="h6" py={1}>{totalPnl.toFixed(2)}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Gross P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
+                <MDTypography variant="h6" textAlign="center" color={totalpnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalPnl >= 0 ? "+₹" + totalPnl.toFixed(0) : "-₹" + (-totalPnl).toFixed(0)}</MDTypography>
               </MDBox>
               <MDBox >
-                <MDTypography variant="h6" py={1}>Transaction Cost</MDTypography>
-                <MDTypography variant="h6" py={1}>{totalTransactionCost.toFixed(2)}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" py={1}>Transaction Cost</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>₹{totalTransactionCost.toFixed(2)}</MDTypography>
               </MDBox>
               <MDBox >
-                <MDTypography variant="h6" py={1}>Net P&L</MDTypography>
-                <MDTypography variant="h6" py={1}>{(totalPnl-totalTransactionCost).toFixed(2)}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Net P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" color={totalnpnlcolor} py={1}>{(totalPnl-totalTransactionCost) >= 0 ? "+₹" + (totalPnl-totalTransactionCost).toFixed(0) : "-₹" + -(totalPnl-totalTransactionCost).toFixed(0)}</MDTypography>
               </MDBox>
               <MDBox >
-                <MDTypography variant="h6" py={1}>Total Trades</MDTypography>
-                <MDTypography variant="h6" py={1}>{totalTrade}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" py={1}>Total Trades</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalTrade}</MDTypography>
               </MDBox>
               <MDBox >
-                <MDTypography variant="h6" py={1}>Trading Days</MDTypography>
-                <MDTypography variant="h6" py={1}>{totalTradingDays}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" py={1}>Trading Days</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalTradingDays}</MDTypography>
               </MDBox>
             </Card>
           </Grid>
@@ -317,6 +327,27 @@ function UserReport() {
       </MDBox>
 
       <MDBox pt={6} pb={3}>
+
+      <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={6}>
+                <ReportsBarChart
+                  color="success"
+                  colorheight="12.5rem"
+                  title="Transaction Cost"
+                  // description={
+                  //   <>
+                  //     (<strong>+20%</strong>) increase than previous last 5 days.
+                  //   </>
+                  // }
+                  date="updated just now"
+                  chart={{
+                    labels: graphdatearray,
+                    datasets: { label: "Transaction Cost", data: graphbrokeragearray },
+                  }}
+                />
+              </MDBox>
+            </Grid>
+
         <Grid container spacing={6}>
           <Grid item xs={12} md={12} lg={12}>
             <Card>
