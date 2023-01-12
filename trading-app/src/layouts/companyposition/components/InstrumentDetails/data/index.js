@@ -52,7 +52,7 @@ export default function Data() {
     let instrumentDetailObj = {}
 
     const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
-    const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
+    // const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
 
     instrumentDetailObj.instrument = (
       <MDTypography variant="caption" color={instrumentcolor} fontWeight="medium">

@@ -211,7 +211,6 @@ function LiveOverallCompantPNL({socket}) {
       totalTransactionCost += Number(elem.brokerage);
   })
 
-
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
       let tempavgPriceArr = lastAvgPriceArr.filter((element)=>{
@@ -220,59 +219,66 @@ function LiveOverallCompantPNL({socket}) {
 
       let updatedValue = (-(subelem.totalBuy+subelem.totalSell-(subelem.totalBuyLot+subelem.totalSellLot)*liveDetail[index]?.last_price));
       totalGrossPnl += updatedValue;
+
+      const instrumentcolor = subelem.symbol.slice(-2) == "CE" ? "success" : "error"
+      const quantitycolor = subelem.Quantity >= 0 ? "success" : "error"
+      const gpnlcolor = updatedValue >= 0 ? "success" : "error"
+      const pchangecolor = (liveDetail[index]?.change) >= 0 ? "success" : "error"
+      const productcolor =  subelem.Product === "NRML" ? "info" : subelem.Product == "MIS" ? "warning" : "error"
+
       obj.Product = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color={productcolor} fontWeight="medium">
           {(subelem.Product)}
         </MDTypography>
       );
 
       obj.symbol = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color={instrumentcolor} fontWeight="medium">
           {(subelem.symbol)}
         </MDTypography>
       );
 
       obj.Quantity = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color={quantitycolor} fontWeight="medium">
           {subelem.totalBuyLot + subelem.totalSellLot}
         </MDTypography>
       );
 
       obj.avgPrice = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {"₹"+tempavgPriceArr[0].average_price.toFixed(2)}
         </MDTypography>
       );
 
       if((liveDetail[index]?.last_price)){
         obj.last_price = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
             {"₹"+(liveDetail[index]?.last_price).toFixed(2)}
           </MDTypography>
         );
       } else{
         obj.last_price = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
             {"₹"+(liveDetail[index]?.last_price)}
           </MDTypography>
         );
       }
 
       obj.grossPnl = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
+        <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+          {updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
         </MDTypography>
       );
 
       if((liveDetail[index]?.change)){
         obj.change = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" variant="caption" color={pchangecolor} fontWeight="medium">
             {(liveDetail[index]?.change).toFixed(2)+"%"}
           </MDTypography>
         );
       } else{
         obj.change = (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          <MDTypography component="a" variant="caption" color={pchangecolor} fontWeight="medium">
             {(((liveDetail[index]?.last_price-liveDetail[index]?.average_price)/liveDetail[index]?.average_price)*100).toFixed(2)+"%"}
           </MDTypography>
         );
@@ -284,46 +290,49 @@ function LiveOverallCompantPNL({socket}) {
 
     let obj = {};
 
+    const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
+    const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
+
     obj.Product = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         {}
       </MDTypography>
     );
   
     obj.symbol = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         {}
       </MDTypography>
     );
   
     obj.Quantity = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
+      <MDTypography component="a" variant="caption"  fontWeight="medium">
         Transaction Cost
       </MDTypography>
     );
   
     obj.avgPrice = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
         {"₹"+(totalTransactionCost).toFixed(2)}
       </MDTypography>
     );
   
     obj.last_price = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-        {/* {"₹"+(liveDetail[index]?.last_price).toFixed(2)} */}Gross P&L
+      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+       Gross P&L
       </MDTypography>
     );
   
   
     obj.grossPnl = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {totalGrossPnl > 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+      <MDTypography component="a" variant="caption" color={totalGrossPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+        {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
       </MDTypography>
     );
   
     obj.change = (
-      <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {/* {(liveDetail[index]?.change).toFixed(2)+"%"} */}Net P&L : {(totalGrossPnl-totalTransactionCost) > 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+      <MDTypography component="a" variant="caption" color={totalnetPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+        Net P&L : {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
       </MDTypography>
     );
   

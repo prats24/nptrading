@@ -6,7 +6,7 @@ dotenv.config({path: "./config.env"});
 
 const DB = process.env.DATABASE;
     const devDB = process.env.DEVDATABASE;
-//  mongoose.connect(devDB, {
+// mongoose.connect(devDB, {
    mongoose.connect(DB, {
     useNewUrlParser: true,
     

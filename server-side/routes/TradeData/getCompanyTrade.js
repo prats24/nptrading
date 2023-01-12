@@ -436,5 +436,24 @@ router.get("/getavgpricelivetradecompany", async(req, res)=>{
         
 })
 
+router.get("/getlastestlivetradecompany", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade Details Year")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
+                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1  } },
+                    { $sort: { "trade_time": -1 }}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+
+        res.status(201).json(x[0]);
+        
+})
+
 
 module.exports = router;
