@@ -11,8 +11,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
-import HeaderBuy from "./HeaderBuy";
-import HeaderSell from "./HeaderSell";
 
 export default function Data() {
 
@@ -84,7 +82,7 @@ export default function Data() {
     );
     
     instrumentDetailObj.sell = (
-        <SellModel/>
+      <SellModel />
     );
 
     instrumentDetailObj.instrumentToken = (
