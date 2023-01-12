@@ -48,37 +48,28 @@ export default function UserReportData() {
     </MDBox>
   );
 
+  // useEffect(()=>{
+  //   axios.get(`${baseUrl}api/v1/readuserdetails`)
+  //   .then((res) => {
+  //       setUserDetail(res.data);
+  //   }).catch((err) => {
+  //       return new Error(err);
+  //   })
+  // }, [])
+
   return {
     columns: [
-      { Header: "Trader Name", accessor: "Trader Name", align: "center" },
-      { Header: "Date", accessor: "Date", align: "center" },
-      { Header: "Gross P&L", accessor: "Gross P&L", align: "center" },
-      { Header: "Transaction Cost", accessor: "Transaction Cost", align: "center" },
-      { Header: "Net P&L", accessor: "Net P&L", align: "center" },
-      { Header: "# of Trades", accessor: "# of Trades", align: "center" },
-      { Header: "# of Lots Used", accessor: "# of Lots Used", align: "center" },
+      { Header: "Trader Name", accessor: "name", align: "center" },
+      { Header: "Date", accessor: "date", align: "center" },
+      { Header: "Gross P&L", accessor: "grossPnl", align: "center" },
+      { Header: "Transaction Cost", accessor: "brokerage", align: "center" },
+      { Header: "Net P&L", accessor: "netPnl", align: "center" },
+      { Header: "# of Trades", accessor: "noOfTrade", align: "center" },
+      { Header: "# of Lots Used", accessor: "lotUsed", align: "center" },
     ],
 
     rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
+
     ],
   };
 }

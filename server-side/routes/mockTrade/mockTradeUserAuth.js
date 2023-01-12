@@ -534,5 +534,40 @@ router.get("/getlastestmocktradeparticularuser/:email", async(req, res)=>{
         
 })
 
+router.get("/getuserreportdatewise/:email/:firstDate/:secondDate", async(req, res)=>{
+    const {email, firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, userId: email} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$order_timestamp", 0, 10 ]},
+                                "buyOrSell": "$buyOrSell"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    noOfTrade: {
+                        $count: {}
+                        // average_price: "$average_price"
+                    },
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                // console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
 
 module.exports = router;
