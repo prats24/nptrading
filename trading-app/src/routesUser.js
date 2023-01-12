@@ -74,15 +74,7 @@ import UserReport from "./layouts/userreports";
 
 
 const routes = [
-  {
-    type: "collapse",
-    name: "User Orders",
-    key: "userorders",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <ContactPageIcon/>,
-    route: "/userorders",
-    component: <UserOrders />,
-  },
+
   {
     type: "collapse",
     name: "Position",
@@ -109,6 +101,15 @@ const routes = [
     icon: <AccountBoxIcon/>,
     route: "/userreport",
     component: <UserReport />,
+  },
+  {
+    type: "collapse",
+    name: "User Orders",
+    key: "userorders",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <ContactPageIcon/>,
+    route: "/userorders",
+    component: <UserOrders />,
   },
 
 ];

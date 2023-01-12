@@ -1212,7 +1212,7 @@ router.get("/getlastfivemocktradecompany", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log("Today "+todayDate)
     
-    let pipeline = [{ $match: { trade_time : {$regex : '2023-01-11'}} },
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1  } },
                     { $sort: { "trade_time": -1 }},
                     { $limit: 5 }

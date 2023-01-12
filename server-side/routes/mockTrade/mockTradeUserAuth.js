@@ -421,7 +421,7 @@ router.get("/gettraderwisepnldetailsthismonth", async(req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     console.log("Yesterday Date :"+yesterdayDate)
-    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-10 23:59:59'} } },
+    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-11 23:59:59'} } },
                     { $project: { "createdBy" : 1 , "amount" : 1, "brokerage" : 1, "trade_time" : 1 }},
                     { $group: {
                                     _id: "$createdBy",
@@ -518,7 +518,7 @@ router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=
 router.get("/getlastestmocktradeparticularuser/:email", async(req, res)=>{
     console.log("Inside Aggregate API - Mock Trade Details Year")
     const {email} = req.params
-    let date = new Date();
+    let date = new Date(); 
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log("Today "+todayDate)
@@ -531,6 +531,44 @@ router.get("/getlastestmocktradeparticularuser/:email", async(req, res)=>{
     let x = await MockTradeDetails.aggregate(pipeline)
             
         res.status(201).json(x[0]);
+        
+})
+
+router.get("/gettodaysmocktradesparticularuser/:email", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade today user trades")
+    const {email} = req.params
+    let date = new Date(); 
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
+                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
+                    { $sort: { "trade_time": -1 }}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+        res.status(201).json(x);
+        
+})
+
+router.get("/gethistorymocktradesparticularuser/:email", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade today user trades")
+    const {email} = req.params
+    let date = new Date(); 
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [{ $match: { trade_time : {$lt : todayDate}, userId: email} },
+                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
+                    { $sort: { "trade_time": -1 }}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+        res.status(201).json(x);
         
 })
 
