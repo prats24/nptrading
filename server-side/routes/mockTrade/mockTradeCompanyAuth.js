@@ -375,7 +375,7 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
 
 
     // MockTradeDetails.find({order_timestamp: {$regex: todayDate}})
-    let pipeline = [{ $match: { date_part : {$gte :todayDate, $lte: lastmonthEnd }} },
+    let pipeline = [{ $match: { trade_time : {$gte : `${todayDate} 00:00:00`, $lte: `${lastmonthEnd} 23:59:59` }} },
         { $group: { _id: {},
                     amount: {
                         $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -654,11 +654,11 @@ router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
     console.log("StartDate"+yesterday);
-
+    //{ trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} }
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let x = await MockTradeDetails.aggregate([
-        { $match: { trade_time: {$gte:yesterdayDate,$lt:todayDate} } },
-        { $group: { _id : '$date_part', brokerage : { $sum : {$toDouble : "$brokerage"} } }} ,
+        { $match: { trade_time: {$gte: `${yesterdayDate} 00:00:00`, $lte: `${todayDate} 23:59:59`} } },
+        { $group: { _id :{$substr: ['$trade_time', 0, 10]}, brokerage : { $sum : {$toDouble : "$brokerage"} } }} ,
         { $sort:{ _id: 1 }}
             ])
             
@@ -717,12 +717,12 @@ router.get("/readmocktradecompanyagg",async (req, res)=>{
 
         res.status(201).json(x);
 })
-
+//{ trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} }
 router.get("/readmocktradecompanytodayagg",async (req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let x = await MockTradeDetails.aggregate([
-         { $match: {date_part: todayDate} },
+         { $match: { trade_time: {$gte : `${todayDate} 00:00:00`, $lte : `${todayDate} 23:59:59`} } },
          { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
          { $sort:{ _id: -1 }}
       ])
@@ -738,7 +738,7 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("Day"+day); // Apr 30 2000
+    console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
@@ -746,9 +746,9 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let x = await MockTradeDetails.aggregate([
-        { $match: { date_part : {$gte :yesterdayDate, $lte: todayDate }} },
+        { $match: { trade_time : {$gte :`${yesterdayDate} 00:00:00`, $lte: `${todayDate} 23:59:59` }} },
         { $group: { _id: {
-                                "date": "$date_part",
+                                "date": {$substr : ["$trade_time",0,10]},
                             },
                     amount: {
                         $sum: "$amount"
@@ -789,7 +789,7 @@ router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
     console.log("StartDate "+startday);
 
     let startdayDate = `${(startday.getFullYear())}-${String(startday.getMonth() + 1).padStart(2, '0')}-${String(startday.getDate()).padStart(2, '0')}`
-    let pipeline = [{ $match: { date_part : {$gte :startdayDate, $lte: yesterdayDate }} },
+    let pipeline = [{ $match: { trade_time : {$gte : `${startdayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }} },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -835,7 +835,7 @@ router.get("/getmocktradecompanydetailslastweek", async(req, res)=>{
 
     let startdayDate = `${(startday.getFullYear())}-${String(startday.getMonth() + 1).padStart(2, '0')}-${String(startday.getDate()).padStart(2, '0')}`
     console.log("StartDate "+startdayDate);
-    let pipeline = [{ $match: { date_part : {$gte :startdayDate, $lte: yesterdayDate }} },
+    let pipeline = [{ $match: { trade_time : {$gte : `${startdayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }} },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -874,14 +874,14 @@ router.get("/getmocktradecompanydetailsthismonth", async(req, res)=>{
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
     console.log("Yesterday "+yesterday);
-    let monthStartDate = `${(day.getFullYear())}-${String(day.getMonth() + 1).padStart(2, '0')}-"01"`
+    let monthStartDate = `${(day.getFullYear())}-${String(day.getMonth() + 1).padStart(2, '0')}-01`
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - days);
     console.log("StartDate "+startday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    let pipeline = [{ $match: { date_part : {$gte :monthStartDate, $lte: yesterdayDate }} },
+    let pipeline = [{ $match: { trade_time : {$gte : `${monthStartDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }} },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -927,7 +927,7 @@ router.get("/getmocktradecompanydetailsthisyear", async(req, res)=>{
     console.log("StartDate "+startday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    let pipeline = [{ $match: { date_part : {$gte :monthStartDate, $lte: yesterdayDate }} },
+    let pipeline = [{ $match: { trade_time : {$gte : `${monthStartDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }} },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -974,7 +974,7 @@ router.get("/getmocktradecompanydetailslastyear", async(req, res)=>{
 
     let yesterdayDate = `${(date.getFullYear()-1)}-${String('12').padStart(2, '0')}-${String('31').padStart(2, '0')}`
     console.log(yesterdayDate);
-    let pipeline = [{ $match: { date_part : {$gte :todayDate, $lte: yesterdayDate }} },
+    let pipeline = [{ $match: { trade_time : {$gte :`${todayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }} },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -1015,7 +1015,7 @@ router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     console.log("Yesterday Date :"+yesterdayDate)
-    let pipeline = [{ $match: { date_part : yesterdayDate } },
+    let pipeline = [{ $match: { trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} } },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
@@ -1044,7 +1044,7 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time : {$regex: todayDate}} },
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}} },
         
         { $group: { _id: {
                                 "symbol": "$symbol",
@@ -1078,7 +1078,7 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time : {$regex: todayDate}} },
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}} },
         
         { $group: { _id: {
                                 "traderId": "$userId",
@@ -1172,7 +1172,7 @@ router.get("/getmocktradecompanydetailsdaybeforeyesterday", async(req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     console.log("Yesterday Date :"+yesterdayDate)
-    let pipeline = [{ $match: { date_part : yesterdayDate } },
+    let pipeline = [{ $match: { trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} } },
                     { $group: { _id: {},
                                 amount: {
                                     $sum: { $round : [{$toDouble : "$amount"}, 0]}
