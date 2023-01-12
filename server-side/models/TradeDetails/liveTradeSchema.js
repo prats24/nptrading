@@ -78,7 +78,7 @@ const liveTrade = new mongoose.Schema({
     },
     isRealTrade:{ 
         type: Boolean,
-        required: true  
+        // required: true  
     },
     amount:{
         type: Number,

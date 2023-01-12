@@ -17,8 +17,8 @@ router.post("/placeorder", (async (req, res)=>{
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
-        TriggerPrice, stopLoss, validity, variety, last_price, createdBy,
-         createdOn, uId, algoBox, order_id, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, accessToken, userId} = req.body
+        TriggerPrice, validity, variety, createdBy,
+         createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, accessToken, userId} = req.body
        console.log(req.body);
        console.log("in the company auth");
 
@@ -42,12 +42,12 @@ router.post("/placeorder", (async (req, res)=>{
     let orderData;
 
 
-    variety = "amo";
-    Price = 7;
-    TriggerPrice = 7;
-    realQuantity = 10;
-    OrderType = "LIMIT";
-    Product = "MIS"
+    // variety = "amo";
+    // Price = 7;
+    // TriggerPrice = 7;
+    // realQuantity = 10;
+    // OrderType = "LIMIT";
+    // Product = "MIS"
 
     if(variety === "amo"){
         orderData = new URLSearchParams({
@@ -263,12 +263,13 @@ router.post("/placeorder", (async (req, res)=>{
                         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                         lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
-                        tradeBy: createdBy, isRealTrade: realTrade, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time
     
             
                     });
                     // console.log("this is CompanyTradeData", companyTradeData);
+                    console.log("companyTradeData", companyTradeData)
                     companyTradeData.save().then(()=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log(err, "fail")});
@@ -361,7 +362,7 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                         order_id, instrumentToken, brokerage: brokerageUser,
-                        tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time
     
                     });
