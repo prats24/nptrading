@@ -85,32 +85,34 @@ const routes = [
     route: "/Position",
     component: <UserPosition />,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "userdashboard",
+  //   // icon: <Icon fontSize="small">person</Icon>,
+  //   icon: <AccountBoxIcon/>,
+  //   route: "/userdashboard",
+  //   component: <UserDashboard />,
+  // },
+ 
   {
     type: "collapse",
-    name: "Dashboard",
-    key: "userdashboard",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
-    route: "/userdashboard",
-    component: <UserDashboard />,
-  },
-  {
-    type: "collapse",
-    name: "User Report",
-    key: "userreport",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
-    route: "/userreport",
-    component: <UserReport />,
-  },
-  {
-    type: "collapse",
-    name: "User Orders",
+    name: "Trades",
     key: "userorders",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <ContactPageIcon/>,
     route: "/userorders",
     component: <UserOrders />,
+  },
+
+  {
+    type: "collapse",
+    name: "P&L Reports",
+    key: "userreport",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <AccountBoxIcon/>,
+    route: "/userreport",
+    component: <UserReport />,
   },
 
 ];
