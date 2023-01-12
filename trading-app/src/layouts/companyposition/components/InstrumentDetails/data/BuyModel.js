@@ -442,7 +442,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
           onClose={handleClose}
           aria-labelledby="responsive-dialog-title">
           <DialogTitle id="responsive-dialog-title" sx={{ textAlign: 'center' }}>
-            {"Ragular"}
+            {"Regular"}
           </DialogTitle>
           <DialogContent>
             <DialogContentText sx={{ display: "flex", flexDirection: "column", marginLeft: 2 }}>
