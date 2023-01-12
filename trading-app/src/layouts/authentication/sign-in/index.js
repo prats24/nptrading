@@ -12,9 +12,10 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-import React from 'react'
+import React, { useContext } from 'react'
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -42,35 +43,53 @@ import BasicLayout from "../components/BasicLayout";
 
 // Images
  import bgImage from "../../../assets/images/bg-sign-in-basic.jpeg";
+import { userContext } from '../../../AuthContext';
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [userId, setEmail] = useState(false);
   const [pass, setPassword] = useState(false);
+  const setDetails = useContext(userContext);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-
+  console.log("sign componenet")
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     const navigate = useNavigate();
-    // const [userInfo, setUserInfo] = useState({
-    //     userId : "",
-    //     pass : ""
-    // });
+    let userData ;
+
+    const userDetail = async ()=>{
+      try{
+          const res = await axios.get(`${baseUrl}api/v1/loginDetail`, {
+              withCredentials: true,
+              headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Credentials": true
+              },
+          });
+                   
+          setDetails.setUserDetail(res.data);
+          userData = res.data;
+          console.log("this is data of particular user", res.data);
+  
+          if(!res.status === 200){
+              throw new Error(res.error);
+          }
+      } catch(err){
+          console.log("Fail to fetch data of user");
+          console.log(err);
+      }
+    }
 
 
     async function logInButton(e){
         e.preventDefault();
-        // setUserInfo(userInfo);
-  
-        // console.log("form submitted", userInfo);
         console.log(userId, pass);
         
-        // const {userId, pass} = userInfo;
-
         const res = await fetch(`${baseUrl}api/v1/login`, {
             method: "POST",
             credentials:"include",
@@ -91,7 +110,16 @@ function Basic() {
         }else{
             window.alert("Login succesfull");
             console.log("entry succesfull");
-            navigate("/dashboard");
+
+            // this function is extracting data of user who is logged in
+            await userDetail();
+
+            if(userData.role === "admin"){
+              navigate("/companyposition");
+            } else if(userData.role === "user"){
+              navigate("/Position");
+            }
+            
         }
     }
 

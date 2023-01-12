@@ -41,7 +41,7 @@ const mailOptions = {
             const access_token = data.getAccessToken;
             let auth = 'token' + api_key + ':' + access_token;
             
-            const url = `https://api.kite.trade/instruments/historical/${instrumentToken}/minute?from=${matchingDate}+09:15:00&to=${matchingDate}+15:29:00`;
+            const url = `https://api.kite.trade/instruments/historical/${instrumentToken}/minute?from=${matchingDate}+09:15:00&to=${matchingDate}+15:30:00`;
             
         
             let authOptions = {

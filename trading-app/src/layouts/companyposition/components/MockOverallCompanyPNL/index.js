@@ -117,16 +117,6 @@ function MockOverallCompantPNL({socket}) {
         return new Error(err);
     })
 
-      // let AvgPriceHash = new Map();
-      // avgPriceArr.push(tradeData[0])
-      // for(let i = 0; i < tradeData.length; i++){
-      //     if(avgPriceArr[avgPriceArr.length-1]._id.symbol !== tradeData[i]._id.symbol){
-      //         avgPriceArr.push(tradeData[i]);
-      //         break;
-      //     }
-      // }
-      // setAvgPrice(avgPriceArr)
-
       let hash = new Map();
 
       for(let i = tradeData.length-1; i >= 0 ; i--){ 
@@ -383,11 +373,7 @@ function MockOverallCompantPNL({socket}) {
     </MDTypography>
   );
 
-  //console.log(obj)
   rows.push(obj);
-
-
-  let totalColumns, totalRows;
 
 
   return (
