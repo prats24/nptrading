@@ -17,27 +17,49 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
+import MDBox from '../../../../../components/MDBox';
 import { Box, Typography } from '@mui/material';
 
-const BuyModel = () => {
+const SellModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const [regularSwitch, setRegularSwitch] = React.useState(true);
 
+  const [buyFormDetails, setBuyFormDetails] = React.useState({
+    exchange: "",
+    symbol: "",
+    ceOrPe: "",
+    buyOrSell: "",
+    variety: "",
+    Product: "",
+    Quantity: "",
+    Price: "",
+    OrderType: "",
+    TriggerPrice: "",
+    stopLoss: "",
+    validity: "",
+  })
+
   const [value, setValue] = React.useState('NRML');
+  buyFormDetails.Product = value;
   const handleChange = (event) => {
     setValue(event.target.value);
+    buyFormDetails.Product = event.target.value;
   };
 
   const [market, setMarket] = React.useState('MARKET');
+  buyFormDetails.OrderType = market;
   const marketHandleChange = (event) => {
     setMarket(event.target.value);
+    buyFormDetails.OrderType = event.target.value;
   };
   const [validity, setValidity] = React.useState('DAY');
+  buyFormDetails.validity = validity;
   const validityhandleChange = (event) => {
     setValidity(event.target.value);
+    buyFormDetails.validity = event.target.value;
   };
 
   const handleClickOpen = () => {
@@ -46,10 +68,36 @@ const BuyModel = () => {
 
   const handleClose = () => {
     setOpen(false);
+
+    buyFormDetails.buyOrSell = "Sell";
+
+    if (regularSwitch === true) {
+      buyFormDetails.variety = "regular"
+    }
+    else {
+      buyFormDetails.variety = "amo"
+    }
+
+    setBuyFormDetails(buyFormDetails);
+    console.log("buy button click");
+
   };
+  console.log(buyFormDetails)
 
   return (
     <div>
+      <MDButton variant="contained" color="error" onClick={handleClickOpen} fullWidth>
+        SELL
+      </MDButton>
+      <Dialog
+        fullScreen={fullScreen}
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title" sx={{ textAlign: 'center' }}>
+          {"Regular"}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ display: "flex", flexDirection: "column", marginLeft: 2, marginTop: 1 }}>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: 2 }}><Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600 }}>Symbol</Box> &nbsp; &nbsp; &nbsp; <Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600 }}>LTP</Box></Box>
@@ -75,6 +123,7 @@ const BuyModel = () => {
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
                   label="Quantity"
+                  onChange={(e) => { { buyFormDetails.Quantity = (e.target.value) } }}
                   sx={{ margin: 1, padding: 1, }}
                 >
                   <MenuItem value="100">100</MenuItem>
@@ -82,11 +131,11 @@ const BuyModel = () => {
                 </Select>
               </FormControl>
               <TextField
-                id="outlined-basic" label="Price" variant="standard"
+                id="outlined-basic" label="Price" variant="standard" onChange={(e) => { { buyFormDetails.Price = (e.target.value) } }}
                 sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
 
               <TextField
-                id="outlined-basic" label="Trigger Price" variant="standard"
+                id="outlined-basic" label="Trigger Price" variant="standard" onChange={(e) => { { buyFormDetails.TriggerPrice = (e.target.value) } }}
                 sx={{ margin: 1, padding: 1, width: "300px" }} />
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
@@ -108,8 +157,7 @@ const BuyModel = () => {
                 <RadioGroup
                   aria-labelledby="demo-controlled-radio-buttons-group"
                   name="controlled-radio-buttons-group"
-                  value={value}
-                  onChange={handleChange}
+                  onChange={(e) => { { buyFormDetails.stopLoss = (e.target.value) } }}
                   sx={{ display: "flex", flexDirection: "row" }}
                 >
                   <FormControlLabel value="SL" control={<Radio />} label="SL" />
@@ -137,9 +185,19 @@ const BuyModel = () => {
             </Box>
           </DialogContentText>
         </DialogContent>
-       
+        <DialogActions>
+          <MDButton autoFocus variant="contained" color="error" onClick={(e) => { handleClose(e) }}>
+            Sell
+          </MDButton>
+          <MDButton variant="contained" color="error" onClick={handleClose} autoFocus>
+            Close
+          </MDButton>
+        </DialogActions>
+
+
+      </Dialog>
     </div>
   );
 }
 
-export default BuyModel
+export default SellModel

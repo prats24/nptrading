@@ -69,7 +69,7 @@ function configs(labels, datasets) {
         },
         x: {
           grid: {
-            drawBorder: false,
+            drawBorder: true,
             display: true,
             drawOnChartArea: true,
             drawTicks: false,

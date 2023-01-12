@@ -47,13 +47,7 @@ function AdminDashboard() {
   const {labels, datasets} = reportsBarChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-  let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
-  let socket;
-  try{
-      socket = io.connect(`${baseUrl1}`)
-  } catch(err){
-      throw new Error(err);
-  }
+ 
 
     const [todaymockcount, setTodayMockCount] = useState([]);
     const [allmockcount, setAllMockCount] = useState([]);
@@ -108,24 +102,6 @@ function AdminDashboard() {
     
     let dayname = [];
    
-    useEffect(()=>{
-
-        console.log(socket);
-        socket.on("connect", ()=>{
-            console.log(socket.id);
-            socket.emit("hi",true)
-        })
-        socket.on("noToken", (data)=>{
-            console.log("no token");
-            window.alert(data);
-        })
-        socket.on("wrongToken", (data)=>{
-            console.log("wrong Token");
-            window.alert(data);
-        })
-
-    }, []);
-    
    //This week pnl details code starts
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisweek`)
@@ -375,10 +351,10 @@ pnldate.map((elem)=>{
                   title="Last 5 days net p&l"
                   description={
                     <>
-                      (<strong>+15%</strong>) increase in today sales.
+                      (<strong>+15%</strong>) increase than previous last 5 days.
                     </>
                   }
-                  date="updated 4 min ago"
+                  date="updated yesterday"
                   chart={
                     {
                       labels: datepartpnl,
@@ -393,9 +369,14 @@ pnldate.map((elem)=>{
               <MDBox mb={3}>
                 <ReportsBarChart
                   color="info"
+                  colorheight="12.5rem"
                   title="Last 5 days Transaction Cost"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
+                  description={
+                    <>
+                      (<strong>+20%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
                   chart={{
                     labels: dayname,
                     datasets: { label: "Transaction Cost", data: brokerage },
@@ -409,8 +390,12 @@ pnldate.map((elem)=>{
                 <ReportsLineChart
                   color="dark"
                   title="Last 5 days gross p&l"
-                  description="Last Campaign Performance"
-                  date="just updated"
+                  description={
+                    <>
+                      (<strong>+10%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
                   chart={
                     {
                       labels: datepartpnl,
@@ -440,8 +425,8 @@ pnldate.map((elem)=>{
                 trades={thisyesterdaytrades}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask day before yesterday",
+                  amount: "+100%",
+                  label: "than day before yesterday(Net P&L)",
                 }}
               />
             </MDBox>
@@ -460,9 +445,9 @@ pnldate.map((elem)=>{
                 npnl={thisweeknpnl >= 0 ? "+₹"+thisweeknpnl : "-₹"+ (-thisweeknpnl)}
                 trades={thisweektrades}
                 percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  color: "error",
+                  amount: "-130%",
+                  label: "than last week(Net P&L)",
                 }}
               />
             </MDBox>
@@ -482,9 +467,9 @@ pnldate.map((elem)=>{
                 npnl={thismonthnpnl >= 0 ? "+₹"+thismonthnpnl : "-₹"+ (-thismonthnpnl)}
                 trades={thismonthtrades}
                 percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  color: "error",
+                  amount: "-40%",
+                  label: "than last month",
                 }}
               />
             </MDBox>
@@ -504,9 +489,9 @@ pnldate.map((elem)=>{
                 npnl={thisyearnpnl >= 0 ? "+₹"+thisyearnpnl : "-₹"+ (-thisyearnpnl)}
                 trades={thisyeartrades}
                 percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  color: "error",
+                  amount: "-40%",
+                  label: "than last year",
                 }}
               />
             </MDBox>

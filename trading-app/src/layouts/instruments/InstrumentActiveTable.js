@@ -17,11 +17,9 @@ import Header from "./Header";
 // import authorsTableData from "./data/authorsTableData";
 import activeInstrumentsData from "./data/activeInstrumentsData";
 import projectsTableData from "./data/projectsTableData";
-import MDButton from '../../components/MDButton';
 import InstrumentModel from './InstrumentModel';
 
 const InstrumentActiveTable = () => {
-    // const { columns, rows } = authorsTableData();
     const { columns, rows } = activeInstrumentsData();
     const { columns: pColumns, rows: pRows } = projectsTableData();
     return (<>
@@ -59,33 +57,6 @@ const InstrumentActiveTable = () => {
                                 </MDBox>
                             </Card>
                         </Grid>
-                        {/* <Grid item xs={12} md={12} lg={12}>
-                            <Card>
-                                <MDBox
-                                    mx={2}
-                                    mt={-3}
-                                    py={3}
-                                    px={2}
-                                    variant="gradient"
-                                    bgColor="info"
-                                    borderRadius="lg"
-                                    coloredShadow="info"
-                                >
-                                    <MDTypography variant="h6" color="white">
-                                        Histroical Traders Orders(Mock)
-                                    </MDTypography>
-                                </MDBox>
-                                <MDBox pt={3}>
-                                    <DataTable
-                                        table={{ columns: pColumns, rows: pRows }}
-                                        isSorted={false}
-                                        entriesPerPage={false}
-                                        showTotalEntries={false}
-                                        noEndBorder
-                                    />
-                                </MDBox>
-                            </Card>
-                        </Grid>*/}
                     </Grid> 
                 </MDBox> 
                 </>
