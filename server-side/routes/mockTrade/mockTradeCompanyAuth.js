@@ -1216,4 +1216,32 @@ router.get("/getlastfivemocktradecompany", async(req, res)=>{
         
 })
 
+router.get("/daywisecompanypnl", async(req, res)=>{
+    console.log("Inside Aggregate API - Day wise company pnl")
+    
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [ { $group :
+                            { _id: {
+                                "date": {$substr: [ "$trade_time", 0, 10 ]},
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    }
+                }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
+
 module.exports = router;
