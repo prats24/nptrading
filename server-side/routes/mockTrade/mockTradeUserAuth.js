@@ -421,7 +421,7 @@ router.get("/gettraderwisepnldetailsthismonth", async(req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     console.log("Yesterday Date :"+yesterdayDate)
-    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-11 23:59:59'} } },
+    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-12 23:59:59'} } },
                     { $project: { "createdBy" : 1 , "amount" : 1, "brokerage" : 1, "trade_time" : 1 }},
                     { $group: {
                                     _id: "$createdBy",
@@ -534,23 +534,39 @@ router.get("/getlastestmocktradeparticularuser/:email", async(req, res)=>{
         
 })
 
-router.get("/gettodaysmocktradesparticularuser/:email", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade today user trades")
-    const {email} = req.params
-    let date = new Date(); 
-    const days = date.getDay();
+router.get("/getuserreportdatewise/:email/:firstDate/:secondDate", async(req, res)=>{
+    const {email, firstDate, secondDate} = req.params;
+    let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
     
-    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
-                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
-                    { $sort: { "trade_time": -1 }}
-                ]
-
-    let x = await MockTradeDetails.aggregate(pipeline)
-            
-        res.status(201).json(x);
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, userId: email} },
         
+        { $group: { _id: {
+                             "date": {$substr: [ "$order_timestamp", 0, 10 ]},
+                                "buyOrSell": "$buyOrSell"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    noOfTrade: {
+                        $count: {}
+                        // average_price: "$average_price"
+                    },
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                // console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
 })
 
 router.get("/gethistorymocktradesparticularuser/:email", async(req, res)=>{
@@ -572,5 +588,23 @@ router.get("/gethistorymocktradesparticularuser/:email", async(req, res)=>{
         
 })
 
+router.get("/gettodaysmocktradesparticularuser/:email", async(req, res)=>{
+    console.log("Inside Aggregate API - Mock Trade today user trades")
+    const {email} = req.params
+    let date = new Date(); 
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
+                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
+                    { $sort: { "trade_time": -1 }}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+        res.status(201).json(x);
+        
+})
 
 module.exports = router;
