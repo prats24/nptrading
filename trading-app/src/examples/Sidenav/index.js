@@ -39,6 +39,8 @@ import SidenavCollapse from "./SidenavCollapse";
 // Custom styles for the Sidenav
 import SidenavRoot from "./SidenavRoot";
 import sidenavLogoLabel from "./styles/sidenav";
+import { useNavigate } from "react-router-dom";
+
 
 // Material Dashboard 2 React context
 import {
@@ -63,6 +65,11 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }
 
   const closeSidenav = () => setMiniSidenav(dispatch, true);
+
+  const navigate = useNavigate();
+  function goOut(){
+    navigate("/");
+  }
 
   useEffect(() => {
     // A function that sets the mini state of the sidenav.
@@ -188,6 +195,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           variant="gradient"
           color={sidenavColor}
           fullWidth
+          onClick={goOut}
         >
           GO OUT
         </MDButton>

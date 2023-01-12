@@ -72,8 +72,13 @@ function UserReport() {
   let [overallPnl, setOverallPnl] = useState([]);
 
   useEffect(()=>{
-
-  },[getDetails, overallPnl])
+    pnlCalculation(valueInDate, valueInDate)
+      totalPnl = 0;
+      totalTransactionCost = 0;
+      totalTrade = 0;
+      totalTradingDays = 0;
+      overallPnl = 0;
+  },[getDetails])
 
   console.log(getDetails)
 
@@ -85,6 +90,11 @@ function UserReport() {
     }
     setFirstDate(e.target.value)
     pnlCalculation(e.target.value, secondDate)
+    totalPnl = 0;
+    totalTransactionCost = 0;
+    totalTrade = 0;
+    totalTradingDays = 0;
+    overallPnl = 0;
     console.log(e.target.value);
   }
   function endDate(e){
@@ -95,6 +105,11 @@ function UserReport() {
     }
     setSecondDate(e.target.value)
     pnlCalculation(firstDate, e.target.value)
+    totalPnl = 0;
+    totalTransactionCost = 0;
+    totalTrade = 0;
+    totalTradingDays = 0;
+    overallPnl = 0;
     console.log(e.target.value);
   }
 
@@ -206,6 +221,8 @@ function UserReport() {
 
   overallPnl.map((elem)=>{
     let obj={}
+    let updatedValue = (-(elem.totalBuy+elem.totalSell));
+
     obj.name = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
         {getDetails.userDetails.name}
@@ -218,17 +235,18 @@ function UserReport() {
     );
     obj.grossPnl = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {(elem.totalBuy+elem.totalSell).toFixed(2)}
+        {updatedValue > 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
       </MDTypography>
     );
     obj.brokerage = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {(elem.brokerage).toFixed(2)}
+        {"₹"+(elem.brokerage).toFixed(2)}
       </MDTypography>
     );
     obj.netPnl = (
       <MDTypography component="a" href="#" variant="caption"  fontWeight="medium">
-        {((elem.totalBuy+elem.totalSell)-(elem.brokerage)).toFixed(2)}
+        {/* {((updatedValue)-(elem.brokerage)).toFixed(2)} */}
+        {((updatedValue)-(elem.brokerage)) > 0.00 ? "+₹" + (((updatedValue)-(elem.brokerage)).toFixed(2)): "-₹" + ((-((updatedValue)-(elem.brokerage))).toFixed(2))}
       </MDTypography>
     );
     obj.noOfTrade = (
