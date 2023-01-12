@@ -11,8 +11,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
-import HeaderBuy from "./HeaderBuy";
-import HeaderSell from "./HeaderSell";
 
 export default function Data() {
 
@@ -74,18 +72,18 @@ export default function Data() {
         {elem.contractDate}
       </MDTypography>
     );
-    instrumentDetailObj.avgprice = (
-      <MDTypography variant="caption" color="text" fontWeight="medium">
-        ₹{elem.average_price}
-      </MDTypography>
-    );
-    instrumentDetailObj.buy = (
-        <HeaderBuy/>
-    );
+    // instrumentDetailObj.avgprice = (
+    //   <MDTypography variant="caption" color="text" fontWeight="medium">
+    //     ₹{elem.average_price}
+    //   </MDTypography>
+    // );
+    // instrumentDetailObj.buy = (
+    //     <BuyModel/>
+    // );
     
-    instrumentDetailObj.sell = (
-      <HeaderSell />
-    );
+    // instrumentDetailObj.sell = (
+    //   <SellModel />
+    // );
 
     instrumentDetailObj.instrumentToken = (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
@@ -109,6 +107,7 @@ export default function Data() {
       { Header: "sell", accessor: "sell", width: "5%", align: "center" },
     ],
 
-    rows: instrumentDetailArr
+    rows: instrumentDetailArr,
+    instrumentData: instrumentData
   };
 }

@@ -21,9 +21,9 @@ const getKiteCred = require('../../marketData/getKiteCred');
 
 router.post("/mocktradecompany", async (req, res)=>{
 
-    let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
-         TriggerPrice, stopLoss, validity, variety, last_price, createdBy, userId,
-          createdOn, uId, algoBox, order_id, instrumentToken, realTrade, realBuyOrSell, realQuantity} = req.body
+    let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
+          validity, variety, createdBy, userId,
+           uId, algoBox, order_id, instrumentToken,  realBuyOrSell, realQuantity} = req.body
         console.log(req.body);
         console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
@@ -32,17 +32,9 @@ router.post("/mocktradecompany", async (req, res)=>{
         const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
         const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
 
-        // let livetradeData;
-        // if(realTrade){
-        //     livetradeData = await LiveTradeDetails.find({uId : uId});
-        // }
 
-        // let checkingLive = await LiveTradeDetails.find();
-        // console.log(uId);
-        // console.log("checkingLive", checkingLive);
-
-    if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !last_price || !algoName || !transactionChange || !instrumentChange || !exchangeChange || !lotMultipler || !productChange || !tradingAccount || !instrumentToken){
-        console.log(Boolean(exchange)); console.log(Boolean(symbol)); console.log(Boolean(buyOrSell)); console.log(Boolean(Quantity)); console.log(Boolean(Product)); console.log(Boolean(OrderType)); console.log(Boolean(validity)); console.log(Boolean(variety)); console.log(Boolean(last_price)); console.log(Boolean(algoName)); console.log(Boolean(transactionChange)); console.log(Boolean(instrumentChange)); console.log(Boolean(exchangeChange)); console.log(Boolean(lotMultipler)); console.log(Boolean(productChange)); console.log(Boolean(tradingAccount));
+    if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !algoName || !transactionChange || !instrumentChange || !exchangeChange || !lotMultipler || !productChange || !tradingAccount){
+        console.log(Boolean(exchange)); console.log(Boolean(symbol)); console.log(Boolean(buyOrSell)); console.log(Boolean(Quantity)); console.log(Boolean(Product)); console.log(Boolean(OrderType)); console.log(Boolean(validity)); console.log(Boolean(variety));  console.log(Boolean(algoName)); console.log(Boolean(transactionChange)); console.log(Boolean(instrumentChange)); console.log(Boolean(exchangeChange)); console.log(Boolean(lotMultipler)); console.log(Boolean(productChange)); console.log(Boolean(tradingAccount));
         console.log("data nhi h pura");
         return res.status(422).json({error : "please fill all the feilds..."})
     }

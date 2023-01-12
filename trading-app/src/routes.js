@@ -69,9 +69,10 @@ import Icon from "@mui/material/Icon";
 import UserOrders from "./layouts/userorders";
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import UserPosition from "./layouts/User Position";
+// import UserPosition from "./layouts/userposition";
 import UserDashboard from "./layouts/userdashboard";
 import UserReport from "./layouts/userreports";
-
+import AdminReport from "./layouts/adminreport";
 
 const routes = [
   {
@@ -99,6 +100,15 @@ const routes = [
     // component: <Dashboard />,
   },
   
+  {
+    type: "collapse",
+    name: "Admin Report",
+    key: "adminreport",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <AccountBoxIcon/>,
+    route: "/adminreport",
+    component: <AdminReport/>,
+  },
   {
     type: "collapse",
     name: "Trader Dashboard",
