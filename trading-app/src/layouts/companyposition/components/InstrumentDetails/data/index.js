@@ -72,18 +72,18 @@ export default function Data() {
         {elem.contractDate}
       </MDTypography>
     );
-    instrumentDetailObj.avgprice = (
-      <MDTypography variant="caption" color="text" fontWeight="medium">
-        ₹{elem.average_price}
-      </MDTypography>
-    );
-    instrumentDetailObj.buy = (
-        <BuyModel/>
-    );
+    // instrumentDetailObj.avgprice = (
+    //   <MDTypography variant="caption" color="text" fontWeight="medium">
+    //     ₹{elem.average_price}
+    //   </MDTypography>
+    // );
+    // instrumentDetailObj.buy = (
+    //     <BuyModel/>
+    // );
     
-    instrumentDetailObj.sell = (
-      <SellModel />
-    );
+    // instrumentDetailObj.sell = (
+    //   <SellModel />
+    // );
 
     instrumentDetailObj.instrumentToken = (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
@@ -107,6 +107,7 @@ export default function Data() {
       { Header: "sell", accessor: "sell", width: "5%", align: "center" },
     ],
 
-    rows: instrumentDetailArr
+    rows: instrumentDetailArr,
+    instrumentData: instrumentData
   };
 }
