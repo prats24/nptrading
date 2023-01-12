@@ -124,7 +124,7 @@ function AdminDashboard() {
             window.alert("Server Down");
             return new Error(err);
         })
-    });
+    },[]);
     console.log(todaymockcount)
     console.log(allmockcount)
     console.log(todaylivecount)
