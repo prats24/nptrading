@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from "react"
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -19,7 +20,7 @@ const TradingAlgoModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
+  const [formData, setFormData] = useState({});
   const handleClickOpen = () => {
     setOpen(true);
   };
