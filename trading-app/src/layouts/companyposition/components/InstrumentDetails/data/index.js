@@ -72,27 +72,13 @@ export default function Data() {
         {elem.contractDate}
       </MDTypography>
     );
-    // instrumentDetailObj.avgprice = (
-    //   <MDTypography variant="caption" color="text" fontWeight="medium">
-    //     ₹{elem.average_price}
-    //   </MDTypography>
-    // );
-    // instrumentDetailObj.buy = (
-    //     <BuyModel/>
-    // );
-    
-    // instrumentDetailObj.sell = (
-    //   <SellModel />
-    // );
 
     instrumentDetailObj.instrumentToken = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.instrumentToken}
       </MDTypography>
     );
 
-    //console.log(typeof(instrumentDetailObj));
-    //console.log(instrumentDetailObj)
     instrumentDetailArr.push(instrumentDetailObj)
   })
 
@@ -103,8 +89,8 @@ export default function Data() {
       { Header: "instrument", accessor: "instrument", width: "10%", align: "center" },
       { Header: "ltp", accessor: "last_price", width: "10%", align: "center" },
       { Header: "Change(%)", accessor: "change", width: "10%", align: "center" },
-      { Header: "buy", accessor: "buy", width: "5%", align: "center" },
-      { Header: "sell", accessor: "sell", width: "5%", align: "center" },
+      // { Header: "buy", accessor: "buy", width: "5%", align: "center" },
+      // { Header: "sell", accessor: "sell", width: "5%", align: "center" },
     ],
 
     rows: instrumentDetailArr,

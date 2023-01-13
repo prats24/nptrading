@@ -338,7 +338,7 @@ router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await LiveCompanyTradeData.aggregate([
-        { $match: { trade_time : {$regex: todayDate}} },
+        { $match: { trade_time : {$regex: todayDate}, status: "COMPLETE"} },
         
         { $group: { _id: {
                                 "symbol": "$symbol",
@@ -372,7 +372,7 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let pnlDetails = await LiveCompanyTradeData.aggregate([
-        { $match: { trade_time : {$regex: todayDate}} },
+        { $match: { trade_time : {$regex: todayDate}, status: "COMPLETE"} },
         
         { $group: { _id: {
                                 "traderId": "$userId",
@@ -411,7 +411,7 @@ router.get("/getavgpricelivetradecompany", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log("Today "+todayDate)
     
-    let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, status: "COMPLETE"} },
 
                     { $sort: { "trade_time": 1 }},
                    { $group:

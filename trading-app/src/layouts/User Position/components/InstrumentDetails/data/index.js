@@ -87,7 +87,7 @@ export default function Data() {
     // );
 
     instrumentDetailObj.instrumentToken = (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
         {elem.instrumentToken}
       </MDTypography>
     );
