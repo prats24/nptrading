@@ -1,5 +1,4 @@
-import * as React from 'react';
-import {useState, useContext} from "react"
+import React, {useState, useContext} from "react"
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,13 +15,32 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { userContext } from '../../../AuthContext';
 import uniqid from "uniqid";
+import UserList from "./UserList"
+import MDBox from "../../../components/MDBox";
+import MDTypography from "../../../components/MDTypography";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import Data from "./MapUserData";
+import DataTable from "../../../examples/Tables/DataTable";
+
+
+
+
 // import axios from "axios"
 
 
-const MapUser = () => {
+const MapUser = ({algoName}) => {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const [open, setOpen] = React.useState(false);
+  
+  const { columns, rows } = Data();
+  let [valueForRealTrade, setvalueForRealTrade] = useState();
+  let [valueForEnableTrade, setvalueForEnableTrade] = useState();
+
+
   let date = new Date();
   const getDetails = useContext(userContext);
   let modifiedOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
@@ -36,18 +54,56 @@ const MapUser = () => {
   
   const [reRender, setReRender] = useState(true);
   const [permissionData, setPermissionData] = useState([]);
-  console.log(permissionData);
+  //console.log(permissionData);
   
   const [modal, setModal] = useState(false);
   const [addUser, setAddUser] = useState([]);
+
+  function tradeEnableChange(e){
+    valueForEnableTrade = undefined;
+    setvalueForEnableTrade(e.target.value);
+    valueForEnableTrade = e.target.value
+    algoData.tradingEnable = e.target.value
+    console.log("in enable", valueForEnableTrade, e.target.value)
+  }
+
+  function realTradeChange(e){
+    valueForRealTrade = undefined;
+    setvalueForRealTrade(e.target.value)
+    algoData.realTrading = e.target.value;
+    console.log("in real", valueForRealTrade, e.target.value)
+  }
 
   let permissionDataUpdated = permissionData.filter((elem)=>{
       return elem.algoName === algoName;
   })
 
-  console.log("addUser", addUser, "permissionDataUpdated", permissionDataUpdated, permissionData);
-  let newData = addUser.concat(permissionDataUpdated);
-  console.log("this is add usere", newData);
+  let newData = [];
+  //console.log("addUser", addUser, "permissionDataUpdated", permissionDataUpdated);
+  if(addUser.length !== 0 && permissionDataUpdated.length !== 0){
+    for(let i = 0; i < addUser.length; i++){
+      for(let j = 0; j < permissionDataUpdated.length; j++){
+          if(addUser[i].userId === permissionDataUpdated[j].userId){
+              addUser.splice(i, 1);
+              j = -1;
+          }
+      }
+    }
+
+    newData = addUser.concat(permissionDataUpdated);
+
+  } else{
+    newData = addUser.concat(permissionDataUpdated);
+  }
+  //console.log("this is add usere", newData);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const[algoData, setAlgoData] = useState({
       name:"",
@@ -63,25 +119,25 @@ const MapUser = () => {
           return elem._id === id
       })
       algoData.name=newDataUpdated[0].userName;
-      algoData.tradingEnable = entrading;
-      algoData.realTrading = reTrading;
+      setEntrading(algoData.tradingEnable);
+      setreTrading(algoData.realTrading)
       setAlgoData(algoData);
-      console.log(algoData, newDataUpdated);
+      //console.log(algoData, newDataUpdated);
 
       if(permissionDataUpdated.length){
           for(let elem of permissionDataUpdated){
               if(elem.userId === newDataUpdated[0].userId){
-                  console.log("put request");
+                  //console.log("put request");
                   patchReq(id);
                   flag = false;
               }
           }
           if(flag){
-              console.log("post request");
+              //console.log("post request");
               postReq(newDataUpdated);
           }
       } else{
-          console.log("post request");
+          //console.log("post request");
           postReq(newDataUpdated);
       }
 
@@ -97,11 +153,11 @@ const MapUser = () => {
 
       if(permissionData.status === 422 || permissionData.error || !permissionData){
           window.alert(permissionData.error);
-          console.log("Failed to Delete");
+          //console.log("Failed to Delete");
       }else {
-          console.log(permissionData);
+          //console.log(permissionData);
           window.alert("Delete succesfull");
-          console.log("Delete succesfull");
+          //console.log("Delete succesfull");
       }
 
       reRender ? setReRender(false) : setReRender(true)
@@ -125,16 +181,16 @@ const MapUser = () => {
 
       if(permissionData.status === 422 || permissionData.error || !permissionData){ 
           window.alert(permissionData.error);
-          console.log("invalid entry");
+          //console.log("invalid entry");
       }else{
           // window.alert("entry succesfull");
-          console.log("entry succesfull");
+          //console.log("entry succesfull");
       }
   }
 
   async function patchReq(id){
       const {name, tradingEnable, realTrading} = algoData;
-      console.log("algoData", algoData);
+      //console.log("algoData", algoData);
       const response = await fetch(`${baseUrl}api/v1/readpermissionadduser/${id}`, {
           method: "PATCH",
           headers: {
@@ -151,36 +207,41 @@ const MapUser = () => {
 
       if (permissionData.status === 422 || permissionData.error || !permissionData) {
           window.alert(permissionData.error);
-          console.log("Failed to Edit");
+          //console.log("Failed to Edit");
       }else {
-          console.log(permissionData);
+          //console.log(permissionData);
           window.alert("Edit succesfull");
-          console.log("Edit succesfull");
+          //console.log("Edit succesfull");
       }
   }
 
+  //console.log("newData", newData)
+  newData.map((elem)=>{
+    valueForEnableTrade = (elem.isTradeEnable);
+    valueForRealTrade = (elem.isRealTradeEnable)
 
-  newData.map(()=>{
+    // console.log(elem.isTradeEnable, elem.isRealTradeEnable)
     let obj = {};
     obj.name = (
         <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-          {elem.name}
+          {elem.userName}
         </MDTypography>
     );
 
     obj.tradeEnable = (
       <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Trading Enable</InputLabel>
+              <InputLabel  id="demo-simple-select-standard-label">Trading Enable</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Trading Enable"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
-                onChange={(e)=>{algoData.tradingEnable = e.target.value}}
+                onChange={(e)=>{tradeEnableChange(e)}}
+                // value={valueForEnableTrade}
               >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
               </Select>
             </FormControl>
       </MDTypography>
@@ -195,10 +256,11 @@ const MapUser = () => {
                 id="demo-simple-select-standard"
                 label="Real Trading"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
-                onChange={(e)=>{algoData.realTrading = e.target.value}}
+                onChange={(e)=>{realTradeChange(e)}}
+                // value={valueForRealTrade}
               >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
               </Select>
             </FormControl>
       </MDTypography>
@@ -214,14 +276,17 @@ const MapUser = () => {
       </MDTypography>
     );
 
+    rows.push(obj)
   })
 
 
   return (
     <div>
-      <MDButton variant="outlined" onClick={handleClickOpen}>
-        Create Trading Alog
+
+      <MDButton variant="outlined" bgColor="blue" onClick={handleClickOpen}>
+        MapUser
       </MDButton>
+
       <Dialog
         fullScreen={fullScreen}
         open={open}
@@ -236,6 +301,7 @@ const MapUser = () => {
 
 
 
+              <UserList reRender={reRender} algoName={algoName} addUser={addUser} setAddUser={setAddUser} setPermissionData={setPermissionData}/>
 
 
 
@@ -257,10 +323,6 @@ const MapUser = () => {
                                         justifyContent: "space-between",
                                       }}>
 
-                                    <MDTypography variant="h6" color="white" py={2.5}>
-                                        Active Instruments
-                                    </MDTypography>
-                                    <TradingAlgoModel/>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable
@@ -279,9 +341,9 @@ const MapUser = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={formSubmit}>
+          {/* <Button autoFocus onClick={formSubmit}>
             OK
-          </Button>
+          </Button> */}
           <Button onClick={handleClose} autoFocus>
             Close
           </Button>

@@ -93,9 +93,11 @@ router.patch("/readpermission/:id", async (req, res)=>{
 
 router.patch("/readpermissionadduser/:id", async (req, res)=>{
     console.log(req.params)
-    console.log("this is body", req.body);
+    const {id} = req.params
+    console.log("this is body", req.body, id);
     try{ 
-        const {id} = req.params
+        
+
         const permission = await Permission.findOneAndUpdate({_id : id}, {
             $set:{ 
                 modifiedOn: req.body.modifiedOn,

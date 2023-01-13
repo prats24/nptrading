@@ -100,6 +100,27 @@ router.patch("/readtradingAlgo/:id", async (req, res)=>{
     }
 })
 
+router.patch("/updatemargindeduction/:id", async (req, res)=>{
+    console.log(req.params)
+    console.log("this is body", req.body);
+    try{ 
+        const {id} = req.params
+        const {marginDeduction} = req.body;
+        const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
+            $set:{ 
+                
+                marginDeduction: marginDeduction
+            }
+            
+        })
+        console.log("this is role", tradingAlgo);
+        res.send(tradingAlgo)
+        // res.status(201).json({massage : "data patch succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
 router.delete("/readtradingAlgo/:id", async (req, res)=>{
     console.log(req.params)
     try{

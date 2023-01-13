@@ -15,7 +15,7 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
         axios.get(`${baseUrl}api/v1/readuserdetails`)
         .then((res)=>{
             setData(res.data);
-            console.log(res.data);
+            //console.log(res.data);
 
         }).catch((err)=>{
             window.alert("Server Down");
@@ -32,35 +32,48 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
             return new Error(err);
         })
 
-        
     },[reRender])
+    //console.log(data, permissionArr)
 
-    for(let i = 0; i < data.length; i++){
-        for(let j = 0; j < permissionArr.length; j++){
-            if(data[i].email === permissionArr[j].userId && permissionArr[j].algoName === algoName){
-                data.splice(i, 1);
-                j = -1;
+    // permissionArr.map((elem, index)=>{
+    //     data.map((subElem, subIndex)=>{
+    //         if(subElem.email === elem.userId && elem.algoName === algoName){
+    //             data.splice(subIndex, 1);
+                
+    //         }
+    //     })
+    // })
+
+    if(data.length !== 0 && permissionArr.length !== 0){
+        for(let i = 0; i < data.length; i++){
+            for(let j = 0; j < permissionArr.length; j++){
+                if(data[i].email === permissionArr[j].userId && permissionArr[j].algoName === algoName){
+                    data.splice(i, 1);
+                    j = -1;
+                }
             }
         }
     }
 
 
-    console.log("data", data, permissionArr);
+    //console.log("data", data, permissionArr);
 
     let options = [];
-    for(let elem of data){
-        console.log(elem);
-        options.push({value: elem.email, label: elem.name, userId: elem.email, userName: elem.name, _id:_id});
-        console.log(options);
+    if(data.length !== 0){
+        for(let elem of data){
+            //console.log(elem);
+            options.push({value: elem.email, label: elem.name, userId: elem.email, userName: elem.name, _id:_id});
+            //console.log(options);
+        }
     }
-    console.log(data);
-    console.log(options);
+    //console.log(data);
+    //console.log(options);
 
 
-    console.log(addUser);
+    //console.log(addUser);
 
     return (
-        <div className={Styles.selectUser}>
+        <div>
             <Select
                 placeholder="Select User"
                 onChange={setAddUser}

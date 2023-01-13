@@ -22,12 +22,16 @@ import projectsTableData from "./data/projectsTableData";
 import AlgoHeader from "./Header";
 import TradingAlgoModel from './TradingAlgoModel';
 import TradingAlgoData from './data/TradingAlgoData';
+import MapUser from "./MapUser/MapUser"
+import RealTrade from "./RealTrade/RealTrade"
 
 const TradingAlgo = () => {
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const { columns, rows } = TradingAlgoData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
   const [algoData, setAlgoData] = useState([]);
+  const [reRender, setReRender] = useState(true);
+
 
     useEffect(()=>{
         axios.get(`${baseUrl}api/v1/readtradingAlgo`)
@@ -38,14 +42,31 @@ const TradingAlgo = () => {
             window.alert("Server Down");
             return new Error(err);
         })
-    },[])
+    },[reRender])
 
-    function realTrade(){
 
-    }
-
-    function marginDeduction(){
-        
+    async function marginDeduction(id, marginDeduction){
+        // const res = await fetch(`${baseUrl}api/v1/updatemargindeduction/${id}`, {
+        //     method: "PATCH",
+        //     headers: {
+        //         "Accept": "application/json",
+        //         "content-type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         marginDeduction
+        //     })
+        // });
+        // const dataResp = await res.json();
+        // console.log(dataResp);
+        // if (dataResp.status === 422 || dataResp.error || !dataResp) {
+        //     window.alert(dataResp.error);
+        //     // console.log("Failed to Edit");
+        // } else {
+        //     // console.log(dataResp);
+        //     window.alert("Switched succesfull");
+        //     // console.log("Edit succesfull");
+        // }
+        // reRender ? setReRender(false) : setReRender(true)
     }
 
     algoData.map((subelem)=>{
@@ -57,7 +78,7 @@ const TradingAlgo = () => {
         );
         obj.mapUser = (
             <MDButton fontWeight="medium">
-              Map User
+              <MapUser algoName={subelem.algoName}/>
             </MDButton>
         );
         obj.transactionChange = (
@@ -96,13 +117,13 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.isRealTrade = (
-            <MDButton variant="contained" color="info" onClick={realTrade} fullWidth>
-                {(subelem.isRealTrade)}
-            </MDButton>
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+                <RealTrade id={subelem._id} Render={{reRender, setReRender}} tradingAlgo={algoData} buttonTextBool={subelem.isRealTrade} />
+            </MDTypography>
         );
         obj.marginDeduction = (
-            <MDButton variant="contained" color="info" onClick={marginDeduction} fullWidth>
-                {(subelem.marginDeduction)}
+            <MDButton variant="outlined" bgColor="blue" onClick={()=>{marginDeduction(subelem._id, subelem.marginDeduction)}} fullWidth>
+                {(subelem.marginDeduction) ? "ON" : "OFF"}
             </MDButton>
         );
         obj.createdOn = (
