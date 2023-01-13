@@ -108,6 +108,11 @@ function AdminDashboard() {
     const [Type, setType] = useState([]);
     const [Symbol, setSymbol] = useState([]);
     const [TradeTime, setTradeTime] = useState([]);
+    const [monthPNLData, setMonthPNLData] = useState([]);
+    const [monthgpnl, setMonthGpnlarray] = useState([]);
+    const [monthnpnl, setMonthNpnlarray] = useState([]);
+    const [monthbrokerage, setMonthBrokeragearray] = useState([]);
+    const [monthpnldate, setMonthPNLDatearray] = useState([]);
 
     
     let dayname = [];
@@ -341,7 +346,27 @@ useEffect(()=>{
       }
   })
 
+    axios.get(`${baseUrl}api/v1/getpnlmocktradecompanydailythismonth`)
+    .then((res)=>{
+        console.log("This month Chart Data: "+res.data);
+        setMonthPNLData(res.data) 
+        for(let item of res.data)
+        {
+          setMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage)]})
+          setMonthPNLDatearray((prev)=>{return[...prev,item._id.date]})
+          setMonthGpnlarray((prev)=>{return[...prev,-item.amount]})
+          setMonthNpnlarray((prev)=>{return[...prev,(-item.amount)-item.brokerage]})
+          
+        }
+    })
+
 },[])
+
+let monthpnldatestring = []
+monthpnldate.map((elem)=>{
+  // const date = new Date(elem);
+  monthpnldatestring.push(elem.slice(-2));
+})
 
 let datepartpnl = [];
 pnldate.map((elem)=>{
@@ -421,14 +446,15 @@ title5_time = title5_time[1]
       <DashboardNavbar />
       <MDBox py={3}>
 
-      <MDBox mb={1}>
+      <MDBox mb={3}>
           <Grid container spacing={3}>
 
           <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Last 5 days net p&l"
+                  colorheight="12.5rem"
+                  title="Last 5 days net p&l (Mock)"
                   description={
                     <>
                       (<strong>+15%</strong>) increase than previous last 5 days.
@@ -450,7 +476,7 @@ title5_time = title5_time[1]
                 <ReportsBarChart
                   color="info"
                   colorheight="12.5rem"
-                  title="Last 5 days Transaction Cost"
+                  title="Last 5 days Transaction Cost (Mock)"
                   description={
                     <>
                       (<strong>+20%</strong>) increase than previous last 5 days.
@@ -469,7 +495,8 @@ title5_time = title5_time[1]
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="dark"
-                  title="Last 5 days gross p&l"
+                  colorheight="12.5rem"
+                  title="Last 5 days gross p&l (Mock)"
                   description={
                     <>
                       (<strong>+10%</strong>) increase than previous last 5 days.
@@ -488,6 +515,33 @@ title5_time = title5_time[1]
           </Grid>
         </MDBox>
 
+        <MDBox mb={1}>
+          <Grid container spacing={3}>
+
+          <Grid item xs={12} md={6} lg={12}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="warning"
+                  colorheight="25rem"
+                  title="This month's daily net p&l (Mock)"
+                  description={
+                    <>
+                      (<strong>+15%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
+                  chart={
+                    {
+                      labels: monthpnldatestring,
+                      datasets: { label: "Net P&L", data: monthnpnl },
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+
         <Grid container spacing={3} mb={2}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
@@ -496,7 +550,7 @@ title5_time = title5_time[1]
                 icon="weekend"
                 heading="Yesterday's Summary"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={thisyesterdaygpnl >= 0 ? "+₹"+ thisyesterdaygpnl : "-₹"+ (-thisyesterdaygpnl)}
@@ -517,7 +571,7 @@ title5_time = title5_time[1]
                 icon="leaderboard"
                 heading="Week's Summary(Till Yesterday)"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={thisweekgpnl >= 0 ? "+₹"+ thisweekgpnl : "-₹"+ (-thisweekgpnl)}
@@ -539,7 +593,7 @@ title5_time = title5_time[1]
                 heading="Month's Summary(Till Yesterday)"
                 icon="store"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={thismonthgpnl >= 0 ? "+₹"+ thismonthgpnl : "-₹"+ (-thismonthgpnl)}
@@ -561,7 +615,7 @@ title5_time = title5_time[1]
                 icon="person_add"
                 heading="Years's Summary(Till Yesterday)"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={thisyeargpnl >= 0 ? "+₹"+ thisyeargpnl : "-₹"+ (-thisyeargpnl)}
@@ -586,7 +640,7 @@ title5_time = title5_time[1]
                 icon="weekend"
                 heading="Day Before Yesterday's Summary"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={thisDayBeforeyesterdaygpnl != 0 ? (thisDayBeforeyesterdaygpnl > 0 ? "+₹"+ thisDayBeforeyesterdaygpnl : "-₹"+ (-thisDayBeforeyesterdaygpnl)) : "₹" + 0}
@@ -607,7 +661,7 @@ title5_time = title5_time[1]
                 icon="leaderboard"
                 heading="Last Week's Summary"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={lastweekgpnl >= 0 ? "+₹"+ lastweekgpnl : "-₹"+ (-lastweekgpnl)}
@@ -629,7 +683,7 @@ title5_time = title5_time[1]
                 icon="store"
                 heading="Last Month's Summary"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={lastmonthgpnl >= 0 ? "+₹"+ lastmonthgpnl : "-₹"+ (-lastmonthgpnl)}
@@ -651,7 +705,7 @@ title5_time = title5_time[1]
                 icon="person_add"
                 heading="Last Year's Summary"
                 titlegpnl="Gross P&L "
-                titletcost="Transaction Cost "
+                titletcost="Trans. Cost "
                 titlenpnl="Net P&L "
                 titletrades="# of Trades "
                 gpnl={lastyeargpnl >= 0 ? "+₹"+ lastyeargpnl : "-₹"+ (-lastyeargpnl)}

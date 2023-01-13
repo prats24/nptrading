@@ -769,6 +769,44 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
         
 })
 
+router.get("/getpnlmocktradecompanydailythismonth", async(req, res)=>{
+    console.log("Inside Aggregate API - Last 5 days chart data")
+    const days = 6
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
+    console.log(todayDate)
+    var day = new Date(todayDate);
+    console.log("ToDay Date :"+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - days);
+    console.log("StartDate"+yesterday);
+
+    let yesterdayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
+    let x = await MockTradeDetails.aggregate([
+        { $match: { trade_time : {$gte :`${yesterdayDate} 00:00:00`, $lte: `${todayDate} 23:59:59` }} },
+        { $group: { _id: {
+                                "date": {$substr : ["$trade_time",0,10]},
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    }} 
+                    },
+        { $sort: {_id: 1}}
+            ])
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
+
 router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
     console.log("Inside Aggregate API - Mock Trade Details Week")
      
@@ -1215,6 +1253,7 @@ router.get("/getlastfivemocktradecompany", async(req, res)=>{
         res.status(201).json(x);
         
 })
+
 
 router.get("/daywisecompanypnl", async(req, res)=>{
     console.log("Inside Aggregate API - Day wise company pnl")
