@@ -361,7 +361,7 @@ router.get("/pnlcalucationmocktradeallusertoday", (req, res)=>{
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     const {email} = req.params
-    MockTradeDetails.find({order_timestamp: {$regex: todayDate}})
+    MockTradeDetails.find({order_timestamp: {$regex: todayDate}, status: "COMPLETE"})
     .then((data)=>{
 
             let overallnewpnl = pnlcalucationnorunninglots(data);
@@ -379,7 +379,7 @@ router.get("/pnlcalucationmocktradeusertoday", async(req, res)=>{
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     const {email} = req.params
 
-    MockTradeDetails.find({order_timestamp: {$regex: todayDate}})
+    MockTradeDetails.find({order_timestamp: {$regex: todayDate}, status: "COMPLETE"})
     .then(async(data)=>{
         let overallnewpnl = await pnlcalucationnorunninglotsuser(data);
         console.log(overallnewpnl);
@@ -398,7 +398,7 @@ router.get("/pnlcalucationmocktradealluserthismonth", (req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let monthStartDate = '2023-01-01';
     const {email} = req.params
-    MockTradeDetails.find({trade_time: {$gte:monthStartDate,$lt:todayDate}})
+    MockTradeDetails.find({trade_time: {$gte:monthStartDate,$lt:todayDate, status: "COMPLETE"}})
     .then((data)=>{
 
             let overallnewpnl = pnlcalucationnorunninglots(data);
@@ -455,7 +455,7 @@ router.get("/getavgpricemocktradeparticularuser/:email", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     // console.log("Today "+todayDate)
     
-    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email, status: "COMPLETE"} },
 
                     { $sort: { "trade_time": 1 }},
                    { $group:
@@ -596,7 +596,7 @@ router.get("/gettodaysmocktradesparticularuser/:email", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log("Today "+todayDate)
     
-    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email, status: "COMPLETE"} },
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
                     { $sort: { "trade_time": -1 }}
                 ]
