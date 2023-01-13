@@ -20,75 +20,202 @@ import uniqid from "uniqid";
 
 
 const MapUser = () => {
-  const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-  let [formData, setFormData] = useState({
-    algoName: "",
-    transaction: "",
-    instrument: "",
-    exchange: "",
-    product: "",
-    lotMultiplier: "",
-    accountName: "",
-    status: ""
 
-  });
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
-  const getDetails = useContext(userContext);
-  let uId = uniqid();
   let date = new Date();
-  let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
-  let lastModified = createdOn;
-  let createdBy = getDetails.userDetails.name
+  const getDetails = useContext(userContext);
+  let modifiedOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+  let modifiedBy = getDetails.userDetails.name;
 
+  const [userNam, setUserNam] = useState();
+  const [entrading, setEntrading] = useState();
+  const [reTrading, setreTrading] = useState();
+
+
+  
   const [reRender, setReRender] = useState(true);
+  const [permissionData, setPermissionData] = useState([]);
+  console.log(permissionData);
+  
+  const [modal, setModal] = useState(false);
+  const [addUser, setAddUser] = useState([]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  let permissionDataUpdated = permissionData.filter((elem)=>{
+      return elem.algoName === algoName;
+  })
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  console.log("addUser", addUser, "permissionDataUpdated", permissionDataUpdated, permissionData);
+  let newData = addUser.concat(permissionDataUpdated);
+  console.log("this is add usere", newData);
 
-  const formSubmit = async () => {
-    
-    setFormData(formData);
-    console.log(formData)
+  const[algoData, setAlgoData] = useState({
+      name:"",
+      tradingEnable:"",
+      realTrading:"",
+  });
 
-    const {algoName, transaction, instrument, exchange, product, lotMultiplier, accountName, status} = formData;
+  function formbtn(e, id) {
+      e.preventDefault();
+      // setModal(!modal);
+      let flag = true;
+      let newDataUpdated = newData.filter((elem)=>{
+          return elem._id === id
+      })
+      algoData.name=newDataUpdated[0].userName;
+      algoData.tradingEnable = entrading;
+      algoData.realTrading = reTrading;
+      setAlgoData(algoData);
+      console.log(algoData, newDataUpdated);
 
-    const res = await fetch(`${baseUrl}api/v1/tradingalgo`, {
-        method: "POST",
-        headers: {
-             Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true
+      if(permissionDataUpdated.length){
+          for(let elem of permissionDataUpdated){
+              if(elem.userId === newDataUpdated[0].userId){
+                  console.log("put request");
+                  patchReq(id);
+                  flag = false;
+              }
+          }
+          if(flag){
+              console.log("post request");
+              postReq(newDataUpdated);
+          }
+      } else{
+          console.log("post request");
+          postReq(newDataUpdated);
+      }
 
-        },
-        body: JSON.stringify({
-          algoName: algoName, transactionChange: transaction, instrumentChange: instrument, status, exchangeChange: exchange, 
-          lotMultipler: lotMultiplier, productChange: product, tradingAccount: accountName, lastModified, uId, createdBy, 
-          createdOn, realTrade:false, marginDeduction: false
-        })
-    });
-    
-    const data = await res.json();
-    console.log(data);
-    if(data.status === 422 || data.error || !data){
-        window.alert(data.error);
-        console.log("invalid entry");
-    }else{
-        window.alert("entry succesfull");
-        console.log("entry succesfull");
-    }
-    reRender ? setReRender(false) : setReRender(true)
+      setAddUser([]);
+      reRender ? setReRender(false) : setReRender(true)
+  }
+
+  async function deletehandler(id){
+      const response = await fetch(`${baseUrl}api/v1/readpermission/${id}`, {
+          method: "DELETE",
+      });
+      const permissionData = await response.json();
+
+      if(permissionData.status === 422 || permissionData.error || !permissionData){
+          window.alert(permissionData.error);
+          console.log("Failed to Delete");
+      }else {
+          console.log(permissionData);
+          window.alert("Delete succesfull");
+          console.log("Delete succesfull");
+      }
+
+      reRender ? setReRender(false) : setReRender(true)
+  }
+
+  async function postReq(newDataUpdated){
+      const {name, tradingEnable, realTrading} = algoData;
+      const {userId} = newDataUpdated[0];
+      const response = await fetch(`${baseUrl}api/v1/permission`, {
+          method: "POST",
+          headers: {
+              "content-type" : "application/json"
+          },
+          body: JSON.stringify({
+            modifiedOn, modifiedBy, userName:name, userId, 
+            isTradeEnable:tradingEnable, isRealTradeEnable:realTrading, algoName
+          })
+      });
+
+      const permissionData = await response.json();
+
+      if(permissionData.status === 422 || permissionData.error || !permissionData){ 
+          window.alert(permissionData.error);
+          console.log("invalid entry");
+      }else{
+          // window.alert("entry succesfull");
+          console.log("entry succesfull");
+      }
+  }
+
+  async function patchReq(id){
+      const {name, tradingEnable, realTrading} = algoData;
+      console.log("algoData", algoData);
+      const response = await fetch(`${baseUrl}api/v1/readpermissionadduser/${id}`, {
+          method: "PATCH",
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+          body: JSON.stringify({
+              modifiedOn, modifiedBy, isTradeEnable:tradingEnable, isRealTradeEnable:realTrading
+          })
+      });
+
+      const permissionData = await response.json();
+
+      if (permissionData.status === 422 || permissionData.error || !permissionData) {
+          window.alert(permissionData.error);
+          console.log("Failed to Edit");
+      }else {
+          console.log(permissionData);
+          window.alert("Edit succesfull");
+          console.log("Edit succesfull");
+      }
+  }
 
 
-    // setOpen(false);
-  };
+  newData.map(()=>{
+    let obj = {};
+    obj.name = (
+        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+          {elem.name}
+        </MDTypography>
+    );
+
+    obj.tradeEnable = (
+      <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Trading Enable</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Trading Enable"
+                sx={{ margin: 1, padding: 1, width: "300px" }}
+                onChange={(e)=>{algoData.tradingEnable = e.target.value}}
+              >
+                <MenuItem value="TRUE">TRUE</MenuItem>
+                <MenuItem value="FALSE">FALSE</MenuItem>
+              </Select>
+            </FormControl>
+      </MDTypography>
+    ); 
+
+    obj.realTrade = (
+      <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Real Trading"
+                sx={{ margin: 1, padding: 1, width: "300px" }}
+                onChange={(e)=>{algoData.realTrading = e.target.value}}
+              >
+                <MenuItem value="TRUE">TRUE</MenuItem>
+                <MenuItem value="FALSE">FALSE</MenuItem>
+              </Select>
+            </FormControl>
+      </MDTypography>
+    );
+
+    obj.action = (
+      <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+          <MDButton variant="outlined" onClick={(e)=>formbtn(e, elem._id)}>
+            OK
+          </MDButton>
+          <MDButton variant="outlined" onClick={(e)=>deletehandler((elem._id))}>🗑️
+          </MDButton>
+      </MDTypography>
+    );
+
+  })
+
 
   return (
     <div>
@@ -106,24 +233,48 @@ const MapUser = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ display: "flex", flexDirection: "column" }}>
-            <TextField
-              id="outlined-basic" label="Algo Name" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formData.algoName = e.target.value}}/>
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Transaction</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Transaction"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-                onChange={(e)=>{formData.transaction = e.target.value}}
-              >
-                <MenuItem value="TRUE">TRUE</MenuItem>
-                <MenuItem value="FALSE">FALSE</MenuItem>
-              </Select>
-            </FormControl>
 
+
+
+
+
+                <MDBox pt={6} pb={3}>
+                    <Grid container spacing={6}>
+                        <Grid item xs={12} md={12} lg={12}>
+                            <Card>
+                                <MDBox
+                                    mx={2}
+                                    mt={-3}
+                                    py={1}
+                                    px={2}
+                                    variant="gradient"
+                                    bgColor="info"
+                                    borderRadius="lg"
+                                    coloredShadow="info"
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: "space-between",
+                                      }}>
+
+                                    <MDTypography variant="h6" color="white" py={2.5}>
+                                        Active Instruments
+                                    </MDTypography>
+                                    <TradingAlgoModel/>
+                                </MDBox>
+                                <MDBox pt={3}>
+                                    <DataTable
+                                        table={{ columns, rows }}
+                                        isSorted={false}
+                                        entriesPerPage={false}
+                                        showTotalEntries={false}
+                                        noEndBorder
+                                    />
+                                </MDBox>
+                            </Card>
+                        </Grid>
+                    </Grid> 
+                </MDBox> 
 
           </DialogContentText>
         </DialogContent>
@@ -140,4 +291,4 @@ const MapUser = () => {
   );
 }
 
-export default TradingAlgoModel
+export default MapUser
