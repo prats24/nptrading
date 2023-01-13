@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 
@@ -20,6 +20,12 @@ import projectsTableData from "./data/projectsTableData";
 import InstrumentModel from './InstrumentModel';
 
 const InstrumentActiveTable = () => {
+    const [reRender, setReRender] = useState(true);
+
+    useEffect(()=>{
+
+    }, [reRender])
+
     const { columns, rows } = activeInstrumentsData();
     const { columns: pColumns, rows: pRows } = projectsTableData();
     return (<>
@@ -44,7 +50,7 @@ const InstrumentActiveTable = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Instruments
                                     </MDTypography>
-                                   <InstrumentModel />
+                                   <InstrumentModel Render={{reRender, setReRender}}/>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable

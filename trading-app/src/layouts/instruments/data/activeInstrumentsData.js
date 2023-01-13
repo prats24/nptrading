@@ -94,6 +94,11 @@ export default function AllActiveInstruments() {
         {elem.createdOn}
       </MDTypography>
     );
+    activeinstruments.otm = (
+      <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+        {elem.otm}
+      </MDTypography>
+    );
    
     
     console.log(typeof(activeinstruments));
@@ -110,6 +115,7 @@ export default function AllActiveInstruments() {
         { Header: "Exchange", accessor: "exchange", align: "center" },
         { Header: "Lot Size", accessor: "lotsize", align: "center" },
         { Header: "Max Quantity", accessor: "maxquantity", align: "center" },
+        { Header: "OTM", accessor: "otm", align: "center" },
         { Header: "Status", accessor: "status", align: "center" },
         { Header: "Created On", accessor: "createdon", align: "center" },
         

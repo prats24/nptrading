@@ -7,6 +7,7 @@ import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
+import MDButton from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -38,6 +39,80 @@ const TradingAlgo = () => {
             return new Error(err);
         })
     },[])
+
+    function realTrade(){
+
+    }
+
+    function marginDeduction(){
+        
+    }
+
+    algoData.map((subelem)=>{
+        let obj = {};
+        obj.algoName = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.algoName)}
+            </MDTypography>
+        );
+        obj.mapUser = (
+            <MDButton fontWeight="medium">
+              Map User
+            </MDButton>
+        );
+        obj.transactionChange = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.transactionChange)}
+            </MDTypography>
+        );
+        obj.instrumentChange = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.instrumentChange)}
+            </MDTypography>
+        );
+        obj.status = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.status)}
+            </MDTypography>
+        );
+        obj.exchangeChange = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.exchangeChange)}
+            </MDTypography>
+        );
+        obj.lotMultipler = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.lotMultipler)}
+            </MDTypography>
+        );
+        obj.productChange = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.productChange)}
+            </MDTypography>
+        );
+        obj.tradingAccount = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.tradingAccount)}
+            </MDTypography>
+        );
+        obj.isRealTrade = (
+            <MDButton variant="contained" color="info" onClick={realTrade} fullWidth>
+                {(subelem.isRealTrade)}
+            </MDButton>
+        );
+        obj.marginDeduction = (
+            <MDButton variant="contained" color="info" onClick={marginDeduction} fullWidth>
+                {(subelem.marginDeduction)}
+            </MDButton>
+        );
+        obj.createdOn = (
+            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              {(subelem.createdOn)}
+            </MDTypography>
+        );
+
+        rows.push(obj);
+    })
   return (
     <>
                 <MDBox pt={6} pb={3}>
