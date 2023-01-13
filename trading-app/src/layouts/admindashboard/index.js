@@ -314,6 +314,7 @@ useEffect(()=>{
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getpnlmocktradecompanylastfivedays`)
     .then((res)=>{
+        console.log("Last 5 days Chart Data: "+res.data);
         setPNLData(res.data) 
         for(let item of res.data)
         {
@@ -352,7 +353,7 @@ pnldate.map((elem)=>{
   const date = new Date(elem);
   const dayOfWeek = date.getDay();
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-  // console.log(weekday);  // Output: "Sunday"
+  console.log(weekday);  // Output: "Sunday"
   dayname.push(weekday.slice(0,3))
 })
 
