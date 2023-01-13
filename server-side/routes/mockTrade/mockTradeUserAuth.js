@@ -421,7 +421,7 @@ router.get("/gettraderwisepnldetailsthismonth", async(req, res)=>{
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     console.log("Yesterday Date :"+yesterdayDate)
-    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-12 23:59:59'} } },
+    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-12 23:59:59'},  status: "COMPLETE" } },
                     { $project: { "createdBy" : 1 , "amount" : 1, "brokerage" : 1, "trade_time" : 1 }},
                     { $group: {
                                     _id: "$createdBy",
@@ -485,7 +485,7 @@ router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time : {$regex: todayDate}, userId: email} },
+        { $match: { trade_time : {$regex: todayDate}, userId: email, status: "COMPLETE"} },
         
         { $group: { _id: {
                                 "symbol": "$symbol",
@@ -500,11 +500,11 @@ router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=
                     },
                     lots: {
                         $sum: {$toInt : "$Quantity"}
-                    },
-                    average_price: {
-                        $sum: {$toInt : "$average_price"}
-                        // average_price: "$average_price"
-                    },
+                    }
+                    // average_price: {
+                    //     $sum: {$toInt : "$average_price"}
+                    //     // average_price: "$average_price"
+                    // },
                     }},
              { $sort: {_id: -1}},
             ])
@@ -540,7 +540,7 @@ router.get("/getuserreportdatewise/:email/:firstDate/:secondDate", async(req, re
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, userId: email} },
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, userId: email, status: "COMPLETE"} },
         
         { $group: { _id: {
                              "date": {$substr: [ "$order_timestamp", 0, 10 ]},
@@ -596,7 +596,7 @@ router.get("/gettodaysmocktradesparticularuser/:email", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     console.log("Today "+todayDate)
     
-    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
+    let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email, status: "COMPLETE"} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
                     { $sort: { "trade_time": -1 }}
                 ]

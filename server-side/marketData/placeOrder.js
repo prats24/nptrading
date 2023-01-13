@@ -92,7 +92,7 @@ router.post("/placeorder", (async (req, res)=>{
 
         // let allOrderData;
 
-        retreiveOrderAndSave(url2, authOptions);
+        await retreiveOrderAndSave(url2, authOptions);
 
 
 
@@ -108,10 +108,10 @@ router.post("/placeorder", (async (req, res)=>{
         res.status(422).json({error : err.response.data.message})
     })
 
-    function retreiveOrderAndSave(url2, authOptions){
-        // setTimeout(()=>{
+     function retreiveOrderAndSave(url2, authOptions){
+        setTimeout(()=>{
             axios.get(url2, authOptions)
-            .then((response)=>{
+            .then(async (response)=>{
                 const allOrderData = (response.data).data;
                 console.log("allOrderData", allOrderData);
                 let len = allOrderData.length;
@@ -159,7 +159,7 @@ router.post("/placeorder", (async (req, res)=>{
     
                 if(!orderData){
                     console.log("retreiveOrderAndSave function calling again")
-                    retreiveOrderAndSave(url2, authOptions);
+                    await retreiveOrderAndSave(url2, authOptions);
                     return
                 }
                 //console.log("order data", orderData);
@@ -296,7 +296,7 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                         order_id, instrumentToken, brokerage: brokerageUser,
-                        tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time
     
     
@@ -362,7 +362,7 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                         order_id, instrumentToken, brokerage: brokerageUser,
-                        tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time
     
                     });
@@ -388,7 +388,7 @@ router.post("/placeorder", (async (req, res)=>{
             })
     
             // console.log("waiting till 500ms")
-        // }, 0)
+        }, 500)
     }
 
 }))
