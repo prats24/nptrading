@@ -26,6 +26,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
+import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
@@ -223,7 +224,13 @@ function UserReport() {
   });
 
   let graphdatearray = []
+
   let graphbrokeragearray = []
+
+  let graphnpnlarray = []
+  let graphgpnlarray = []
+  let graphtradesarray = []
+  let graphdatearrayday = [];
 
   overallPnl.map((elem)=>{
     let obj={}
@@ -269,7 +276,17 @@ function UserReport() {
     );
 
     graphdatearray.push(elem.date);
-    graphbrokeragearray.push(elem.brokerage);
+    graphbrokeragearray.push(elem.brokerage.toFixed(0));
+    graphnpnlarray.push(((updatedValue)-(elem.brokerage)).toFixed(0));
+    graphgpnlarray.push(updatedValue.toFixed(0));
+    graphtradesarray.push(elem.noOfTrade);
+
+    
+    // graphdatearray.map((elem)=>{
+    //   // const date = new Date(elem);
+    //   graphdatearrayday.push(elem.slice(0,2));
+    // })
+
     rows.push(obj);
     
   })
@@ -279,7 +296,7 @@ function UserReport() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox mt={6} mb={2}>
+      <MDBox mt={6} mb={6}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12} >
             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
@@ -326,14 +343,39 @@ function UserReport() {
         </Grid>
       </MDBox>
 
-      <MDBox pt={6} pb={3}>
+      {/* 1st Chart Line Start */}
 
-      <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={6}>
-                <ReportsBarChart
+      <MDBox mb={3}>
+          <Grid container spacing={3}>
+
+          <Grid item xs={12} md={6} lg={6}>
+              <MDBox mb={3}>
+                <ReportsLineChart
                   color="success"
-                  colorheight="12.5rem"
-                  title="Transaction Cost"
+                  colorheight="20rem"
+                  title="Gross p&l (in INR)"
+                  // description={
+                  //   <>
+                  //     (<strong>+15%</strong>) increase than previous last 5 days.
+                  //   </>
+                  // }
+                  date="updated just now"
+                  chart={
+                    {
+                      labels: graphdatearray,
+                      datasets: { label: "Gross P&L", data: graphgpnlarray },
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={6}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="dark"
+                  colorheight="20rem"
+                  title="Transaction Cost (in INR)"
                   // description={
                   //   <>
                   //     (<strong>+20%</strong>) increase than previous last 5 days.
@@ -347,7 +389,64 @@ function UserReport() {
                 />
               </MDBox>
             </Grid>
+          </Grid>
+        </MDBox>
 
+      {/* End */}
+
+      {/* Second Chart Line Starts */}
+
+      <MDBox mb={1}>
+          <Grid container spacing={3}>
+
+          <Grid item xs={12} md={6} lg={6}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="info"
+                  colorheight="20rem"
+                  title="net p&l (in INR)"
+                  // description={
+                  //   <>
+                  //     (<strong>+15%</strong>) increase than previous last 5 days.
+                  //   </>
+                  // }
+                  date="updated just now"
+                  chart={
+                    {
+                      labels: graphdatearray,
+                      datasets: { label: "Net P&L", data: graphnpnlarray },
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={6}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="warning"
+                  colorheight="20rem"
+                  title="# of Trades"
+                  // description={
+                  //   <>
+                  //     (<strong>+20%</strong>) increase than previous last 5 days.
+                  //   </>
+                  // }
+                  date="updated just now"
+                  chart={{
+                    labels: graphdatearray,
+                    datasets: { label: "Trades", data: graphtradesarray },
+                  }}
+                />
+              </MDBox>
+            </Grid>
+            
+          </Grid>
+        </MDBox>
+
+      {/* End */}
+
+      <MDBox pt={2} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12} md={12} lg={12}>
             <Card>
