@@ -4,11 +4,11 @@ require("../../db/conn");
 const TradingAlgo = require("../../models/AlgoBox/tradingAlgoSchema");
 
 router.post("/tradingalgo", (req, res)=>{
-    const {algoName, transactionChange, instrumentChange, status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, uId, createdBy, createdOn, realTrade} = req.body;
+    const {algoName, transactionChange, instrumentChange, status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, uId, createdBy, createdOn, realTrade, marginDeduction} = req.body;
 
     if(!algoName || !transactionChange || !instrumentChange || !status || !exchangeChange || !lotMultipler || !productChange || !tradingAccount || !lastModified || !uId || !createdBy || !createdOn){
         console.log(req.body);
-        console.log("data nhi h pura");
+        console.log("data is not complete");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
@@ -20,8 +20,9 @@ router.post("/tradingalgo", (req, res)=>{
         }
         const tradingAlgo = new TradingAlgo({algoName, transactionChange, instrumentChange, 
             status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, 
-            uId, createdBy, createdOn, isRealTrade:realTrade});
+            uId, createdBy, createdOn, isRealTrade:realTrade, marginDeduction});
 
+            console.log(tradingAlgo)
         tradingAlgo.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import axios from "axios";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -22,8 +23,21 @@ import TradingAlgoModel from './TradingAlgoModel';
 import TradingAlgoData from './data/TradingAlgoData';
 
 const TradingAlgo = () => {
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const { columns, rows } = TradingAlgoData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
+  const [algoData, setAlgoData] = useState([]);
+
+    useEffect(()=>{
+        axios.get(`${baseUrl}api/v1/readtradingAlgo`)
+        .then((res)=>{
+            setAlgoData(res.data)
+            console.log(res.data);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+    },[])
   return (
     <>
                 <MDBox pt={6} pb={3}>

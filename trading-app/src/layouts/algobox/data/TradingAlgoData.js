@@ -31,6 +31,8 @@ export default function TradingAlgoData() {
     </MDBox>
   );
 
+
+
   return {
     columns: [
       { Header: "Algo Name", accessor: "Algo Name", align: "center" },
