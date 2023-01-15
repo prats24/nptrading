@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import Select from 'react-select';
+import Select from 'react-select'; 
 import axios from "axios"
 import uniqid from "uniqid";
 
@@ -66,8 +66,8 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
             //console.log(options);
         }
     }
-    //console.log(data);
-    //console.log(options);
+    console.log(data);
+    console.log(options);
 
 
     //console.log(addUser);

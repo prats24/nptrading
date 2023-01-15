@@ -4,6 +4,7 @@ import axios from "axios";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import Switch from "@mui/material/Switch";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
@@ -77,58 +78,56 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.mapUser = (
-            <MDButton fontWeight="medium">
-              <MapUser algoName={subelem.algoName}/>
+            <MDButton variant="outlined" bgColor="white" color="dark" fontWeight="medium">
+              <MapUser color="white" algoName={subelem.algoName}/>
             </MDButton>
         );
+        obj.lotMultipler = (
+            <MDTypography component="a" variant="caption" fontWeight="medium">
+              {(subelem.lotMultipler)}
+            </MDTypography>
+        );
         obj.transactionChange = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.transactionChange)}
             </MDTypography>
         );
+        obj.marginDeduction = (
+            // <MDButton variant="outlined" bgColor="white" onClick={()=>{marginDeduction(subelem._id, subelem.marginDeduction)}} fullWidth>
+            //     {(subelem.marginDeduction) ? "ON" : "OFF"}
+            // </MDButton>
+            <MDBox mt={0.5}>
+            <Switch checked={subelem.marginDeduction} onChange={() => {marginDeduction(subelem._id, subelem.marginDeduction)}} />
+          </MDBox>
+        );
         obj.instrumentChange = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.instrumentChange)}
             </MDTypography>
         );
         obj.status = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.status)}
             </MDTypography>
         );
         obj.exchangeChange = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.exchangeChange)}
             </MDTypography>
         );
-        obj.lotMultipler = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-              {(subelem.lotMultipler)}
-            </MDTypography>
-        );
         obj.productChange = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.productChange)}
             </MDTypography>
         );
         obj.tradingAccount = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.tradingAccount)}
             </MDTypography>
         );
         obj.isRealTrade = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
                 <RealTrade id={subelem._id} Render={{reRender, setReRender}} tradingAlgo={algoData} buttonTextBool={subelem.isRealTrade} />
-            </MDTypography>
-        );
-        obj.marginDeduction = (
-            <MDButton variant="outlined" bgColor="blue" onClick={()=>{marginDeduction(subelem._id, subelem.marginDeduction)}} fullWidth>
-                {(subelem.marginDeduction) ? "ON" : "OFF"}
-            </MDButton>
-        );
-        obj.createdOn = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-              {(subelem.createdOn)}
             </MDTypography>
         );
 
@@ -155,7 +154,7 @@ const TradingAlgo = () => {
                                       }}>
 
                                     <MDTypography variant="h6" color="white" py={2.5}>
-                                        Active Instruments
+                                        Active Algo(s)
                                     </MDTypography>
                                     <TradingAlgoModel/>
                                 </MDBox>
@@ -170,7 +169,7 @@ const TradingAlgo = () => {
                                 </MDBox>
                             </Card>
                         </Grid>
-                        {/* <Grid item xs={12} md={12} lg={12}>
+                        <Grid item xs={12} md={12} lg={12}>
                             <Card>
                                 <MDBox
                                     mx={2}
@@ -183,7 +182,7 @@ const TradingAlgo = () => {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Histroical Traders Orders(Mock)
+                                        Inactive Algo(s)
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
@@ -196,7 +195,7 @@ const TradingAlgo = () => {
                                     />
                                 </MDBox>
                             </Card>
-                        </Grid>*/}
+                        </Grid>
                     </Grid> 
                 </MDBox> 
                 </>

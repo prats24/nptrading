@@ -371,7 +371,7 @@ const OverallGrid = ({socket}) => {
 
 
     return (<>
-                <MDBox pt={6} pb={3}>
+                <MDBox pt={4} pb={2}>
                     <Grid container spacing={6}>
                         <Grid item xs={12} md={12} lg={12}>
                             <Card>
@@ -390,12 +390,12 @@ const OverallGrid = ({socket}) => {
                                       }}>
 
                                     <MDTypography variant="h6" color="white" py={1}>
-                                        Over All P&L
+                                        Overall P&L
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable
-                                        table={{ columns, rows }}
+                                        table={{columns, rows }}
                                         isSorted={false}
                                         entriesPerPage={false}
                                         showTotalEntries={false}

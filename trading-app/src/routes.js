@@ -73,6 +73,7 @@ import UserPosition from "./layouts/User Position";
 import UserDashboard from "./layouts/userdashboard";
 import UserReport from "./layouts/userreports";
 import AdminReport from "./layouts/adminreport";
+import DailyPNLData from "./layouts/dailyPnlDashboard";
 
 const routes = [
   {
@@ -153,6 +154,15 @@ const routes = [
     icon: <AccountBalanceIcon/>,
     route: "/trading-accounts",
     component: <TradingAccount />,
+  },
+  {
+    type: "collapse",
+    name: "DailyPnlData",
+    key: "DailyPnlData",
+    // icon: <Icon fontSize="small">table_view</Icon>,
+    icon: <PersonIcon/>,
+    route: "/DailyPnlData",
+    component: <DailyPNLData />,
   },
   {
     type: "collapse",

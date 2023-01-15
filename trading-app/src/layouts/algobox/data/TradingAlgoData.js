@@ -37,16 +37,15 @@ export default function TradingAlgoData() {
     columns: [
       { Header: "Algo Name", accessor: "algoName", align: "center" },
       { Header: "users", accessor: "mapUser", align: "center" },
+      { Header: "Lot Multiplier", accessor: "lotMultipler", align: "center" },
       { Header: "Transaction", accessor: "transactionChange", align: "center" },
+      { Header: "Margin Deduction", accessor: "marginDeduction", align: "center" },
       { Header: "Instrument", accessor: "instrumentChange", align: "center" },
       { Header: "Exchange", accessor: "exchangeChange", align: "center" },
       { Header: "Product", accessor: "productChange", align: "center" },
-      { Header: "Lot Multiplier", accessor: "lotMultipler", align: "center" },
       { Header: "Real Trade", accessor: "isRealTrade", align: "center" },
       { Header: "Trading Account", accessor: "tradingAccount", align: "center" },
       { Header: "Status", accessor: "status", align: "center" },
-      { Header: "Margin Deduction", accessor: "marginDeduction", align: "center" },
-      { Header: "Created On", accessor: "createdOn", align: "center" },
       
     ],
 
