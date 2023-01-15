@@ -48,27 +48,143 @@ const TradingAlgo = () => {
 
 
     async function marginDeduction(id, marginDeduction){
-        // const res = await fetch(`${baseUrl}api/v1/updatemargindeduction/${id}`, {
-        //     method: "PATCH",
-        //     headers: {
-        //         "Accept": "application/json",
-        //         "content-type": "application/json"
-        //     },
-        //     body: JSON.stringify({
-        //         marginDeduction
-        //     })
-        // });
-        // const dataResp = await res.json();
-        // console.log(dataResp);
-        // if (dataResp.status === 422 || dataResp.error || !dataResp) {
-        //     window.alert(dataResp.error);
-        //     // console.log("Failed to Edit");
-        // } else {
-        //     // console.log(dataResp);
-        //     window.alert("Switched succesfull");
-        //     // console.log("Edit succesfull");
-        // }
-        // reRender ? setReRender(false) : setReRender(true)
+        const res = await fetch(`${baseUrl}api/v1/updatemargindeduction/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                marginDeduction
+            })
+        });
+        const dataResp = await res.json();
+        console.log(dataResp);
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            window.alert(dataResp.error);
+            // console.log("Failed to Edit");
+        } else {
+            // console.log(dataResp);
+            window.alert("Switched succesfull");
+            // console.log("Edit succesfull");
+        }
+        reRender ? setReRender(false) : setReRender(true)
+    }
+
+    async function transactionChange(id, transactionChange){
+        if(transactionChange === "TRUE"){
+            transactionChange = "FALSE"
+        } else{
+            transactionChange = "TRUE";
+        }
+        const res = await fetch(`${baseUrl}api/v1/updatetransactionChange/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                transactionChange
+            })
+        });
+        const dataResp = await res.json();
+        console.log(dataResp);
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            window.alert(dataResp.error);
+            // console.log("Failed to Edit");
+        } else {
+            // console.log(dataResp);
+            window.alert("Switched succesfull");
+            // console.log("Edit succesfull");
+        }
+        reRender ? setReRender(false) : setReRender(true)
+    }
+
+    async function instrumentChange(id, instrumentChange){
+        if(instrumentChange === "TRUE"){
+            instrumentChange = "FALSE"
+        } else{
+            instrumentChange = "TRUE";
+        }
+        const res = await fetch(`${baseUrl}api/v1/updateinstrumentChange/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                instrumentChange
+            })
+        });
+        const dataResp = await res.json();
+        console.log(dataResp);
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            window.alert(dataResp.error);
+            // console.log("Failed to Edit");
+        } else {
+            // console.log(dataResp);
+            window.alert("Switched succesfull");
+            // console.log("Edit succesfull");
+        }
+        reRender ? setReRender(false) : setReRender(true)
+    }
+
+    async function exchangeChange(id, exchangeChange){
+        if(exchangeChange === "TRUE"){
+            exchangeChange = "FALSE"
+        } else{
+            exchangeChange = "TRUE";
+        }
+        const res = await fetch(`${baseUrl}api/v1/updateexchangeChange/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                exchangeChange
+            })
+        });
+        const dataResp = await res.json();
+        console.log(dataResp);
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            window.alert(dataResp.error);
+            // console.log("Failed to Edit");
+        } else {
+            // console.log(dataResp);
+            window.alert("Switched succesfull");
+            // console.log("Edit succesfull");
+        }
+        reRender ? setReRender(false) : setReRender(true)
+    }
+
+    async function productChange(id, productChange){
+        if(productChange === "TRUE"){
+            productChange = "FALSE"
+        } else{
+            productChange = "TRUE";
+        }
+        const res = await fetch(`${baseUrl}api/v1/updateproductChange/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                productChange
+            })
+        });
+        const dataResp = await res.json();
+        console.log(dataResp);
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            window.alert(dataResp.error);
+            // console.log("Failed to Edit");
+        } else {
+            // console.log(dataResp);
+            window.alert("Switched succesfull");
+            // console.log("Edit succesfull");
+        }
+        reRender ? setReRender(false) : setReRender(true)
     }
 
     algoData.map((subelem)=>{
@@ -94,9 +210,12 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.transactionChange = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
-              {(subelem.transactionChange)}
-            </MDTypography>
+            // <MDTypography component="a" variant="caption" fontWeight="medium">
+            //   {(subelem.transactionChange)}
+            // </MDTypography>
+                        <MDBox mt={0.5}>
+                        <Switch checked={subelem.transactionChange === "TRUE"} onChange={() => {transactionChange(subelem._id, subelem.transactionChange)}} />
+                      </MDBox>
         );
         obj.marginDeduction = (
             // <MDButton variant="outlined" bgColor="white" onClick={()=>{marginDeduction(subelem._id, subelem.marginDeduction)}} fullWidth>
@@ -107,9 +226,12 @@ const TradingAlgo = () => {
           </MDBox>
         );
         obj.instrumentChange = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
-              {(subelem.instrumentChange)}
-            </MDTypography>
+            // <MDTypography component="a" variant="caption" fontWeight="medium">
+            //   {(subelem.instrumentChange)}
+            // </MDTypography>
+                        <MDBox mt={0.5}>
+                        <Switch checked={subelem.instrumentChange === "TRUE"} onChange={() => {instrumentChange(subelem._id, subelem.instrumentChange)}} />
+                      </MDBox>
         );
         obj.status = (
             <MDTypography component="a" variant="caption" fontWeight="medium">
@@ -117,14 +239,20 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.exchangeChange = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
-              {(subelem.exchangeChange)}
-            </MDTypography>
+            // <MDTypography component="a" variant="caption" fontWeight="medium">
+            //   {(subelem.exchangeChange)}
+            // </MDTypography>
+            <MDBox mt={0.5}>
+            <Switch checked={subelem.exchangeChange === "TRUE"} onChange={() => {exchangeChange(subelem._id, subelem.exchangeChange)}} />
+          </MDBox>
         );
         obj.productChange = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
-              {(subelem.productChange)}
-            </MDTypography>
+            // <MDTypography component="a" variant="caption" fontWeight="medium">
+            //   {(subelem.productChange)}
+            // </MDTypography>
+            <MDBox mt={0.5}>
+            <Switch checked={subelem.productChange === "TRUE"} onChange={() => {productChange(subelem._id, subelem.productChange)}} />
+            </MDBox>
         );
         obj.tradingAccount = (
             <MDTypography component="a" variant="caption" fontWeight="medium">

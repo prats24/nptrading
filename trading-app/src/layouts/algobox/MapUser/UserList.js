@@ -47,7 +47,7 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
     if(data.length !== 0 && permissionArr.length !== 0){
         for(let i = 0; i < data.length; i++){
             for(let j = 0; j < permissionArr.length; j++){
-                if(data[i].email === permissionArr[j].userId && permissionArr[j].algoName === algoName){
+                if(data[i] && data[i].email === permissionArr[j].userId && permissionArr[j].algoName === algoName){
                     data.splice(i, 1);
                     j = -1;
                 }

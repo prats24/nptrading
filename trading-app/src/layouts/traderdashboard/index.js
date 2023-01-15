@@ -150,17 +150,21 @@ console.log("Trades "+thismonthtraderwisetrades);
     // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
     .then((res)=>{
         console.log(res.data);
-          if(res.data)
-          {
-          // setThisWeekPNLData(res.data) 
-          console.log(ThisWeekPNLData);
-          setThisWeekBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
-          setThisWeekGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
-          setThisWeekTrades((res.data[0]).trades)
-          setThisWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisweeknpnl)
+
+          if((res.data).length !== 0){
+            console.log(ThisWeekPNLData);
+            setThisWeekBrokerage((res.data[0]).brokerage)
+            console.log((res.data[0]).brokerage)
+            setThisWeekGPNL((-(res.data[0]).amount))
+            console.log(-(res.data[0]).amount)
+            setThisWeekTrades((res.data[0]).trades)
+            setThisWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+            console.log(thisweeknpnl)
+          } else{
+            setThisWeekBrokerage(0)
+            setThisWeekGPNL(0)
+            setThisWeekTrades(0)
+            setThisWeekNPNL(0)
           }
     }).catch((err)=>{
         window.alert("Server Down");
@@ -303,15 +307,23 @@ useEffect(()=>{
     .then((res)=>{
         console.log(res.data);
           
-          // setThisYesterdayPNLData(res.data) 
-          console.log(ThisYesterdayPNLData);
-          setThisYesterdayBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
-          setThisYesterdayGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
-          setThisYesterdayTrades((res.data[0]).trades)
-          setThisYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisyesterdaynpnl)
+          if((res.data).length !== 0){
+            setThisYesterdayBrokerage((res.data[0]).brokerage)
+            console.log((res.data[0]).brokerage)
+            setThisYesterdayGPNL((-(res.data[0]).amount))
+            console.log(-(res.data[0]).amount)
+            setThisYesterdayTrades((res.data[0]).trades)
+            setThisYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+            console.log(thisyesterdaynpnl)
+          } else{
+            setThisYesterdayBrokerage(0)
+            console.log(0)
+            setThisYesterdayGPNL((0))
+            console.log(0)
+            setThisYesterdayTrades(0)
+            setThisYesterdayNPNL(0)
+            console.log(thisyesterdaynpnl)
+          }
           
     })
 },[])

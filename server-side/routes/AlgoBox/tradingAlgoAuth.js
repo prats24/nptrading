@@ -121,6 +121,90 @@ router.patch("/updatemargindeduction/:id", async (req, res)=>{
     }
 })
 
+router.patch("/updatetransactionChange/:id", async (req, res)=>{
+    console.log(req.params)
+    console.log("this is body", req.body);
+    try{ 
+        const {id} = req.params
+        const {transactionChange} = req.body;
+        const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
+            $set:{ 
+                
+                transactionChange: transactionChange
+            }
+            
+        })
+        console.log("this is role", tradingAlgo);
+        res.send(tradingAlgo)
+        // res.status(201).json({massage : "data patch succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
+router.patch("/updateinstrumentChange/:id", async (req, res)=>{
+    console.log(req.params)
+    console.log("this is body", req.body);
+    try{ 
+        const {id} = req.params
+        const {instrumentChange} = req.body;
+        const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
+            $set:{ 
+                
+                instrumentChange: instrumentChange
+            }
+            
+        })
+        console.log("this is role", tradingAlgo);
+        res.send(tradingAlgo)
+        // res.status(201).json({massage : "data patch succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
+router.patch("/updateexchangeChange/:id", async (req, res)=>{
+    console.log(req.params)
+    console.log("this is body", req.body);
+    try{ 
+        const {id} = req.params
+        const {exchangeChange} = req.body;
+        const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
+            $set:{ 
+                
+                exchangeChange: exchangeChange
+            }
+            
+        })
+        console.log("this is role", tradingAlgo);
+        res.send(tradingAlgo)
+        // res.status(201).json({massage : "data patch succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
+router.patch("/updateproductChange/:id", async (req, res)=>{
+    console.log(req.params)
+    console.log("this is body", req.body);
+    try{ 
+        const {id} = req.params
+        const {productChange} = req.body;
+        const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
+            $set:{ 
+                
+                productChange: productChange
+            }
+            
+        })
+        console.log("this is role", tradingAlgo);
+        res.send(tradingAlgo)
+        // res.status(201).json({massage : "data patch succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
 router.delete("/readtradingAlgo/:id", async (req, res)=>{
     console.log(req.params)
     try{

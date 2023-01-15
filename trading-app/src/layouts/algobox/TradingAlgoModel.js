@@ -115,7 +115,7 @@ const TradingAlgoModel = () => {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Transaction"
-                value={formData.transaction}
+                // value={formData.transaction}
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formData.transaction = e.target.value}}
               >
@@ -130,7 +130,7 @@ const TradingAlgoModel = () => {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Instrument"
-                value={formData.instrument}
+                // value={formData.instrument}
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formData.instrument = e.target.value}}
               >
@@ -145,7 +145,7 @@ const TradingAlgoModel = () => {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Exchange"
-                value={formData.exchange}
+                // value={formData.exchange}
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formData.exchange = e.target.value}}
               >
@@ -161,7 +161,7 @@ const TradingAlgoModel = () => {
                 id="demo-simple-select-standard"
                 label="Product"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
-                value={formData.product}
+                // value={formData.product}
                 onChange={(e)=>{formData.product = e.target.value}}
               >
                 <MenuItem value="TRUE">TRUE</MenuItem>
