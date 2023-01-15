@@ -62,11 +62,10 @@ const TradingAlgoModel = () => {
 
     const res = await fetch(`${baseUrl}api/v1/tradingalgo`, {
         method: "POST",
+        credentials:"include",
         headers: {
-             Accept: "application/json",
-            "Content-Type": "application/json",
+            "content-type" : "application/json",
             "Access-Control-Allow-Credentials": true
-
         },
         body: JSON.stringify({
           algoName: algoName, transactionChange: transaction, instrumentChange: instrument, status, exchangeChange: exchange, 

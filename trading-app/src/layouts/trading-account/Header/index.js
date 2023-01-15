@@ -41,9 +41,9 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 // Images
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
-import Accounts from "../Accounts";
+import Accounts from "../ApiKey/Accounts";
 import Brokerage from "../Brokerage";
-import TradingARToken from "../TradingARToken";
+import TradingARToken from "../AccessToken/TradingARToken";
 
 
 
