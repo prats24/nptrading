@@ -3,12 +3,18 @@ const jwt = require("jsonwebtoken");
 const {promisify} = require("util")
 
 exports.protect = async (req, res, next)=>{
+    // console.log("req.cookies", req.cookies)
+    // console.log(req.headers)
     let token;
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-      ) {
-        token = req.headers.authorization.split(' ')[1];
+    // if (
+    //     req.headers.authorization &&
+    //     req.headers.authorization.startsWith('Bearer')
+    //   ) {
+    //     token = req.headers.authorization.split(' ')[1];
+    //   }
+
+      if (req.cookies) {
+        token = req.cookies.jwtoken;
       }
       if (!token) {
         return res.status(403).json({error:"Please login again"})
