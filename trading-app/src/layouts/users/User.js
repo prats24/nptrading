@@ -74,6 +74,11 @@ const User = () => {
             <UserEditModel data={activeData} id={elem._id} Render={{setReRender, reRender}}/>
           </MDButton>
         );
+        activeusers.employeeid = (
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+            {elem.employeeid}
+          </MDTypography>
+        );
       activeusers.name = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {elem.name}

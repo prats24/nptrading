@@ -72,6 +72,8 @@ import UserPosition from "./layouts/User Position";
 // import UserPosition from "./layouts/userposition";
 import UserDashboard from "./layouts/userdashboard";
 import UserReport from "./layouts/userreports";
+import InventoryIcon from '@mui/icons-material/Inventory';
+import DvrIcon from '@mui/icons-material/Dvr';
 
 
 const routes = [
@@ -81,7 +83,7 @@ const routes = [
     name: "Position",
     key: "Position",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
+    icon: <DvrIcon/>,
     route: "/Position",
     component: <UserPosition />,
   },
@@ -94,25 +96,33 @@ const routes = [
   //   route: "/userdashboard",
   //   component: <UserDashboard />,
   // },
- 
+  {
+    type: "collapse",
+    name: "Dashboard",
+    key: "userreport",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <DashboardIcon/>,
+    route: "/userreport",
+    component: <UserReport />,
+  },
   {
     type: "collapse",
     name: "Trades",
     key: "userorders",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <ContactPageIcon/>,
+    icon: <InventoryIcon/>,
     route: "/userorders",
     component: <UserOrders />,
   },
 
   {
     type: "collapse",
-    name: "P&L Reports",
-    key: "userreport",
+    name: "Profile",
+    key: "profile",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <AccountBoxIcon/>,
-    route: "/userreport",
-    component: <UserReport />,
+    route: "/profile",
+    component: <Profile />,
   },
 
 ];

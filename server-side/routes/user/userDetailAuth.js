@@ -93,6 +93,18 @@ router.delete("/readuserdetails/:id", async (req, res)=>{
 
 })
 
+router.get("/readparticularuserdetails/:email", (req, res)=>{
+    console.log(req.params)
+    const {email} = req.params
+    UserDetail.findOne({email : email})
+    .then((data)=>{
+        return res.status(200).send(data);
+    })
+    .catch((err)=>{
+        return res.status(422).json({error : "date not found"})
+    })
+})
+
 module.exports = router;
 
 
