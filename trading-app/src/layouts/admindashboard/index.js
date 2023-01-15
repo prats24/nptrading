@@ -122,18 +122,22 @@ function AdminDashboard() {
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisweek`)
     // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
     .then((res)=>{
-        console.log(res.data);
-          if(res.data)
-          {
-          // setThisWeekPNLData(res.data) 
-          console.log(ThisWeekPNLData);
-          setThisWeekBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
-          setThisWeekGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
-          setThisWeekTrades((res.data[0]).trades)
-          setThisWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisweeknpnl)
+        console.log((res.data).length !== 0);
+          
+          if((res.data).length !== 0){
+            console.log(ThisWeekPNLData);
+            setThisWeekBrokerage((res.data[0]).brokerage)
+            console.log((res.data[0]).brokerage)
+            setThisWeekGPNL((-(res.data[0]).amount))
+            console.log(-(res.data[0]).amount)
+            setThisWeekTrades((res.data[0]).trades)
+            setThisWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+            console.log(thisweeknpnl)
+          } else{
+            setThisWeekBrokerage(0)
+            setThisWeekGPNL(0)
+            setThisWeekTrades(0)
+            setThisWeekNPNL(0)
           }
     }).catch((err)=>{
         window.alert("Server Down");
@@ -277,14 +281,23 @@ useEffect(()=>{
         console.log(res.data);
           
           // setThisYesterdayPNLData(res.data) 
-          console.log(ThisYesterdayPNLData);
-          setThisYesterdayBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
-          setThisYesterdayGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
-          setThisYesterdayTrades((res.data[0]).trades)
-          setThisYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisyesterdaynpnl)
+          if((res.data).length !== 0){
+            setThisYesterdayBrokerage((res.data[0]).brokerage)
+            console.log((res.data[0]).brokerage)
+            setThisYesterdayGPNL((-(res.data[0]).amount))
+            console.log(-(res.data[0]).amount)
+            setThisYesterdayTrades((res.data[0]).trades)
+            setThisYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
+            console.log(thisyesterdaynpnl)
+          } else{
+            setThisYesterdayBrokerage(0)
+            console.log(0)
+            setThisYesterdayGPNL((0))
+            console.log(0)
+            setThisYesterdayTrades(0)
+            setThisYesterdayNPNL(0)
+            console.log(thisyesterdaynpnl)
+          }
           
     })
 },[])
@@ -401,36 +414,38 @@ pnldate.map((elem)=>{
 // },[])
 
 console.log(LastFiveTradesarr);
-// setCreatedBy(CreatedBy);
-let buysell1 = Type[0] == "BUY" ? "bought" : "sold"
-let title1 = `${CreatedBy[0]} ${buysell1} ${Math.abs(Quantity[0])} quantity of ${Symbol[0]}`
-let title1_time = String(TradeTime[0]).split(" ")
-title1_time = title1_time[1]
-console.log(Symbol[0])
-//let instrumentcolor1 = Symbol[0].slice(-2) == "CE" ? "success" : "error"
+// setCreatedBy(CreatedBy); && Symbol.length > 5 && 
+if(Type.length > 5 ){
+  let buysell1 = Type[0] == "BUY" ? "bought" : "sold"
+  var title1 = `${CreatedBy[0]} ${buysell1} ${Math.abs(Quantity[0])} quantity of ${Symbol[0]}`
+  var title1_time = String(TradeTime[0]).split(" ")
+  title1_time = title1_time[1]
+  console.log(Symbol[0])
+  //let instrumentcolor1 = Symbol[0].slice(-2) == "CE" ? "success" : "error"
 
-let buysell2 = Type[1] == "BUY" ? "bought" : "sold"
-let title2 = `${CreatedBy[1]} ${buysell2} ${Math.abs(Quantity[1])} quantity of ${Symbol[1]}`
-let title2_time = String(TradeTime[1]).split(" ")
-title2_time = title2_time[1]
-//let instrumentcolor2 = Symbol[1].slice(-2) == "CE" ? "success" : "error"
+  let buysell2 = Type[1] == "BUY" ? "bought" : "sold"
+  var title2 = `${CreatedBy[1]} ${buysell2} ${Math.abs(Quantity[1])} quantity of ${Symbol[1]}`
+  var title2_time = String(TradeTime[1]).split(" ")
+  title2_time = title2_time[1]
+  //let instrumentcolor2 = Symbol[1].slice(-2) == "CE" ? "success" : "error"
 
-let buysell3 = Type[2] == "BUY" ? "bought" : "sold"
-let title3 = `${CreatedBy[2]} ${buysell3} ${Math.abs(Quantity[2])} quantity of ${Symbol[2]}`
-let title3_time = String(TradeTime[2]).split(" ")
-title3_time = title3_time[1]
-//let instrumentcolor3 = Symbol[2].slice(-2) == "CE" ? "success" : "error"
+  let buysell3 = Type[2] == "BUY" ? "bought" : "sold"
+  var title3 = `${CreatedBy[2]} ${buysell3} ${Math.abs(Quantity[2])} quantity of ${Symbol[2]}`
+  var title3_time = String(TradeTime[2]).split(" ")
+  title3_time = title3_time[1]
+  //let instrumentcolor3 = Symbol[2].slice(-2) == "CE" ? "success" : "error"
 
-let buysell4 = Type[3] == "BUY" ? "bought" : "sold"
-let title4 = `${CreatedBy[3]} ${buysell4} ${Math.abs(Quantity[3])} quantity of ${Symbol[3]}`
-let title4_time = String(TradeTime[3]).split(" ")
-title4_time = title4_time[1]
-//let instrumentcolor4 = Symbol[3].slice(-2) == "CE" ? "success" : "error"
+  let buysell4 = Type[3] == "BUY" ? "bought" : "sold"
+  var title4 = `${CreatedBy[3]} ${buysell4} ${Math.abs(Quantity[3])} quantity of ${Symbol[3]}`
+  var title4_time = String(TradeTime[3]).split(" ")
+  title4_time = title4_time[1]
+  //let instrumentcolor4 = Symbol[3].slice(-2) == "CE" ? "success" : "error"
 
-let buysell5 = Type[4] == "BUY" ? "bought" : "sold"
-let title5 = `${CreatedBy[4]} ${buysell5} ${Math.abs(Quantity[4])} quantity of ${Symbol[4]}`
-let title5_time = String(TradeTime[4]).split(" ")
-title5_time = title5_time[1]
+  let buysell5 = Type[4] == "BUY" ? "bought" : "sold"
+  var title5 = `${CreatedBy[4]} ${buysell5} ${Math.abs(Quantity[4])} quantity of ${Symbol[4]}`
+  var title5_time = String(TradeTime[4]).split(" ")
+  title5_time = title5_time[1]
+}
 //let instrumentcolor5 = Symbol[4].slice(-2) == "CE" ? "success" : "error"
 
 //Code ends latest 5 orders
@@ -750,6 +765,8 @@ title5_time = title5_time[1]
         </MDBox>
       </MDBox>
       <MDBox p={2}>
+        { title1 ?
+          <>
         <TimelineItem
           color="error"
           icon="notifications"
@@ -781,6 +798,10 @@ title5_time = title5_time[1]
           dateTime={title5_time}
           lastItem
         />
+        </> :
+                <MDTypography variant="h6" fontWeight="small" verticalAlign="middle" horizontalAlign="middle">
+                
+              </MDTypography>}
       </MDBox>
     </Card>
             </Grid>

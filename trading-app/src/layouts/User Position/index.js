@@ -139,7 +139,7 @@ function UserPosition() {
       <DashboardNavbar />
       <MDBox py={3}>
 
-        <MDBox mt={1}>
+        <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <InstrumentDetails socket={socket} />
@@ -147,14 +147,14 @@ function UserPosition() {
           </Grid>
         </MDBox>
 
-        <MDBox mt={2}>
+        <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
              <OverallGrid socket={socket}/>
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox mt={2}>
+        <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <MarginGrid/>

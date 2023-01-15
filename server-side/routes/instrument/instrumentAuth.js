@@ -11,10 +11,11 @@ const {subscribeTokens, unSubscribeTokens} = require('../../marketData/kiteTicke
 router.post("/instrument", async (req, res)=>{
 
     try{
-        let {instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, contractDate, maxLot} = req.body;
+        let {instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, contractDate, maxLot, otm} = req.body;
         console.log(req.body);
 
         let instrumentToken = await fetchToken(exchange, symbol);
+        let otmToken = await fetchToken(exchange, otm);
         console.log("instrumentToken", instrumentToken);
         let firstDateSplit = (contractDate).split(" ");
         let secondDateSplit = firstDateSplit[0].split("-");
@@ -33,7 +34,7 @@ router.post("/instrument", async (req, res)=>{
                 console.log("data already");
                 return res.status(422).json({error : "date already exist..."})
             }
-            const instruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, instrumentToken, contractDate, maxLot});
+            const instruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, instrumentToken, contractDate, maxLot, otmToken, otm});
             console.log("instruments", instruments)
             instruments.save().then(async()=>{
                  await subscribeTokens();

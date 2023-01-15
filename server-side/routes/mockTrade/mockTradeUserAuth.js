@@ -543,7 +543,7 @@ router.get("/getuserreportdatewise/:email/:firstDate/:secondDate", async(req, re
         { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, userId: email, status: "COMPLETE"} },
         
         { $group: { _id: {
-                             "date": {$substr: [ "$order_timestamp", 0, 10 ]},
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
                                 "buyOrSell": "$buyOrSell"
                             },
                     amount: {

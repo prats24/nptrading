@@ -90,7 +90,7 @@ function UserHistoryOrders() {
                  showTotalEntries={false}
                  noEndBorder
                  addButton={false}
-                 canSearch={true}
+                 canSearch={false}
               />
             </MDBox>
           </Card>

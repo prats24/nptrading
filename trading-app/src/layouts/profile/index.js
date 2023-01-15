@@ -1,17 +1,7 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+import React from "react";
+import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { userContext } from "../../AuthContext";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -52,6 +42,26 @@ import team3 from "../../assets/images/team-3.jpg";
 import team4 from "../../assets/images/team-4.jpg";
 
 function Overview() {
+
+  const [userDetail,setuserDetail] = useState([]);
+  const getDetails = useContext(userContext);
+  console.log("getDetails", getDetails)
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+ useEffect(()=>{
+       axios.get(`${baseUrl}api/v1/readparticularuserdetails/${getDetails.userDetails.email}`)
+      .then((res)=>{
+          console.log(res.data);
+          setuserDetail(res.data)
+      }).catch((err)=>{
+          window.alert("Server Down");
+          return new Error(err);
+      })
+  },[getDetails])
+
+  //console.log("Logged In user details: "+userDetail);
+
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -59,33 +69,39 @@ function Overview() {
       <Header>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={4}>
+            <Grid item xs={12} md={6} xl={6}>
               <PlatformSettings />
             </Grid>
-            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
-              <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
+            <Grid item xs={12} md={6} xl={6} sx={{ display: "flex" }}>
+              {/* <Divider orientation="vertical" sx={{ ml: 20, mr: 10 }} /> */}
               <ProfileInfoCard
                 title="profile information"
-                description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
+                // description="Profile Details"
                 info={{
-                  fullName: "Alec M. Thompson",
-                  mobile: "(44) 123 1234 123",
-                  email: "alecthompson@mail.com",
-                  location: "USA",
+                  fullName: userDetail.name ? userDetail.name : "Data Not Available",
+                  EmployeeID: userDetail.employeeid ? userDetail.employeeid : "Data Not Available",
+                  mobile: userDetail.mobile ? userDetail.mobile : "Data Not Available",
+                  email: userDetail.email ? userDetail.email : "Data Not Available",
+                  location: userDetail.location ? userDetail.location : "Data Not Available",
+                  degree: userDetail.degree ? userDetail.degree : "Data Not Available",
+                  DOJ: userDetail.joining_date ? userDetail.joining_date : "Data Not Available",
+                  DOB: userDetail.dob ? userDetail.dob : "Data Not Available",
+                  
+
                 }}
                 social={[
                   {
-                    link: "https://www.facebook.com/CreativeTim/",
+                    link: "https://www.facebook.com/ninepointer/",
                     icon: <FacebookIcon />,
                     color: "facebook",
                   },
                   {
-                    link: "https://twitter.com/creativetim",
+                    link: "https://twitter.com/nine_pointers",
                     icon: <TwitterIcon />,
                     color: "twitter",
                   },
                   {
-                    link: "https://www.instagram.com/creativetimofficial/",
+                    link: "https://www.instagram.com/nine_pointer/",
                     icon: <InstagramIcon />,
                     color: "instagram",
                   },
@@ -93,14 +109,14 @@ function Overview() {
                 action={{ route: "", tooltip: "Edit Profile" }}
                 shadow={false}
               />
-              <Divider orientation="vertical" sx={{ mx: 0 }} />
+              {/* <Divider orientation="vertical" sx={{ mx: 0 }} /> */}
             </Grid>
-            <Grid item xs={12} xl={4}>
+            {/* <Grid item xs={12} xl={4}>
               <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
-        <MDBox pt={2} px={2} lineHeight={1.25}>
+        {/* <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             Projects
           </MDTypography>
@@ -109,8 +125,8 @@ function Overview() {
               Architects design houses
             </MDTypography>
           </MDBox>
-        </MDBox>
-        <MDBox p={2}>
+        </MDBox> */}
+        {/* <MDBox p={2}>
           <Grid container spacing={6}>
             <Grid item xs={12} md={6} xl={3}>
               <DefaultProjectCard
@@ -193,7 +209,7 @@ function Overview() {
               />
             </Grid>
           </Grid>
-        </MDBox>
+        </MDBox> */}
       </Header>
       <Footer />
     </DashboardLayout>

@@ -20,7 +20,7 @@ const MarginGrid = () => {
     const { columns, rows } = MarginDetails();
     const { columns: pColumns, rows: pRows } = MarginDetails();
     return (<>
-                <MDBox pt={6} pb={3}>
+                <MDBox pt={2} pb={3}>
                     <Grid container spacing={6}>
                         <Grid item xs={12} md={12} lg={12}>
                             <Card>

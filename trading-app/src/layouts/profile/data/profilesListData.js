@@ -23,7 +23,7 @@ import team4 from "../../../assets/images/team-4.jpg";
 export default [
   {
     image: kal,
-    name: "Sophie B.",
+    name: "Prateek P",
     description: "Hi! I need more information..",
     action: {
       type: "internal",

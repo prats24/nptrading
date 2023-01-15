@@ -48,6 +48,14 @@ const instrumentSchema = new mongoose.Schema({
     maxLot:{
         type: Number,
         required : true
+    },
+    otm:{
+        type: String,
+        required : true
+    },
+    otmToken:{
+        type: Number,
+        required : true
     }
 })
 

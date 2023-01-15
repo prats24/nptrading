@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
@@ -235,7 +220,7 @@ function UserReport() {
   overallPnl.map((elem)=>{
     let obj={}
     let updatedValue = (-(elem.totalBuy+elem.totalSell));
-
+    let newDate = (elem.date).split("-");
     const gpnlcolor = -(elem.totalBuy+elem.totalSell) >= 0 ? "success" : "error"
     const npnlcolor = -((elem.totalBuy+elem.totalSell)-(elem.brokerage)) >= 0 ? "success" : "error"
     obj.name = (
@@ -245,7 +230,7 @@ function UserReport() {
     );
     obj.date = (
       <MDTypography component="a" variant="caption"  fontWeight="medium">
-        {elem.date}
+        {`${newDate[2]}-${newDate[1]}-${newDate[0]}`}
       </MDTypography>
     );
     obj.grossPnl = (
