@@ -24,6 +24,7 @@ import TradingAlgoModel from './TradingAlgoModel';
 import TradingAlgoData from './data/TradingAlgoData';
 import MapUser from "./MapUser/MapUser"
 import RealTrade from "./RealTrade/RealTrade"
+import TradingAlgoEditModel from "./TradingAlgoEditModel";
 
 const TradingAlgo = () => {
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -71,6 +72,11 @@ const TradingAlgo = () => {
 
     algoData.map((subelem)=>{
         let obj = {};
+        obj.edit = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                <TradingAlgoEditModel data={algoData} id={subelem._id} Render={{setReRender, reRender}}/>
+            </MDButton>
+        );
         obj.algoName = (
             <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
               {(subelem.algoName)}
