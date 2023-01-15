@@ -62,11 +62,10 @@ const InstrumentModel = ({Render}) => {
 
       const res = await fetch(`${baseUrl}api/v1/instrument`, {
           method: "POST",
+          credentials:"include",
           headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
+              "content-type" : "application/json",
               "Access-Control-Allow-Credentials": true
-  
           },
           body: JSON.stringify({
               instrument, exchange, status, symbol, lotSize, lastModified, uId, createdBy, createdOn, contractDate, maxLot, otm

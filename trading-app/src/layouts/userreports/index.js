@@ -235,7 +235,7 @@ function UserReport() {
   overallPnl.map((elem)=>{
     let obj={}
     let updatedValue = (-(elem.totalBuy+elem.totalSell));
-
+    let newDate = (elem.date).split("-");
     const gpnlcolor = -(elem.totalBuy+elem.totalSell) >= 0 ? "success" : "error"
     const npnlcolor = -((elem.totalBuy+elem.totalSell)-(elem.brokerage)) >= 0 ? "success" : "error"
     obj.name = (
@@ -245,7 +245,7 @@ function UserReport() {
     );
     obj.date = (
       <MDTypography component="a" variant="caption"  fontWeight="medium">
-        {elem.date}
+        {`${newDate[2]}-${newDate[1]}-${newDate[0]}`}
       </MDTypography>
     );
     obj.grossPnl = (
