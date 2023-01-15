@@ -183,8 +183,8 @@ const UserModel = () => {
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formstate.Status = e.target.value}}
               >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="inactive">Inctive</MenuItem>
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Inactive">Inactive</MenuItem>
               </Select>
             </FormControl>
           </DialogContentText>

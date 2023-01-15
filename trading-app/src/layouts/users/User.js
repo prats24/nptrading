@@ -26,6 +26,7 @@ import projectsTableData from "./data/projectsTableData";
 import UserModel from './UserModel';
 import UserData from './data/UserData';
 import InactiveUserData from './data/InactiveUserData';
+import UserEditModel from "./UserEditModel";
 
 
 
@@ -37,6 +38,7 @@ const User = () => {
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     const [activeData, setActiveData] = useState([]);
+    const [reRender, setReRender] = useState(true);
     // const [inactiveData, setInactiveData] = useState([]);
   
     useEffect(()=>{
@@ -59,7 +61,7 @@ const User = () => {
             window.alert("Server Down");
             return new Error(err);
         })
-    },[])
+    },[reRender])
   
     console.log(activeData);
     
@@ -69,7 +71,7 @@ const User = () => {
   
       activeusers.edit = (
           <MDButton variant="Contained" color="info" fontWeight="medium">
-            <EditSharpIcon/>
+            <UserEditModel data={activeData} id={elem._id} Render={{setReRender, reRender}}/>
           </MDButton>
         );
       activeusers.name = (
