@@ -13,12 +13,43 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import { userContext } from '../../AuthContext';
+import uniqid from "uniqid";
+import {useState, useContext} from "react"
+
 
 
 const UserModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+
+  const [formstate, setformstate] = useState({
+    Name:"",
+    Designation:"",
+    EmailID:"",
+    MobileNo:"",
+    Degree:"",
+    DOB:"",
+    Gender:"",
+    TradingExp:"",
+    Location:"",
+    LastOccupation :"",
+    DateofJoining :"",
+    Role:"",
+    userPassword:"",
+    Status:""
+  });
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    
+  const getDetails = useContext(userContext);
+  let uId = uniqid();
+  let date = new Date();
+  let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+  let lastModified = createdOn;
+  let createdBy = getDetails.userDetails.name
+
+  const [reRender, setReRender] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -27,6 +58,41 @@ const UserModel = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+
+  async function formSubmit() {
+    setformstate(formstate);
+    console.log(formstate)
+
+    const { Name, Designation, EmailID, MobileNo, Degree, DOB, Gender, TradingExp, Location, LastOccupation , DateofJoining, Role, Status, userPassword} = formstate;
+
+    const res = await fetch(`${baseUrl}api/v1/userdetail`, {
+      
+        method: "POST",
+        credentials:"include",
+        headers: {
+            "content-type" : "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+        body: JSON.stringify({
+          name:Name, designation:Designation, email:EmailID, mobile:MobileNo, degree:Degree, dob:DOB, gender:Gender, trading_exp:TradingExp, location:Location,
+          last_occupation:LastOccupation , joining_date:DateofJoining, role:Role, status:Status, uId, createdBy, createdOn, lastModified, password: userPassword
+        })
+    });
+
+
+    const data = await res.json();
+    console.log(data);
+    if(data.status === 422 || data.error || !data){ 
+        window.alert(data.error);
+        console.log("invalid entry");
+    }else{
+        window.alert("entry succesfull");
+        console.log("entry succesfull");
+    }
+    reRender ? setReRender(false) : setReRender(true)
+
+}
 
   return (
     <div>
@@ -46,29 +112,29 @@ const UserModel = () => {
           <DialogContentText sx={{ display: "flex", flexDirection: "column" }}>
             <TextField
               id="outlined-basic" label="Name" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Name = e.target.value}}/>
 
             <TextField
               id="outlined-basic" label="Designation" variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Designation = e.target.value}}/>
             
 
             <TextField
               id="outlined-basic" label="Email ID" variant="standard" type="email"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.EmailID = e.target.value}}/>
 
             
             <TextField
               id="outlined-basic" label="MobileNo" variant="standard" type="number" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.MobileNo = e.target.value}}/>
 
             <TextField
               id="outlined-basic" label="Degree" variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Degree = e.target.value}}/>
             
             <TextField
               id="outlined-basic" label="DOB" variant="standard" type="date"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.DOB = e.target.value}}/>
             
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
@@ -77,6 +143,7 @@ const UserModel = () => {
                 id="demo-simple-select-standard"
                 label="Gender"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
+                onChange={(e)=>{formstate.Gender = e.target.value}}
               >
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
@@ -84,23 +151,28 @@ const UserModel = () => {
             </FormControl>
                <TextField
               id="outlined-basic" label="Trading Exp." variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.TradingExp = e.target.value}}/>
             
             <TextField
               id="outlined-basic" label="Location" variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Location = e.target.value}}/>
             
             <TextField
               id="outlined-basic" label="Last Occupation" variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.LastOccupation = e.target.value}}/>
 
             <TextField
               id="outlined-basic" label="Date of Joining" variant="standard" type="date"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.DateofJoining = e.target.value}}/>
             
             <TextField
               id="outlined-basic" label="Role" variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Role = e.target.value}}/>
+
+            <TextField
+              id="outlined-basic" label="User Password" variant="standard" 
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.userPassword = e.target.value}}/>
+
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
@@ -109,6 +181,7 @@ const UserModel = () => {
                 id="demo-simple-select-standard"
                 label="Status"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
+                onChange={(e)=>{formstate.Status = e.target.value}}
               >
                 <MenuItem value="active">Active</MenuItem>
                 <MenuItem value="inactive">Inctive</MenuItem>
@@ -117,7 +190,7 @@ const UserModel = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={formSubmit}>
             OK
           </Button>
           <Button onClick={handleClose} autoFocus>

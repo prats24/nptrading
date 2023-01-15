@@ -157,7 +157,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "DailyPnlData",
+    name: "Daily P&L Chart",
     key: "DailyPnlData",
     // icon: <Icon fontSize="small">table_view</Icon>,
     icon: <PersonIcon/>,

@@ -4,7 +4,7 @@ const dailyPnlDataController = require("../../controllers/dailyPnlDataController
 
 router.post("/dailypnlcalculation",dailyPnlDataController.dailyPnlCalculation)
 
-router.get("/dailypnldata",dailyPnlDataController.getDailyPnlData)
+router.get("/dailypnldata/:selectDate",dailyPnlDataController.getDailyPnlData)
 
 module.exports = router;
 

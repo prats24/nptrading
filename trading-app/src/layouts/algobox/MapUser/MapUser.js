@@ -238,7 +238,7 @@ const MapUser = ({algoName}) => {
                 label="Trading Enable"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{tradeEnableChange(e)}}
-                value={valueForEnableTrade}
+                // value={valueForEnableTrade}
               >
                 <MenuItem value="true">True</MenuItem>
                 <MenuItem value="false">False</MenuItem>
@@ -257,7 +257,7 @@ const MapUser = ({algoName}) => {
                 label="Real Trading"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{realTradeChange(e)}}
-                value={valueForRealTrade}
+                // value={valueForRealTrade}
               >
                 <MenuItem value="true">True</MenuItem>
                 <MenuItem value="false">False</MenuItem>
@@ -283,8 +283,8 @@ const MapUser = ({algoName}) => {
   return (
     <div>
 
-      <MDButton variant="outlined" color="dark" bgColor="error" onClick={handleClickOpen}>
-        Map User
+      <MDButton variant="outlined" bgColor="blue" onClick={handleClickOpen}>
+        MapUser
       </MDButton>
 
       <Dialog

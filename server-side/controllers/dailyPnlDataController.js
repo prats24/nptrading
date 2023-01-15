@@ -6,7 +6,7 @@ const MockTradeData = require("../models/mock-trade/mockTradeCompanySchema");
 
 exports.dailyPnlCalculation = async(req,res,next) => {
   //Extracting timestamp from the instrument history data
-  let date = '2023-01-13';
+  let date = '2023-01-09';
   const instrumentData = await HistoryInstrumentData.find({timestamp : {$gte: `${date}T00:00:00+0530`,$lte:`${date}T23:59:59+0530`}}).select("timestamp symbol open").sort({timestamp: 1})
   console.log("History Instrument Data: "+instrumentData);
 
@@ -22,7 +22,7 @@ exports.dailyPnlCalculation = async(req,res,next) => {
     let pnlTimeTradeData = mockTradeData.filter((e)=> {
         //console.log("Compare Time: ",Date(filteringTimestamp),Date(e.trade_time))
         console.log(elem.open,e.Quantity,elem.symbol,e.symbol);
-        return filteringTimestamp >= e.trade_time && elem.symbol == e.symbol
+        return filteringTimestamp >= e.trade_time && elem.symbol == e.symbol && elem.status == "COMPLETE"
         
     })
     // console.log(pnlTimeTradeData.length);
@@ -42,9 +42,9 @@ exports.dailyPnlCalculation = async(req,res,next) => {
 
     pnlTimeTradeData.map((element)=>{
         totalAmount += element.amount
-        //console.log("Amount: "+element.amount)
-        totalRunningLots += Number(element.Quantity)
-        // console.log("Quantity: "+element.Quantity)
+        console.log("Amount: "+element.amount)
+        totalRunningLots += Number(-element.Quantity)
+        console.log("Quantity: "+element.Quantity)
 
     })
     
@@ -67,7 +67,14 @@ exports.dailyPnlCalculation = async(req,res,next) => {
 }
 
 exports.getDailyPnlData = async(req,res,next) => {
+const {selectDate} = req.params;
+console.log("Select Date in the API: "+selectDate)
 const pipeline = [
+  {$match: {
+    timestamp : {$gte : `${selectDate} 00:00:00`, $lte : `${selectDate} 23:59:59`}
+    // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+  }
+  },
   {
     $project: {
       date: {
@@ -106,7 +113,7 @@ const pipeline = [
     }
   }
    ]
-
+   
    let x = await DailyPnlData.aggregate(pipeline)
 
    res.status(201).json(x);
