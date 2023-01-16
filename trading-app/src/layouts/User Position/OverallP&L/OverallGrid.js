@@ -18,12 +18,12 @@ import MDBox from '../../../components/MDBox';
 import MDTypography from '../../../components/MDTypography';
 import { userContext } from '../../../AuthContext';
 
-const OverallGrid = ({socket}) => {
+const OverallGrid = ({socket, Render}) => {
     // const { columns, rows } = authorsTableData();
     const { columns, rows } = OverallPL();
     const getDetails = useContext(userContext);
     console.log("getDetails", getDetails)
-
+    const { reRender, setReRender } = Render
 
     const [menu, setMenu] = useState(null);
 
@@ -88,7 +88,7 @@ const OverallGrid = ({socket}) => {
       }).catch((err) => {
           return new Error(err);
       })
-    }, [])
+    }, [reRender])
   
     useEffect(()=>{
   
@@ -205,7 +205,7 @@ const OverallGrid = ({socket}) => {
   
         setLiveDetail(liveDetailsArr);
   
-    }, [marketData, getDetails])
+    }, [marketData, getDetails, reRender])
   
     useEffect(() => {
       return () => {
@@ -298,27 +298,6 @@ const OverallGrid = ({socket}) => {
         rows.push(obj);
       })
   
-  
-    const renderMenu = (
-      <Menu
-        id="simple-menu"
-        anchorEl={menu}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={Boolean(menu)}
-        onClose={closeMenu}
-      >
-        <MenuItem onClick={closeMenu}>Action</MenuItem>
-        <MenuItem onClick={closeMenu}>Another action</MenuItem>
-        <MenuItem onClick={closeMenu}>Something else</MenuItem>
-      </Menu>
-    );
   
     let obj = {};
     let totalnpnlcolor1 = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"

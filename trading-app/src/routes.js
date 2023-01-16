@@ -51,6 +51,7 @@ import Notifications from "./layouts/notifications";
 import Profile from "./layouts/profile";
 import SignIn from "./layouts/authentication/sign-in";
 import SignUp from "./layouts/authentication/sign-up";
+import Setting from "./layouts/settings/Setting";
 
 // @mui icons
 import PersonIcon from '@mui/icons-material/Person';
@@ -76,7 +77,9 @@ import AdminReport from "./layouts/adminreport";
 import DailyPNLData from "./layouts/dailyPnlDashboard";
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import SummarizeIcon from '@mui/icons-material/Summarize';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import InventoryIcon from '@mui/icons-material/Inventory'; 
+import SettingsIcon from '@mui/icons-material/Settings';
+// import SettingIcon from '@mui/icons-material/Setting'; 
 
 const routes = [
   {
@@ -157,6 +160,15 @@ const routes = [
     icon: <AccountBalanceIcon/>,
     route: "/trading-accounts",
     component: <TradingAccount />,
+  },
+  {
+    type: "collapse",
+    name: "Setting",
+    key: "setting",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <SettingsIcon/>,
+    route: "/setting",
+    component: <Setting />,
   },
   {
     type: "collapse",

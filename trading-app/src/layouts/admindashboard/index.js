@@ -121,7 +121,8 @@ function AdminDashboard() {
     
     let dayname = [];
     let livedayname = [];
-   
+
+  //
    //This week pnl details code starts
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisweek`)

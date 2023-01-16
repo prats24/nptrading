@@ -14,11 +14,11 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersmock from "./data/companyOrdersmock";
-import projectsTableData from "./data/projectsTableData";
+import TodayTraderMock from "./data/TodayMockTrader";
+import AllMockTrader from "./data/allMockTrader";
 const TableOne = () => {
-    const { columns, rows } = companyOrdersmock();
-    const { columns: pColumns, rows: pRows } = projectsTableData();
+    const { columns, rows } = TodayTraderMock();
+    const { columns: pColumns, rows: pRows } = AllMockTrader();
     return (
                 <MDBox pt={6} pb={3}>
                     <Grid container spacing={6}>

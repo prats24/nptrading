@@ -115,7 +115,7 @@ const InstrumentEditModel = ({Render, data, id}) => {
                 "content-type": "application/json"
             },
             body: JSON.stringify({
-                contract_Date ,Instrument, Exchange, Symbole,LotSize, maxLot, Status, lastModified
+                contract_Date ,Instrument, Exchange, Symbole,LotSize, maxLot, Status, lastModified, Otm
             })
         });
         const dataResp = await res.json();

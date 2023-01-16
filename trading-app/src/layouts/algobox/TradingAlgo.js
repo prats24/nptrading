@@ -64,9 +64,11 @@ const TradingAlgo = () => {
             window.alert(dataResp.error);
             // console.log("Failed to Edit");
         } else {
-            // console.log(dataResp);
-            window.alert("Switched succesfull");
-            // console.log("Edit succesfull");
+            if(marginDeduction === false){
+                window.alert("Margin Deduction is Enabled");
+            } else{
+                window.alert("Margin Deduction is Disabled");
+            }
         }
         reRender ? setReRender(false) : setReRender(true)
     }
@@ -93,9 +95,11 @@ const TradingAlgo = () => {
             window.alert(dataResp.error);
             // console.log("Failed to Edit");
         } else {
-            // console.log(dataResp);
-            window.alert("Switched succesfull");
-            // console.log("Edit succesfull");
+            if(transactionChange === "TRUE"){
+                window.alert("Transaction Change is Enabled");
+            } else{
+                window.alert("Transaction Change is Disabled");
+            }
         }
         reRender ? setReRender(false) : setReRender(true)
     }
@@ -122,9 +126,11 @@ const TradingAlgo = () => {
             window.alert(dataResp.error);
             // console.log("Failed to Edit");
         } else {
-            // console.log(dataResp);
-            window.alert("Switched succesfull");
-            // console.log("Edit succesfull");
+            if(instrumentChange === "TRUE"){
+                window.alert("Instrument Change is Enabled");
+            } else{
+                window.alert("Instrument Change is Disabled");
+            }
         }
         reRender ? setReRender(false) : setReRender(true)
     }
@@ -151,9 +157,12 @@ const TradingAlgo = () => {
             window.alert(dataResp.error);
             // console.log("Failed to Edit");
         } else {
-            // console.log(dataResp);
-            window.alert("Switched succesfull");
-            // console.log("Edit succesfull");
+            if(exchangeChange === "TRUE"){
+                window.alert("Exchange Change is Enabled");
+            } else{
+                window.alert("Exchange Change is Disabled");
+            }
+           
         }
         reRender ? setReRender(false) : setReRender(true)
     }
@@ -180,9 +189,11 @@ const TradingAlgo = () => {
             window.alert(dataResp.error);
             // console.log("Failed to Edit");
         } else {
-            // console.log(dataResp);
-            window.alert("Switched succesfull");
-            // console.log("Edit succesfull");
+            if(productChange === "TRUE"){
+                window.alert("Product Change is Enabled");
+            } else{
+                window.alert("Product Change is Disabled");
+            }
         }
         reRender ? setReRender(false) : setReRender(true)
     }

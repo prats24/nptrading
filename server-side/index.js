@@ -57,7 +57,7 @@ app.use(cors({
   credentials:true,
 
   //origin: "http://3.7.187.183/"
-   origin: "http://localhost:3000"
+    origin: "http://localhost:3000"
 
 }));
 
@@ -67,6 +67,7 @@ app.use(express.json());
 //Update 
 // app.use('/api/v1', require("./routes/TradeData/getCompanyTrade"));
 //Update
+app.use('/api/v1', require("./routes/setting/settingAuth"))
 app.use('/api/v1', require("./routes/DailyPnlData/dailyPnlDataRoute"))
 app.use('/api/v1', require("./marketData/livePrice"));
 app.use('/api/v1', require("./routes/user/userLogin"));
