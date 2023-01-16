@@ -26,12 +26,12 @@ import { Box, Typography } from '@mui/material';
 import MDBox from '../../../../../components/MDBox';
 import { borderBottom } from '@mui/system';
 
-const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp}) => {
+const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render}) => {
 
   console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  // const { reRender, setReRender } = Render;
+  const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -82,6 +82,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const [regularSwitch, setRegularSwitch] = React.useState(true);
+  const [appLive, setAppLive] = useState([]);
 
   const [buyFormDetails, setBuyFormDetails] = React.useState({
     exchange: "",
@@ -184,6 +185,13 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
             return new Error(err);
         })
 
+        axios.get(`${baseUrl}api/v1/readsetting`)
+        .then((res) => {
+            setAppLive(res.data);
+        }).catch((err) => {
+            return new Error(err);
+        })
+
 
 
     setTradeData([...tradeData])
@@ -267,11 +275,16 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
       e.preventDefault()
       setOpen(false);
 
+      if(!appLive[0].isAppLive){
+        window.alert("App is not Live right now. Please wait.");
+        return;
+      }
+
       if(!tradeEnable){
         //console.log("tradeEnable", tradeEnable)
         window.alert("Your trade is disable, please contact to authorise person");
         return;
-    }
+      }
 
       buyFormDetails.buyOrSell = "BUY";
   
@@ -327,9 +340,9 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
       } 
 
       // rerenderParentCallback();
-      // let id = setTimeout(()=>{
-      //     reRender ? setReRender(false) : setReRender(true)
-      // }, 1000);
+      let id = setTimeout(()=>{
+          reRender ? setReRender(false) : setReRender(true)
+      }, 1500);
       
   }
 

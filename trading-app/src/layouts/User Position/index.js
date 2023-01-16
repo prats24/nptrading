@@ -71,6 +71,7 @@ function UserPosition() {
   const [allmockcount, setAllMockCount] = useState([]);
   const [todaylivecount, setTodayLiveCount] = useState([]);
   const [alllivecount, setAllLiveCount] = useState([]);
+  const [reRender, setReRender] = useState(true);
 
   useEffect(() => {
 
@@ -128,7 +129,7 @@ function UserPosition() {
         window.alert("Server Down");
         return new Error(err);
       })
-  });
+  },[reRender]);
   console.log(todaymockcount)
   console.log(allmockcount)
   console.log(todaylivecount)
@@ -142,7 +143,7 @@ function UserPosition() {
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <InstrumentDetails socket={socket} />
+              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} />
             </Grid>
           </Grid>
         </MDBox>
@@ -150,7 +151,7 @@ function UserPosition() {
         <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-             <OverallGrid socket={socket}/>
+             <OverallGrid socket={socket} Render={{ reRender, setReRender }}/>
             </Grid>
           </Grid>
         </MDBox>

@@ -36,10 +36,11 @@ import axios from "axios";
 import BuyModel from "./data/BuyModel";
 import SellModel from "./data/SellModel";
 
-function InstrumentDetails({socket}) {
+function InstrumentDetails({socket, Render}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
+  const { reRender, setReRender } = Render;
   const { columns, rows, instrumentData } = data();
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
@@ -94,7 +95,7 @@ function InstrumentDetails({socket}) {
           }
 
           elem.buy = (
-            <BuyModel symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
+            <BuyModel Render={{ reRender, setReRender }} symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
           );
           
           elem.sell = (
