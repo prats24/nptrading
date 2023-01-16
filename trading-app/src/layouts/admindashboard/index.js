@@ -52,11 +52,6 @@ function AdminDashboard() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
  
-
-    const [todaymockcount, setTodayMockCount] = useState([]);
-    const [allmockcount, setAllMockCount] = useState([]);
-    const [todaylivecount, setTodayLiveCount] = useState([]);
-    const [alllivecount, setAllLiveCount] = useState([]);
     const [PNLData, setPNLData] = useState([]);
     const [gpnl, setGpnlarray] = useState([]);
     const [npnl, setNpnlarray] = useState([]);
@@ -306,7 +301,6 @@ useEffect(()=>{
 
 useEffect(()=>{
   axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsdaybeforeyesterday`)
-  // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
       console.log(res.data);
         
@@ -395,7 +389,7 @@ pnldate.map((elem)=>{
   dayname.push(weekday.slice(0,3))
 })
 
-// Latest five orders code satrt
+ //Latest five orders code satrt
 
 // useEffect(()=>{
 //   axios.get(`${baseUrl}api/v1/getlastfivemocktradecompany`)
@@ -415,13 +409,13 @@ pnldate.map((elem)=>{
 
 console.log(LastFiveTradesarr);
 // setCreatedBy(CreatedBy); && Symbol.length > 5 && 
-if(Type.length > 5 ){
+if(Type.length != 0 ){
   let buysell1 = Type[0] == "BUY" ? "bought" : "sold"
   var title1 = `${CreatedBy[0]} ${buysell1} ${Math.abs(Quantity[0])} quantity of ${Symbol[0]}`
   var title1_time = String(TradeTime[0]).split(" ")
   title1_time = title1_time[1]
   console.log(Symbol[0])
-  //let instrumentcolor1 = Symbol[0].slice(-2) == "CE" ? "success" : "error"
+  
 
   let buysell2 = Type[1] == "BUY" ? "bought" : "sold"
   var title2 = `${CreatedBy[1]} ${buysell2} ${Math.abs(Quantity[1])} quantity of ${Symbol[1]}`
@@ -446,15 +440,16 @@ if(Type.length > 5 ){
   var title5_time = String(TradeTime[4]).split(" ")
   title5_time = title5_time[1]
 }
-//let instrumentcolor5 = Symbol[4].slice(-2) == "CE" ? "success" : "error"
+// let instrumentcolor1 = Symbol[0].slice(-2) == "CE" ? "success" : "error"
+// let instrumentcolor2 = Symbol[1].slice(-2) == "CE" ? "success" : "error"
+// let instrumentcolor3 = Symbol[2].slice(-2) == "CE" ? "success" : "error"
+// let instrumentcolor4 = Symbol[3].slice(-2) == "CE" ? "success" : "error"
+// let instrumentcolor5 = Symbol[4].slice(-2) == "CE" ? "success" : "error"
 
 //Code ends latest 5 orders
 
-// setThisYesterdayBrokerage(thisyesterdaybrokerage);
 //chart data code ends
-    // console.log(reportsBarChartData.labels)
-    // console.log(reportsBarChartData.datasets.data())
-    // console.log(reportsBarChartData.datasets)
+
 
   return (
     <DashboardLayout>
@@ -752,7 +747,7 @@ if(Type.length > 5 ){
           Latest Orders (Today)
         </MDTypography>
         <MDBox mt={0} mb={2}>
-          {/* <MDTypography variant="button" color="text" fontWeight="regular">
+          <MDTypography variant="button" color="text" fontWeight="regular">
             <MDTypography display="inline" variant="body2" verticalAlign="middle">
               <Icon sx={{ color: ({ palette: { success } }) => success.main }}>arrow_upward</Icon>
             </MDTypography>
@@ -761,38 +756,38 @@ if(Type.length > 5 ){
               130
             </MDTypography>{" "}
             orders so far
-          </MDTypography> */}
+          </MDTypography>
         </MDBox>
       </MDBox>
       <MDBox p={2}>
         { title1 ?
           <>
         <TimelineItem
-          color="error"
+          color="success"
           icon="notifications"
           title= {title1}
           dateTime={title1_time}
         />
         <TimelineItem
-          color="error"
+          color="success"
           icon="notifications"
           title={title2}
           dateTime={title2_time}
         />
         <TimelineItem
-          color="error"
+          color="success"
           icon="notifications"
           title={title3}
           dateTime={title3_time}
         />
         <TimelineItem
-          color="error"
+          color="success"
           icon="notifications"
           title={title4}
           dateTime={title4_time}
         />
         <TimelineItem
-          color="error"
+          color="success"
           icon="notifications"
           title={title5}
           dateTime={title5_time}

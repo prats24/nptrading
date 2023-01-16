@@ -83,9 +83,18 @@ const routes = [
     name: "Position",
     key: "Position",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <DvrIcon/>,
+    icon: <BusinessIcon/>,
     route: "/Position",
     component: <UserPosition />,
+  },
+  {
+    type: "collapse",
+    name: "Trades",
+    key: "userorders",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <InventoryIcon/>,
+    route: "/userorders",
+    component: <UserOrders />,
   },
   // {
   //   type: "collapse",
@@ -105,15 +114,7 @@ const routes = [
     route: "/userreport",
     component: <UserReport />,
   },
-  {
-    type: "collapse",
-    name: "Trades",
-    key: "userorders",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <InventoryIcon/>,
-    route: "/userorders",
-    component: <UserOrders />,
-  },
+
 
   {
     type: "collapse",

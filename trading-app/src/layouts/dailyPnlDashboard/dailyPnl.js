@@ -30,16 +30,27 @@ const Dailypnldata = () => {
     const { columns, rows } = PNLData();
     const [newrows, setNewRows] = useState([]);
     const [Data, setData] = useState([]);
+    const [FDPNLData, setFDPNLData] = useState([]);
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     let date = new Date();
-    let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-3).padStart(2, '0')}`
+    let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     const [firstDate, setFirstDate] = useState(valueInDate);
 
     useEffect(()=>{
 
+      axios.get(`${baseUrl}api/v1/datewisecompanypnl/${firstDate}`)
+      .then((res)=>{
+                console.log("First Date PNL Data: "+res.data)
+                setFDPNLData(JSON.parse(JSON.stringify(res.data)));
+      }).catch((err)=>{
+          window.alert("Server Down");
+          return new Error(err);
+      })
+
+
         axios.get(`${baseUrl}api/v1/dailypnldata/${firstDate}`)
         .then((res)=>{
-                  console.log("Data on first come: "+res.data)
+                  //console.log("Data on first come: "+res.data)
                   setData(res.data);
                   setNewRows(JSON.parse(JSON.stringify(res.data)));
         }).catch((err)=>{
@@ -47,9 +58,9 @@ const Dailypnldata = () => {
             return new Error(err);
         })
     },[firstDate])
-  
-    console.log(Data);
-    console.log("New Rows: "+newrows)
+    console.log("FD PNL Data Update: "+FDPNLData)
+    //console.log(Data);
+    //console.log("New Rows: "+newrows)
     Data?.map((elem1)=>{
       let pnldata = {}
       // console.log("Keys: "+elem1.keys());
@@ -78,8 +89,8 @@ const Dailypnldata = () => {
       );
      
       
-      console.log(typeof(pnldata));
-      console.log(pnldata)
+      //console.log(typeof(pnldata));
+      //console.log(pnldata)
       rows.push((pnldata))
       //setNewRows(rows);
     })
@@ -88,19 +99,19 @@ const Dailypnldata = () => {
     let graphy = []
 
     Data?.map((elem)=>{
-      console.log("Element: "+elem)
+      //console.log("Element: "+elem)
         graphy.push(elem._id.split(" ")[1].slice(0,5))
         // graphy.push(elem._id)
         graphx.push((elem.pnl).toFixed(0))
     })
 
-    console.log("Values: "+graphx);
-    console.log("Labels: "+graphy);
+    //console.log("Values: "+graphx);
+    //console.log("Labels: "+graphy);
 
     function startDate(e){
         e.preventDefault();
         setFirstDate(e.target.value)
-        console.log(e.target.value)
+        //console.log(e.target.value)
         //console.log(`${baseUrl}api/v1/dailypnldata/${e.target.value}`)
         axios.get(`${baseUrl}api/v1/dailypnldata/${e.target.value}`)
         .then((res)=>{
@@ -108,7 +119,7 @@ const Dailypnldata = () => {
             // Getting row wise data
             Data?.map((elem1)=>{
                 let pnldata = {}
-                console.log("Keys: "+elem1.keys());
+                //console.log("Keys: "+elem1.keys());
                 const gpnlcolor = (elem1.pnl) >= 0 ? "success" : "error"
 
                 // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
@@ -148,11 +159,14 @@ const Dailypnldata = () => {
             return new Error(err);
         })
     }
-    console.log("Rows: "+rows);
+    //console.log("Rows: "+rows);
+    console.log("FD PNL Data: "+FDPNLData[0]);
+    const gpnlcolor = -(FDPNLData[0]?.amount) >= 0 ? "success" : "error"
+    const npnlcolor = ((-FDPNLData[0]?.amount) - FDPNLData[0]?.brokerage)  >= 0 ? "success" : "error"
     
     return (
         <>
-        <Grid item xs={12} md={12} lg={12} mt={3} >
+        {/* <Grid item xs={12} md={12} lg={12} mt={3} >
             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
               <MDBox >
                 <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>Select Date</Typography>
@@ -161,7 +175,42 @@ const Dailypnldata = () => {
                 id="outlined-basic" variant="standard" type="date"
                 sx={{ margin: 1, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
             </Card>
+          </Grid>  */}
+          <MDBox mt={6} mb={6}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={12} lg={12} >
+            <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
+              <MDBox >
+                <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>Start Date</Typography>
+                </MDBox>
+              <TextField
+                id="outlined-basic" variant="standard" type="date"
+                sx={{ margin: 1, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
+            </Card>
           </Grid>
+
+          <Grid item xs={12} md={12} xl={12} >
+            <Card sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-around', marginTop: 1 }}>
+              <MDBox >
+                <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Gross P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
+                <MDTypography variant="h6" textAlign="center" color={gpnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{FDPNLData[0] ? (-FDPNLData[0].amount >= 0 ? "+₹" + (-FDPNLData[0].amount).toFixed(0) : "-₹" + (FDPNLData[0].amount).toFixed(0)) : 0}</MDTypography>
+              </MDBox>
+              <MDBox >
+                <MDTypography variant="h6" textAlign="center" py={1}>Transaction Cost</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>₹{FDPNLData[0] ? (FDPNLData[0].brokerage).toFixed(2) : 0}</MDTypography>
+              </MDBox>
+              <MDBox >
+                <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Net P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" color={npnlcolor} py={1}>{FDPNLData[0] ? (((-FDPNLData[0].amount)-(FDPNLData[0].brokerage)) >= 0 ? "+₹" + ((-FDPNLData[0].amount)-(FDPNLData[0].brokerage)).toFixed(0) : "-₹" + -((-FDPNLData[0].amount)-(FDPNLData[0].brokerage)).toFixed(0)) : 0}</MDTypography>
+              </MDBox>
+              <MDBox >
+                <MDTypography variant="h6" textAlign="center" py={1}>Total Trades</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{FDPNLData[0] ? FDPNLData[0].trades : 0}</MDTypography>
+              </MDBox>
+            </Card>
+          </Grid>
+        </Grid>
+      </MDBox>
 
             <MDBox mb={3} pt={6}> 
                 <ReportsLineChart

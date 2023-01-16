@@ -38,7 +38,7 @@ const InstrumentInactiveTable = () => {
             window.alert("Server Down");
             return new Error(err);
         })
-    },[])
+    },[reRender, inactiveData])
   
     inactiveData.map((elem)=>{
       let inactiveinstruments = {}

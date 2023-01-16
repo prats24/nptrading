@@ -22,6 +22,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Data from "./MapUserData";
 import DataTable from "../../../examples/Tables/DataTable";
+import Switch from "@mui/material/Switch";
 
 
 
@@ -60,42 +61,65 @@ const MapUser = ({algoName}) => {
   const [modal, setModal] = useState(false);
   const [addUser, setAddUser] = useState([]);
 
-  async function tradeEnableChange(e, userId){
-    // valueForEnableTrade = undefined;
-    // setvalueForEnableTrade(e.target.value);
-    // valueForEnableTrade.current = e.target.value
-    algoData.tradingEnable = e.target.value
-    console.log("in enable", valueForEnableTrade, e.target.value, e, userId)
-    const response = await fetch(`${baseUrl}api/v1/updatetradeenable/${userId}`, {
-        method: "PATCH",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-        body: JSON.stringify({
-            modifiedOn, modifiedBy, isTradeEnable:e.target.value
-        })
-    });
+  async function tradeEnableChange(e, userId, tradeEnable, userName){
 
-    const permissionData = await response.json();
+    if(tradeEnable !== undefined){
+      if(tradeEnable){
+        tradeEnable = false;
+      } else{
+        tradeEnable = true;
+      }
+      algoData.tradingEnable = tradeEnable
+      // console.log("in enable", valueForEnableTrade, tradeEnable, e, userId)
+      const response = await fetch(`${baseUrl}api/v1/updatetradeenable/${userId}`, {
+          method: "PATCH",
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+          body: JSON.stringify({
+              modifiedOn, modifiedBy, isTradeEnable: tradeEnable
+          })
+      });
 
-    if (permissionData.status === 422 || permissionData.error || !permissionData) {
-        window.alert(permissionData.error);
-        //console.log("Failed to Edit");
-    }else {
-        window.alert("Edit succesfull");
+      const permissionData = await response.json();
+
+      if (permissionData.status === 422 || permissionData.error || !permissionData) {
+          window.alert(permissionData.error);
+          //console.log("Failed to Edit");
+      }else {
+          if(tradeEnable){
+            window.alert(`Trade is enabled for ${userName}`);
+          } else{
+            window.alert(`Trade is disabled for ${userName}`);
+          }
+          
+      }
+    } else{
+      console.log("tradeEnable", tradeEnable,e)
+      if(algoData.tradingEnable){
+        tradeEnable = false;
+      } else{
+        tradeEnable = true;
+      }
+      algoData.tradingEnable = tradeEnable
+      setAlgoData(algoData)
     }
     reRender ? setReRender(false) : setReRender(true)
 
   }
 
-  async function realTradeChange(e, userId){
-    // valueForRealTrade = undefined;
-
-    // setvalueForRealTrade(e.target.value)
-    algoData.realTrading = e.target.value;
-    console.log("in real", valueForRealTrade, e.target.value, e, userId)
+  async function realTradeChange(e, userId, realTrade, userName){
+    console.log(userId, realTrade)
+    if(realTrade !== undefined){
+      if(realTrade){
+        realTrade = false;
+      } else{
+        realTrade = true;
+      }
+      algoData.realTrading = realTrade;
+    console.log("in real", valueForRealTrade, realTrade, e, userId)
     const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${userId}`, {
       method: "PATCH",
       headers: {
@@ -104,7 +128,7 @@ const MapUser = ({algoName}) => {
           "Access-Control-Allow-Credentials": true
       },
       body: JSON.stringify({
-          modifiedOn, modifiedBy, isRealTradeEnable:e.target.value
+          modifiedOn, modifiedBy, isRealTradeEnable: realTrade
       })
     });
 
@@ -114,8 +138,23 @@ const MapUser = ({algoName}) => {
         window.alert(permissionData.error);
         //console.log("Failed to Edit");
     }else {
-        window.alert("Edit succesfull");
+      if(realTrade){
+        window.alert(`Real Trade is enabled for ${userName}`);
+      } else{
+        window.alert(`Real Trade is disabled for ${userName}`);
+      }
     }
+
+    } else{
+      if(algoData.realTrading){
+        realTrade = false;
+      } else{
+        realTrade = true;
+      }
+      algoData.realTrading = realTrade
+      setAlgoData(algoData)
+    }
+    
     reRender ? setReRender(false) : setReRender(true)
 
   }
@@ -153,8 +192,8 @@ const MapUser = ({algoName}) => {
 
   const[algoData, setAlgoData] = useState({
       name:"",
-      tradingEnable:"",
-      realTrading:"",
+      tradingEnable: false,
+      realTrading: false,
   });
 
   function formbtn(e, id) {
@@ -263,12 +302,12 @@ const MapUser = ({algoName}) => {
 
   //console.log("newData", newData)
   newData.map((elem)=>{
-    if(valueForEnableTrade === "" && valueForRealTrade === ""){
-      setvalueForEnableTrade(elem.isTradeEnable);
-      setvalueForRealTrade(elem.isRealTradeEnable)
-    }
+    // if(valueForEnableTrade === "" && valueForRealTrade === ""){
+    //   setvalueForEnableTrade(elem.isTradeEnable);
+    //   setvalueForRealTrade(elem.isRealTradeEnable)
+    // }
 
-    console.log(valueForEnableTrade, valueForRealTrade)
+    console.log(elem.isTradeEnable, valueForRealTrade)
     let obj = {};
     obj.name = (
         <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
@@ -276,89 +315,36 @@ const MapUser = ({algoName}) => {
         </MDTypography>
     );
 
-    if(elem.isTradeEnable){
+    if(elem.isTradeEnable !== undefined){
       obj.tradeEnable = (
-        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel  id="demo-simple-select-standard-label">Trading Enable</InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  label="Trading Enable"
-                  sx={{ margin: 1, padding: 1, width: "50px" }}
-                  onChange={(e)=>{tradeEnableChange(e, elem.userId)}}
-                  // {elem.isTradeEnable && 
-                  value={elem.isTradeEnable}
-                  // value={disable}
-                >
-                  <MenuItem value="true">True</MenuItem>
-                  <MenuItem value="false">False</MenuItem>
-                </Select>
-              </FormControl>
-        </MDTypography>
+
+        <MDBox mt={0.5}>
+          <Switch checked={elem.isTradeEnable} onChange={(e) => {tradeEnableChange(e, elem.userId, elem.isTradeEnable, elem.userName)}} />
+        </MDBox>
       ); 
 
     } else {
       obj.tradeEnable = (
-        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel  id="demo-simple-select-standard-label">Trading Enable</InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  label="Trading Enable"
-                  sx={{ margin: 1, padding: 1, width: "50px" }}
-                  onChange={(e)=>{tradeEnableChange(e, elem.userId)}}
-                  // {elem.isTradeEnable && 
-                  // value={elem.isTradeEnable}
-                  // value={disable}
-                >
-                  <MenuItem value="true">True</MenuItem>
-                  <MenuItem value="false">False</MenuItem>
-                </Select>
-              </FormControl>
-        </MDTypography>
+
+        <MDBox mt={0.5}>
+          <Switch checked={algoData.tradingEnable} onChange={(e) => {tradeEnableChange(e, elem.userId, elem.isTradeEnable, elem.userName)}} />
+        </MDBox>
       ); 
 
     }
 
-    if(elem.isRealTradeEnable){
+    if(elem.isRealTradeEnable !== undefined){
       obj.realTrade = (
-        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  label="Real Trading"
-                  sx={{ margin: 1, padding: 1, width: "50px" }}
-                  onChange={(e)=>{realTradeChange(e, elem.userId)}}
-                  value={elem.isRealTradeEnable}
-                >
-                  <MenuItem value="true">True</MenuItem>
-                  <MenuItem value="false">False</MenuItem>
-                </Select>
-              </FormControl>
-        </MDTypography>
+
+          <MDBox mt={0.5}>
+            <Switch checked={elem.isRealTradeEnable} onChange={(e) => {realTradeChange(e, elem.userId, elem.isRealTradeEnable, elem.userName)}} />
+          </MDBox>
       );
     } else{
       obj.realTrade = (
-        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  label="Real Trading"
-                  sx={{ margin: 1, padding: 1, width: "50px" }}
-                  onChange={(e)=>{realTradeChange(e, elem.userId)}}
-                  // value={elem.isRealTradeEnable}
-                >
-                  <MenuItem value="true">True</MenuItem>
-                  <MenuItem value="false">False</MenuItem>
-                </Select>
-              </FormControl>
-        </MDTypography>
+        <MDBox mt={0.5}>
+            <Switch checked={algoData.realTrading} onChange={(e)=>{realTradeChange(e, elem.userId, elem.isRealTradeEnable, elem.userName)}} />
+        </MDBox>
       );
 
     }

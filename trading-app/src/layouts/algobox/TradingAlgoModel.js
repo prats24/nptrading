@@ -86,7 +86,7 @@ const TradingAlgoModel = () => {
     reRender ? setReRender(false) : setReRender(true)
 
 
-    // setOpen(false);
+    setOpen(false);
   };
 
   return (
@@ -186,8 +186,8 @@ const TradingAlgoModel = () => {
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formData.status = e.target.value}}
               >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="inactive">Inactive</MenuItem>
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Inactive">Inactive</MenuItem>
               </Select>
             </FormControl>
           </DialogContentText>
