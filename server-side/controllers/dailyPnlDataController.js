@@ -6,12 +6,12 @@ const MockTradeData = require("../models/mock-trade/mockTradeCompanySchema");
 
 exports.dailyPnlCalculation = async(req,res,next) => {
   //Extracting timestamp from the instrument history data
-  let date = '2023-01-09';
+  let date = '2023-01-16';
   const instrumentData = await HistoryInstrumentData.find({timestamp : {$gte: `${date}T00:00:00+0530`,$lte:`${date}T23:59:59+0530`}}).select("timestamp symbol open").sort({timestamp: 1})
   console.log("History Instrument Data: "+instrumentData);
 
   //Extracting mock trade data for the particular date
-  const mockTradeData = await MockTradeData.find({trade_time : {$gte: `${date} 00:00:00`,$lte:`${date} 23:59:59`}}).select("trade_time symbol amount Quantity buyOrSell algoBox brokerage createdBy").sort({trade_time : 1})
+  const mockTradeData = await MockTradeData.find({trade_time : {$gte: `${date} 00:00:00`,$lte:`${date} 23:59:59`}}).select("trade_time symbol amount Quantity buyOrSell algoBox brokerage createdBy status").sort({trade_time : 1})
 //   console.log("Mock Trade Data: "+mockTradeData);
 
   instrumentData.map(async(elem)=>{
@@ -21,8 +21,8 @@ exports.dailyPnlCalculation = async(req,res,next) => {
     
     let pnlTimeTradeData = mockTradeData.filter((e)=> {
         //console.log("Compare Time: ",Date(filteringTimestamp),Date(e.trade_time))
-        console.log(elem.open,e.Quantity,elem.symbol,e.symbol);
-        return filteringTimestamp >= e.trade_time && elem.symbol == e.symbol && elem.status == "COMPLETE"
+        console.log(elem.open,e.Quantity,elem.symbol,e.symbol,e.status);
+        return filteringTimestamp >= e.trade_time && elem.symbol == e.symbol && e.status == "COMPLETE"
         
     })
     // console.log(pnlTimeTradeData.length);

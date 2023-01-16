@@ -412,16 +412,28 @@ router.get("/pnlcalucationmocktradealluserthismonth", (req, res)=>{
 })
 
 router.get("/gettraderwisepnldetailsthismonth", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Day Before Yesterday")
+    console.log("Inside Aggregate API - Mock Trade Details traderwise till yesterday")
     var day = new Date()
+    let dayDate = `${(day.getFullYear())}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}` 
     var yesterday = new Date(day);
-    yesterday.setDate(day.getDate() - 2);
-    console.log("Yesterday "+yesterday);
-    // let todayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    console.log("Day :"+day)
+    console.log("Day Date :"+dayDate)
+    //yesterday.setDate(day.getDate() - 1);
+    let todayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-01`
 
+    if(day >= `${dayDate} 15:30:00`){
+        console.log("Inside if statement")
+        yesterday.setDate(day.getDate());
+    }
+    else{
+        console.log("Inside else statement")
+        yesterday.setDate(day.getDate() - 1);
+    }
+    console.log("Yesterday "+yesterday);
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+
     console.log("Yesterday Date :"+yesterdayDate)
-    let pipeline = [{ $match: { trade_time: {$gte : '2023-01-01 00:00:00', $lte : '2023-01-12 23:59:59'},  status: "COMPLETE" } },
+    let pipeline = [{ $match: { trade_time: {$gte : `${todayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`},  status: "COMPLETE" } },
                     { $project: { "createdBy" : 1 , "amount" : 1, "brokerage" : 1, "trade_time" : 1 }},
                     { $group: {
                                     _id: "$createdBy",
@@ -599,6 +611,64 @@ router.get("/gettodaysmocktradesparticularuser/:email", async(req, res)=>{
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "order_id" : 1, "order_timestamp" : 1, "Product" : 1, "average_price" :1, "amount" :1, "status" : 1 } },
                     { $sort: { "trade_time": -1 }}
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+            
+        res.status(201).json(x);
+        
+})
+
+router.get("/gettopfivelossmakingtradersthismonthmock", async(req, res)=>{
+    console.log("Inside Aggregate API - Top 5 loss making traders mock")
+    let now = new Date(); 
+    let nowDate = `${(now.getFullYear())}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+    let month = now.getMonth()+1
+    let year = now.getFullYear()
+    let endDay = ''
+    let startDate = ''
+    if(now >= `${nowDate} 15:30:00`){
+        endDay = new Date(now.getFullYear(),now.getMonth()+1,now.getDate());
+    }
+    else{
+        endDay = new Date(now.getFullYear(),now.getMonth()+1,now.getDate()-1);
+    }
+    endDay = new Date(endDay);
+    let endDate = `${(endDay.getFullYear())}-${String(endDay.getMonth() + 1).padStart(2, '0')}-${String(endDay.getDate()).padStart(2, '0')}`
+    if(endDay.getFullYear() == year){
+    startDate = `${(endDay.getFullYear())}-${String(month).padStart(2, '0')}-01`
+    }
+    else{
+    startDate = `${(year-1)}-12-01`
+    }
+    
+    console.log("Start Date: "+startDate)
+    console.log("End Date: "+endDate)
+    
+    let pipeline = [{ $match: 
+                    { trade_time : {$gte : `${startDate} 00:00:00`, $lte: `${endDate} 23:59:59`}} 
+                    },
+                    { $group: 
+                    { _id: "$createdBy",
+                    gpnl: {
+                      $sum: {$multiply : ["$amount",-1]}
+                    },
+                    brokerage: {
+                      $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                      $count : {}
+                    } } 
+                    },
+                    { $addFields:
+                    { npnl: {$subtract : ["$gpnl","$brokerage"]} }
+                    },
+                    { $sort: 
+                    { npnl: 1 }
+                    },
+                    { $limit:
+                        5   
+                    }
                 ]
 
     let x = await MockTradeDetails.aggregate(pipeline)

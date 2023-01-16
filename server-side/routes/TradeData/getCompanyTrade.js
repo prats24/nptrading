@@ -437,7 +437,7 @@ router.get("/getavgpricelivetradecompany", async(req, res)=>{
 })
 
 router.get("/getlastestlivetradecompany", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Year")
+    console.log("Inside Aggregate API - Latest Live Trade API")
     
     let date = new Date();
     const days = date.getDay();
@@ -449,11 +449,88 @@ router.get("/getlastestlivetradecompany", async(req, res)=>{
                     { $sort: { "trade_time": -1 }}
                 ]
 
-    let x = await MockTradeDetails.aggregate(pipeline)
+    let x = await LiveCompanyTradeData.aggregate(pipeline)
 
         res.status(201).json(x[0]);
         
 })
+
+router.get("/getpnllivetradecompanylastfivedays", async(req, res)=>{
+    console.log("Inside Aggregate API - Last 5 days chart data live pnl")
+    const days = 6
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
+    console.log(todayDate)
+    var day = new Date(todayDate);
+    console.log("ToDay Date :"+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - days);
+    console.log("StartDate"+yesterday);
+
+    let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
+    let x = await LiveCompanyTradeData.aggregate([
+        { $match: { trade_time : {$gte :`${yesterdayDate} 00:00:00`, $lte: `${todayDate} 23:59:59` }, status: "COMPLETE"} },
+        { $group: { _id: {
+                                "date": {$substr : ["$trade_time",0,10]},
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    }} 
+                    },
+        { $sort: {_id: 1}}
+            ])
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/getpnllivetradecompanydailythismonth", async(req, res)=>{
+    console.log("Inside Aggregate API - Last 5 days chart data")
+    const days = 6
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
+    console.log(todayDate)
+    var day = new Date(todayDate);
+    console.log("ToDay Date :"+day); // Apr 30 2000
+
+    var yesterday = new Date(day);
+    yesterday.setDate(day.getDate() - days);
+    console.log("StartDate"+yesterday);
+
+    let yesterdayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
+    let x = await LiveCompanyTradeData.aggregate([
+        { $match: { trade_time : {$gte :`${yesterdayDate} 00:00:00`, $lte: `${todayDate} 23:59:59` }, status: "COMPLETE"} },
+        { $group: { _id: {
+                                "date": {$substr : ["$trade_time",0,10]},
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    }} 
+                    },
+        { $sort: {_id: 1}}
+            ])
+            
+                console.log(x);
+
+        res.status(201).json(x);
+        
+})
+
 
 
 module.exports = router;

@@ -189,6 +189,7 @@ const TradingAlgo = () => {
 
     algoData.map((subelem)=>{
         let obj = {};
+        let statuscolor = subelem.status == "Active" ? "success" : "error"
         obj.edit = (
             <MDButton variant="Contained" color="black" fontWeight="medium">
                 <TradingAlgoEditModel data={algoData} id={subelem._id} Render={{setReRender, reRender}}/>
@@ -225,7 +226,7 @@ const TradingAlgo = () => {
             </MDBox>
         );
         obj.status = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
+            <MDTypography component="a" color={statuscolor} variant="caption" fontWeight="medium">
               {(subelem.status)}
             </MDTypography>
         );

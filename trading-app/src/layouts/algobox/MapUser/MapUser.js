@@ -349,29 +349,8 @@ const MapUser = ({algoName}) => {
 
     }
 
-
-
-    // obj.realTrade = (
-    //   <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-    //         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-    //           <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
-    //           <Select
-    //             labelId="demo-simple-select-standard-label"
-    //             id="demo-simple-select-standard"
-    //             label="Real Trading"
-    //             sx={{ margin: 1, padding: 1, width: "50px" }}
-    //             onChange={(e)=>{realTradeChange(e, elem.userId)}}
-    //             value={elem.isRealTradeEnable}
-    //           >
-    //             <MenuItem value="true">True</MenuItem>
-    //             <MenuItem value="false">False</MenuItem>
-    //           </Select>
-    //         </FormControl>
-    //   </MDTypography>
-    // );
-
     obj.action = (
-      <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+      <MDTypography component="a" variant="caption" fontWeight="medium">
           <MDButton variant="outlined" color="info" onClick={(e)=>formbtn(e, elem._id)}>
             OK
           </MDButton>
@@ -387,8 +366,8 @@ const MapUser = ({algoName}) => {
   return (
     <div>
 
-      <MDButton variant="outlined" bgColor="blue" onClick={handleClickOpen}>
-        MapUser
+      <MDButton variant="outlined" color="light" bgColor="light" onClick={handleClickOpen}>
+        Map Traders
       </MDButton>
 
       <Dialog

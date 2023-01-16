@@ -1,19 +1,6 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Tooltip from "@mui/material/Tooltip";
@@ -34,213 +21,86 @@ import team2 from "../../../../../assets/images/team-2.jpg";
 import team3 from "../../../../../assets/images/team-3.jpg";
 import team4 from "../../../../../assets/images/team-4.jpg";
 
-export default function data() {
-  const avatars = (members) =>
-    members.map(([image, name]) => (
-      <Tooltip key={name} title={name} placeholder="bottom">
-        <MDAvatar
-          src={image}
-          alt="name"
-          size="xs"
-          sx={{
-            border: ({ borders: { borderWidth }, palette: { white } }) =>
-              `${borderWidth[2]} solid ${white.main}`,
-            cursor: "pointer",
-            position: "relative",
+export default function Data() {
 
-            "&:not(:first-of-type)": {
-              ml: -1.25,
-            },
+  const [tradersData, setTradersData] = useState([])
+    const [tradergpnl, setTraderGPNL] = useState([])
+    const [tradernpnl, setTraderNPNL] = useState([])
+    const [traderbrokerge, setTraderBrokerage] = useState([])
+    const [tradertrades, setTraderTrades] = useState([])
+    const [tradername, setTraderName] = useState([])
 
-            "&:hover, &:focus": {
-              zIndex: "10",
-            },
-          }}
-        />
-      </Tooltip>
-    ));
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const Company = ({ image, name }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
-      <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-        {name}
+    useEffect(()=>{
+
+      axios.get(`${baseUrl}api/v1/gettopfivelossmakingtradersthismonthmock`)
+      .then((res)=>{
+          console.log("Data: "+res.data)
+          setTradersData(res.data);
+          for(let item of res.data)
+          {
+            setTraderName((prev)=>{return[...prev,(item._id)]})
+            setTraderGPNL((prev)=>{return[...prev,item.gpnl]})
+            setTraderNPNL((prev)=>{return[...prev,(item.npnl).toFixed(0)]})
+            setTraderTrades((prev)=>{return[...prev,(item.trades)]})
+            setTraderBrokerage((prev)=>{return[...prev,(item.brokerage)]}) 
+          }
+      }).catch((err)=>{
+          window.alert("Error in Fetching top 5 loss making traders data");
+          return new Error(err);
+      })
+    },[])
+
+    let tradersrowdata = [];
+  
+  tradersData?.map((elem)=>{
+    let tdata = {}
+    const npnlcolor = elem.npnl >= 0 ? "success" : "error"
+    const gpnlcolor = elem.gpnl >= 0 ? "success" : "error"
+
+    tdata.trader = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem._id}
       </MDTypography>
-    </MDBox>
-  );
+    );
+    tdata.gpnl = (
+      <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+        {elem.gpnl >= 0 ? "+₹" + (elem.gpnl).toFixed(0) :  "-₹" + (-elem.gpnl).toFixed(0)}
+      </MDTypography>
+    );
+    tdata.brokerage = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        ₹{(elem.brokerage).toFixed(0)}
+      </MDTypography>
+    );
+    tdata.npnl = (
+      <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
+        {elem.npnl >= 0 ? "+₹" + (elem.npnl).toFixed(0) :  "-₹" + (-elem.npnl).toFixed(0)}
+      </MDTypography>
+    );
+    tdata.trades = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.trades}
+      </MDTypography>
+    );
+
+    console.log(typeof(tdata));
+    console.log(tdata)
+    tradersrowdata.push(tdata)
+  })
+  
+
 
   return {
     columns: [
       { Header: "Trader Name", accessor: "trader", width: "10%", align: "left" },
-      { Header: "gross p&l", accessor: "tgpnl", width: "10%", align: "left" },
-      { Header: "transaction cost", accessor: "tcost", width: "10%", align: "center" },
-      { Header: "net p&l", accessor: "tnpnl", width: "10%", align: "center" },
+      { Header: "gross p&l", accessor: "gpnl", width: "10%", align: "left" },
+      { Header: "transaction cost", accessor: "brokerage", width: "10%", align: "center" },
+      { Header: "net p&l", accessor: "npnl", width: "10%", align: "center" },
       { Header: "# of traders", accessor: "trades", width: "10%", align: "center" },
-      { Header: "avg. daily loss", accessor: "avgdl", width: "10%", align: "center" },
     ],
 
-    rows: [
-      {
-        trader: <Company image={team2} name="Prateek Pawan" />,
-        members: (
-          <MDBox display="flex" py={1}>
-            {avatars([
-              [team1, "Ryan Tompson"],
-              [team2, "Romina Hadid"],
-              [team3, "Alexander Smith"],
-              [team4, "Jessica Doe"],
-            ])}
-          </MDBox>
-        ),
-        tgpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,70,000
-          </MDTypography>
-        ),
-        // tcost: (
-        //   <MDBox width="8rem" textAlign="left">
-        //     <MDProgress value={60} color="info" variant="gradient" label={false} />
-        //   </MDBox>
-        // ),
-        tcost: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            ₹1,00,000
-          </MDTypography>
-        ),
-        tnpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-        tnpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-      },
-      {
-        trader: <Company image={team1} name="Anamika Verma" />,
-        members: (
-          <MDBox display="flex" py={1}>
-            {avatars([
-              [team2, "Romina Hadid"],
-              [team4, "Jessica Doe"],
-            ])}
-          </MDBox>
-        ),
-        tgpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,40,000
-          </MDTypography>
-        ),
-        // tcost: (
-        //   <MDBox width="8rem" textAlign="left">
-        //     <MDProgress value={10} color="info" variant="gradient" label={false} />
-        //   </MDBox>
-        // ),
-        tcost: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            ₹1,00,000
-          </MDTypography>
-        ),
-        tnpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-      },
-      {
-        trader: <Company image={team4} name="Shrikesh Kumar" />,
-        members: (
-          <MDBox display="flex" py={1}>
-            {avatars([
-              [team1, "Ryan Tompson"],
-              [team3, "Alexander Smith"],
-            ])}
-          </MDBox>
-        ),
-        tgpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,20,000
-          </MDTypography>
-        ),
-        // tcost: (
-        //   <MDBox width="8rem" textAlign="left">
-        //     <MDProgress value={100} color="success" variant="gradient" label={false} />
-        //   </MDBox>
-        // ),
-        tcost: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            ₹1,00,000
-          </MDTypography>
-        ),
-        tnpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-      },
-      {
-        trader: <Company image={team2} name="Manav Yadav" />,
-        members: (
-          <MDBox display="flex" py={1}>
-            {avatars([
-              [team4, "Jessica Doe"],
-              [team3, "Alexander Smith"],
-              [team2, "Romina Hadid"],
-              [team1, "Ryan Tompson"],
-            ])}
-          </MDBox>
-        ),
-        tgpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-        // tcost: (
-        //   <MDBox width="8rem" textAlign="left">
-        //     <MDProgress value={100} color="success" variant="gradient" label={false} />
-        //   </MDBox>
-        // ),
-        tcost: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            ₹1,00,000
-          </MDTypography>
-        ),
-        tnpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-      },
-      {
-        trader: <Company image={team3} name="Monika Agarwal" />,
-        members: (
-          <MDBox display="flex" py={1}>
-            {avatars([[team4, "Jessica Doe"]])}
-          </MDBox>
-        ),
-        tgpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹40,000
-          </MDTypography>
-        ),
-        // tcost: (
-        //   <MDBox width="8rem" textAlign="left">
-        //     <MDProgress value={25} color="info" variant="gradient" label={false} />
-        //   </MDBox>
-        // ),
-        tcost: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            ₹1,00,000
-          </MDTypography>
-        ),
-        tnpnl: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            -₹1,00,000
-          </MDTypography>
-        ),
-      },
-    ],
+    rows: tradersrowdata,
   };
 }
