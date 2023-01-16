@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react"
+import React, {useState, useContext, useRef} from "react"
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -37,9 +37,10 @@ const MapUser = ({algoName}) => {
   const [open, setOpen] = React.useState(false);
   
   const { columns, rows } = Data();
-  let [valueForRealTrade, setvalueForRealTrade] = useState();
-  let [valueForEnableTrade, setvalueForEnableTrade] = useState();
-
+  // let valueForRealTrade = useRef(0);
+  // let valueForEnableTrade = useRef(0);
+  const [valueForEnableTrade, setvalueForEnableTrade] = useState("");
+  const [valueForRealTrade, setvalueForRealTrade] = useState("");
 
   let date = new Date();
   const getDetails = useContext(userContext);
@@ -59,19 +60,64 @@ const MapUser = ({algoName}) => {
   const [modal, setModal] = useState(false);
   const [addUser, setAddUser] = useState([]);
 
-  function tradeEnableChange(e){
-    valueForEnableTrade = undefined;
-    setvalueForEnableTrade(e.target.value);
-    valueForEnableTrade = e.target.value
+  async function tradeEnableChange(e, userId){
+    // valueForEnableTrade = undefined;
+    // setvalueForEnableTrade(e.target.value);
+    // valueForEnableTrade.current = e.target.value
     algoData.tradingEnable = e.target.value
-    console.log("in enable", valueForEnableTrade, e.target.value)
+    console.log("in enable", valueForEnableTrade, e.target.value, e, userId)
+    const response = await fetch(`${baseUrl}api/v1/updatetradeenable/${userId}`, {
+        method: "PATCH",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+        body: JSON.stringify({
+            modifiedOn, modifiedBy, isTradeEnable:e.target.value
+        })
+    });
+
+    const permissionData = await response.json();
+
+    if (permissionData.status === 422 || permissionData.error || !permissionData) {
+        window.alert(permissionData.error);
+        //console.log("Failed to Edit");
+    }else {
+        window.alert("Edit succesfull");
+    }
+    reRender ? setReRender(false) : setReRender(true)
+
   }
 
-  function realTradeChange(e){
-    valueForRealTrade = undefined;
-    setvalueForRealTrade(e.target.value)
+  async function realTradeChange(e, userId){
+    // valueForRealTrade = undefined;
+
+    // setvalueForRealTrade(e.target.value)
     algoData.realTrading = e.target.value;
-    console.log("in real", valueForRealTrade, e.target.value)
+    console.log("in real", valueForRealTrade, e.target.value, e, userId)
+    const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${userId}`, {
+      method: "PATCH",
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+      body: JSON.stringify({
+          modifiedOn, modifiedBy, isRealTradeEnable:e.target.value
+      })
+    });
+
+    const permissionData = await response.json();
+
+    if (permissionData.status === 422 || permissionData.error || !permissionData) {
+        window.alert(permissionData.error);
+        //console.log("Failed to Edit");
+    }else {
+        window.alert("Edit succesfull");
+    }
+    reRender ? setReRender(false) : setReRender(true)
+
   }
 
   let permissionDataUpdated = permissionData.filter((elem)=>{
@@ -217,10 +263,12 @@ const MapUser = ({algoName}) => {
 
   //console.log("newData", newData)
   newData.map((elem)=>{
-    valueForEnableTrade = (elem.isTradeEnable);
-    valueForRealTrade = (elem.isRealTradeEnable)
+    if(valueForEnableTrade === "" && valueForRealTrade === ""){
+      setvalueForEnableTrade(elem.isTradeEnable);
+      setvalueForRealTrade(elem.isRealTradeEnable)
+    }
 
-    // console.log(elem.isTradeEnable, elem.isRealTradeEnable)
+    console.log(valueForEnableTrade, valueForRealTrade)
     let obj = {};
     obj.name = (
         <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
@@ -228,50 +276,120 @@ const MapUser = ({algoName}) => {
         </MDTypography>
     );
 
-    obj.tradeEnable = (
-      <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel  id="demo-simple-select-standard-label">Trading Enable</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Trading Enable"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-                onChange={(e)=>{tradeEnableChange(e)}}
-                // value={valueForEnableTrade}
-              >
-                <MenuItem value="true">True</MenuItem>
-                <MenuItem value="false">False</MenuItem>
-              </Select>
-            </FormControl>
-      </MDTypography>
-    ); 
+    if(elem.isTradeEnable){
+      obj.tradeEnable = (
+        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel  id="demo-simple-select-standard-label">Trading Enable</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Trading Enable"
+                  sx={{ margin: 1, padding: 1, width: "50px" }}
+                  onChange={(e)=>{tradeEnableChange(e, elem.userId)}}
+                  // {elem.isTradeEnable && 
+                  value={elem.isTradeEnable}
+                  // value={disable}
+                >
+                  <MenuItem value="true">True</MenuItem>
+                  <MenuItem value="false">False</MenuItem>
+                </Select>
+              </FormControl>
+        </MDTypography>
+      ); 
 
-    obj.realTrade = (
-      <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Real Trading"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
-                onChange={(e)=>{realTradeChange(e)}}
-                // value={valueForRealTrade}
-              >
-                <MenuItem value="true">True</MenuItem>
-                <MenuItem value="false">False</MenuItem>
-              </Select>
-            </FormControl>
-      </MDTypography>
-    );
+    } else {
+      obj.tradeEnable = (
+        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel  id="demo-simple-select-standard-label">Trading Enable</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Trading Enable"
+                  sx={{ margin: 1, padding: 1, width: "50px" }}
+                  onChange={(e)=>{tradeEnableChange(e, elem.userId)}}
+                  // {elem.isTradeEnable && 
+                  // value={elem.isTradeEnable}
+                  // value={disable}
+                >
+                  <MenuItem value="true">True</MenuItem>
+                  <MenuItem value="false">False</MenuItem>
+                </Select>
+              </FormControl>
+        </MDTypography>
+      ); 
+
+    }
+
+    if(elem.isRealTradeEnable){
+      obj.realTrade = (
+        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Real Trading"
+                  sx={{ margin: 1, padding: 1, width: "50px" }}
+                  onChange={(e)=>{realTradeChange(e, elem.userId)}}
+                  value={elem.isRealTradeEnable}
+                >
+                  <MenuItem value="true">True</MenuItem>
+                  <MenuItem value="false">False</MenuItem>
+                </Select>
+              </FormControl>
+        </MDTypography>
+      );
+    } else{
+      obj.realTrade = (
+        <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  label="Real Trading"
+                  sx={{ margin: 1, padding: 1, width: "50px" }}
+                  onChange={(e)=>{realTradeChange(e, elem.userId)}}
+                  // value={elem.isRealTradeEnable}
+                >
+                  <MenuItem value="true">True</MenuItem>
+                  <MenuItem value="false">False</MenuItem>
+                </Select>
+              </FormControl>
+        </MDTypography>
+      );
+
+    }
+
+
+
+    // obj.realTrade = (
+    //   <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+    //         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+    //           <InputLabel id="demo-simple-select-standard-label">Real Trading</InputLabel>
+    //           <Select
+    //             labelId="demo-simple-select-standard-label"
+    //             id="demo-simple-select-standard"
+    //             label="Real Trading"
+    //             sx={{ margin: 1, padding: 1, width: "50px" }}
+    //             onChange={(e)=>{realTradeChange(e, elem.userId)}}
+    //             value={elem.isRealTradeEnable}
+    //           >
+    //             <MenuItem value="true">True</MenuItem>
+    //             <MenuItem value="false">False</MenuItem>
+    //           </Select>
+    //         </FormControl>
+    //   </MDTypography>
+    // );
 
     obj.action = (
       <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
-          <MDButton variant="outlined" onClick={(e)=>formbtn(e, elem._id)}>
+          <MDButton variant="outlined" color="info" onClick={(e)=>formbtn(e, elem._id)}>
             OK
           </MDButton>
-          <MDButton variant="outlined" onClick={(e)=>deletehandler((elem._id))}>🗑️
+          <MDButton variant="outlined" color="info" sx={{ marginLeft: 1 }} onClick={(e)=>deletehandler((elem._id))}>🗑️
           </MDButton>
       </MDTypography>
     );

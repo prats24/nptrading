@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useRef } from 'react'
 import { userContext } from '../../../AuthContext';
 import uniqid from "uniqid";
+import MDButton from "../../../components/MDBox";
+
 
 export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -350,7 +352,10 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
   return (
     <>
-        <button onClick={()=>{functionality()}} >{buttonText}</button>
+    <MDButton variant="outlined" bgColor="blue" color="white" fontWeight="medium" sx={{width: "50px", cursor: "pointer"}} onClick={()=>{functionality()}}>
+    {buttonText}
+    </MDButton>
+        
     </>
   )
 }

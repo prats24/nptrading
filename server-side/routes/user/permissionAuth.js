@@ -145,6 +145,49 @@ router.delete("/readpermission/:id", async (req, res)=>{
     }
 })
 
+router.patch("/updatetradeenable/:id", async (req, res)=>{
+    console.log(req.params)
+    const {id} = req.params
+    console.log("this is body", req.body, id);
+    try{ 
+        
+
+        const permission = await Permission.findOneAndUpdate({userId : id}, {
+            $set:{ 
+                modifiedOn: req.body.modifiedOn,
+                modifiedBy: req.body.modifiedBy,
+                isTradeEnable: req.body.isTradeEnable,
+            }
+        })
+        console.log("this is role", permission);
+        res.send(permission)
+        // res.status(201).json({massage : "data edit succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
+router.patch("/updaterealtradeenable/:id", async (req, res)=>{
+    console.log(req.params)
+    const {id} = req.params
+    console.log("this is body", req.body, id);
+    try{ 
+        
+        const permission = await Permission.findOneAndUpdate({userId : id}, {
+            $set:{ 
+                modifiedOn: req.body.modifiedOn,
+                modifiedBy: req.body.modifiedBy,
+                isRealTradeEnable: req.body.isRealTradeEnable,
+            }
+        })
+        console.log("this is role", permission);
+        res.send(permission)
+        // res.status(201).json({massage : "data edit succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
 
 module.exports = router;
 

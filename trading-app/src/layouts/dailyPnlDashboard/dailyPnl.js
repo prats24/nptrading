@@ -50,6 +50,39 @@ const Dailypnldata = () => {
   
     console.log(Data);
     console.log("New Rows: "+newrows)
+    Data?.map((elem1)=>{
+      let pnldata = {}
+      // console.log("Keys: "+elem1.keys());
+      const gpnlcolor = (elem1.pnl) >= 0 ? "success" : "error"
+
+      // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
+        pnldata._id = (
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+            {elem1._id}
+          </MDTypography>
+        );
+        pnldata.pnl = (
+          <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+            {(elem1.pnl) >= 0.00 ? "+₹" + ((elem1.pnl).toFixed(0)): "-₹" + ((-(elem1.pnl)).toFixed(0))}
+          </MDTypography>
+        );
+        pnldata.traders = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem1.traders}
+        </MDTypography>
+      );
+      pnldata.trades = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem1.trades}
+        </MDTypography>
+      );
+     
+      
+      console.log(typeof(pnldata));
+      console.log(pnldata)
+      rows.push((pnldata))
+      //setNewRows(rows);
+    })
 
     let graphx = [];
     let graphy = []
@@ -76,6 +109,8 @@ const Dailypnldata = () => {
             Data?.map((elem1)=>{
                 let pnldata = {}
                 console.log("Keys: "+elem1.keys());
+                const gpnlcolor = (elem1.pnl) >= 0 ? "success" : "error"
+
                 // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
                   pnldata._id = (
                     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -83,8 +118,8 @@ const Dailypnldata = () => {
                     </MDTypography>
                   );
                   pnldata.pnl = (
-                    <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-                      {(elem1.pnl).toFixed(0)}
+                    <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+                        {(elem1.pnl) >= 0.00 ? "+₹" + ((elem1.pnl).toFixed(0)): "-₹" + ((-(elem1.pnl)).toFixed(0))}
                     </MDTypography>
                   );
                   pnldata.traders = (
@@ -109,7 +144,7 @@ const Dailypnldata = () => {
             // Code Ends
 
         }).catch((err)=>{
-            window.alert("Server Down");
+            // window.alert("Server Down");
             return new Error(err);
         })
     }
@@ -171,7 +206,7 @@ const Dailypnldata = () => {
                             </MDBox>
                             <MDBox pt={3}>
                                 <DataTable
-                                    table={{ columns, rows:newrows }}
+                                    table={{ columns, rows }}
                                     isSorted={false}
                                     entriesPerPage={false}
                                     showTotalEntries={false}
