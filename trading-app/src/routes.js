@@ -74,6 +74,9 @@ import UserDashboard from "./layouts/userdashboard";
 import UserReport from "./layouts/userreports";
 import AdminReport from "./layouts/adminreport";
 import DailyPNLData from "./layouts/dailyPnlDashboard";
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const routes = [
   {
@@ -103,10 +106,10 @@ const routes = [
   
   {
     type: "collapse",
-    name: "Admin Report",
+    name: "Admin Reports",
     key: "adminreport",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
+    icon: <SummarizeIcon/>,
     route: "/adminreport",
     component: <AdminReport/>,
   },
@@ -121,7 +124,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Orders",
+    name: "All Orders",
     key: "orders",
     // icon: <Icon fontSize="small">table_view</Icon>,
     icon: <TableViewIcon/>,
@@ -139,7 +142,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "AlgoBox",
+    name: "Algo Box",
     key: "algobox",
     // icon: <Icon fontSize="small">table_view</Icon>,
     icon: <ManageAccountsIcon/>,
@@ -160,7 +163,7 @@ const routes = [
     name: "Daily P&L Chart",
     key: "DailyPnlData",
     // icon: <Icon fontSize="small">table_view</Icon>,
-    icon: <PersonIcon/>,
+    icon: <QueryStatsIcon/>,
     route: "/DailyPnlData",
     component: <DailyPNLData />,
   },
@@ -199,15 +202,6 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
   },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
-    route: "/profile",
-    component: <Profile />,
-  },
   // {
   //   type: "collapse",
   //   name: "Sign In",
@@ -229,39 +223,49 @@ const routes = [
   // },
   {
     type: "collapse",
-    name: "User Orders",
-    key: "userorders",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <ContactPageIcon/>,
-    route: "/userorders",
-    component: <UserOrders />,
-  },
-  {
-    type: "collapse",
     name: "Position",
     key: "Position",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
+    icon: <BusinessIcon/>,
     route: "/Position",
     component: <UserPosition />,
   },
   {
     type: "collapse",
-    name: "Dashboard",
-    key: "userdashboard",
+    name: "Orders",
+    key: "userorders",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
-    route: "/userdashboard",
-    component: <UserDashboard />,
+    icon: <InventoryIcon/>,
+    route: "/userorders",
+    component: <UserOrders />,
+  },
+
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "userdashboard",
+  //   // icon: <Icon fontSize="small">person</Icon>,
+  //   icon: <AccountBoxIcon/>,
+  //   route: "/userdashboard",
+  //   component: <UserDashboard />,
+  // },
+  {
+    type: "collapse",
+    name: "Report",
+    key: "userreport",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <DashboardIcon/>,
+    route: "/userreport",
+    component: <UserReport />,
   },
   {
     type: "collapse",
-    name: "User Report",
-    key: "userreport",
+    name: "Profile",
+    key: "profile",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <AccountBoxIcon/>,
-    route: "/userreport",
-    component: <UserReport />,
+    route: "/profile",
+    component: <Profile />,
   },
 
 ];

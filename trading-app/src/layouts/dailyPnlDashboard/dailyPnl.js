@@ -33,7 +33,7 @@ const Dailypnldata = () => {
     const [FDPNLData, setFDPNLData] = useState([]);
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     let date = new Date();
-    let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-3).padStart(2, '0')}`
+    let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     const [firstDate, setFirstDate] = useState(valueInDate);
 
     useEffect(()=>{
