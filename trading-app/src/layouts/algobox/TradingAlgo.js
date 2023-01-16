@@ -190,7 +190,7 @@ const TradingAlgo = () => {
     algoData.map((subelem)=>{
         let obj = {};
         obj.edit = (
-            <MDButton variant="Contained" color="info" fontWeight="medium">
+            <MDButton variant="Contained" color="black" fontWeight="medium">
                 <TradingAlgoEditModel data={algoData} id={subelem._id} Render={{setReRender, reRender}}/>
             </MDButton>
         );
@@ -200,7 +200,7 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.mapUser = (
-            <MDButton variant="outlined" bgColor="white" color="dark" fontWeight="medium">
+            <MDButton variant="outlined" bgColor="blue" color="dark" fontWeight="medium">
               <MapUser color="white" algoName={subelem.algoName}/>
             </MDButton>
         );
@@ -210,28 +210,19 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.transactionChange = (
-            // <MDTypography component="a" variant="caption" fontWeight="medium">
-            //   {(subelem.transactionChange)}
-            // </MDTypography>
-                        <MDBox mt={0.5}>
-                        <Switch checked={subelem.transactionChange === "TRUE"} onChange={() => {transactionChange(subelem._id, subelem.transactionChange)}} />
-                      </MDBox>
+            <MDBox mt={0.5}>
+                <Switch checked={subelem.transactionChange === "TRUE"} onChange={() => {transactionChange(subelem._id, subelem.transactionChange)}} />
+            </MDBox>
         );
         obj.marginDeduction = (
-            // <MDButton variant="outlined" bgColor="white" onClick={()=>{marginDeduction(subelem._id, subelem.marginDeduction)}} fullWidth>
-            //     {(subelem.marginDeduction) ? "ON" : "OFF"}
-            // </MDButton>
             <MDBox mt={0.5}>
-            <Switch checked={subelem.marginDeduction} onChange={() => {marginDeduction(subelem._id, subelem.marginDeduction)}} />
-          </MDBox>
+                <Switch checked={subelem.marginDeduction} onChange={() => {marginDeduction(subelem._id, subelem.marginDeduction)}} />
+            </MDBox>
         );
         obj.instrumentChange = (
-            // <MDTypography component="a" variant="caption" fontWeight="medium">
-            //   {(subelem.instrumentChange)}
-            // </MDTypography>
-                        <MDBox mt={0.5}>
-                        <Switch checked={subelem.instrumentChange === "TRUE"} onChange={() => {instrumentChange(subelem._id, subelem.instrumentChange)}} />
-                      </MDBox>
+            <MDBox mt={0.5}>
+                <Switch checked={subelem.instrumentChange === "TRUE"} onChange={() => {instrumentChange(subelem._id, subelem.instrumentChange)}} />
+            </MDBox>
         );
         obj.status = (
             <MDTypography component="a" variant="caption" fontWeight="medium">
@@ -239,19 +230,13 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.exchangeChange = (
-            // <MDTypography component="a" variant="caption" fontWeight="medium">
-            //   {(subelem.exchangeChange)}
-            // </MDTypography>
             <MDBox mt={0.5}>
-            <Switch checked={subelem.exchangeChange === "TRUE"} onChange={() => {exchangeChange(subelem._id, subelem.exchangeChange)}} />
-          </MDBox>
+                <Switch checked={subelem.exchangeChange === "TRUE"} onChange={() => {exchangeChange(subelem._id, subelem.exchangeChange)}} />
+            </MDBox>
         );
         obj.productChange = (
-            // <MDTypography component="a" variant="caption" fontWeight="medium">
-            //   {(subelem.productChange)}
-            // </MDTypography>
             <MDBox mt={0.5}>
-            <Switch checked={subelem.productChange === "TRUE"} onChange={() => {productChange(subelem._id, subelem.productChange)}} />
+                <Switch checked={subelem.productChange === "TRUE"} onChange={() => {productChange(subelem._id, subelem.productChange)}} />
             </MDBox>
         );
         obj.tradingAccount = (
@@ -260,9 +245,9 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.isRealTrade = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
+            <MDButton variant="outlined" bgColor="blue" color="dark" fontWeight="medium">
                 <RealTrade id={subelem._id} Render={{reRender, setReRender}} tradingAlgo={algoData} buttonTextBool={subelem.isRealTrade} />
-            </MDTypography>
+            </MDButton>
         );
 
         rows.push(obj);

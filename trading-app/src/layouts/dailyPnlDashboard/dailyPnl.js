@@ -32,28 +32,66 @@ const Dailypnldata = () => {
     const [Data, setData] = useState([]);
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     let date = new Date();
-    let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
+    let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-3).padStart(2, '0')}`
     const [firstDate, setFirstDate] = useState(valueInDate);
 
     useEffect(()=>{
 
         axios.get(`${baseUrl}api/v1/dailypnldata/${firstDate}`)
         .then((res)=>{
+                  console.log("Data on first come: "+res.data)
                   setData(res.data);
+                  setNewRows(JSON.parse(JSON.stringify(res.data)));
         }).catch((err)=>{
             window.alert("Server Down");
             return new Error(err);
         })
-    },[])
+    },[firstDate])
   
     console.log(Data);
+    console.log("New Rows: "+newrows)
+    Data?.map((elem1)=>{
+      let pnldata = {}
+      // console.log("Keys: "+elem1.keys());
+      const gpnlcolor = (elem1.pnl) >= 0 ? "success" : "error"
+
+      // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
+        pnldata._id = (
+          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+            {elem1._id}
+          </MDTypography>
+        );
+        pnldata.pnl = (
+          <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+            {(elem1.pnl) >= 0.00 ? "+₹" + ((elem1.pnl).toFixed(0)): "-₹" + ((-(elem1.pnl)).toFixed(0))}
+          </MDTypography>
+        );
+        pnldata.traders = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem1.traders}
+        </MDTypography>
+      );
+      pnldata.trades = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem1.trades}
+        </MDTypography>
+      );
+     
+      
+      console.log(typeof(pnldata));
+      console.log(pnldata)
+      rows.push((pnldata))
+      //setNewRows(rows);
+    })
 
     let graphx = [];
     let graphy = []
 
-    rows.map((elem)=>{
-        graphy.push(elem.timestamp.props.children.split(" ")[1].slice(0,5))
-        graphx.push(elem.gpnl.props.children)
+    Data?.map((elem)=>{
+      console.log("Element: "+elem)
+        graphy.push(elem._id.split(" ")[1].slice(0,5))
+        // graphy.push(elem._id)
+        graphx.push((elem.pnl).toFixed(0))
     })
 
     console.log("Values: "+graphx);
@@ -63,47 +101,50 @@ const Dailypnldata = () => {
         e.preventDefault();
         setFirstDate(e.target.value)
         console.log(e.target.value)
-        console.log(`${baseUrl}api/v1/dailypnldata/${e.target.value}`)
+        //console.log(`${baseUrl}api/v1/dailypnldata/${e.target.value}`)
         axios.get(`${baseUrl}api/v1/dailypnldata/${e.target.value}`)
         .then((res)=>{
                   setData(res.data);
             // Getting row wise data
-            (res.data).map((elem)=>{
+            Data?.map((elem1)=>{
                 let pnldata = {}
+                console.log("Keys: "+elem1.keys());
+                const gpnlcolor = (elem1.pnl) >= 0 ? "success" : "error"
+
                 // const exchangecolor = elem.exchange == "NFO" ? "info" : "error"
-                  pnldata.timestamp = (
+                  pnldata._id = (
                     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-                      {elem._id}
+                      {elem1._id}
                     </MDTypography>
                   );
-                  pnldata.gpnl = (
-                    <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-                      {elem.pnl.toFixed(0)}
+                  pnldata.pnl = (
+                    <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+                        {(elem1.pnl) >= 0.00 ? "+₹" + ((elem1.pnl).toFixed(0)): "-₹" + ((-(elem1.pnl)).toFixed(0))}
                     </MDTypography>
                   );
                   pnldata.traders = (
                   <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-                    {elem.traders}
+                    {elem1.traders}
                   </MDTypography>
                 );
                 pnldata.trades = (
                   <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-                    {elem.trades}
+                    {elem1.trades}
                   </MDTypography>
                 );
                
                 
                 console.log(typeof(pnldata));
                 console.log(pnldata)
-                rows.push(JSON.parse(JSON.stringify(pnldata)))
-                setNewRows(rows);
+                rows.push(JSON.stringify(pnldata))
+                //setNewRows(rows);
               })
-              console.log(newrows);
+              //console.log(newrows);
 
             // Code Ends
 
         }).catch((err)=>{
-            window.alert("Server Down");
+            // window.alert("Server Down");
             return new Error(err);
         })
     }
@@ -165,7 +206,7 @@ const Dailypnldata = () => {
                             </MDBox>
                             <MDBox pt={3}>
                                 <DataTable
-                                    table={{ columns, rows:newrows }}
+                                    table={{ columns, rows }}
                                     isSorted={false}
                                     entriesPerPage={false}
                                     showTotalEntries={false}
