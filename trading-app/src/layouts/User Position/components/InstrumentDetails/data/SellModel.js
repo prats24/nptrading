@@ -127,8 +127,16 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     setOpen(false);
   };
 
+  const [appLive, setAppLive] = useState([]);
+
 
   useEffect(() => {
+    axios.get(`${baseUrl}api/v1/readsetting`)
+    .then((res) => {
+        setAppLive(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
 
     axios.get(`${baseUrl}api/v1/readRequestToken`)
         .then((res) => {
@@ -264,6 +272,11 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   async function sellFunction(e, uId) {
       e.preventDefault()
       setOpen(false);
+
+      if(!appLive[0].isAppLive){
+        window.alert("App is not Live right now. Please wait.");
+        return ;
+      }
 
       if(!tradeEnable){
         //console.log("tradeEnable", tradeEnable)

@@ -252,5 +252,32 @@ router.get("/readliveTradeuserThisYear/:email", (req, res)=>{
     })
 })
 
+router.get("/readlivetradeuseragg",async (req, res)=>{
+    let date = new Date();
+    let yesterdayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')-1}`
+//$gte : `${todayDate} 00:00:00`, 
+   let x = await UserTradeData.aggregate([
+        { $match: { trade_time: {$lte : `${yesterdayDate} 00:00:00`} } },
+        { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "placed_by": 1 } },
+        { $sort:{ _id: -1 }}
+     ])
+                //console.log(x)
+
+        res.status(201).json(x);
+})
+//{ trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} }
+router.get("/readlivetradeusertodayagg",async (req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let x = await UserTradeData.aggregate([
+         { $match: { trade_time: {$gte : `${todayDate} 00:00:00`, $lte : `${todayDate} 23:59:59`} } },
+         { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "placed_by": 1 } },
+         { $sort:{ _id: -1 }}
+      ])
+                 //console.log(x)
+ 
+         res.status(201).json(x);
+ })
+
 
 module.exports = router;

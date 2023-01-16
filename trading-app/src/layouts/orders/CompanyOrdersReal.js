@@ -29,12 +29,12 @@ import DataTable from "../../examples/Tables/DataTable";
 import Header from "./Header";
 
 // Data
-import companyOrdersmock from "./data/companyOrdersmock";
-import projectsTableData from "./data/projectsTableData";
+import TodayLiveCompany from "./data/TodayLiveCompany";
+import allLiveCompany from "./data/allLiveCompany";
 
 function Tabletwo() {
-  const { columns, rows } = companyOrdersmock();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns, rows } = TodayLiveCompany();
+  const { columns: pColumns, rows: pRows } = allLiveCompany();
 
   return (
    
