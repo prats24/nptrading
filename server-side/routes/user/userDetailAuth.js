@@ -18,7 +18,7 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
             console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
-        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password});
+        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid});
         console.log(userDetail)
         userDetail.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
