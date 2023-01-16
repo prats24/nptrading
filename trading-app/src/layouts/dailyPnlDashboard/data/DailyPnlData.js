@@ -19,8 +19,8 @@ export default function DailyPnlData() {
 
   return {
     columns: [
-      { Header: "timestamp", accessor: "timestamp",align: "center" },
-      { Header: "Gross P&L", accessor: "gpnl",align: "center" },
+      { Header: "timestamp", accessor: "_id",align: "center" },
+      { Header: "Gross P&L", accessor: "pnl",align: "center" },
       { Header: "traders", accessor: "traders",align: "center" },
       { Header: "trades", accessor: "trades", align: "center"},
     ],
