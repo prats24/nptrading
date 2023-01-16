@@ -55,6 +55,7 @@ const [role, setRole] = useState();
 const [status, setStatus] = useState();
 const [degree, setDegree] = useState();
 const [pass, setPass] = useState();
+const [employeeid, setemployeeId] = useState();
 
     useEffect(()=>{
 
@@ -92,6 +93,7 @@ const [pass, setPass] = useState();
         setJoiningDate(editData[0].joining_date);
         setRole(editData[0].role);
         setStatus(editData[0].status);
+        setemployeeId(editData[0].employeeid)
 
     }, [editData, reRender])
 
@@ -111,7 +113,8 @@ const [pass, setPass] = useState();
       DateofJoining :"",
       Role:"",
       userPassword:"",
-      Status:""
+      Status:"",
+      employeeId: ""
     });
 
 console.log(formstate);
@@ -133,11 +136,12 @@ async function formbtn() {
     formstate.Role = role;
     formstate.Status = status;
     formstate.userPassword = pass;
+    formstate.employeeId = employeeid;
 
     setformstate(formstate);
 
 
-    const { Name, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, userPassword } = formstate;
+    const { Name, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, userPassword, employeeId } = formstate;
 
     const res = await fetch(`${baseUrl}api/v1/readuserdetails/${id}`, {
         method: "PUT",
@@ -146,7 +150,7 @@ async function formbtn() {
             "content-type": "application/json"
         },
         body: JSON.stringify({
-            Name, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, lastModified, userPassword
+            Name, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, lastModified, userPassword, employeeId
         })
     });
 
@@ -269,6 +273,12 @@ async function Ondelete(){
             <TextField
               id="outlined-basic" label="User Password" variant="standard" value={pass}  
               sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{setPass( e.target.value)}}/>
+
+            <TextField
+              id="outlined-basic" label="Employee Id" variant="standard" value={employeeid} 
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{setemployeeId( e.target.value)}}/>
+
+
 
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

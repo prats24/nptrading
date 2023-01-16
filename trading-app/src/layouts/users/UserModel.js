@@ -38,7 +38,8 @@ const UserModel = () => {
     DateofJoining :"",
     Role:"",
     userPassword:"",
-    Status:""
+    Status:"",
+    employeeId: ""
   });
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
@@ -64,7 +65,7 @@ const UserModel = () => {
     setformstate(formstate);
     console.log(formstate)
 
-    const { Name, Designation, EmailID, MobileNo, Degree, DOB, Gender, TradingExp, Location, LastOccupation , DateofJoining, Role, Status, userPassword} = formstate;
+    const { Name, Designation, EmailID, MobileNo, Degree, DOB, Gender, TradingExp, Location, LastOccupation , DateofJoining, Role, Status, userPassword, employeeId} = formstate;
 
     const res = await fetch(`${baseUrl}api/v1/userdetail`, {
       
@@ -76,7 +77,7 @@ const UserModel = () => {
         },
         body: JSON.stringify({
           name:Name, designation:Designation, email:EmailID, mobile:MobileNo, degree:Degree, dob:DOB, gender:Gender, trading_exp:TradingExp, location:Location,
-          last_occupation:LastOccupation , joining_date:DateofJoining, role:Role, status:Status, uId, createdBy, createdOn, lastModified, password: userPassword
+          last_occupation:LastOccupation , joining_date:DateofJoining, role:Role, status:Status, uId, createdBy, createdOn, lastModified, password: userPassword, employeeId
         })
     });
 
@@ -90,6 +91,7 @@ const UserModel = () => {
         window.alert("entry succesfull");
         console.log("entry succesfull");
     }
+    setOpen(false);
     reRender ? setReRender(false) : setReRender(true)
 
 }
@@ -172,6 +174,11 @@ const UserModel = () => {
             <TextField
               id="outlined-basic" label="User Password" variant="standard" 
               sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.userPassword = e.target.value}}/>
+
+            <TextField
+              id="outlined-basic" label="Employee ID" variant="standard" 
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.employeeId = e.target.value}}/>
+
 
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

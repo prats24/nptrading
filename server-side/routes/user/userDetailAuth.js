@@ -5,7 +5,7 @@ const UserDetail = require("../../models/User/userDetailSchema");
 const authController = require("../../controllers/authController")
 
 router.post("/userdetail", authController.protect, authController.restrictTo("admin"), (req, res)=>{
-    const {status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password} = req.body;
+    const {status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
     console.log(req.body)
     if(!status || !uId || !createdOn || !lastModified || !createdBy || !name || !designation || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation || !joining_date || !role){
         console.log("data nhi h pura");
@@ -18,7 +18,7 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
             console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
-        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid});
+        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
         console.log(userDetail)
         userDetail.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
@@ -68,7 +68,10 @@ router.put("/readuserdetails/:id", async (req, res)=>{
                 last_occupation: req.body.LastOccupation,
                 joining_date: req.body.DateofJoining,
                 role: req.body.Role,
-                status: req.body.Status
+                status: req.body.Status,
+                // password: req.body.userPassword,
+                employeeid: req.body.employeeId
+                
             }
         })
         console.log("this is userdetail", userDetail);

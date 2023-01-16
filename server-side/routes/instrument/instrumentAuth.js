@@ -22,6 +22,9 @@ router.post("/instrument", async (req, res)=>{
         contractDate = `${secondDateSplit[2]}-${secondDateSplit[1]}-${secondDateSplit[0]}`
 
         if(!instrument || !exchange || !symbol || !status || !uId || !createdOn || !lastModified || !createdBy || !lotSize || !instrumentToken){
+            if(!instrumentToken){
+                return res.status(422).json({error : "Please enter a valid Instrument."})
+            }
             console.log(instrumentToken);
             console.log(req.body);
             console.log("data nhi h pura");
@@ -95,7 +98,8 @@ router.put("/readInstrumentDetails/:id", async (req, res)=>{
                 lotSize: req.body.LotSize,
                 instrumentToken: token,
                 contractDate: req.body.contract_Date, 
-                maxLot: req.body.maxLot
+                maxLot: req.body.maxLot,
+                otm : req.body.Otm
             }
         })
         console.log("this is role", instrument);
