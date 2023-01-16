@@ -1284,4 +1284,41 @@ router.get("/daywisecompanypnl", async(req, res)=>{
         
 })
 
+router.get("/datewisecompanypnl/:queryDate", async(req, res)=>{
+    console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+    let {queryDate} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${queryDate} 00:00:00`, $lte : `${queryDate} 23:59:59`},
+                        status : "COMPLETE" 
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: {
+                                "date": {$substr: [ "$trade_time", 0, 10 ]},
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    }
+                }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
+
 module.exports = router;
