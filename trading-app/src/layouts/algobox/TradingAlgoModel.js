@@ -86,7 +86,7 @@ const TradingAlgoModel = () => {
     reRender ? setReRender(false) : setReRender(true)
 
 
-    // setOpen(false);
+    setOpen(false);
   };
 
   return (
