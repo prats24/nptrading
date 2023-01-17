@@ -60,7 +60,6 @@ function AdminReport() {
       <DashboardNavbar />
       <MDBox mb={2} />
       <AdminReportHeader/>
-      <CompanyDailyPNLTWise/>
     </DashboardLayout>
   );
 }

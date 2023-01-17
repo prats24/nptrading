@@ -26,6 +26,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import StoreIcon from '@mui/icons-material/Store';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
@@ -115,21 +117,21 @@ function AdminReportHeader({ children }) {
                   label="Company Daily P&L(Trader-Wise)"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      <StoreIcon/>
                     </Icon>
                   }
                 />
                 <Tab
                   label="Company Daily P&L"
                   icon={
-                    <AddShoppingCartIcon fontSize="small" sx={{ mt: -0.25 }} />
+                    <StoreIcon/>
                   }
                 />
                 <Tab
                   label="Trader P&L"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      <SupervisorAccountIcon/>
                     </Icon>
                   }
                 />
@@ -137,7 +139,7 @@ function AdminReportHeader({ children }) {
                   label="Trader Metrics"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      <SupervisorAccountIcon/>
                     </Icon>
                   }
                 />
