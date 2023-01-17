@@ -19,7 +19,7 @@ import uniqid from "uniqid";
 // import axios from "axios"
 
 
-const TradingAlgoModel = () => {
+const TradingAlgoModel = ({Render}) => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -43,7 +43,7 @@ const TradingAlgoModel = () => {
   let lastModified = createdOn;
   let createdBy = getDetails.userDetails.name
 
-  const [reRender, setReRender] = useState(true);
+  const {reRender, setReRender} = Render;
 
   const handleClickOpen = () => {
     setOpen(true);

@@ -44,6 +44,8 @@ function InstrumentDetails({socket, Render}) {
   const { columns, rows, instrumentData } = data();
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
+  const [isAppLive, setisAppLive] = useState('');
+
 
   useEffect(()=>{
 
@@ -62,6 +64,13 @@ function InstrumentDetails({socket, Render}) {
       // setDetails.setMarketData(data);
     })
   }, [])
+
+  useEffect(() => {
+    axios.get(`${baseUrl}api/v1/readsetting`)
+      .then((res) => {
+        setisAppLive(res.data[0].isAppLive);
+      });
+  }, [isAppLive]);
 
   //console.log("marketData", marketData)
   let ltpArr = [];
@@ -151,8 +160,8 @@ function InstrumentDetails({socket, Render}) {
             >
             
             </CheckCircleIcon>
-            <MDTypography variant="button" fontWeight="regular" color="success">
-              &nbsp;<strong>System Live</strong>
+            <MDTypography variant="button" fontWeight="regular" color={isAppLive ? "success" : "error"}>
+              &nbsp;<strong>{isAppLive ? "System Live" : "System Offline"}</strong>
             </MDTypography>
           </MDBox>
         </MDBox>

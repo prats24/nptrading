@@ -10,20 +10,13 @@ const LiveTradeDetails = require("../../models/TradeDetails/liveTradeSchema");
 const axios = require('axios');
 const getKiteCred = require('../../marketData/getKiteCred');
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-//     getKiteCred.getAccess().then( (data)=>{
-//         console.log("this is code ",data);
-//         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-//         console.log("ticksdata", ticksdata)
-//       });
-    
-// })
 
 router.post("/mocktradecompany", async (req, res)=>{
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
-          validity, variety, createdBy, userId,
-           uId, algoBox, order_id, instrumentToken,  realBuyOrSell, realQuantity} = req.body
+          validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
+          realBuyOrSell, realQuantity, otm, otm_quantity, otm_token} = req.body
+
         console.log(req.body);
         console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
@@ -133,7 +126,8 @@ router.post("/mocktradecompany", async (req, res)=>{
             variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
             lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
-            tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPrice), trade_time:trade_time
+            tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPrice), trade_time:trade_time,
+            otm, otm_quantity, otm_token
         });
 
         console.log("mockTradeDetails comapny", mockTradeDetails);
@@ -154,7 +148,8 @@ router.post("/mocktradecompany", async (req, res)=>{
             status:"COMPLETE", uId, createdBy, average_price: originalLastPrice, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
             variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
             isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
-            tradeBy: createdBy, amount: (Number(Quantity)*originalLastPrice), trade_time:trade_time
+            tradeBy: createdBy, amount: (Number(Quantity)*originalLastPrice), trade_time:trade_time,
+            otm, otm_quantity, otm_token
         });
 
         console.log("mockTradeDetails", mockTradeDetailsUser);

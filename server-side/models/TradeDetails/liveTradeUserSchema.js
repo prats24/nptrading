@@ -121,7 +121,16 @@ const liveTradeUser = new mongoose.Schema({
     trade_time:{
         type: String,
         required: true
-    } 
+    },
+    otm:{
+        type: String,
+    },
+    otm_quantity:{
+        type: String,
+    },
+    otm_token:{
+        type: String,
+    }
 })
 
 const liveTradeUserDetails = mongoose.model("live-trade-user", liveTradeUser);

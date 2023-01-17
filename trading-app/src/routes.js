@@ -78,6 +78,7 @@ import DailyPNLData from "./layouts/dailyPnlDashboard";
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import InventoryIcon from '@mui/icons-material/Inventory'; 
+import SettingsIcon from '@mui/icons-material/Settings';
 // import SettingIcon from '@mui/icons-material/Setting'; 
 
 const routes = [
@@ -159,6 +160,15 @@ const routes = [
     icon: <AccountBalanceIcon/>,
     route: "/trading-accounts",
     component: <TradingAccount />,
+  },
+  {
+    type: "collapse",
+    name: "Setting",
+    key: "setting",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <SettingsIcon/>,
+    route: "/setting",
+    component: <Setting />,
   },
   {
     type: "collapse",
@@ -268,15 +278,6 @@ const routes = [
     icon: <AccountBoxIcon/>,
     route: "/profile",
     component: <Profile />,
-  },
-  {
-    type: "collapse",
-    name: "Setting",
-    key: "setting",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <AccountBoxIcon/>,
-    route: "/setting",
-    component: <Setting />,
   },
 
 ];

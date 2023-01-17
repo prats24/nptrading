@@ -195,7 +195,7 @@ export default function App() {
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
                 brandName="ninepointer"
-                routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes}
+                routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes :  userRoutes }
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
@@ -205,14 +205,14 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
-          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : getRoutes(userRoutes)} 
+          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") && getRoutes(userRoutes)} 
             <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
           </Routes>
         </ThemeProvider>
       </CacheProvider>
     
   ) : (
-    
+    // (detailUser.role === "user" || getDetails.userDetails.role === "user") && 
       <ThemeProvider theme={darkMode ? themeDark : theme}>
         <CssBaseline />
         {layout === "dashboard" && (
@@ -221,7 +221,7 @@ export default function App() {
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="ninepointer"
-              routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes}
+              routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes }
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
@@ -231,8 +231,7 @@ export default function App() {
         )}
         {layout === "companyposition" && <Configurator />}
         <Routes>
-          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : getRoutes(userRoutes)} 
-          {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
+        {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") && getRoutes(userRoutes)}           {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
           <Route path="*" element={<SignIn />} />
         </Routes>
       </ThemeProvider>

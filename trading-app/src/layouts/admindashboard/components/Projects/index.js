@@ -12,8 +12,9 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-
-import { useState } from "react";
+import React from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -34,6 +35,7 @@ import data from "./data";
 function Projects() {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
+
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
@@ -59,12 +61,13 @@ function Projects() {
     </Menu>
   );
 
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Top 5 loss making traders this month
+            Top 5 loss making traders this month (Mock)
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
             <Icon

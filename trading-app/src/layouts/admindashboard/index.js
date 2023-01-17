@@ -52,6 +52,11 @@ function AdminDashboard() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
  
+    const [livegpnl, setliveGpnlarray] = useState([]);
+    const [livenpnl, setliveNpnlarray] = useState([]);
+    const [livebrokerage, setliveBrokeragearray] = useState([]);
+    const [livepnldate, setlivePNLDatearray] = useState([]);
+
     const [PNLData, setPNLData] = useState([]);
     const [gpnl, setGpnlarray] = useState([]);
     const [npnl, setNpnlarray] = useState([]);
@@ -108,10 +113,16 @@ function AdminDashboard() {
     const [monthnpnl, setMonthNpnlarray] = useState([]);
     const [monthbrokerage, setMonthBrokeragearray] = useState([]);
     const [monthpnldate, setMonthPNLDatearray] = useState([]);
+    const [livemonthgpnl, setliveMonthGpnlarray] = useState([]);
+    const [livemonthnpnl, setliveMonthNpnlarray] = useState([]);
+    const [livemonthbrokerage, setliveMonthBrokeragearray] = useState([]);
+    const [livemonthpnldate, setliveMonthPNLDatearray] = useState([]);
 
     
     let dayname = [];
-   
+    let livedayname = [];
+
+  //
    //This week pnl details code starts
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisweek`)
@@ -330,10 +341,24 @@ useEffect(()=>{
         setPNLData(res.data) 
         for(let item of res.data)
         {
-          setBrokeragearray((prev)=>{return[...prev,(item.brokerage)]})
+          setBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
           setPNLDatearray((prev)=>{return[...prev,item._id.date]})
-          setGpnlarray((prev)=>{return[...prev,-item.amount]})
-          setNpnlarray((prev)=>{return[...prev,(-item.amount)-item.brokerage]})
+          setGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
+          setNpnlarray((prev)=>{return[...prev,((-item.amount)-item.brokerage).toFixed(0)]})
+          
+        }
+    })
+
+    axios.get(`${baseUrl}api/v1/getpnllivetradecompanylastfivedays`)
+    .then((res)=>{
+        console.log("Last 5 days Chart Data Live: "+res.data);
+        setPNLData(res.data) 
+        for(let item of res.data)
+        {
+          setliveBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
+          setlivePNLDatearray((prev)=>{return[...prev,item._id.date]})
+          setliveGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
+          setliveNpnlarray((prev)=>{return[...prev,((-item.amount)-item.brokerage).toFixed(0)]})
           
         }
     })
@@ -359,13 +384,28 @@ useEffect(()=>{
         setMonthPNLData(res.data) 
         for(let item of res.data)
         {
-          setMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage)]})
+          setMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
           setMonthPNLDatearray((prev)=>{return[...prev,item._id.date]})
-          setMonthGpnlarray((prev)=>{return[...prev,-item.amount]})
-          setMonthNpnlarray((prev)=>{return[...prev,(-item.amount)-item.brokerage]})
+          setMonthGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
+          setMonthNpnlarray((prev)=>{return[...prev,((-item.amount)-item.brokerage).toFixed(0)]})
           
         }
     })
+
+    axios.get(`${baseUrl}api/v1/getpnllivetradecompanydailythismonth`)
+    .then((res)=>{
+        console.log("This month Chart Data live: "+res.data);
+        setMonthPNLData(res.data) 
+        for(let item of res.data)
+        {
+          setliveMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
+          setliveMonthPNLDatearray((prev)=>{return[...prev,item._id.date]})
+          setliveMonthGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
+          setliveMonthNpnlarray((prev)=>{return[...prev,((-item.amount)-item.brokerage).toFixed(0)]})
+          
+        }
+    })
+
 
 },[])
 
@@ -373,6 +413,18 @@ let monthpnldatestring = []
 monthpnldate.map((elem)=>{
   // const date = new Date(elem);
   monthpnldatestring.push(elem.slice(-2));
+})
+
+let livemonthpnldatestring = []
+livemonthpnldate.map((elem)=>{
+  // const date = new Date(elem);
+  livemonthpnldatestring.push(elem.slice(-2));
+})
+
+let datepartlivepnl = [];
+livepnldate.map((elem)=>{
+  // const date = new Date(elem);
+  datepartlivepnl.push(elem.slice(-2));
 })
 
 let datepartpnl = [];
@@ -387,6 +439,14 @@ pnldate.map((elem)=>{
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
   console.log(weekday);  // Output: "Sunday"
   dayname.push(weekday.slice(0,3))
+})
+
+livepnldate.map((elem)=>{
+  const date = new Date(elem);
+  const dayOfWeek = date.getDay();
+  const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
+  console.log(weekday);  // Output: "Sunday"
+  livedayname.push(weekday.slice(0,3))
 })
 
  //Latest five orders code satrt
@@ -462,7 +522,7 @@ if(Type.length != 0 ){
           <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
-                  color="success"
+                  color="warning"
                   colorheight="12.5rem"
                   title="Last 5 days net p&l (Mock)"
                   description={
@@ -523,6 +583,72 @@ if(Type.length != 0 ){
               </MDBox>
             </Grid>
           </Grid>
+          <Grid container spacing={3} mt={1}>
+
+          <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="success"
+                  colorheight="12.5rem"
+                  title="Last 5 days net p&l (Live)"
+                  description={
+                    <>
+                      (<strong>+15%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
+                  chart={
+                    {
+                      labels: datepartlivepnl,
+                      datasets: { label: "Net P&L", data: livenpnl },
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsBarChart
+                  color="info"
+                  colorheight="12.5rem"
+                  title="Last 5 days Transaction Cost (Live)"
+                  description={
+                    <>
+                      (<strong>+20%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
+                  chart={{
+                    labels: livedayname,
+                    datasets: { label: "Transaction Cost", data: livebrokerage },
+                  }}
+                />
+              </MDBox>
+            </Grid>
+            
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="dark"
+                  colorheight="12.5rem"
+                  title="Last 5 days gross p&l (Live)"
+                  description={
+                    <>
+                      (<strong>+10%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
+                  chart={
+                    {
+                      labels: datepartlivepnl,
+                      datasets: { label: "Gross P&L", data: livegpnl },
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
         </MDBox>
 
         <MDBox mb={1}>
@@ -544,6 +670,33 @@ if(Type.length != 0 ){
                     {
                       labels: monthpnldatestring,
                       datasets: { label: "Net P&L", data: monthnpnl },
+                    }
+                  }
+                />
+              </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+
+        <MDBox mb={1} mt={3}>
+          <Grid container spacing={3}>
+
+          <Grid item xs={12} md={6} lg={12}>
+              <MDBox mb={3}>
+                <ReportsLineChart
+                  color="success"
+                  colorheight="25rem"
+                  title="This month's daily net p&l (Live)"
+                  description={
+                    <>
+                      (<strong>+15%</strong>) increase than previous last 5 days.
+                    </>
+                  }
+                  date="updated yesterday"
+                  chart={
+                    {
+                      labels: livemonthpnldatestring,
+                      datasets: { label: "Net P&L", data: livemonthnpnl },
                     }
                   }
                 />

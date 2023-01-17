@@ -4,21 +4,40 @@ const router = express.Router();
 const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv');
-// const kiteConnect = require('./marketData/kiteConnect');
 const fetch = require('./marketData/placeOrder');
-// const job = require("./routes/CronJobsRouter/runChroneJob")
 app.use(require("cookie-parser")());
-// app.use(job)
 const fetchData = require('./marketData/fetchToken');
 const io = require('./marketData/socketio');
 const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, onError} = require('./marketData/kiteTicker');
 const getKiteCred = require('./marketData/getKiteCred'); 
 const cronJobForHistoryData = require("./marketData/getinstrumenttickshistorydata");
+const helmet = require("helmet");
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xssClean = require("xss-clean");
+const hpp = require("hpp")
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 15 minutes
+	max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: "Too many request"
+})
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter)
+app.use(mongoSanitize());
+app.use(helmet());
+app.use(xssClean());
+app.use(hpp());
 
 // issue fix --> if enviournment variable path is not work
-const path = require('path')
-require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
+// const path = require('path')
+// require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
+
+
+dotenv.config({ path: './config.env' });
 
 getKiteCred.getAccess().then((data)=>{
   // console.log("this is code ",data);
@@ -47,7 +66,7 @@ io.on("connection", (socket) => {
 
 io.on('disconnection', () => {disconnectTicker()});
 
-// dotenv.config({ path: './config.env' });
+
 
 // console.log(kiteConnect);
 // app.get('/api/v1/ws', kiteConnect.parameters);
@@ -64,7 +83,7 @@ app.use(cors({
 
 }));
 
-app.use(express.json());
+app.use(express.json({limit: "20kb"}));
 
 
 //Update 

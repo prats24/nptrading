@@ -44,6 +44,9 @@ function InstrumentDetails({socket}) {
   const { columns, rows, instrumentData } = data();
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
+  const [settings, setSettings] = useState([]);
+  const [isAppLive, setisAppLive] = useState('');
+  // let isAppLive = '';
 
   useEffect(()=>{
 
@@ -63,6 +66,14 @@ function InstrumentDetails({socket}) {
     })
   }, [])
 
+  useEffect(() => {
+    axios.get(`${baseUrl}api/v1/readsetting`)
+      .then((res) => {
+        setisAppLive(res.data[0].isAppLive);
+      });
+  }, [isAppLive]);
+  
+  
   //console.log("marketData", marketData)
   let ltpArr = [];
   
@@ -95,13 +106,6 @@ function InstrumentDetails({socket}) {
               </MDTypography>
             );
           }
-          // elem.buy = (
-          //   <BuyModel symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
-          // );
-          
-          // elem.sell = (
-          //   <SellModel symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
-          // );
       }
     })
     ltpArr.push(ltpObj);
@@ -134,6 +138,10 @@ function InstrumentDetails({socket}) {
     </Menu>
   );
 
+  
+ 
+  console.log("App Status: "+isAppLive);
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
@@ -151,8 +159,8 @@ function InstrumentDetails({socket}) {
             >
             
             </CheckCircleIcon>
-            <MDTypography variant="button" fontWeight="regular" color="success">
-              &nbsp;<strong>System Live</strong>
+            <MDTypography variant="button" fontWeight="regular" color={isAppLive ? "success" : "error"}>
+              &nbsp;<strong>{isAppLive ? "System Live" : "System Offline"}</strong>
             </MDTypography>
           </MDBox>
         </MDBox>

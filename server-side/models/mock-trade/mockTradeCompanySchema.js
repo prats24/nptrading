@@ -90,7 +90,15 @@ const mockTradeCompanySchema = new mongoose.Schema({
     },
     date_part:{
         type: String,
-        // required : true
+    },
+    otm:{
+        type: String,
+    },
+    otm_quantity:{
+        type: String,
+    },
+    otm_token:{
+        type: String,
     },
     algoBox:{
         algoName:{
