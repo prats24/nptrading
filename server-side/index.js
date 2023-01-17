@@ -15,6 +15,9 @@ const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, 
 const getKiteCred = require('./marketData/getKiteCred'); 
 const cronJobForHistoryData = require("./marketData/getinstrumenttickshistorydata");
 
+// issue fix --> if enviournment variable path is not work
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 
 getKiteCred.getAccess().then((data)=>{
@@ -44,7 +47,7 @@ io.on("connection", (socket) => {
 
 io.on('disconnection', () => {disconnectTicker()});
 
-dotenv.config({ path: './config.env' });
+// dotenv.config({ path: './config.env' });
 
 // console.log(kiteConnect);
 // app.get('/api/v1/ws', kiteConnect.parameters);
@@ -56,8 +59,8 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  origin: "http://3.7.187.183/"
-  //  origin: "http://localhost:3000"
+  // origin: "http://3.7.187.183/"
+   origin: "http://localhost:3000"
 
 }));
 
@@ -108,9 +111,6 @@ require('./db/conn');
   }
 
 
-// issue fix --> if enviournment variable path is not work
-// const path = require('path')
-// require('dotenv').config({ path: path.resolve(__dirname, '') })
 
 // app.use(require("./utils/errorHandler"));
 
