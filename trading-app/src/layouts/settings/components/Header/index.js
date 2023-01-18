@@ -1,19 +1,7 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState, useEffect } from "react";
+import React from "react";
+import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { userContext } from "../../../../AuthContext";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -25,6 +13,7 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
+import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -41,6 +30,22 @@ import backgroundImage from "../../../../assets/images/bg-profile.jpeg";
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+  const [userDetail,setuserDetail] = useState([]);
+  const getDetails = useContext(userContext);
+  console.log("getDetails", getDetails)
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+ useEffect(()=>{
+       axios.get(`${baseUrl}api/v1/readparticularuserdetails/${getDetails.userDetails.email}`)
+      .then((res)=>{
+          console.log(res.data);
+          setuserDetail(res.data)
+      }).catch((err)=>{
+          window.alert("Server Down");
+          return new Error(err);
+      })
+  },[getDetails])
+  console.log("Logged In user details: "+userDetail);
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -94,15 +99,15 @@ function Header({ children }) {
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-            <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" />
+            {/* <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" /> */}
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                Richard Davis
+                Settings and Margin details
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
+                {/* {userDetail.designation} */}
               </MDTypography>
             </MDBox>
           </Grid>

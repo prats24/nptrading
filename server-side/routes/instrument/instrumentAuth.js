@@ -11,18 +11,20 @@ const {subscribeTokens, unSubscribeTokens} = require('../../marketData/kiteTicke
 router.post("/instrument", async (req, res)=>{
 
     try{
-        let {instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, contractDate, maxLot, otm} = req.body;
+        let {instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, contractDate, maxLot, otm_p1, otm_p2, otm_p3} = req.body;
         console.log(req.body);
 
         let instrumentToken = await fetchToken(exchange, symbol);
-        let otmToken = await fetchToken(exchange, otm);
+        let otm_p1_Token = await fetchToken(exchange, otm_p1);
+        let otm_p2_Token = await fetchToken(exchange, otm_p2);
+        let otm_p3_Token = await fetchToken(exchange, otm_p3);
         console.log("instrumentToken", instrumentToken);
         let firstDateSplit = (contractDate).split(" ");
         let secondDateSplit = firstDateSplit[0].split("-");
         contractDate = `${secondDateSplit[2]}-${secondDateSplit[1]}-${secondDateSplit[0]}`
 
         if(!instrument || !exchange || !symbol || !status || !uId || !createdOn || !lastModified || !createdBy || !lotSize || !instrumentToken){
-            if(!instrumentToken){
+            if(!instrumentToken && !otm_p1_Token && !otm_p2_Token && !otm_p3_Token){
                 return res.status(422).json({error : "Please enter a valid Instrument."})
             }
             console.log(instrumentToken);
@@ -37,7 +39,7 @@ router.post("/instrument", async (req, res)=>{
                 console.log("data already");
                 return res.status(422).json({error : "date already exist..."})
             }
-            const instruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, instrumentToken, contractDate, maxLot, otmToken, otm});
+            const instruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, lotSize, instrumentToken, contractDate, maxLot, otm_p1_Token, otm_p2_Token, otm_p3_Token, otm_p1, otm_p2, otm_p3});
             console.log("instruments", instruments)
             instruments.save().then(async()=>{
                  await subscribeTokens();
@@ -76,7 +78,7 @@ router.get("/readInstrumentDetails/:id", (req, res)=>{
 router.put("/readInstrumentDetails/:id", async (req, res)=>{
     console.log(req.params)
     console.log( req.body)
-    let {Exchange, Symbole, contract_Date} = req.body;
+    let {Exchange, Symbole, contract_Date, otm_p1, otm_p2, otm_p3} = req.body;
     
     if(contract_Date !== undefined){
         let firstDateSplit = (contract_Date).split(" ");
@@ -87,6 +89,9 @@ router.put("/readInstrumentDetails/:id", async (req, res)=>{
     try{ 
         const {id} = req.params
         const token = await fetchToken(Exchange, Symbole);
+        const otmP1Token = await fetchToken(Exchange, otm_p1);
+        const otmP2Token = await fetchToken(Exchange, otm_p2);
+        const otmP3Token = await fetchToken(Exchange, otm_p3);
         console.log(token)
         const instrument = await Instrument.findOneAndUpdate({_id : id}, {
             $set:{ 
@@ -99,7 +104,12 @@ router.put("/readInstrumentDetails/:id", async (req, res)=>{
                 instrumentToken: token,
                 contractDate: req.body.contract_Date, 
                 maxLot: req.body.maxLot,
-                otm : req.body.Otm
+                otm_p1 : req.body.otm_p1,
+                otm_p2 : req.body.otm_p2,
+                otm_p3 : req.body.otm_p3,
+                otm_p1_Token: otmP1Token,
+                otm_p2_Token: otmP2Token,
+                otm_p3_Token: otmP3Token,
             }
         })
         console.log("this is role", instrument);

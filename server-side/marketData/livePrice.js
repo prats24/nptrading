@@ -35,13 +35,13 @@ router.get("/getliveprice", async (req, res)=>{
     
     ans.forEach((elem, index) => {
       if (index === 0) {
-        addUrl = 'i=' + elem.exchange + ':' + elem.symbol;
+        addUrl = ('i=' + elem.exchange + ':' + elem.symbol + '&i=' + elem.exchange + ':' + elem.otm);
       } else {
-        addUrl += '&i=' + elem.exchange + ':' + elem.symbol;
+        addUrl += ('&i=' + elem.exchange + ':' + elem.symbol + '&i=' + elem.exchange + ':' + elem.otm);
       }
     });
 
-  
+  console.log(addUrl)
     let url = `https://api.kite.trade/quote?${addUrl}`;
     const api_key = getApiKey; 
     const access_token = getAccessToken;

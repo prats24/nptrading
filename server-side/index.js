@@ -8,7 +8,7 @@ const fetch = require('./marketData/placeOrder');
 app.use(require("cookie-parser")());
 const fetchData = require('./marketData/fetchToken');
 const io = require('./marketData/socketio');
-const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, onError} = require('./marketData/kiteTicker');
+const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, onError, getMargins} = require('./marketData/kiteTicker');
 const getKiteCred = require('./marketData/getKiteCred'); 
 const cronJobForHistoryData = require("./marketData/getinstrumenttickshistorydata");
 const helmet = require("helmet");
@@ -92,6 +92,7 @@ app.use(express.json({limit: "20kb"}));
 app.use('/api/v1', require("./routes/setting/settingAuth"))
 app.use('/api/v1', require("./routes/DailyPnlData/dailyPnlDataRoute"))
 app.use('/api/v1', require("./marketData/livePrice"));
+app.use('/api/v1', require("./marketData/Margin"));
 app.use('/api/v1', require("./routes/user/userLogin"));
 app.use('/api/v1', require('./routes/TradeData/getUserTrade'));
 app.use('/api/v1', require('./routes/TradeData/getCompanyTrade'));
@@ -113,6 +114,7 @@ app.use('/api/v1', require("./routes/user/everyoneRoleAuth"));
 app.use('/api/v1', require("./routes/user/permissionAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeUserAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
+app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 require('./db/conn');
 
 // process.on('unhandledRejection', (err) => {

@@ -6,16 +6,36 @@ require("../../db/conn");
 const MockTradeDetails = require("../../models/mock-trade/mockTradeCompanySchema");
 const MockTradeDetailsUser = require("../../models/mock-trade/mockTradeUserSchema");
 const BrokerageDetail = require("../../models/Trading Account/brokerageSchema");
+const HistoryData = require("../../models/InstrumentHistoricalData/InstrumentHistoricalData");
+const PNLData = require("../../models/InstrumentHistoricalData/DailyPnlDataSchema");
 const LiveTradeDetails = require("../../models/TradeDetails/liveTradeSchema");
+const OtmMock = require("../../models/mock-trade/otmMockSchema");
 const axios = require('axios');
 const getKiteCred = require('../../marketData/getKiteCred');
 
+// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+//     getKiteCred.getAccess().then( (data)=>{
+//         console.log("this is code ",data);
+//         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
+//         console.log("ticksdata", ticksdata)
+//       });
+    
+// })
+
+// router.get("/deleteinhistory", async(req, res)=>{
+//     PNLData.deleteMany({timestamp: {$regex: "2023-01-17"}})
+//     .then(()=>{
+//         console.log("deleted")
+//     }).catch(()=>{
+//         console.log("err")
+//     })
+// })
 
 router.post("/mocktradecompany", async (req, res)=>{
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-          realBuyOrSell, realQuantity, otm, otm_quantity, otm_token} = req.body
+          realBuyOrSell, realQuantity } = req.body 
 
         console.log(req.body);
         console.log("in the company auth");
@@ -28,7 +48,7 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !algoName || !transactionChange || !instrumentChange || !exchangeChange || !lotMultipler || !productChange || !tradingAccount){
         console.log(Boolean(exchange)); console.log(Boolean(symbol)); console.log(Boolean(buyOrSell)); console.log(Boolean(Quantity)); console.log(Boolean(Product)); console.log(Boolean(OrderType)); console.log(Boolean(validity)); console.log(Boolean(variety));  console.log(Boolean(algoName)); console.log(Boolean(transactionChange)); console.log(Boolean(instrumentChange)); console.log(Boolean(exchangeChange)); console.log(Boolean(lotMultipler)); console.log(Boolean(productChange)); console.log(Boolean(tradingAccount));
-        console.log("data nhi h pura");
+        console.log("data is not complete");
         return res.status(422).json({error : "please fill all the feilds..."})
     }
 
@@ -52,7 +72,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             if(elem.instrument_token == instrumentToken){
                 newTimeStamp = elem.timestamp;
                 originalLastPrice = elem.last_price;
-                console.log("originalLastPrice 38 line", originalLastPrice)
+                console.log("originalLastPrice ", originalLastPrice)
             }
         }
 
@@ -71,13 +91,10 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     function buyBrokerage(totalAmount){
         let brokerage = Number(brokerageDetailBuy[0].brokerageCharge);
-        // let totalAmount = Number(Details.last_price) * Number(quantity);
         let exchangeCharge = totalAmount * (Number(brokerageDetailBuy[0].exchangeCharge) / 100);
-        // console.log("exchangeCharge", exchangeCharge, totalAmount, (Number(brokerageDetailBuy[0].exchangeCharge)));
         let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailBuy[0].gst) / 100);
         let sebiCharges = totalAmount * (Number(brokerageDetailBuy[0].sebiCharge) / 100);
         let stampDuty = totalAmount * (Number(brokerageDetailBuy[0].stampDuty) / 100);
-        // console.log("stampDuty", stampDuty);
         let sst = totalAmount * (Number(brokerageDetailBuy[0].sst) / 100);
         let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
         return finalCharge;
@@ -85,7 +102,6 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     function sellBrokerage(totalAmount){
         let brokerage = Number(brokerageDetailSell[0].brokerageCharge);
-        // let totalAmount = Number(Details.last_price) * Number(quantity);
         let exchangeCharge = totalAmount * (Number(brokerageDetailSell[0].exchangeCharge) / 100);
         let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailSell[0].gst) / 100);
         let sebiCharges = totalAmount * (Number(brokerageDetailSell[0].sebiCharge) / 100);
@@ -112,7 +128,6 @@ router.post("/mocktradecompany", async (req, res)=>{
     }
  
 
-    // console.log("livetradeData", livetradeData)
     MockTradeDetails.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
@@ -127,7 +142,7 @@ router.post("/mocktradecompany", async (req, res)=>{
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
             lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
             tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPrice), trade_time:trade_time,
-            otm, otm_quantity, otm_token
+            
         });
 
         console.log("mockTradeDetails comapny", mockTradeDetails);
@@ -149,7 +164,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
             isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
             tradeBy: createdBy, amount: (Number(Quantity)*originalLastPrice), trade_time:trade_time,
-            otm, otm_quantity, otm_token
+            
         });
 
         console.log("mockTradeDetails", mockTradeDetailsUser);
@@ -161,6 +176,8 @@ router.post("/mocktradecompany", async (req, res)=>{
         
 
     }).catch(err => {console.log(err, "fail")});
+    
+
 })
 
 router.get("/readmocktradecompany", (req, res)=>{
@@ -1319,5 +1336,33 @@ router.get("/datewisecompanypnl/:queryDate", async(req, res)=>{
         res.status(201).json(x);
         
 })
+
+// router.get("/userwiseOtm/:email", async(req, res)=>{
+    
+//     const {email} = req.params;
+//     let date = new Date();
+//     const days = date.getDay();
+//     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+//     console.log("Today "+todayDate)
+    
+//     let pipeline = [{ $match: { trade_time : {$regex : todayDate} , status: "COMPLETE", userId: email} },
+//                     // { $group: { _id: {
+//                     //     "otm": "$otm"
+//                     // },
+                    
+//                     // quantity: {
+//                     //     $sum: { $round : [{$toDouble : "$otm_quantity"}]}
+//                     // },
+//                     // }},
+//                     { $project: { "_id" : 1, "otm" : 1,  "otm_quantity" : 1, "otm_token" : 1 } },
+//                     { $sort: { "trade_time": -1 }},
+                    
+//                 ]
+
+//     let x = await MockTradeDetails.aggregate(pipeline)
+
+//         res.status(201).json(x);
+        
+// })
 
 module.exports = router;

@@ -22,25 +22,11 @@ const disconnectTicker = () => {
 }
 
 const subscribeTokens = async() => {
-    console.log(ticker);
-    // const tokens = await fetchData('nq0gipdzk0yexyko','3oaejV3W4O56Bwk46QNQElg3n3HlIapg');
-    // console.log(tokens)
-    // ticker.subscribe(tokens);
-
-
-    getKiteCred.getAccess().then(async (data)=>{
-        // console.log(data);
-        let tokens = await fetchData(data.getApiKey, data.getAccessToken);
-    
-        // subscribeTokens();
-        // getTicks(socket, tokens);
-        // onError();
-        // console.log(tokens)
-        ticker.subscribe(tokens);
-  
-      });
-
-
+  console.log(ticker);
+  getKiteCred.getAccess().then(async (data)=>{
+    let tokens = await fetchData(data.getApiKey, data.getAccessToken);
+    ticker.subscribe(tokens);
+  });
 }
 
 const unSubscribeTokens = async(token) => {
@@ -67,5 +53,7 @@ const onError = ()=>{
 }
 
 
+
+
 const getTicker = () => ticker;
-module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens};
+module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens };

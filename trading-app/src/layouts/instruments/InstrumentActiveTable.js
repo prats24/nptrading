@@ -91,9 +91,21 @@ const InstrumentActiveTable = () => {
           {elem.createdOn}
         </MDTypography>
       );
-      activeinstruments.otm = (
+      activeinstruments.otm_p1 = (
         <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
-          {elem.otm}
+          {elem.otm_p1}
+        </MDTypography>
+      );
+
+      activeinstruments.otm_p2 = (
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.otm_p2}
+        </MDTypography>
+      );
+
+      activeinstruments.otm_p3 = (
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.otm_p3}
         </MDTypography>
       );
      
