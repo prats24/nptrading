@@ -6,7 +6,7 @@ const MockTradeData = require("../models/mock-trade/mockTradeCompanySchema");
 
 exports.dailyPnlCalculation = async(req,res,next) => {
   //Extracting timestamp from the instrument history data
-  let date = '2023-01-17';
+  let date = '2023-01-18';
   const instrumentData = await HistoryInstrumentData.find({timestamp : {$gte: `${date}T00:00:00+0530`,$lte:`${date}T23:59:59+0530`}}).select("timestamp symbol open").sort({timestamp: 1})
   console.log("History Instrument Data: "+instrumentData);
 

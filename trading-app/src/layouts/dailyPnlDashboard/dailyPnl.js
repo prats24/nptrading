@@ -59,10 +59,13 @@ const Dailypnldata = () => {
         })
     },[firstDate])
     console.log("FD PNL Data Update: "+FDPNLData)
+
+    let pnlvalue = [];
     //console.log(Data);
     //console.log("New Rows: "+newrows)
     Data?.map((elem1)=>{
       let pnldata = {}
+      pnlvalue.push(elem1.pnl);
       // console.log("Keys: "+elem1.keys());
       const gpnlcolor = (elem1.pnl) >= 0 ? "success" : "error"
 
@@ -94,6 +97,23 @@ const Dailypnldata = () => {
       rows.push((pnldata))
       //setNewRows(rows);
     })
+    let maxPnlValue = 0;
+    let minPnlValue = 0;
+    let maxPnlValuecolor = "dark";
+    let minPnlValuecolor = "dark";
+    if(pnlvalue.length !== 0){
+    maxPnlValue = pnlvalue?.reduce(function(a, b) {
+      return Math.max(a, b);
+    });
+    maxPnlValuecolor = maxPnlValue >= 0 ? "success" : "error"
+
+    minPnlValue = pnlvalue?.reduce(function(a, b) {
+      return Math.min(a, b);
+    });
+    minPnlValuecolor = minPnlValue >= 0 ? "success" : "error"
+    }
+   
+
 
     let graphx = [];
     let graphy = []
@@ -166,22 +186,12 @@ const Dailypnldata = () => {
     
     return (
         <>
-        {/* <Grid item xs={12} md={12} lg={12} mt={3} >
-            <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
-              <MDBox >
-                <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>Select Date</Typography>
-                </MDBox>
-              <TextField
-                id="outlined-basic" variant="standard" type="date"
-                sx={{ margin: 1, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
-            </Card>
-          </Grid>  */}
           <MDBox mt={6} mb={6}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12} >
             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
               <MDBox >
-                <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>Start Date</Typography>
+                <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>Select Trade Date</Typography>
                 </MDBox>
               <TextField
                 id="outlined-basic" variant="standard" type="date"
@@ -196,8 +206,8 @@ const Dailypnldata = () => {
                 <MDTypography variant="h6" textAlign="center" color={gpnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{FDPNLData[0] ? (-FDPNLData[0].amount >= 0 ? "+₹" + (-FDPNLData[0].amount).toFixed(0) : "-₹" + (FDPNLData[0].amount).toFixed(0)) : 0}</MDTypography>
               </MDBox>
               <MDBox >
-                <MDTypography variant="h6" textAlign="center" py={1}>Transaction Cost</MDTypography>
-                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>₹{FDPNLData[0] ? (FDPNLData[0].brokerage).toFixed(2) : 0}</MDTypography>
+                <MDTypography variant="h6" textAlign="center" py={1}>Brokerage</MDTypography>
+                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>₹{FDPNLData[0] ? (FDPNLData[0].brokerage).toFixed(0) : 0}</MDTypography>
               </MDBox>
               <MDBox >
                 <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Net P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
@@ -206,6 +216,14 @@ const Dailypnldata = () => {
               <MDBox >
                 <MDTypography variant="h6" textAlign="center" py={1}>Total Trades</MDTypography>
                 <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{FDPNLData[0] ? FDPNLData[0].trades : 0}</MDTypography>
+              </MDBox>
+              <MDBox >
+                <MDTypography variant="h6" textAlign="center" py={1}>Max Gross P&L</MDTypography>
+                <MDTypography variant="h6" textAlign="center" color={maxPnlValuecolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{maxPnlValue >= 0 ? "+₹" + maxPnlValue.toFixed(0) : "-₹" + (-maxPnlValue).toFixed(0)}</MDTypography>
+              </MDBox>
+              <MDBox >
+                <MDTypography variant="h6" textAlign="center" py={1}>Min Gross P&L</MDTypography>
+                <MDTypography variant="h6" textAlign="center" color={minPnlValuecolor} backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{minPnlValue >= 0 ? "+₹" + minPnlValue.toFixed(0) : "-₹" + (-minPnlValue).toFixed(0)}</MDTypography>
               </MDBox>
             </Card>
           </Grid>
@@ -216,7 +234,7 @@ const Dailypnldata = () => {
                 <ReportsLineChart
                   color="warning"
                   colorheight="25rem"
-                  title="This month's daily net p&l (Mock)"
+                  title="Gross P&L - 1 Minute Timeframe (Mock)"
                   description={
                     <>
                       (<strong>+15%</strong>) increase than previous last 5 days.
@@ -250,7 +268,7 @@ const Dailypnldata = () => {
                                     justifyContent: "space-between",
                                 }}>
                                 <MDTypography variant="h6" color="white" py={2.5}>
-                                   Daily P&L Data
+                                   P&L Data - 1 Minute Timeframe (Mock)
                                 </MDTypography>
                             </MDBox>
                             <MDBox pt={3}>
