@@ -6,6 +6,7 @@ const ActiveInstruments = require("../models/Instruments/instrumentSchema");
 const HistoryData = require("../models/InstrumentHistoricalData/InstrumentHistoricalData");
 const getKiteCred = require('../marketData/getKiteCred'); 
 const nodemailer = require('nodemailer');
+const dailyPnlDataController = require("../controllers/dailyPnlDataController")
 
 
 
@@ -70,18 +71,24 @@ const nodemailer = require('nodemailer');
                 })
                }
 
-              const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
+              setTimeout(async ()=>{
 
-              let length = historyDataforLen.length;
-              console.log("length is without err", length)
-              mailSender(length)
+                const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
+
+                let length = historyDataforLen.length;
+                mailSender(length);
+
+                await dailyPnlDataController.dailyPnlCalculation(matchingDate);
+
+              },20000)
+
+
              
             } catch (err){
                 return new Error(err);
             }
       
         } else{
-          console.log("data already present")
 
           const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
 
@@ -107,7 +114,7 @@ function mailSender(length){
   
   const mailOptions = { 
                 from: 'vvv201214@gmail.com',       // sender address
-                to: 'vvv201214@gmail.com, prateek@ninepointer.com',        // reciever address
+                to: 'vvv201214@gmail.com, prateek@ninepointer.com',        // reciever address 
                 subject: `History Data cronjob records inserted : ${length}`,  
                 html: '<p>CronJob is done for history data, please check database</p>'// plain text body
   };
