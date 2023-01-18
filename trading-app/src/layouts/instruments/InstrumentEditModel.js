@@ -29,13 +29,9 @@ const InstrumentEditModel = ({Render, data, id}) => {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
       
-    const getDetails = useContext(userContext);
-    let uId = uniqid();
     let date = new Date();
-    let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     let lastModified = createdOn;
-    let createdBy = "prateek"
-    // let createdBy = getDetails.userDetails.name
   
   
     const handleClickOpen = () => {
@@ -57,7 +53,9 @@ const InstrumentEditModel = ({Render, data, id}) => {
     const [lotSize, setlotSize] = useState();
     const [maxlot, setMaxlot] = useState();
     const [status, setStatus] = useState();
-    const [otm, setOtm] = useState();
+    const [otmP1, setOtmP1] = useState();
+    const [otmP2, setOtmP2] = useState();
+    const [otmP3, setOtmP3] = useState();
 
     useEffect(() => {
         let updatedData = data.filter((elem) => {
@@ -76,7 +74,9 @@ const InstrumentEditModel = ({Render, data, id}) => {
         setlotSize(editData[0].lotSize);
         setMaxlot(editData[0].maxLot);
         setStatus(editData[0].status);
-        setOtm(editData[0].otm)
+        setOtmP1(editData[0].otm_p1)
+        setOtmP2(editData[0].otm_p2)
+        setOtmP3(editData[0].otm_p3)
 
     }, [editData, reRender])
 
@@ -89,7 +89,9 @@ const InstrumentEditModel = ({Render, data, id}) => {
         LotSize: "",
         maxLot:"",
         LastModifiedOn: "",
-        Otm: ""
+        otm_p1: "",
+        otm_p2: "",
+        otm_p3: "",
     });
 // todo ---> patch req in user detail auth and put req anlso in instrument auth
     async function formbtn() {
@@ -101,12 +103,14 @@ const InstrumentEditModel = ({Render, data, id}) => {
         formstate.LotSize = lotSize;
         formstate.maxLot = maxlot;
         formstate.Status = status;
-        formstate.Otm = otm;
+        formstate.otm_p1 = otmP1;
+        formstate.otm_p2 = otmP2;
+        formstate.otm_p3 = otmP3;
         
         setformstate(formstate);
 
 
-        const { contract_Date,Instrument, Exchange, Symbole,LotSize,maxLot, Status, Otm } = formstate;
+        const { contract_Date,Instrument, Exchange, Symbole,LotSize,maxLot, Status, otm_p1, otm_p2, otm_p3 } = formstate;
 
         const res = await fetch(`${baseUrl}api/v1/readInstrumentDetails/${id}`, {
             method: "PUT",
@@ -115,7 +119,7 @@ const InstrumentEditModel = ({Render, data, id}) => {
                 "content-type": "application/json"
             },
             body: JSON.stringify({
-                contract_Date ,Instrument, Exchange, Symbole,LotSize, maxLot, Status, lastModified, Otm
+                contract_Date ,Instrument, Exchange, Symbole,LotSize, maxLot, Status, lastModified, otm_p1, otm_p2, otm_p3
             })
         });
         const dataResp = await res.json();
@@ -196,8 +200,16 @@ const InstrumentEditModel = ({Render, data, id}) => {
             sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setMaxlot( e.target.value)}}/>
 
             <TextField
-            id="outlined-basic" label="OTM" variant="standard" value={otm} 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtm( e.target.value)}}/>
+            id="outlined-basic" label="OTM P1" variant="standard" value={otmP1} 
+            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtmP1( e.target.value)}}/>
+
+            <TextField
+            id="outlined-basic" label="OTM P2" variant="standard" value={otmP2} 
+            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtmP2( e.target.value)}}/>
+
+            <TextField
+            id="outlined-basic" label="OTM P3" variant="standard" value={otmP3} 
+            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtmP3( e.target.value)}}/>
 
 
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

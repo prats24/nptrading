@@ -49,11 +49,27 @@ const instrumentSchema = new mongoose.Schema({
         type: Number,
         required : true
     },
-    otm:{
+    otm_p1:{
         type: String,
         required : true
     },
-    otmToken:{
+    otm_p1_Token:{
+        type: Number,
+        required : true
+    },
+    otm_p2:{
+        type: String,
+        required : true
+    },
+    otm_p2_Token:{
+        type: Number,
+        required : true
+    },
+    otm_p3:{
+        type: String,
+        required : true
+    },
+    otm_p3_Token:{
         type: Number,
         required : true
     }

@@ -56,9 +56,10 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
 
   // Render the card info items
   const renderItems = labels.map((label, key) => (
+    
     <MDBox key={label} display="flex" py={1} pr={2}>
       <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
-        {label}: &nbsp;
+        {`${label.split(/(?=[A-Z])/)[0]} ${label.split(/(?=[A-Z])/)[1] ? label.split(/(?=[A-Z])/)[1] : ""} ${label.split(/(?=[A-Z])/)[2] ? label.split(/(?=[A-Z])/)[2] : ""}`}: &nbsp;
       </MDTypography>
       <MDTypography variant="button" fontWeight="regular" color="text">
         &nbsp;{values[key]}
@@ -102,9 +103,9 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
             {description}
           </MDTypography>
         </MDBox>
-        <MDBox opacity={0.3}>
+        {/* <MDBox opacity={0.3}>
           <Divider />
-        </MDBox>
+        </MDBox> */}
         <MDBox>
           {renderItems}
           <MDBox display="flex" py={1} pr={2}>

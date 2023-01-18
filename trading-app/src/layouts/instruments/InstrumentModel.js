@@ -14,7 +14,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import userContext from "../../AuthContext";
+import {userContext} from "../../AuthContext";
 import uniqid from "uniqid";
 
 
@@ -31,7 +31,9 @@ const InstrumentModel = ({Render}) => {
       symbol: "",
       lotSize: "",
       maxLot: "",
-      otm: "",
+      otm_p1: "",
+      otm_p2: "",
+      otm_p3: "",
       status: ""
     });
 
@@ -40,10 +42,11 @@ const InstrumentModel = ({Render}) => {
     const getDetails = useContext(userContext);
     let uId = uniqid();
     let date = new Date();
-    let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     let lastModified = createdOn;
-    let createdBy = "prateek"
-    // let createdBy = getDetails.userDetails.name
+    // let createdBy = "prateek"
+    // console.log(getDetails)
+    let createdBy = getDetails.userDetails.name
   
   
     const handleClickOpen = () => {
@@ -58,7 +61,7 @@ const InstrumentModel = ({Render}) => {
 
       setFormData(formData);
       console.log(formData)
-      const { contractDate, instrument, exchange, symbol, lotSize, maxLot, otm, status } = formData;
+      const { contractDate, instrument, exchange, symbol, lotSize, maxLot, otm_p1, otm_p2, otm_p3, status } = formData;
 
       const res = await fetch(`${baseUrl}api/v1/instrument`, {
           method: "POST",
@@ -68,7 +71,7 @@ const InstrumentModel = ({Render}) => {
               "Access-Control-Allow-Credentials": true
           },
           body: JSON.stringify({
-              instrument, exchange, status, symbol, lotSize, lastModified, uId, createdBy, createdOn, contractDate, maxLot, otm
+              instrument, exchange, status, symbol, lotSize, lastModified, uId, createdBy, createdOn, contractDate, maxLot, otm_p1, otm_p2, otm_p3
           })
       });
 
@@ -126,8 +129,17 @@ const InstrumentModel = ({Render}) => {
             sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.maxLot = e.target.value}}/>
 
             <TextField
-            id="outlined-basic" label="OTM" variant="standard" 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm = e.target.value}}/>
+            id="outlined-basic" label="OTM P1" variant="standard" 
+            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm_p1 = e.target.value}}/>
+
+            <TextField
+            id="outlined-basic" label="OTM P2" variant="standard" 
+            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm_p2 = e.target.value}}/>
+
+            <TextField
+            id="outlined-basic" label="OTM P3" variant="standard" 
+            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm_p3 = e.target.value}}/>
+
 
 
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

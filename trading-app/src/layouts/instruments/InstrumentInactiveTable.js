@@ -86,6 +86,24 @@ const InstrumentInactiveTable = () => {
           {elem.createdOn}
         </MDTypography>
       );
+      inactiveinstruments.otm_p1 = (
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.otm_p1}
+        </MDTypography>
+      );
+
+      inactiveinstruments.otm_p2 = (
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.otm_p2}
+        </MDTypography>
+      );
+
+      inactiveinstruments.otm_p3 = (
+        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.otm_p3}
+        </MDTypography>
+      );
+     
      
       
       rows.push(inactiveinstruments)

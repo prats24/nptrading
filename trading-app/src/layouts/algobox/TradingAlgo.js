@@ -48,6 +48,11 @@ const TradingAlgo = () => {
 
 
     async function marginDeduction(id, marginDeduction){
+        if(marginDeduction){
+            marginDeduction = false;
+        } else{
+            marginDeduction = true;
+        }
         const res = await fetch(`${baseUrl}api/v1/updatemargindeduction/${id}`, {
             method: "PATCH",
             headers: {
@@ -65,9 +70,9 @@ const TradingAlgo = () => {
             // console.log("Failed to Edit");
         } else {
             if(marginDeduction === false){
-                window.alert("Margin Deduction is Enabled");
-            } else{
                 window.alert("Margin Deduction is Disabled");
+            } else{
+                window.alert("Margin Deduction is Enabled");
             }
         }
         reRender ? setReRender(false) : setReRender(true)
