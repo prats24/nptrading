@@ -82,9 +82,63 @@ const TableThree = () => {
     let tradername = [];
     let tradernpnl = [];
     let traderpnl = [];
+    let tradermatrix = [];
+    let createdBy = '';
     console.log(traderpnldata);
+
+    //New code for hash map of traders
+
+    let hash = new Map();
+
+    for (let i = traderpnldata.length - 1; i >= 0; i--) {
+        if (hash.has(traderpnldata[i]._id.createdBy)) {
+            let obj = hash.get(traderpnldata[i]._id.createdBy);    
+                if(traderpnldata[i].gpnl >= 0) {           
+                  obj.PositivePnl += traderpnldata[i].gpnl
+                }
+                else{
+                obj.NegativePnl += traderpnldata[i].gpnl
+                }
+                if(traderpnldata[i].gpnl >= 0) {           
+                  obj.GreenDays += 1
+                }
+                else{
+                obj.RedDays += 1
+                }
+                obj.TradingDays += 1
+                obj.Brokerage += traderpnldata[i].brokerage
+                obj.LifetimeGPnl += traderpnldata[i].gpnl
+                obj.LifetimeNPnl += Number(traderpnldata[i].npnl)
+                console.log("LTNPNL: "+obj.LifetimeNPnl,traderpnldata[i].npnl);
+          } else {
+            hash.set(traderpnldata[i]._id.createdBy, {
+              createdBy: traderpnldata[i]._id.createdBy,
+              PositivePnl : traderpnldata[i].gpnl >= 0 ? traderpnldata[i].gpnl : 0,
+              NegativePnl : traderpnldata[i].gpnl >= 0 ? 0 : traderpnldata[i].gpnl,
+              GreenDays : traderpnldata[i].gpnl >= 0 ? 1 : 0,
+              RedDays : traderpnldata[i].gpnl >= 0 ? 0 : 1,
+              Brokerage : traderpnldata[i].brokerage,
+              TradingDays : 1, 
+              LifetimeGPnl : traderpnldata[i].gpnl, 
+              LifetimeNPnl : traderpnldata[i].npnl 
+          })
+          }
+    }
+
+    console.log(hash)
+    
+    let pnlmatrixArr = []
+    for (let value of hash.values()) {
+      pnlmatrixArr.push(value);
+    }
+
+    console.log("PNL Matrix Array: "+pnlmatrixArr[0]);
+
+
+    //Code Ends
+
     traderpnldata?.map((elem)=>{
-    let tpnl = {}
+    
     tradername.push(elem._id);
     tradernpnl.push((elem.npnl).toFixed(0));
 
@@ -92,74 +146,117 @@ const TableThree = () => {
         totalTransactionCost += elem.brokerage
         totalTrade += elem.trades
         totalnPnl += elem.npnl
-        totalTradingDays += 1
-        if(elem.npnl >= 0){
-            totalPositiveTrader += 1
-        }
-        else{
-            totalNegativeTrader += 1
-        }
-        if(elem.gpnl >= 0){
-          totalPositivePnl += elem.gpnl
-        }
-        else{
-          totalNegativePnl += elem.gpnl
-        }
+        
 
-
-    const gpnlcolor = (elem.gpnl) >= 0 ? "success" : "error"
-    //const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
-    const npnlcolor = (elem.npnl) >= 0 ? "success" : "error"
+    tradermatrix.push(JSON.parse(JSON.stringify({totalPositivePnl,totalNegativePnl,createdBy})))
+    })
+    
+    console.log(tradermatrix);
+    
+    //Sorting the array based on ratio
+    pnlmatrixArr.sort((a, b) => {
+      if (Math.abs(a.NegativePnl/a.PositivePnl) < Math.abs(b.NegativePnl/b.PositivePnl)) {
+        return 1;
+      }
+      if (Math.abs(a.NegativePnl/a.PositivePnl) > Math.abs(b.NegativePnl/b.PositivePnl)) {
+          return -1;
+      }
+      return 0;
+    });
+    let chartratiovalue = [];
+    let charttradername = [];
+    let chartprobableavgpnl = [];
+    pnlmatrixArr?.map((elem)=>{
+    let tpnl = {}
+    totalTradingDays += 1
+    if(elem.LifetimeGPnl >= 0){
+      totalPositiveTrader += 1
+    }
+    else{
+      totalNegativeTrader += 1
+    }
+    const npnlcolor = (elem.LifetimeNPnl) >= 0 ? "success" : "error"
+    const gpnlcolor = (elem.LifetimeGPnl) >= 0 ? "success" : "error"
     const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][elem.dayOfWeek-1];
+    let probableavgpnl = ((elem.RedDays/elem.TradingDays)*elem.NegativePnl + (elem.GreenDays/elem.TradingDays)*elem.PositivePnl)
+    let ratio = 0;
+    const probableavgpnlcolor = probableavgpnl >= 0 ? "success" : "error"
+    let averagereddaysgpnl = elem.RedDays != 0 ? elem.NegativePnl/elem.RedDays : 0
+    const averagereddaysgpnlcolor = averagereddaysgpnl >= 0 ? "success" : "error"
+    
+    if(elem.GreenDays == 0){
+      ratio = 0;
+    }
+    else{
+      ratio = Math.abs(elem.NegativePnl/elem.PositivePnl);
+    }
+    chartratiovalue.push(ratio)
+    charttradername.push(elem.createdBy)
+    chartprobableavgpnl.push(probableavgpnl.toFixed(0))
 
     tpnl.trader = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem._id.createdBy}
+        {elem.createdBy}
+      </MDTypography>
+    );
+    tpnl.ltgpnl = (
+      <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+        {(elem.LifetimeGPnl) >= 0 ? "+₹" + (elem.LifetimeGPnl).toFixed(0) : "-₹" + (-elem.LifetimeGPnl).toFixed(0)}
+      </MDTypography>
+    );
+    tpnl.ltnpnl = (
+      <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
+        {(elem.LifetimeNPnl) >= 0 ? "+₹" + (elem.LifetimeNPnl).toFixed(0) : "-₹" + (-elem.LifetimeNPnl).toFixed(0)}
       </MDTypography>
     );
     tpnl.cpgpnl = (
-        <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
-          {(totalNegativePnl) >= 0 ? "+₹" + (totalNegativePnl).toFixed(0) : "-₹" + (-totalNegativePnl).toFixed(0)}
+        <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
+          {(elem.PositivePnl) >= 0 ? "+₹" + (elem.PositivePnl).toFixed(0) : "-₹" + (-elem.PositivePnl).toFixed(0)}
         </MDTypography>
       );
     tpnl.cngpnl = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {(totalPositivePnl) >= 0 ? "+₹" + (totalPositivePnl).toFixed(0) : "-₹" + (-totalPositivePnl).toFixed(0)}
+      <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
+        {(elem.NegativePnl) >= 0 ? "+₹" + (elem.NegativePnl).toFixed(0) : "-₹" + (-elem.NegativePnl).toFixed(0)}
       </MDTypography>
     );
     tpnl.ratio = (
-      <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
-        {/* {(elem.npnl) >= 0 ? "+₹" + (elem.npnl).toFixed(0) : "-₹" + (-elem.npnl).toFixed(0)} */}
+      <MDTypography component="a" variant="caption" color={npnlcolor} backgroundColor="#f0f2f5" borderRadius={2} padding={1} fontWeight="medium">
+        {ratio.toFixed(2)}
       </MDTypography>
     );
     tpnl.probablepnl = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {elem.trades} */}
+      <MDTypography component="a" variant="caption" color={probableavgpnlcolor} backgroundColor="#f0f2f5" borderRadius={2} padding={1} fontWeight="medium">
+        {probableavgpnl >= 0 ? "+₹" + probableavgpnl.toFixed(0) : "-₹" + (-probableavgpnl).toFixed(0)}
       </MDTypography>
     );
     tpnl.tradingdays = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {elem.trades} */}
+        {elem.TradingDays}
       </MDTypography>
     );
     tpnl.preddays = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {elem.trades} */}
+      <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
+        {((elem.RedDays/elem.TradingDays)*100).toFixed(0)}%
       </MDTypography>
     );
     tpnl.pgreendays = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {elem.trades} */}
+      <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
+       {((elem.GreenDays/elem.TradingDays)*100).toFixed(0)}%
       </MDTypography>
     );
     tpnl.reddays = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {elem.trades} */}
+      <MDTypography component="a" variant="caption" color="error" fontWeight="medium">
+        {elem.RedDays}
+      </MDTypography>
+    );
+    tpnl.greendays = (
+      <MDTypography component="a" variant="caption" color="success" fontWeight="medium">
+        {elem.GreenDays}
       </MDTypography>
     );
     tpnl.areddaysgpnl = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {elem.trades} */}
+      <MDTypography component="a" variant="caption" color={averagereddaysgpnlcolor} fontWeight="medium">
+        {averagereddaysgpnl >= 0 ? "+₹" + averagereddaysgpnl.toFixed(0) : "-₹" + (-averagereddaysgpnl).toFixed(0)}
       </MDTypography>
     );
     console.log(typeof(tpnl));
@@ -172,6 +269,8 @@ const TableThree = () => {
 
     let totalgpnlcolor = totalPnl >= 0 ? "success" : "error"
     let totalnpnlcolor = totalnPnl >= 0 ? "success" : "error"
+    const firstDateFormat = `${String(new Date(firstDate).getDate()).padStart(2, '0')}-${String(new Date(firstDate).getMonth() + 1).padStart(2, '0')}-${(new Date(firstDate).getFullYear())}`
+    const secondDateFormat = `${String(new Date(secondDate).getDate()).padStart(2, '0')}-${String(new Date(secondDate).getMonth() + 1).padStart(2, '0')}-${(new Date(secondDate).getFullYear())}`
 
     return (
 
@@ -180,7 +279,7 @@ const TableThree = () => {
                         <Grid item xs={12} md={12} lg={12} >
                             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
                             <MDBox >
-                                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:4, padding: 1, fontSize: 19}}>Trader Wise Company P&L Report (Mock)</Typography>
+                                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:4, padding: 1, fontSize: 19}}>Trader Metrics (Mock)</Typography>
                             </MDBox>
                             <MDBox >
                                 <Typography sx={{ margin: 2, padding: 1, backgroundColor:"#f0f2f5", borderRadius:4, fontSize: 19 }}>Start Date</Typography>
@@ -237,17 +336,39 @@ const TableThree = () => {
                         <ReportsBarChart
                           color="info"
                           colorheight={"25rem"}
-                          title="Traders Net P&L Company Side (Mock)"
+                          title={`Trader Metrics (Mock) for the period ${firstDateFormat} to ${secondDateFormat}`}
                           description={
                             <>
-                              (<strong>+10%</strong>) increase than previous last 5 days.
+                              (<strong>Ratio of red days to green days of Gross P&L</strong>)
                             </>
                           }
-                          date="updated just now"
+                          date="Look for the traders with ratio > 1"
                           chart={
                             {
-                              labels: tradername,
-                              datasets: { label: "Net P&L", data: tradernpnl },
+                              labels: charttradername,
+                              datasets: { label: "Ratio", data: chartratiovalue },
+                            }
+                          }
+                        />
+                        </MDBox>
+                        </Grid> 
+
+                        <Grid item xs={12} md={6} lg={12} mt={7}>
+                      <MDBox mb={3}>
+                        <ReportsBarChart
+                          color="error"
+                          colorheight={"25rem"}
+                          title={`Trader Metrics (Mock) for the period ${firstDateFormat} to ${secondDateFormat}`}
+                          description={
+                            <>
+                              (<strong>Probable average daily Gross P&L</strong>)
+                            </>
+                          }
+                          date="Look for the traders with low average daily Gross P&L"
+                          chart={
+                            {
+                              labels: charttradername,
+                              datasets: { label: "Gross P&L", data: chartprobableavgpnl },
                             }
                           }
                         />
@@ -268,18 +389,15 @@ const TableThree = () => {
                                     coloredShadow="info"
                                 >
                                     <MDTypography variant="h6" color="white">
-                                        Trader Wise P&L (Mock)
+                                        Trader Metrics (Mock) for the period {firstDateFormat} to {secondDateFormat}
                                     </MDTypography>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable
                                         table={{ columns, rows }}
+                                        showTotalEntries={false}
                                         isSorted={false}
-                                        entriesPerPage={true}
-                                        showTotalEntries={true}
                                         noEndBorder
-                                        addButton={false}
-                                        canSearch={false}
                                     />
                                 </MDBox>
                             </Card>

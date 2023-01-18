@@ -1357,7 +1357,7 @@ router.get("/companypnlreport/:startDate/:endDate", async(req, res)=>{
                     }
                     },
                 { $sort :
-                    { _id : -1 }
+                    { _id : 1 }
                 }
                 ]
 

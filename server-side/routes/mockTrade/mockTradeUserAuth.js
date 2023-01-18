@@ -737,7 +737,7 @@ router.get("/readmocktradeusertodayagg",async (req, res)=>{
                     }
                     },
                 { $sort :
-                    { npnl: -1 }
+                    { gpnl: -1 }
                 }
                 ]
 

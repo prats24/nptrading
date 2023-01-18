@@ -1,21 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-//
-// import Styles from "../Dashboard.module.css";
-
-//
 import {useState, useEffect} from "react"
 import axios from "axios";
 // @mui material components
@@ -60,6 +42,7 @@ function LiveOverallCompantPNL({socket}) {
   let liveDetailsArr = [];
   let overallPnl = [];
   let totalGrossPnl = 0;
+  let totalRunningLots = 0;
   
   useEffect(()=>{
 
@@ -213,6 +196,7 @@ function LiveOverallCompantPNL({socket}) {
 
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
+      totalRunningLots += Number(subelem.totalBuyLot + subelem.totalSellLot)
       let tempavgPriceArr = lastAvgPriceArr.filter((element)=>{
         return (subelem.symbol === element._id.symbol) && (subelem.Product === element._id.product);
       })
@@ -293,40 +277,34 @@ function LiveOverallCompantPNL({socket}) {
     const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
     const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
 
-    obj.Product = (
-      <MDTypography component="a" variant="caption"  fontWeight="medium">
-        {}
-      </MDTypography>
-    );
-  
     obj.symbol = (
-      <MDTypography component="a" variant="caption"  fontWeight="medium">
-        {}
+      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+       {}
       </MDTypography>
     );
   
     obj.Quantity = (
-      <MDTypography component="a" variant="caption"  fontWeight="medium">
-        Transaction Cost
+      <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+        Running Lots : {totalRunningLots}
       </MDTypography>
     );
   
     obj.avgPrice = (
-      <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-        {"₹"+(totalTransactionCost).toFixed(2)}
+      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+       {}
       </MDTypography>
     );
   
     obj.last_price = (
-      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-       Gross P&L
+      <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+        Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}
       </MDTypography>
     );
   
   
     obj.grossPnl = (
       <MDTypography component="a" variant="caption" color={totalGrossPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-        {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+       Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
       </MDTypography>
     );
   

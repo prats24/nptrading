@@ -231,6 +231,9 @@ function LiveTraderwiseCompantPNL({socket}) {
  
       let totalGrossPnl = 0;
       let totalTransactionCost = 0;
+      let totalNoRunningLots = 0;
+      let totalTrades = 0;
+      let totalLotsUsed = 0;
        finalTraderPnl.map((subelem, index)=>{
          let obj = {};
 
@@ -242,6 +245,9 @@ function LiveTraderwiseCompantPNL({socket}) {
 
          totalGrossPnl += (subelem.totalPnl);
          totalTransactionCost += (subelem.brokerage);
+         totalNoRunningLots += (subelem.runninglots);
+         totalLotsUsed += (subelem.lotUsed);
+         totalTrades += (subelem.noOfTrade);
 
          obj.traderName = (
            <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor} padding="5px" borderRadius="5px">
@@ -296,39 +302,39 @@ function LiveTraderwiseCompantPNL({socket}) {
 
      
        obj.traderName = (
-         <MDTypography component="a" variant="caption"  fontWeight="medium">
+         <MDTypography component="a" variant="caption" fontWeight="medium">
            {}
          </MDTypography>
        );
      
        obj.grossPnl = (
-         <MDTypography component="a" variant="caption"  fontWeight="medium">
-           {}
+         <MDTypography component="a" variant="caption"  color={totalGrossPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+           Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
          </MDTypography>
        );
      
        obj.noOfTrade = (
-         <MDTypography component="a" variant="caption"  fontWeight="medium">
-           Transaction Cost
+         <MDTypography component="a" variant="caption" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+           Total Trades : {totalTrades}
          </MDTypography>
        );
      
        obj.runningLots = (
          <MDTypography component="a" variant="caption" color="dark" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-           {"₹"+(totalTransactionCost).toFixed(2)}
+           Running Lots : {totalNoRunningLots}
          </MDTypography>
        );
      
        obj.lotUsed = (
-         <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-           {/* {"₹"+(liveDetail[index]?.last_price).toFixed(2)} */}Gross P&L
+         <MDTypography component="a" variant="caption" color="dark" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+           Lots Used : {totalLotsUsed}
          </MDTypography>
        );
      
      
        obj.brokerage = (
-         <MDTypography component="a" variant="caption"  color={totalGrossPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-           {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+         <MDTypography component="a" variant="caption"  color="dark" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+           Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}
          </MDTypography>
        );
      
@@ -374,10 +380,9 @@ function LiveTraderwiseCompantPNL({socket}) {
       <MDBox>
         <DataTable
           table={{ columns, rows }}
-          showTotalEntries={false}
+          showTotalEntries={true}
           isSorted={false}
           noEndBorder
-          entriesPerPage={false}
         />
       </MDBox>
     </Card>

@@ -259,12 +259,9 @@ const TableOne = () => {
                                 <MDBox pt={3}>
                                     <DataTable
                                         table={{ columns, rows }}
+                                        showTotalEntries={false}
                                         isSorted={false}
-                                        entriesPerPage={true}
-                                        showTotalEntries={true}
                                         noEndBorder
-                                        addButton={false}
-                                        canSearch={false}
                                     />
                                 </MDBox>
                             </Card>
