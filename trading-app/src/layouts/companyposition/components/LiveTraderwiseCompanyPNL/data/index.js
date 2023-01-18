@@ -14,7 +14,7 @@ export default function data() {
       { Header: "# of Trades", accessor: "noOfTrade", width: "10%", align: "center" },
       { Header: "Running Lots", accessor: "runningLots", width: "10%", align: "center" },
       { Header: "Lots Used", accessor: "lotUsed", width: "10%", align: "center" },
-      { Header: "Tran. Cost", accessor: "brokerage", width: "10%", align: "center" },
+      { Header: "Brokerage", accessor: "brokerage", width: "10%", align: "center" },
       { Header: "Net P&L", accessor: "netPnl", width: "10%", align: "center" },
     ],
 

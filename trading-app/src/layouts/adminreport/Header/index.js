@@ -26,6 +26,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import StoreIcon from '@mui/icons-material/Store';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
@@ -43,7 +45,7 @@ import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
 import CompanyDailyPNLTWise from "../CompanyDailyPNLTWise";
 import MockCompanyPNL from "../MockCompanyPNL"
-import TraderPNL from "../TraderPNL";
+import TraderPNL from "../TraderPNLTWise";
 import TraderMatrix from "../TraderMatrix";
 
 
@@ -112,24 +114,24 @@ function AdminReportHeader({ children }) {
             <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Company Daily P&L(Trader-Wise)"
+                  label="Company Side P&L (Trader Wise)"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      <StoreIcon/>
                     </Icon>
                   }
                 />
                 <Tab
                   label="Company Daily P&L"
                   icon={
-                    <AddShoppingCartIcon fontSize="small" sx={{ mt: -0.25 }} />
+                    <StoreIcon/>
                   }
                 />
                 <Tab
-                  label="Trader P&L"
+                  label="Trader Side P&L (Trader Wise)"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      <SupervisorAccountIcon/>
                     </Icon>
                   }
                 />
@@ -137,7 +139,7 @@ function AdminReportHeader({ children }) {
                   label="Trader Metrics"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      <SupervisorAccountIcon/>
                     </Icon>
                   }
                 />

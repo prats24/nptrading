@@ -48,6 +48,7 @@ function MockOverallCompantPNL({socket}) {
   let overallPnl = [];
   let totalTransactionCost = 0;
   let totalGrossPnl = 0;
+  let totalRunningLots = 0;
 
   
   useEffect(()=>{
@@ -200,6 +201,7 @@ function MockOverallCompantPNL({socket}) {
   console.log("lastAvgPriceArr", lastAvgPriceArr, overallPnlArr, tradeData)
     overallPnlArr.map((subelem, index)=>{
       let obj = {};
+      totalRunningLots += Number(subelem.totalBuyLot + subelem.totalSellLot)
       let tempavgPriceArr = lastAvgPriceArr.filter((element)=>{
         return (subelem.symbol === element._id.symbol) && (subelem.Product === element._id.product);
       })
@@ -309,33 +311,33 @@ function MockOverallCompantPNL({socket}) {
   );
 
   obj.symbol = (
-    <MDTypography component="a" variant="caption"  fontWeight="medium">
-      {}
+    <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+     {}
     </MDTypography>
   );
 
   obj.Quantity = (
-    <MDTypography component="a" variant="caption"  fontWeight="medium">
-      Transaction Cost
+    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      Running Lots : {totalRunningLots}
     </MDTypography>
   );
 
   obj.avgPrice = (
-    <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      {"₹"+(totalTransactionCost).toFixed(2)}
+    <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+     {}
     </MDTypography>
   );
 
   obj.last_price = (
-    <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-      Gross P&L
+    <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}
     </MDTypography>
   );
 
 
   obj.grossPnl = (
     <MDTypography component="a" variant="caption" color={totalGrossPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+     Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
     </MDTypography>
   );
 

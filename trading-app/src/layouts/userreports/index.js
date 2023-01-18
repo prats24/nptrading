@@ -193,12 +193,6 @@ function UserReport() {
   console.log(overallPnl)
 
   overallPnl.sort((a, b) => {
-    // let first = a.date.split("-")
-    // a.date = `${first[2]}-${first[1]}-${first[0]}`
-
-    // let second = a.date.split("-")
-    // b.date = `${second[2]}-${second[1]}-${second[0]}`
-
     if (a.date < b.date) {
       return -1;
     }

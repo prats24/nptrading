@@ -56,59 +56,7 @@ export default function data() {
       // { Header: "net p&l", accessor: "npnl", width: "10%", align: "center" },
     ],
 
-    rows: [
-      // {
-      //   contractdate: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       12-01-2023
-      //     </MDTypography>
-      //   )
-      // },
-
-      // {
-      //   contractdate: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       12-01-2023
-      //     </MDTypography>
-      //   ),
-      //   instrument: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       18400 PE
-      //     </MDTypography>
-      //   ),
-      //   symbol: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       NIFTY05JAN18400PE
-      //     </MDTypography>
-      //   ),
-      //   avgprice: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       ₹164.76
-      //     </MDTypography>
-      //   ),
-      //   ltp: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       ₹145.43
-      //     </MDTypography>
-      //   ),
-      //   gpnl: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       +₹1,20,405.56
-      //     </MDTypography>
-      //   ),
-      //   tcost: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       +₹20,405.56
-      //     </MDTypography>
-      //   ),
-      //   npnl: (
-      //     <MDTypography variant="caption" color="text" fontWeight="medium">
-      //       +₹1,00,000.00
-      //     </MDTypography>
-      //   ),
-      // },
-
-    ],
+    rows: [],
 
 
   };

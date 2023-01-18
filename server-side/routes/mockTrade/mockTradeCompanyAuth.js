@@ -1337,32 +1337,94 @@ router.get("/datewisecompanypnl/:queryDate", async(req, res)=>{
         
 })
 
-// router.get("/userwiseOtm/:email", async(req, res)=>{
-    
-//     const {email} = req.params;
-//     let date = new Date();
-//     const days = date.getDay();
-//     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-//     console.log("Today "+todayDate)
-    
-//     let pipeline = [{ $match: { trade_time : {$regex : todayDate} , status: "COMPLETE", userId: email} },
-//                     // { $group: { _id: {
-//                     //     "otm": "$otm"
-//                     // },
-                    
-//                     // quantity: {
-//                     //     $sum: { $round : [{$toDouble : "$otm_quantity"}]}
-//                     // },
-//                     // }},
-//                     { $project: { "_id" : 1, "otm" : 1,  "otm_quantity" : 1, "otm_token" : 1 } },
-//                     { $sort: { "trade_time": -1 }},
-                    
-//                 ]
 
-//     let x = await MockTradeDetails.aggregate(pipeline)
+router.get("/companypnlreport/:startDate/:endDate", async(req, res)=>{
+    console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+    let {startDate,endDate} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                        status : "COMPLETE" 
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: {
+                                "date": {$substr: [ "$trade_time", 0, 10 ]},
+                            },
+                    gpnl: {
+                        $sum: {$multiply : ["$amount",-1]}
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    }
+                },
+                { $addFields: 
+                    {
+                    npnl : { $subtract : ["$gpnl","$brokerage"]},
+                    dayOfWeek : {$dayOfWeek : { $toDate : "$_id.date"}}
+                    }
+                    },
+                { $sort :
+                    { _id : 1 }
+                }
+                ]
 
-//         res.status(201).json(x);
+    let x = await MockTradeDetails.aggregate(pipeline)
+
+        res.status(201).json(x);
         
-// })
+})
+
+router.get("/traderwisecompanypnlreport/:startDate/:endDate", async(req, res)=>{
+    console.log("Inside Aggregate API - Trader wise company pnl based on date entered")
+    let {startDate,endDate} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                        status : "COMPLETE" 
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: "$createdBy",
+                            gpnl: {
+                              $sum: {$multiply : ["$amount",-1]}
+                            },
+                            brokerage : {
+                              $sum: {$toDouble : "$brokerage"}
+                            },
+                            trades : {
+                              $count : {}
+                            },
+                    }
+                },
+                { $addFields: 
+                    {
+                        npnl: {$subtract : ["$gpnl" , "$brokerage"]}
+                    }
+                    },
+                { $sort :
+                    { npnl: -1 }
+                }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
 
 module.exports = router;
