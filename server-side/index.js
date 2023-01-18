@@ -32,12 +32,12 @@ app.use(xssClean());
 app.use(hpp());
 
 // issue fix --> if enviournment variable path is not work
-// const path = require('path')
-// require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 
 
-dotenv.config({ path: './config.env' });
+// dotenv.config({ path: './config.env' });
 
 getKiteCred.getAccess().then((data)=>{
   // console.log("this is code ",data);
@@ -78,8 +78,9 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  // origin: "http://3.7.187.183/"
-   origin: "http://localhost:3000"
+  origin: "http://3.7.187.183/"  // staging
+  // origin: "http://3.108.76.71/"  // production
+  //  origin: "http://localhost:3000"
 
 }));
 
