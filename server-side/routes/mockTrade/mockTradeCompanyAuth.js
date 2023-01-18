@@ -15,11 +15,10 @@ const getKiteCred = require('../../marketData/getKiteCred');
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     getKiteCred.getAccess().then( (data)=>{
-//         console.log("this is code ",data);
+//         // console.log("this is code ",data);
 //         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-//         console.log("ticksdata", ticksdata)
+//         // console.log("ticksdata", ticksdata)
 //       });
-    
 // })
 
 // router.get("/deleteinhistory", async(req, res)=>{
