@@ -1,4 +1,6 @@
 import React from 'react'
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -6,6 +8,7 @@ import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
+import MDButton from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -25,6 +28,58 @@ import CategoryData from './data/CategoryData';
 const Categories = () => {
     const { columns, rows } = CategoryData();
     const { columns: pColumns, rows: pRows } = ExpenseData();
+    const [reRender, setReRender] = useState(true);
+    const [categoryDetail, setCategoryDetail] = useState([]);
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+    useEffect(()=>{
+        axios.get(`${baseUrl}api/v1/readCategoryDetails`)
+        .then((res)=>{
+            setCategoryDetail(res.data);
+          }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+    }, [reRender])
+
+    console.log("categoryDetail", categoryDetail)
+
+    categoryDetail.map((elem)=>{
+        let obj={};
+        obj.edit = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                {}
+            </MDButton>
+        );
+        obj.isCategory = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                {(String(elem.isCategory)).toUpperCase()}
+            </MDButton>
+        );
+        obj.subCategory = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                {elem.sub_category}
+            </MDButton>
+        );
+        obj.category = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                {elem.category}
+            </MDButton>
+        );
+        obj.createdBy = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                {elem.created_by}
+            </MDButton>
+        );
+        obj.createdOn = (
+            <MDButton variant="Contained" color="info" fontWeight="medium">
+                {elem.createdOn}
+            </MDButton>
+        );
+
+        rows.push(obj);
+
+    })
     return (
         <>
             <MDBox pt={6} pb={3}>

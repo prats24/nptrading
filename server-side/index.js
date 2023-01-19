@@ -90,7 +90,9 @@ app.use(express.json({limit: "20kb"}));
 //Update 
 // app.use('/api/v1', require("./routes/TradeData/getCompanyTrade"));
 //Update
+app.use('/api/v1', require("./routes/OpenPositions/openPositionsAuth"))
 app.use('/api/v1', require("./routes/expense/expenseAuth"))
+app.use('/api/v1', require("./routes/expense/categoryAuth"))
 app.use('/api/v1', require("./routes/setting/settingAuth"))
 app.use('/api/v1', require("./routes/DailyPnlData/dailyPnlDataRoute"))
 app.use('/api/v1', require("./marketData/livePrice"));

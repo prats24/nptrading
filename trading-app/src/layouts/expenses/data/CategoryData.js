@@ -33,36 +33,16 @@ export default function CategoryData() {
 
   return {
     columns: [
-      { Header: "Created On", accessor: "Created On", align: "center"},
-      { Header: "Role Name", accessor: "Role Name", align: "center" },
-      { Header: "Instruments", accessor: "Instruments", align: "center" },
-      { Header: "Trading Account", accessor: "Trading Account", align: "center" },
-      { Header: "API Parameters", accessor: "API Parameters", align: "center" },
-      { Header: "Users", accessor: "Users", align: "center" },
-      { Header: "AlgoBox", accessor: "AlgoBox", align: "center" },
-      { Header: "Reports", accessor: "Reports", align: "center" },
+      { Header: "Edit", accessor: "edit", align: "center"},
+      { Header: "Is Category", accessor: "isCategory", align: "center"},
+      { Header: "Sub Category", accessor: "subCategory", align: "center" },
+      { Header: "Category", accessor: "category", align: "center" },
+      { Header: "Created By", accessor: "createdBy", align: "center" },
+      { Header: "Created On", accessor: "createdOn", align: "center" },
     ],
 
     rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
+
     ],
   };
 }

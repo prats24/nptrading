@@ -32,6 +32,7 @@ import CategoryData from "./data/CategoryData";
 import ExpenseData from "./data/ExpenseData";
 import ExpenseHeader from "./Header";
 
+
 function Tables() {
   const { columns, rows } = CategoryData();
   const { columns: pColumns, rows: pRows } = ExpenseData();
