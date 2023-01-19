@@ -52,7 +52,7 @@ import Profile from "./layouts/profile";
 import SignIn from "./layouts/authentication/sign-in";
 import SignUp from "./layouts/authentication/sign-up";
 import Setting from "./layouts/settings/Setting";
-import Expense from "./layouts/expenses/Expense";
+import Expense from "./layouts/expenses/";
 
 // @mui icons
 import PersonIcon from '@mui/icons-material/Person';
