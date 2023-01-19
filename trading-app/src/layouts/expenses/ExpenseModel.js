@@ -15,14 +15,19 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import { userContext } from '../../AuthContext';
 import uniqid from "uniqid";
-import {useState, useContext} from "react"
+import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+
+
 
 
 
 const ExpenseModel = () => {
   const [open, setOpen] = React.useState(false);
+  const [Admins, setAdmins] = useState([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const User = ['User 1', 'User 2', 'User 3'];
 
   const [formstate, setformstate] = useState({
     expense_date : "",
@@ -49,6 +54,18 @@ const ExpenseModel = () => {
 
   const [reRender, setReRender] = useState(true);
 
+  useEffect(()=>{
+    axios.get(`${baseUrl}api/v1/getAdmins`)
+    .then((res)=>{
+        setAdmins(res.data);
+    }).catch((err)=>{
+        window.alert("Server Down");
+        return new Error(err);
+    })
+},[getDetails])
+
+
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -57,6 +74,13 @@ const ExpenseModel = () => {
     setOpen(false);
   };
 
+  console.log("Admins: "+Admins)
+  let adminnames = [];
+  Admins.map((elem)=>{
+    adminnames.push(elem.name);
+  })
+
+  console.log("Admin Names: "+adminnames);
 
   async function formSubmit() {
     setformstate(formstate);
@@ -64,7 +88,7 @@ const ExpenseModel = () => {
 
     const { expense_date,sub_category,category,amount,gst,total_amount,description,payment_status,expense_by,invoice_upload} = formstate;
 
-    const res = await fetch(`${baseUrl}api/v1/userdetail`, {
+    const res = await fetch(`${baseUrl}api/v1/expense`, {
       
         method: "POST",
         credentials:"include",
@@ -89,7 +113,6 @@ const ExpenseModel = () => {
     }
     setOpen(false);
     reRender ? setReRender(false) : setReRender(true)
-
 }
 
   return (
@@ -138,27 +161,58 @@ const ExpenseModel = () => {
               id="outlined-basic" label="Description" variant="standard"
               sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.description = e.target.value}}/>
             
+            {/* <TextField
+                id="outlined-basic" label="Expense By" variant="standard"
+                select value={formstate.expense_by}
+                onChange={(e)=>{formstate.expense_by = e.target.value}}
+                sx={{ margin: 1, padding: 2, width: '300px' }}>
+                {adminnames.map(user => (
+                    <MenuItem key={user} value={user}>
+                        {user}
+                    </MenuItem>
+                ))}
+                
+            </TextField> */}
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120, }}>
+                  <InputLabel id="demo-simple-select-standard-label">Expense By</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Expense By"
+                    onChange={(e)=>{formstate.expense_by = e.target.value}}
+                    sx={{ margin: 1, padding: 2, }}
+                  >
+                    {adminnames.map((elem)=>{
+                      console.log("Admin Names: ", elem)
+                        return(
+                            <MenuItem value={elem}>
+                            {elem}
+                            </MenuItem>
+                        )
+                    }) 
+                    }
+                  </Select>
+                </FormControl>
+
+            <TextField
+              id="outlined-basic" label="Invoice Upload" variant="standard" type="file"
+              sx={{ margin: 1, padding: 2, width: "300px" }} onChange={(e)=>{formstate.invoice_upload = e.target.value}}/>
+            
+            
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">Payment Status</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
-                label="Gender"
+                label="Payment Status"
                 sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formstate.payment_status = e.target.value}}
               >
-                <MenuItem value="Male">Paid</MenuItem>
-                <MenuItem value="Female">Unpaid</MenuItem>
+                <MenuItem value="Paid">Paid</MenuItem>
+                <MenuItem value="Unpaid">Unpaid</MenuItem>
               </Select>
             </FormControl>
-               <TextField
-              id="outlined-basic" label="Expense By" variant="standard" 
-              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.expense_by = e.target.value}}/>
-            
-            <TextField
-              id="outlined-basic" label="Invoice Upload" variant="standard" type="file"
-              sx={{ margin: 1, padding: 2, width: "300px" }} onChange={(e)=>{formstate.invoice_upload = e.target.value}}/>
-            
+              
           </DialogContentText>
         </DialogContent>
         <DialogActions>

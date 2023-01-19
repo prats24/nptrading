@@ -34,11 +34,11 @@ const expenseSchema = new mongoose.Schema({
         required : true
     },
     expense_by:{
-        type: Number,
+        type: String,
         required : true
     },
     created_by:{
-        type: Number,
+        type: String,
         required : true
     },
     invoice_upload:{

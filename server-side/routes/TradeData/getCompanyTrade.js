@@ -338,29 +338,45 @@ router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await LiveCompanyTradeData.aggregate([
-        { $match: { trade_time : {$regex: todayDate}, status: "COMPLETE"} },
-        
-        { $group: { _id: {
-                                "symbol": "$symbol",
-                                "Product": "$Product",
-                                "buyOrSell": "$buyOrSell"
-                            },
-                    amount: {
-                        $sum: "$amount"
-                    },
-                    brokerage: {
-                        $sum: {$toDouble : "$brokerage"}
-                    },
-                    lots: {
-                        $sum: {$toInt : "$Quantity"}
-                    },
-                    average_price: {
-                        $sum: {$toInt : "$average_price"}
-                        // average_price: "$average_price"
-                    },
-                    }},
-             { $sort: {_id: -1}},
-            ])
+        {
+          $match: {
+            trade_time: {
+              $regex: "2023-01-19",
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {$multiply : ["$amount",-1]},
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
             
                 console.log(pnlDetails)
 
