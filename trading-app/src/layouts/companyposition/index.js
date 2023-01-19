@@ -30,6 +30,7 @@ import reportsLineChartData from "./data/reportsLineChartData";
 // Dashboard components
 
 import Projects from "./components/Projects";
+import MismatchDetails from "./components/MismatchDetails";
 import InstrumentDetails from "./components/InstrumentDetails";
 import MockOverallCompanyPNL from "./components/MockOverallCompanyPNL";
 import LiveOverallCompanyPNL from "./components/LiveOverallCompanyPNL";
@@ -122,7 +123,13 @@ function CompanyPosition() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
-
+      <MDBox mt={1}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <MismatchDetails socket={socket}/>
+            </Grid>
+          </Grid>
+        </MDBox>
         <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
