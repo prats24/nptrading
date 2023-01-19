@@ -19,7 +19,7 @@ import {useState, useContext} from "react"
 
 
 
-const UserModel = () => {
+const ExpenseModel = () => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -99,7 +99,7 @@ const UserModel = () => {
   return (
     <div>
       <MDButton variant="outlined" onClick={handleClickOpen}>
-        Create User
+        Create Expense
       </MDButton>
       <Dialog
         fullScreen={fullScreen}
@@ -209,4 +209,4 @@ const UserModel = () => {
   );
 }
 
-export default UserModel;
+export default ExpenseModel;
