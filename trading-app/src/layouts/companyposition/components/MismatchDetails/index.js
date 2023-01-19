@@ -28,7 +28,7 @@ function MismatchDetails({socket}) {
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [OpenPositionData, setOpenPositionData] = useState([]);
-  const [liveDetail, setLiveDetail] = useState([]);
+  // const [liveDetail, setLiveDetail] = useState([]);
   const [tradeData, setTradeData] = useState([]);
   let liveDetailsArr = [];
   
@@ -51,6 +51,7 @@ function MismatchDetails({socket}) {
     axios.get(`${baseUrl}api/v1/getOpenPositions`)
     .then((res) => {
         setOpenPositionData(res.data);
+
     }).catch((err) => {
         return new Error(err);
     })
@@ -61,14 +62,7 @@ function MismatchDetails({socket}) {
     axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday`)
     .then((res) => {
         setTradeData(res.data);
-        res.data.map((elem)=>{
-          marketData.map((subElem)=>{
-              if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
-                  liveDetailsArr.push(subElem)
-              }
-          })
-})
-setLiveDetail(liveDetailsArr);
+
     }).catch((err) => {
         return new Error(err);
     })
@@ -79,42 +73,104 @@ useEffect(() => {
       socket.close();
   }
 }, [])
-  
+
+
+
+// res.data.map((elem)=>{
+//   marketData.map((subElem)=>{
+//       if(subElem !== undefined && subElem.instrument_token == elem.instrument_token){
+//           liveDetailsArr.push(subElem)
+//       }
+//   })
+// })
+// setLiveDetail(liveDetailsArr);
+
+
+OpenPositionData.map((elem)=>{
+  let appPnlData = tradeData.filter((element)=>{
+    return element._id.symbol === elem.tradingsymbol;
+  })
+
+  let liveDetail = marketData.filter((element)=>{
+    return element !== undefined && element.instrument_token == elem.instrument_token
+  })
+
+
+
+  let updatedValue = (appPnlData[0]?.amount+(appPnlData[0]?.lots)*liveDetail[0]?.last_price);
+
+  let obj = {};
+
+  obj.instrument = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {elem.tradingsymbol}
+    </MDTypography>
+  );
+  obj.product = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {elem.product}
+    </MDTypography>
+  );
+  obj.appgrosspnl = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+
+      {updatedValue ? updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2)) : "+₹0"}
+    </MDTypography>
+  );
+  obj.zerodhagrosspnl = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {elem.pnl >= 0.00 ? "+₹" + (elem.pnl.toFixed(2)): "-₹" + ((-elem.pnl).toFixed(2))}
+    </MDTypography>
+  );
+  obj.apprunninglots = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {appPnlData[0] ? appPnlData[0]?.lots : 0}
+    </MDTypography>
+  );
+  obj.zerodharunninglots = (
+    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      {elem.buy_quantity - elem.sell_quantity}
+    </MDTypography>
+  );
+
+  rows.push(obj)
+
+})
   //console.log("marketData", marketData)
   let ltpArr = [];
   
-  rows.map((elem)=>{
-    let ltpObj = {};
-    marketData.map((subelem)=>{
+  // rows.map((elem)=>{
+  //   let ltpObj = {};
+  //   marketData.map((subelem)=>{
       
-      const percentagechangecolor = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
-      const percentagechangecolor1 = (subelem.change) >= 0 ? "success" : "error"
+  //     const percentagechangecolor = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
+  //     const percentagechangecolor1 = (subelem.change) >= 0 ? "success" : "error"
 
-      if(elem.instrumentToken.props.children === subelem.instrument_token){
-        elem.last_price = (
-            <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-              {"₹"+(subelem.last_price).toFixed(2)}
-            </MDTypography>
-          );
-          if(subelem.change){
-            elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
-                {(subelem.change) >= 0 ? "+" + ((subelem.change).toFixed(2))+"%" : ((subelem.change).toFixed(2))+"%"}
-              </MDTypography>
-            );
-          } else{
-            elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-                {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "+" + (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%" : (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
-              </MDTypography>
-            );
-          }
-      }
-    })
-    ltpArr.push(ltpObj);
-  })
+  //     if(elem.instrumentToken.props.children === subelem.instrument_token){
+  //       elem.last_price = (
+  //           <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+  //             {"₹"+(subelem.last_price).toFixed(2)}
+  //           </MDTypography>
+  //         );
+  //         if(subelem.change){
+  //           elem.change = (
+  //             <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
+  //               {(subelem.change) >= 0 ? "+" + ((subelem.change).toFixed(2))+"%" : ((subelem.change).toFixed(2))+"%"}
+  //             </MDTypography>
+  //           );
+  //         } else{
+  //           elem.change = (
+  //             <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
+  //               {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "+" + (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%" : (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
+  //             </MDTypography>
+  //           );
+  //         }
+  //     }
+  //   })
+  //   ltpArr.push(ltpObj);
+  // })
 
-  const newRows = rows.concat(ltpArr);
+  // const newRows = rows.concat(ltpArr);
   //console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
