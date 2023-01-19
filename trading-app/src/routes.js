@@ -53,6 +53,7 @@ import SignIn from "./layouts/authentication/sign-in";
 import SignUp from "./layouts/authentication/sign-up";
 import Setting from "./layouts/settings/Setting";
 import Expense from "./layouts/expenses/";
+import Shop2Icon from '@mui/icons-material/Shop2';
 
 // @mui icons
 import PersonIcon from '@mui/icons-material/Person';
@@ -176,7 +177,7 @@ const routes = [
     name: "Expenses",
     key: "expense",
     // icon: <Icon fontSize="small">person</Icon>,
-    icon: <SettingsIcon/>,
+    icon: <Shop2Icon/>,
     route: "/expense",
     component: <Expense />,
   },

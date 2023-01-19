@@ -26,6 +26,8 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 // Images
 import PersonIcon from '@mui/icons-material/Person';
 import burceMars from "../../../assets/images/bruce-mars.jpg";
+import CategoryIcon from '@mui/icons-material/Category';
+import Shop2Icon from '@mui/icons-material/Shop2';
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
 import Expense from "../Expense";
 import Category from "../Category";
@@ -99,14 +101,14 @@ function ExpenseHeader({ children }) {
                 <Tab
                   label="Expense"
                   icon={
-                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
+                    <Shop2Icon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
 
                 <Tab
                   label="Category"
                   icon={
-                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
+                    <CategoryIcon fontSize="small" sx={{ mt: -0.25}}/>
                      }
                 />
              

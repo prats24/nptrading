@@ -6,8 +6,8 @@ const Expense = require("../../models/Expense/expenseSchema");
 router.post("/expense", async (req, res)=>{ 
     try{
         let {expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, created_by, invoice_upload, createdOn, lastmodified_by, lastmodifiedOn, uId} = req.body;
-        console.log(req.body);
-
+        console.log("Req Body for Expense: "+req.body);
+        console.log("Field Data: "+expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, created_by, invoice_upload, createdOn, lastmodified_by, lastmodifiedOn, uId);
         if(!expense_date || !sub_category || !category || !amount || !total_amount || !description || !payment_status || !expense_by || !created_by || !createdOn || !lastmodified_by || !lastmodifiedOn || !uId){
             return res.status(422).json({error : "Please enter all the mandatory fields."})
         }

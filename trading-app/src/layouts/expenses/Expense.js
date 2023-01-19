@@ -20,6 +20,7 @@ import DataTable from "../../examples/Tables/DataTable";
 import EditSharpIcon from '@mui/icons-material/EditSharp';
 
 
+
 // Data
 import ExpenseModel from './ExpenseModel';
 import ExpenseData from './data/ExpenseData';
@@ -32,105 +33,87 @@ const Expense = () => {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-    const [activeData, setActiveData] = useState([]);
+    const [expenseData, setExpenseData] = useState([]);
     const [reRender, setReRender] = useState(true);
     // const [inactiveData, setInactiveData] = useState([]);
   
     useEffect(()=>{
   
-        axios.get(`${baseUrl}api/v1/readuserdetails`)
+        axios.get(`${baseUrl}api/v1/readExpenseDetails`)
         .then((res)=>{
-          let data = res.data;
-                  let active = data.filter((elem) => {
-                      return elem.status === "Active"
-                  })
-                  setActiveData(active);
-                  console.log(active);
-  
-                  // let inActive = data.filter((elem) => {
-                  //     return elem.status === "Inactive"
-                  // })
-                  // setInactiveData(inActive);
-                  // console.log(inactiveData);
+                  setExpenseData(res.data);
+                  console.log(res.data);
         }).catch((err)=>{
             window.alert("Server Down");
             return new Error(err);
         })
     },[reRender])
   
-    console.log(activeData);
+    console.log(expenseData);
     
-    activeData.map((elem)=>{
-      let activeusers = {}
+    expenseData.map((elem)=>{
+      let expense = {}
       const statuscolor = elem.status == "Active" ? "success" : "error"
   
-      activeusers.edit = (
+      expense.edit = (
           <MDButton variant="Contained" color="info" fontWeight="medium">
-            <ExpenseEditModel data={activeData} id={elem._id} Render={{setReRender, reRender}}/>
+            <ExpenseEditModel data={expenseData} id={elem._id} Render={{setReRender, reRender}}/>
           </MDButton>
         );
-        activeusers.employeeid = (
+        expense.expenseby = (
           <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-            {elem.employeeid}
+            {elem.expense_by}
           </MDTypography>
         );
-      activeusers.name = (
+        expense.category = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.name}
+          {elem.category}
         </MDTypography>
       );
-      activeusers.designation = (
+      expense.subcategory = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.designation}
+          {elem.sub_category}
         </MDTypography>
       );
-      activeusers.email = (
+      expense.amount = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.email}
+          {elem.amount}
         </MDTypography>
       );
-      activeusers.mobile = (
+      expense.gst = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.mobile}
+          {elem.gst}
         </MDTypography>
       );
-      activeusers.gender = (
+      expense.totalamount = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.gender}
+          {elem.total_amount}
         </MDTypography>
       );
-      activeusers.tradingexp = (
+      expense.description = (
         <MDTypography component="a" variant="caption" color={statuscolor} fontWeight="medium">
-          {elem.trading_exp}
+          {elem.description}
         </MDTypography>
       );
-      activeusers.location = (
+      expense.paymentstatus = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.location}
+          {elem.payment_status}
         </MDTypography>
       );
-      activeusers.doj = (
+      expense.invoice = (
+        <a href={elem.invoice_upload}>
+            <MDTypography component="span" variant="caption" color="text" fontWeight="medium">
+              View Invoice
+            </MDTypography>
+        </a>
+    );
+      expense.createdon = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.joining_date}
-        </MDTypography>
-      );
-      activeusers.role = (
-        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.role}
-        </MDTypography>
-      );
-    //   activeusers.userPass = (
-    //     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-    //       {elem.password}
-    //     </MDTypography>
-    //   );
-      activeusers.status = (
-        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {elem.status}
+          {elem.createdOn}
         </MDTypography>
       );
      
-      rows.push(activeusers)
+      rows.push(expense)
     })
 
 
