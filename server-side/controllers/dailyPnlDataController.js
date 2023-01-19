@@ -118,3 +118,24 @@ const pipeline = [
 
    res.status(201).json(x);
 }
+
+exports.getDailyPnlMaxMinData = async(req,res,next) => {
+  const pipeline = [
+    { $group: { _id: "$timestamp", gpnlts: { $sum: "$calculatedGpnl" } } },
+    { $sort: { _id: 1 } },  
+    {
+      $group: {
+        _id: { $substr: ["$_id", 0, 10] },
+        maxgpnl: { $max: "$gpnlts" },
+        mingpnl: { $min: "$gpnlts" },
+        lastTimestampSum: { $last: "$gpnlts" }
+        
+      }
+    },
+    { $sort: { _id: -1 } },
+  ]
+     
+     let x = await DailyPnlData.aggregate(pipeline)
+  
+     res.status(201).json(x);
+  }

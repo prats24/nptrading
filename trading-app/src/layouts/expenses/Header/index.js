@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // prop-types is a library for typechecking of props.
@@ -42,12 +27,12 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import PersonIcon from '@mui/icons-material/Person';
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
-import DailyPnlData from "../dailyPnl";
-import DailyPnlMaxMinData from "../dailyPnlMaxMin";
+import Expense from "../Expense";
+import Category from "../Category";
 
 
 
-function DailyPNLHeader({ children }) {
+function ExpenseHeader({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
 
@@ -112,20 +97,14 @@ function DailyPNLHeader({ children }) {
               {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}> */}
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Mock Trades"
+                  label="Expense"
                   icon={
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
-                <Tab
-                  label="P&L Analysis"
-                  icon={
-                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
-                     }
-                />
 
                 <Tab
-                  label="Real Trades"
+                  label="Category"
                   icon={
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                      }
@@ -133,9 +112,8 @@ function DailyPNLHeader({ children }) {
              
               </Tabs>
             </AppBar>
-            <TabPanel value={tabValue} index={0}><DailyPnlData/> </TabPanel>
-            <TabPanel value={tabValue} index={1}><DailyPnlMaxMinData/> </TabPanel>
-            {/* <TabPanel value={tabValue} index={1}><Roles/> </TabPanel> */}
+            <TabPanel value={tabValue} index={0}><Expense/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><Category/> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
@@ -149,12 +127,12 @@ function DailyPNLHeader({ children }) {
 }
 
 // Setting default props for the Header
-DailyPNLHeader.defaultProps = {
+ExpenseHeader.defaultProps = {
   children: "",
 };
 
 // Typechecking props for the Header
-DailyPNLHeader.propTypes = {
+ExpenseHeader.propTypes = {
   children: PropTypes.node,
 };
 
@@ -172,4 +150,4 @@ function TabPanel(props){
   )
 }
 
-export default DailyPNLHeader;
+export default ExpenseHeader;

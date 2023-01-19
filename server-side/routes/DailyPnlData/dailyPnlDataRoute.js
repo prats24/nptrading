@@ -6,5 +6,8 @@ router.post("/dailypnlcalculation",dailyPnlDataController.dailyPnlCalculation)
 
 router.get("/dailypnldata/:selectDate",dailyPnlDataController.getDailyPnlData)
 
+router.get("/dailypnlmaxmindata/",dailyPnlDataController.getDailyPnlMaxMinData)
+
+
 module.exports = router;
 
