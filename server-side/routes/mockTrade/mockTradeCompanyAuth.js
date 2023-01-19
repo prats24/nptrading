@@ -13,22 +13,22 @@ const OtmMock = require("../../models/mock-trade/otmMockSchema");
 const axios = require('axios');
 const getKiteCred = require('../../marketData/getKiteCred');
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-//     getKiteCred.getAccess().then( (data)=>{
-//         // console.log("this is code ",data);
-//         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-//         // console.log("ticksdata", ticksdata)
-//       });
-// })
+router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+    getKiteCred.getAccess().then( (data)=>{
+        // console.log("this is code ",data);
+        let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
+        // console.log("ticksdata", ticksdata)
+      });
+})
 
-// router.get("/deleteinhistory", async(req, res)=>{
-//     PNLData.deleteMany({timestamp: {$regex: "2023-01-17"}})
-//     .then(()=>{
-//         console.log("deleted")
-//     }).catch(()=>{
-//         console.log("err")
-//     })
-// })
+router.get("/deleteinhistory", async(req, res)=>{
+    HistoryData.deleteMany({timestamp: {$regex: "2023-01-19"}})
+    .then(()=>{
+        console.log("deleted")
+    }).catch(()=>{
+        console.log("err")
+    })
+})
 
 router.post("/mocktradecompany", async (req, res)=>{
 
