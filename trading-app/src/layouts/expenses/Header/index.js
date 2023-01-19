@@ -1,3 +1,18 @@
+/**
+=========================================================
+* Material Dashboard 2 React - v2.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+
 import { useState, useEffect } from "react";
 
 // prop-types is a library for typechecking of props.
@@ -27,9 +42,8 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import PersonIcon from '@mui/icons-material/Person';
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
-import Expense from "../Expense";
 import Category from "../Category";
-
+import Expense from "../Expense";
 
 
 function ExpenseHeader({ children }) {
@@ -104,7 +118,7 @@ function ExpenseHeader({ children }) {
                 />
 
                 <Tab
-                  label="Category"
+                  label="Catagery"
                   icon={
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                      }
@@ -112,8 +126,8 @@ function ExpenseHeader({ children }) {
              
               </Tabs>
             </AppBar>
-            <TabPanel value={tabValue} index={0}><Expense/> </TabPanel>
-            <TabPanel value={tabValue} index={1}><Category/> </TabPanel>
+            <TabPanel value={tabValue} index={0}><Expense /> </TabPanel>
+            <TabPanel value={tabValue} index={1}>< Category /> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
