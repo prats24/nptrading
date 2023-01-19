@@ -54,7 +54,6 @@ function InstrumentDetails({socket}) {
     .then((res) => {
         //console.log("live price data", res)
         setMarketData(res.data);
-        // setDetails.setMarketData(data);
     }).catch((err) => {
         return new Error(err);
     })
@@ -62,7 +61,6 @@ function InstrumentDetails({socket}) {
     socket.on("tick", (data) => {
       //console.log("this is live market data", data);
       setMarketData(data);
-      // setDetails.setMarketData(data);
     })
   }, [])
 
@@ -71,7 +69,7 @@ function InstrumentDetails({socket}) {
       .then((res) => {
         setisAppLive(res.data[0].isAppLive);
       });
-  }, [isAppLive]);
+  }, []);
   
   
   //console.log("marketData", marketData)

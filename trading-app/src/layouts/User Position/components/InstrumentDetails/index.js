@@ -70,7 +70,7 @@ function InstrumentDetails({socket, Render}) {
       .then((res) => {
         setisAppLive(res.data[0].isAppLive);
       });
-  }, [isAppLive]);
+  }, []);
 
   //console.log("marketData", marketData)
   let ltpArr = [];

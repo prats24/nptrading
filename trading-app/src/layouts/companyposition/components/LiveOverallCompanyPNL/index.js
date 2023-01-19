@@ -184,6 +184,7 @@ function LiveOverallCompantPNL({socket}) {
 
   }, [marketData])
 
+
   useEffect(() => {
     return () => {
         socket.close();
