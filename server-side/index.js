@@ -18,7 +18,7 @@ const xssClean = require("xss-clean");
 const hpp = require("hpp")
 const limiter = rateLimit({
 	windowMs: 1 * 60 * 1000, // 15 minutes
-	max: 1000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	max: 5000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: "Too many request"
@@ -32,12 +32,12 @@ app.use(xssClean());
 app.use(hpp());
 
 // issue fix --> if enviournment variable path is not work
-// const path = require('path')
-// require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 
 
-dotenv.config({ path: './config.env' });
+// dotenv.config({ path: './config.env' });
 
 getKiteCred.getAccess().then((data)=>{
   // console.log("this is code ",data);
@@ -78,7 +78,8 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  // origin: "http://3.7.187.183/"
+  // origin: "http://3.7.187.183/"  // staging
+  // origin: "http://3.108.76.71/"  // production
    origin: "http://localhost:3000"
 
 }));

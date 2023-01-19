@@ -111,6 +111,8 @@ function CompanyPosition() {
             return new Error(err);
         })
     }, []);
+
+    console.log("company position is re rendering")
     console.log(todaymockcount)
     console.log(allmockcount)
     console.log(todaylivecount)
