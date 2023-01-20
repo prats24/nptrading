@@ -388,16 +388,17 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let pnlDetails = await LiveCompanyTradeData.aggregate([
-        { $match: { trade_time : {$regex: todayDate}, status: "COMPLETE"} },
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE"} },
         
         { $group: { _id: {
                                 "traderId": "$userId",
-                                "buyOrSell": "$buyOrSell",
-                                "traderName": "$createdBy",
-                                "symbol": "$instrumentToken"
+                                "traderName": "$createdBy"
+                                // "buyOrSell": "$buyOrSell",
+                                // "traderName": "$createdBy",
+                                // "symbol": "$instrumentToken"
                             },
                     amount: {
-                        $sum: "$amount"
+                        $sum: {$multiply : ["$amount", -1]}
                     },
                     brokerage: {
                         $sum: {$toDouble : "$brokerage"}
@@ -407,13 +408,16 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
                     },
                     trades: {
                         $count: {}
+                    },
+                    lotUsed: {
+                        $sum: {$abs : {$toInt : "$Quantity"}}
                     }
                     }},
             { $sort: {_id: -1}},
         
             ])
             
-                console.log(pnlDetails)
+                // console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  

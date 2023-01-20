@@ -1151,12 +1151,11 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
         
         { $group: { _id: {
                                 "traderId": "$userId",
-                                "buyOrSell": "$buyOrSell",
                                 "traderName": "$createdBy",
                                 "symbol": "$instrumentToken"
                             },
                     amount: {
-                        $sum: "$amount"
+                        $sum: {$multiply : ["$amount", -1]}
                     },
                     brokerage: {
                         $sum: {$toDouble : "$brokerage"}
@@ -1166,6 +1165,9 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
                     },
                     trades: {
                         $count: {}
+                    },
+                    lotUsed: {
+                        $sum: {$abs : {$toInt : "$Quantity"}}
                     }
                     }},
             { $sort: {_id: -1}},
