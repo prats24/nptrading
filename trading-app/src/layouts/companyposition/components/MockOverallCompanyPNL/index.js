@@ -69,18 +69,6 @@ function MockOverallCompantPNL({socket}) {
       })
     }, [])
 
-    // useEffect(()=>{
-    //   axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
-    //   .then((res) => {
-    //       let dataArr = (res.data).filter((elem) => {
-    //           return elem.status === "Active"
-    //       })
-    //       setInstrumentData(dataArr)
-    //   }).catch((err) => {
-    //       return new Error(err);
-    //   })
-    // }, [])
-
     useEffect(()=>{
 
       axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
