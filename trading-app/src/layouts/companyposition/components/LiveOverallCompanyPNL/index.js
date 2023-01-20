@@ -62,17 +62,17 @@ function LiveOverallCompantPNL({socket}) {
     })
   }, [])
 
-  useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
-    .then((res) => {
-        let dataArr = (res.data).filter((elem) => {
-            return elem.status === "Active"
-        })
-        setInstrumentData(dataArr)
-    }).catch((err) => {
-        return new Error(err);
-    })
-  }, [])
+  // useEffect(()=>{
+  //   axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
+  //   .then((res) => {
+  //       let dataArr = (res.data).filter((elem) => {
+  //           return elem.status === "Active"
+  //       })
+  //       setInstrumentData(dataArr)
+  //   }).catch((err) => {
+  //       return new Error(err);
+  //   })
+  // }, [])
 
   useEffect(()=>{
 
@@ -85,9 +85,9 @@ function LiveOverallCompantPNL({socket}) {
                   liveDetailsArr.push(subElem)
               }
           })
-})
+        })
 
-setLiveDetail(liveDetailsArr);
+      setLiveDetail(liveDetailsArr);
     }).catch((err) => {
         return new Error(err);
     })
@@ -221,7 +221,6 @@ setLiveDetail(liveDetailsArr);
       </MDTypography>
     );
   
-    //console.log(obj)
     rows.push(obj);
   
 

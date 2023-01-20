@@ -28,9 +28,14 @@ function MismatchDetails({socket}) {
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [OpenPositionData, setOpenPositionData] = useState([]);
-  // const [liveDetail, setLiveDetail] = useState([]);
   const [tradeData, setTradeData] = useState([]);
-  let liveDetailsArr = [];
+
+  let apprunninglotsTotal = 0;
+  let zerodharunninglotsTotal = 0;
+  let appPnlTotal = 0;
+  let zerodhaPnlTotal = 0;
+  let appAndZerodhaSameSymbolRunningLotTotal = 0;
+  let appAndZerodhaSameSymbolPnlTotal = 0;
   
   useEffect(()=>{
 
@@ -66,77 +71,123 @@ function MismatchDetails({socket}) {
     })
   }, [marketData])
 
-
-useEffect(() => {
-  return () => {
-      socket.close();
-  }
-}, [])
-
+  useEffect(() => {
+    return () => {
+        socket.close();
+    }
+  }, [])
 
 
-// res.data.map((elem)=>{
-//   marketData.map((subElem)=>{
-//       if(subElem !== undefined && subElem.instrument_token == elem.instrument_token){
-//           liveDetailsArr.push(subElem)
-//       }
-//   })
-// })
-// setLiveDetail(liveDetailsArr);
+
+  OpenPositionData.map((elem)=>{
+    let appPnlData = tradeData.filter((element)=>{
+      return element._id.symbol === elem.tradingsymbol;
+    })
+
+    let liveDetail = marketData.filter((element)=>{
+      return element !== undefined && element.instrument_token == elem.instrument_token
+    })
 
 
-OpenPositionData.map((elem)=>{
-  let appPnlData = tradeData.filter((element)=>{
-    return element._id.symbol === elem.tradingsymbol;
+    let updatedValue = (appPnlData[0]?.amount+(appPnlData[0]?.lots)*liveDetail[0]?.last_price);
+
+    apprunninglotsTotal += (appPnlData[0] ? appPnlData[0]?.lots : 0);
+    zerodharunninglotsTotal += (elem.buy_quantity - elem.sell_quantity) 
+    appPnlTotal += (updatedValue ? updatedValue : 0); 
+    zerodhaPnlTotal += elem.pnl;
+    if(appPnlData[0]?._id.symbol === elem.tradingsymbol){
+      appAndZerodhaSameSymbolRunningLotTotal += (elem.buy_quantity - elem.sell_quantity);
+      appAndZerodhaSameSymbolPnlTotal += elem.pnl;
+    }
+    
+    let obj = {};
+    const productcolor = elem.product == "NRML" ? "info" : "warning"
+    const updatedValuecolor = updatedValue >= 0 ? "success" : "error"
+    const pnlcolor = elem.pnl >= 0 ? "success" : "error"
+    const appPnlDatacolor = appPnlData[0] >= 0 ? "info" : "error"
+    const quantitycolor = (elem.buy_quantity - elem.sell_quantity) >= 0 ? "info" : "error"
+    
+    obj.instrument = (
+      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
+        {elem.tradingsymbol}
+      </MDTypography>
+    );
+    obj.product = (
+      <MDTypography component="a" variant="caption" color={productcolor} fontWeight="medium">
+        {elem.product}
+      </MDTypography>
+    );
+    obj.appgrosspnl = (
+      <MDTypography component="a" variant="caption" color={updatedValuecolor} fontWeight="medium">
+
+        {updatedValue ? updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2)) : "+₹0"}
+      </MDTypography>
+    );
+    obj.zerodhagrosspnl = (
+      <MDTypography component="a" variant="caption" color={pnlcolor} fontWeight="medium">
+        {elem.pnl >= 0.00 ? "+₹" + (elem.pnl.toFixed(2)): "-₹" + ((-elem.pnl).toFixed(2))}
+      </MDTypography>
+    );
+    obj.apprunninglots = (
+      <MDTypography component="a" variant="caption" color={appPnlDatacolor} fontWeight="medium">
+        {appPnlData[0] ? appPnlData[0]?.lots : 0}
+      </MDTypography>
+    );
+    obj.zerodharunninglots = (
+      <MDTypography component="a" variant="caption" color={quantitycolor} fontWeight="medium">
+        {elem.buy_quantity - elem.sell_quantity}
+      </MDTypography>
+    );
+
+    rows.push(obj)
+
   })
 
-  let liveDetail = marketData.filter((element)=>{
-    return element !== undefined && element.instrument_token == elem.instrument_token
-  })
-
-
-
-  let updatedValue = (appPnlData[0]?.amount+(appPnlData[0]?.lots)*liveDetail[0]?.last_price);
 
   let obj = {};
 
-  obj.instrument = (
-    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-      {elem.tradingsymbol}
-    </MDTypography>
-  );
+  const zerodhaplusapplotsbgcolor = appAndZerodhaSameSymbolRunningLotTotal == apprunninglotsTotal ? "#e0e1e5" : "#ffff00"
+  const appAndZerodhaSameSymbolRunningLotTotalcolor = appAndZerodhaSameSymbolRunningLotTotal >= 0 ? "info" : "error"
+  const apprunninglotsTotalcolor = apprunninglotsTotal >= 0 ? "info" : "error"
+  const appAndZerodhaSameSymbolPnlTotalcolor = appAndZerodhaSameSymbolPnlTotal >= 0 ? "success" : "error"
+  const appPnlTotalcolor = appPnlTotal >= 0 ? "success" : "error"
+  const zerodhaPnlTotalcolor = zerodhaPnlTotal >= 0 ? "success" : "error"
+  // const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "#e0e1e5" : "warning"
   obj.product = (
-    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-      {elem.product}
+    <MDTypography component="a" variant="caption" color={appAndZerodhaSameSymbolRunningLotTotalcolor} backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
+      Zerodha+App Lots : {appAndZerodhaSameSymbolRunningLotTotal}
     </MDTypography>
   );
-  obj.appgrosspnl = (
-    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-
-      {updatedValue ? updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2)) : "+₹0"}
-    </MDTypography>
-  );
-  obj.zerodhagrosspnl = (
-    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-      {elem.pnl >= 0.00 ? "+₹" + (elem.pnl.toFixed(2)): "-₹" + ((-elem.pnl).toFixed(2))}
+  obj.instrument = (
+    <MDTypography component="a" variant="caption" color={appAndZerodhaSameSymbolPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      Zerodha+App P&L : {appAndZerodhaSameSymbolPnlTotal >= 0.00 ? "+₹" + (appAndZerodhaSameSymbolPnlTotal.toFixed(2)): "-₹" + ((-appAndZerodhaSameSymbolPnlTotal).toFixed(2))}
     </MDTypography>
   );
   obj.apprunninglots = (
-    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-      {appPnlData[0] ? appPnlData[0]?.lots : 0}
+    <MDTypography component="a" variant="caption" color={apprunninglotsTotalcolor} backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
+      App Running Lots : {apprunninglotsTotal}
     </MDTypography>
   );
   obj.zerodharunninglots = (
-    <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-      {elem.buy_quantity - elem.sell_quantity}
+    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      Zerodha Running Lots : {zerodharunninglotsTotal}
     </MDTypography>
   );
+  obj.appgrosspnl = (
+    <MDTypography component="a" variant="caption" color={appPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      App Gross P&L : {appPnlTotal >= 0.00 ? "+₹" + (appPnlTotal.toFixed(2)): "-₹" + ((-appPnlTotal).toFixed(2))}
+    </MDTypography>
+  );
+  obj.zerodhagrosspnl = (
+    <MDTypography component="a" variant="caption" color={zerodhaPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      Zerodha Gross P&L : {zerodhaPnlTotal >= 0.00 ? "+₹" + (zerodhaPnlTotal.toFixed(2)): "-₹" + ((-zerodhaPnlTotal).toFixed(2))}
+    </MDTypography>
+  );
+  
 
   rows.push(obj)
 
-})
   
-  let ltpArr = [];
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
@@ -170,7 +221,7 @@ OpenPositionData.map((elem)=>{
             Mismatch Details
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            {/* <CheckCircleIcon
+            <CheckCircleIcon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
@@ -178,16 +229,14 @@ OpenPositionData.map((elem)=>{
               }}
             >
             
-            </CheckCircleIcon> */}
-            <MDTypography variant="button" fontWeight="regular" color="success">
-              {/* &nbsp;<strong>{isAppLive ? "System Live" : "System Offline"}</strong> */}
-            </MDTypography>
+            </CheckCircleIcon>
+
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
           {/* <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
             more_vert
-          </Icon> */}
+          </Icon>
           Available Margin: 323214
         </MDBox>
         <MDBox color="text" px={2}>
