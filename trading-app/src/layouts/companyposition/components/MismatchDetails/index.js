@@ -55,9 +55,7 @@ function MismatchDetails({socket}) {
     }).catch((err) => {
         return new Error(err);
     })
-  }, [marketData])
 
-  useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday`)
     .then((res) => {
@@ -66,13 +64,26 @@ function MismatchDetails({socket}) {
     }).catch((err) => {
         return new Error(err);
     })
-}, [marketData])
+  }, [marketData])
+
 
 useEffect(() => {
   return () => {
       socket.close();
   }
 }, [])
+
+
+
+// res.data.map((elem)=>{
+//   marketData.map((subElem)=>{
+//       if(subElem !== undefined && subElem.instrument_token == elem.instrument_token){
+//           liveDetailsArr.push(subElem)
+//       }
+//   })
+// })
+// setLiveDetail(liveDetailsArr);
+
 
 OpenPositionData.map((elem)=>{
   let appPnlData = tradeData.filter((element)=>{
@@ -124,42 +135,8 @@ OpenPositionData.map((elem)=>{
   rows.push(obj)
 
 })
-  //console.log("marketData", marketData)
-  let ltpArr = [];
   
-  // rows.map((elem)=>{
-  //   let ltpObj = {};
-  //   marketData.map((subelem)=>{
-      
-  //     const percentagechangecolor = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
-  //     const percentagechangecolor1 = (subelem.change) >= 0 ? "success" : "error"
-
-  //     if(elem.instrumentToken.props.children === subelem.instrument_token){
-  //       elem.last_price = (
-  //           <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-  //             {"₹"+(subelem.last_price).toFixed(2)}
-  //           </MDTypography>
-  //         );
-  //         if(subelem.change){
-  //           elem.change = (
-  //             <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
-  //               {(subelem.change) >= 0 ? "+" + ((subelem.change).toFixed(2))+"%" : ((subelem.change).toFixed(2))+"%"}
-  //             </MDTypography>
-  //           );
-  //         } else{
-  //           elem.change = (
-  //             <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-  //               {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "+" + (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%" : (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
-  //             </MDTypography>
-  //           );
-  //         }
-  //     }
-  //   })
-  //   ltpArr.push(ltpObj);
-  // })
-
-  // const newRows = rows.concat(ltpArr);
-  //console.log("row", rows, ltpArr, newRows)
+  let ltpArr = [];
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
@@ -193,7 +170,7 @@ OpenPositionData.map((elem)=>{
             Mismatch Details
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <CheckCircleIcon
+            {/* <CheckCircleIcon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
@@ -201,18 +178,31 @@ OpenPositionData.map((elem)=>{
               }}
             >
             
-            </CheckCircleIcon>
+            </CheckCircleIcon> */}
             <MDTypography variant="button" fontWeight="regular" color="success">
               {/* &nbsp;<strong>{isAppLive ? "System Live" : "System Offline"}</strong> */}
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+          {/* <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
             more_vert
-          </Icon>
+          </Icon> */}
+          Available Margin: 323214
         </MDBox>
-        {renderMenu}
+        <MDBox color="text" px={2}>
+          {/* <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+            more_vert
+          </Icon> */}
+          Used Cash: 323214
+        </MDBox>
+        <MDBox color="text" px={2}>
+          {/* <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+            more_vert
+          </Icon> */}
+          Available Cash: 323214
+        </MDBox>
+        {/* {renderMenu} */}
       </MDBox>
       <MDBox>
         <DataTable
@@ -228,5 +218,6 @@ OpenPositionData.map((elem)=>{
 }
 
 export default MismatchDetails;
+
 
 

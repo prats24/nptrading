@@ -22,14 +22,14 @@ const nodemailer = require('nodemailer');
 
     const response = await axios.get(url, authOptions);
     const openpositions = (response.data.data);
-    console.log("Open Positions TS :"+response.data.data.net[0].tradingsymbol)
-    console.log("Open Positions Q :"+response.data.data.net[0].quantity)
-    console.log("Open Positions TS1 :"+response.data.data.net[1].tradingsymbol)
-    console.log("Open Positions Q1 :"+response.data.data.net[1].quantity)
-    console.log("Open Positions TS2 :"+response.data.data.net[2].tradingsymbol)
-    console.log("Open Positions Q2 :"+response.data.data.net[2].quantity)
-    console.log("Open Positions TS3 :"+response.data.data.net[3].tradingsymbol)
-    console.log("Open Positions Q3 :"+response.data.data.net[3].quantity)
+    // console.log("Open Positions TS :"+response.data.data.net[0].tradingsymbol)
+    // console.log("Open Positions Q :"+response.data.data.net[0].quantity)
+    // console.log("Open Positions TS1 :"+response.data.data.net[1].tradingsymbol)
+    // console.log("Open Positions Q1 :"+response.data.data.net[1].quantity)
+    // console.log("Open Positions TS2 :"+response.data.data.net[2].tradingsymbol)
+    // console.log("Open Positions Q2 :"+response.data.data.net[2].quantity)
+    // console.log("Open Positions TS3 :"+response.data.data.net[3].tradingsymbol)
+    // console.log("Open Positions Q3 :"+response.data.data.net[3].quantity)
     res.send(response.data.data.net);
    
     
