@@ -74,18 +74,6 @@ useEffect(() => {
   }
 }, [])
 
-
-
-// res.data.map((elem)=>{
-//   marketData.map((subElem)=>{
-//       if(subElem !== undefined && subElem.instrument_token == elem.instrument_token){
-//           liveDetailsArr.push(subElem)
-//       }
-//   })
-// })
-// setLiveDetail(liveDetailsArr);
-
-
 OpenPositionData.map((elem)=>{
   let appPnlData = tradeData.filter((element)=>{
     return element._id.symbol === elem.tradingsymbol;

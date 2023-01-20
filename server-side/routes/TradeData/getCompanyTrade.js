@@ -341,7 +341,7 @@ router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
         {
           $match: {
             trade_time: {
-              $regex: "2023-01-19",
+              $regex: todayDate,
             },
             status: "COMPLETE",
           },

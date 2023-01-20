@@ -91,11 +91,6 @@ setLiveDetail(liveDetailsArr);
     }).catch((err) => {
         return new Error(err);
     })
-
-      
-      
-      
-
   }, [marketData])
 
 
