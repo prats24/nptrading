@@ -392,10 +392,10 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
         
         { $group: { _id: {
                                 "traderId": "$userId",
-                                "traderName": "$createdBy"
+                                "traderName": "$createdBy",
                                 // "buyOrSell": "$buyOrSell",
                                 // "traderName": "$createdBy",
-                                // "symbol": "$instrumentToken"
+                                "symbol": "$instrumentToken"
                             },
                     amount: {
                         $sum: {$multiply : ["$amount", -1]}

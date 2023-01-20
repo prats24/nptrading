@@ -31,6 +31,7 @@ const nodemailer = require('nodemailer');
     // console.log("Open Positions TS3 :"+response.data.data.net[3].tradingsymbol)
     // console.log("Open Positions Q3 :"+response.data.data.net[3].quantity)
     res.send(response.data.data.net);
+   
     
 })
 }

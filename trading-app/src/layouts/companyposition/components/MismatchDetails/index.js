@@ -36,6 +36,7 @@ function MismatchDetails({socket}) {
   let zerodhaPnlTotal = 0;
   let appAndZerodhaSameSymbolRunningLotTotal = 0;
   let appAndZerodhaSameSymbolPnlTotal = 0;
+  let otmRunningLotsTotal = 0;
   
   useEffect(()=>{
 
@@ -96,40 +97,53 @@ function MismatchDetails({socket}) {
     appPnlTotal += (updatedValue ? updatedValue : 0); 
     zerodhaPnlTotal += elem.pnl;
     if(appPnlData[0]?._id.symbol === elem.tradingsymbol){
-      appAndZerodhaSameSymbolRunningLotTotal += (elem.buy_quantity - elem.sell_quantity);
+      appAndZerodhaSameSymbolRunningLotTotal += Math.abs(elem.buy_quantity - elem.sell_quantity);
       appAndZerodhaSameSymbolPnlTotal += elem.pnl;
     }
+    otmRunningLotsTotal = (zerodharunninglotsTotal - apprunninglotsTotal)
     
     let obj = {};
-
+    const productcolor = elem.product == "NRML" ? "info" : "warning"
+    const instrumenttypecolor = !updatedValue ? "warning" : "info"
+    const updatedValuecolor = updatedValue >= 0 ? "success" : "error"
+    const pnlcolor = elem.pnl >= 0 ? "success" : "error"
+    const appPnlDatacolor = appPnlData[0] >= 0 ? "info" : "error"
+    const quantitycolor = (elem.buy_quantity - elem.sell_quantity) >= 0 ? "info" : "error"
+    const instrumentcolor = elem.tradingsymbol.slice(-2) == "CE" ? "success" : "error"
+    
     obj.instrument = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={instrumentcolor} fontWeight="medium">
         {elem.tradingsymbol}
       </MDTypography>
     );
     obj.product = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={productcolor} fontWeight="medium">
         {elem.product}
       </MDTypography>
     );
+    obj.instrumenttype = (
+      <MDTypography component="a" variant="caption" color={instrumenttypecolor} fontWeight="medium">
+        {!updatedValue ? "OTM" : "REGULAR"}
+      </MDTypography>
+    );
     obj.appgrosspnl = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={updatedValuecolor} fontWeight="medium">
 
         {updatedValue ? updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2)) : "+₹0"}
       </MDTypography>
     );
     obj.zerodhagrosspnl = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={pnlcolor} fontWeight="medium">
         {elem.pnl >= 0.00 ? "+₹" + (elem.pnl.toFixed(2)): "-₹" + ((-elem.pnl).toFixed(2))}
       </MDTypography>
     );
     obj.apprunninglots = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={appPnlDatacolor} fontWeight="medium">
         {appPnlData[0] ? appPnlData[0]?.lots : 0}
       </MDTypography>
     );
     obj.zerodharunninglots = (
-      <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={quantitycolor} fontWeight="medium">
         {elem.buy_quantity - elem.sell_quantity}
       </MDTypography>
     );
@@ -141,31 +155,30 @@ function MismatchDetails({socket}) {
 
   let obj = {};
 
-  // const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
-  // const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
-
-  obj.instrument = (
-    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      Zerodha+App P&L : {appAndZerodhaSameSymbolPnlTotal >= 0.00 ? "+₹" + (appAndZerodhaSameSymbolPnlTotal.toFixed(2)): "-₹" + ((-appAndZerodhaSameSymbolPnlTotal).toFixed(2))}
-    </MDTypography>
-  );
+  const zerodhaplusapplotsbgcolor = (otmRunningLotsTotal + apprunninglotsTotal)  == zerodharunninglotsTotal ? "#e0e1e5" : "#ffff00"
+  const appAndZerodhaSameSymbolRunningLotTotalcolor = appAndZerodhaSameSymbolRunningLotTotal >= 0 ? "info" : "error"
+  const apprunninglotsTotalcolor = apprunninglotsTotal >= 0 ? "info" : "error"
+  const otmgrosspnlcolor = (zerodhaPnlTotal-appPnlTotal) >= 0 ? "success" : "error"
+  const appPnlTotalcolor = appPnlTotal >= 0 ? "success" : "error"
+  const zerodhaPnlTotalcolor = zerodhaPnlTotal >= 0 ? "success" : "error"
+  // const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "#e0e1e5" : "warning"
   obj.product = (
-    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      Zerodha+App Lots : {appAndZerodhaSameSymbolRunningLotTotal}
+    <MDTypography component="a" variant="caption" color={otmgrosspnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      OTM Gross P&L : {(zerodhaPnlTotal-appPnlTotal) >= 0.00 ? "+₹" + ((zerodhaPnlTotal-appPnlTotal).toFixed(2)): "-₹" + ((-(zerodhaPnlTotal-appPnlTotal)).toFixed(2))}
     </MDTypography>
   );
-  obj.appgrosspnl = (
-    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      App Gross P&L : {appPnlTotal >= 0.00 ? "+₹" + (appPnlTotal.toFixed(2)): "-₹" + ((-appPnlTotal).toFixed(2))}
+  obj.instrument = (
+    <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      OTM + App Running Lots : {appAndZerodhaSameSymbolRunningLotTotal}
     </MDTypography>
   );
-  obj.zerodhagrosspnl = (
-    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      Zerodha Gross P&L : {zerodhaPnlTotal >= 0.00 ? "+₹" + (zerodhaPnlTotal.toFixed(2)): "-₹" + ((-zerodhaPnlTotal).toFixed(2))}
+  obj.instrumenttype = (
+    <MDTypography component="a" variant="caption" color="dark" backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
+      OTM Running Lots : {otmRunningLotsTotal}
     </MDTypography>
   );
   obj.apprunninglots = (
-    <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+    <MDTypography component="a" variant="caption" color="dark" backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
       App Running Lots : {apprunninglotsTotal}
     </MDTypography>
   );
@@ -174,6 +187,17 @@ function MismatchDetails({socket}) {
       Zerodha Running Lots : {zerodharunninglotsTotal}
     </MDTypography>
   );
+  obj.appgrosspnl = (
+    <MDTypography component="a" variant="caption" color={appPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      App Gross P&L : {appPnlTotal >= 0.00 ? "+₹" + (appPnlTotal.toFixed(2)): "-₹" + ((-appPnlTotal).toFixed(2))}
+    </MDTypography>
+  );
+  obj.zerodhagrosspnl = (
+    <MDTypography component="a" variant="caption" color={zerodhaPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      Zerodha Gross P&L : {zerodhaPnlTotal >= 0.00 ? "+₹" + (zerodhaPnlTotal.toFixed(2)): "-₹" + ((-zerodhaPnlTotal).toFixed(2))}
+    </MDTypography>
+  );
+  
 
   rows.push(obj)
 
@@ -224,11 +248,12 @@ function MismatchDetails({socket}) {
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+          {/* <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
             more_vert
-          </Icon>
+          </Icon> */}
+          Available Margin: 
         </MDBox>
-        {renderMenu}
+        {/* {renderMenu} */}
       </MDBox>
       <MDBox>
         <DataTable
