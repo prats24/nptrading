@@ -55,9 +55,7 @@ function MismatchDetails({socket}) {
     }).catch((err) => {
         return new Error(err);
     })
-  }, [marketData])
 
-  useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday`)
     .then((res) => {
@@ -66,7 +64,8 @@ function MismatchDetails({socket}) {
     }).catch((err) => {
         return new Error(err);
     })
-}, [marketData])
+  }, [marketData])
+
 
 useEffect(() => {
   return () => {
@@ -74,16 +73,6 @@ useEffect(() => {
   }
 }, [])
 
-
-
-// res.data.map((elem)=>{
-//   marketData.map((subElem)=>{
-//       if(subElem !== undefined && subElem.instrument_token == elem.instrument_token){
-//           liveDetailsArr.push(subElem)
-//       }
-//   })
-// })
-// setLiveDetail(liveDetailsArr);
 
 
 OpenPositionData.map((elem)=>{
@@ -240,5 +229,6 @@ OpenPositionData.map((elem)=>{
 }
 
 export default MismatchDetails;
+
 
 
