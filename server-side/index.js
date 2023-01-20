@@ -129,10 +129,13 @@ require('./db/conn');
 //   });
 // });
 
-  let date = new Date();
-  let weekDay = date.getDay();
-  if(weekDay > 0 && weekDay < 6){
-      const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+  if(process.env.PROD){
+    let date = new Date();
+    let weekDay = date.getDay();
+    if(weekDay > 0 && weekDay < 6){
+        const job = nodeCron.schedule(`0 5 10 * * ${weekDay}`, cronJobForHistoryData);
+        // const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+    }
   }
 
 

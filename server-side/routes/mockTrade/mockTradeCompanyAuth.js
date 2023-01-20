@@ -22,12 +22,19 @@ router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 })
 
 router.get("/deleteinhistory", async(req, res)=>{
-    HistoryData.deleteMany({timestamp: {$regex: "2023-01-19"}})
-    .then(()=>{
-        console.log("deleted")
-    }).catch(()=>{
-        console.log("err")
-    })
+    // HistoryData.deleteMany({timestamp: {$regex: "2023-01-19"}})
+    // .then(()=>{
+    //     console.log("deleted")
+    // }).catch(()=>{
+    //     console.log("err")
+    // })
+    if(!process.env.PROD){
+        console.log("yes its true")
+    } else{
+        console.log("no its true")
+    }
+    res.send(process.env.PROD)
+    
 })
 
 router.post("/mocktradecompany", async (req, res)=>{

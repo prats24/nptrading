@@ -147,5 +147,23 @@ exports.getDailyPnlMaxMinData = async(req,res,next) => {
   }
 
 
+  exports.deleteDuplicateData = async(req,res,next) => {
+       let cursor = await DailyPnlData.aggregate([
+        {$group: {
+          _id: { timetsamp: "$timestamp", symbol: "$symbol" },
+          dups: { $addToSet: "$_id" },
+          count: { "$sum": 1 }
+        }},
+        { $match: { count: { "$gt": 1 } } }
+      ])
+      
+      cursor.forEach(async (doc)=>{
+          // doc.dups[0].shift()
+          await DailyPnlData.deleteMany({_id:{$in:doc.dups[0]}})
+      })
+
+  }
+
+
 
 
