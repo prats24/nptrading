@@ -43,6 +43,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/bg-profile.jpeg";
 import DailyPnlData from "../dailyPnl";
+import DailyPnlMaxMinData from "../dailyPnlMaxMin";
 
 
 
@@ -116,6 +117,12 @@ function DailyPNLHeader({ children }) {
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
+                <Tab
+                  label="P&L Analysis"
+                  icon={
+                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
+                     }
+                />
 
                 <Tab
                   label="Real Trades"
@@ -127,6 +134,7 @@ function DailyPNLHeader({ children }) {
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><DailyPnlData/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><DailyPnlMaxMinData/> </TabPanel>
             {/* <TabPanel value={tabValue} index={1}><Roles/> </TabPanel> */}
             {/* <TabPaneltwo/> */}
           </Grid>

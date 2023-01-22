@@ -128,6 +128,16 @@ router.get("/readparticularuserdetails/:email", (req, res)=>{
     })
 })
 
+router.get("/getAdmins/", (req, res)=>{
+    UserDetail.find({role : "admin" })
+    .then((data)=>{
+        return res.status(200).send(data);
+    })
+    .catch((err)=>{
+        return res.status(422).json({error : "date not found"})
+    })
+})
+
 module.exports = router;
 
 

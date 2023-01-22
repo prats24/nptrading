@@ -78,9 +78,9 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  // origin: "http://3.7.187.183/"  // staging
+  origin: "http://3.7.187.183/"  // staging
   // origin: "http://3.108.76.71/"  // production
-   origin: "http://localhost:3000"
+  //  origin: "http://localhost:3000"
 
 }));
 
@@ -90,6 +90,9 @@ app.use(express.json({limit: "20kb"}));
 //Update 
 // app.use('/api/v1', require("./routes/TradeData/getCompanyTrade"));
 //Update
+app.use('/api/v1', require("./routes/OpenPositions/openPositionsAuth"))
+app.use('/api/v1', require("./routes/expense/expenseAuth"))
+app.use('/api/v1', require("./routes/expense/categoryAuth"))
 app.use('/api/v1', require("./routes/setting/settingAuth"))
 app.use('/api/v1', require("./routes/DailyPnlData/dailyPnlDataRoute"))
 app.use('/api/v1', require("./marketData/livePrice"));
@@ -126,10 +129,13 @@ require('./db/conn');
 //   });
 // });
 
-  let date = new Date();
-  let weekDay = date.getDay();
-  if(weekDay > 0 && weekDay < 6){
-      const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+  if(process.env.PROD){
+    let date = new Date();
+    let weekDay = date.getDay();
+    if(weekDay > 0 && weekDay < 6){
+        // const job = nodeCron.schedule(`0 5 10 * * ${weekDay}`, cronJobForHistoryData);
+        const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+    }
   }
 
 

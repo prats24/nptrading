@@ -27,6 +27,7 @@ import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProject
 // Overview page components
 import Header from "./components/Header";
 import PlatformSettings from "./components/PlatformSettings";
+import MarginSettings from "./components/MarginSettings";
 
 // Data
 // import profilesListData from "./data/profilesListData";
@@ -80,10 +81,13 @@ function Setting() {
       <Header>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={6}>
+            <Grid item xs={12} md={6} xl={4}>
               <PlatformSettings />
             </Grid>
-            <Grid item xs={12} md={6} xl={6} sx={{ display: "flex" }}>
+            <Grid item xs={12} md={6} xl={4}>
+              <MarginSettings />
+            </Grid>
+            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
               <ProfileInfoCard
                 title="Margin Information"
                 info={{

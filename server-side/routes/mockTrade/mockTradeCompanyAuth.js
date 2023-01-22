@@ -22,12 +22,19 @@ const getKiteCred = require('../../marketData/getKiteCred');
 // })
 
 // router.get("/deleteinhistory", async(req, res)=>{
-//     PNLData.deleteMany({timestamp: {$regex: "2023-01-17"}})
-//     .then(()=>{
-//         console.log("deleted")
-//     }).catch(()=>{
-//         console.log("err")
-//     })
+//     // HistoryData.deleteMany({timestamp: {$regex: "2023-01-19"}})
+//     // .then(()=>{
+//     //     console.log("deleted")
+//     // }).catch(()=>{
+//     //     console.log("err")
+//     // })
+//     if(!process.env.PROD){
+//         console.log("yes its true")
+//     } else{
+//         console.log("no its true")
+//     }
+//     res.send(process.env.PROD)
+    
 // })
 
 router.post("/mocktradecompany", async (req, res)=>{
@@ -1097,29 +1104,45 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE"} },
-        
-        { $group: { _id: {
-                                "symbol": "$symbol",
-                                "Product": "$Product",
-                                "buyOrSell": "$buyOrSell"
-                            },
-                    amount: {
-                        $sum: "$amount"
-                    },
-                    brokerage: {
-                        $sum: {$toDouble : "$brokerage"}
-                    },
-                    lots: {
-                        $sum: {$toInt : "$Quantity"}
-                    },
-                    average_price: {
-                        $sum: {$toInt : "$average_price"}
-                        // average_price: "$average_price"
-                    },
-                    }},
-             { $sort: {_id: -1}},
-            ])
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {$multiply : ["$amount",-1]},
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
             
                 // console.log(pnlDetails)
 
@@ -1135,12 +1158,11 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
         
         { $group: { _id: {
                                 "traderId": "$userId",
-                                "buyOrSell": "$buyOrSell",
                                 "traderName": "$createdBy",
                                 "symbol": "$instrumentToken"
                             },
                     amount: {
-                        $sum: "$amount"
+                        $sum: {$multiply : ["$amount", -1]}
                     },
                     brokerage: {
                         $sum: {$toDouble : "$brokerage"}
@@ -1150,6 +1172,9 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
                     },
                     trades: {
                         $count: {}
+                    },
+                    lotUsed: {
+                        $sum: {$abs : {$toInt : "$Quantity"}}
                     }
                     }},
             { $sort: {_id: -1}},

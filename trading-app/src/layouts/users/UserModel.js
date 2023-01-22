@@ -86,9 +86,9 @@ const UserModel = () => {
     console.log(data);
     if(data.status === 422 || data.error || !data){ 
         window.alert(data.error);
-        console.log("invalid entry");
+        console.log("Invalid Entry");
     }else{
-        window.alert("entry succesfull");
+        window.alert("User Created Successfully");
         console.log("entry succesfull");
     }
     setOpen(false);

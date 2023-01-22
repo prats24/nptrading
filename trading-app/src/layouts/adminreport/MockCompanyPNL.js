@@ -105,7 +105,6 @@ const TableOne = () => {
         greenDaysAvgPnl = (greenDaysPnl/totalGreenDays).toFixed(0);
         redDaysAvgPnl = (redDaysPnl/totalRedDays).toFixed(0);
     const gpnlcolor = (elem.gpnl) >= 0 ? "success" : "error"
-    //const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
     const npnlcolor = (elem.npnl) >= 0 ? "success" : "error"
     const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][elem.dayOfWeek-1];
 

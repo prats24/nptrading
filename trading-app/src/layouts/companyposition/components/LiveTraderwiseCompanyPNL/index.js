@@ -82,7 +82,6 @@ function LiveTraderwiseCompantPNL({socket}) {
     }).catch((err)=>{
         return new Error(err);
     })
-
   }, [marketData])
 
   useEffect(() => {
@@ -108,112 +107,45 @@ function LiveTraderwiseCompantPNL({socket}) {
   }).catch((err) => {
     return new Error(err);
   })
-
- // setLatestLiveTradeTime(lastestTradeTime);
   }, [marketData])
 
 
-    let hash = new Map();
-
-    for(let i = allTrade.length-1; i >= 0 ; i--){
-        // numberOfTrade += 1;
-        // transactionCost += Number(allTrade[i].brokerage);
-        if(hash.has(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId)){
-            let obj = hash.get(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId);
-            if(allTrade[i]._id.buyOrSell === "BUY"){
-                if(obj.totalBuy === undefined || obj.totalBuyLot === undefined){
-                    obj.totalBuy = Number(allTrade[i].amount)
-                    obj.totalBuyLot = (Number(allTrade[i].lots))
-                } else{
-                    obj.totalBuy = obj.totalBuy + Number(allTrade[i].amount)
-                    obj.totalBuyLot = obj.totalBuyLot + (Number(allTrade[i].lots))
-                }
-                obj.noOfTrade += allTrade[i].trades
-                obj.brokerage += allTrade[i].brokerage
-
-            } if(allTrade[i]._id.buyOrSell === "SELL"){
-                if( obj.totalSell === undefined || obj.totalSellLot === undefined){
-
-                    obj.totalSell = Number(allTrade[i].amount)
-                    obj.totalSellLot = (Number(allTrade[i].lots))
-                } else{
-
-                    obj.totalSell = obj.totalSell + Number(allTrade[i].amount)
-                    obj.totalSellLot = obj.totalSellLot + (Number(allTrade[i].lots))
-                }
-                obj.noOfTrade += allTrade[i].trades
-                obj.brokerage += allTrade[i].brokerage
-
-            }
-        }  else{
-            if(allTrade[i]._id.buyOrSell === "BUY"){
-                hash.set(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId, {
-                    totalBuy : Number(allTrade[i].amount),
-                    totalBuyLot : (Number(allTrade[i].lots)) ,
-                    totalSell: 0,
-                    totalSellLot: 0,
-                    symbol: allTrade[i]._id.symbol,
-                    // Product: allTrade[i].Product,
-                    name: allTrade[i]._id.traderName,
-                    userId: allTrade[i]._id.traderId,
-                    brokerage: allTrade[i].brokerage,
-                    noOfTrade: allTrade[i].trades
-                })
-            }if(allTrade[i]._id.buyOrSell === "SELL"){
-                hash.set(allTrade[i]._id.symbol+" "+allTrade[i]._id.traderId, {
-                    totalSell : Number(allTrade[i].amount),
-                    totalSellLot : (Number(allTrade[i].lots)) ,
-                    totalBuy : 0,
-                    totalBuyLot: 0,
-                    symbol: allTrade[i]._id.symbol,
-                    // Product: allTrade[i].Product,
-                    name: allTrade[i]._id.traderName,
-                    userId: allTrade[i]._id.traderId,
-                    brokerage: allTrade[i].brokerage ,
-                    noOfTrade: allTrade[i].trades                    
-                })
-            }
-        }
-    }
-
-    let overallPnl = [];
-    for (let value of hash.values()){
-        overallPnl.push(value);
-    }
-
-
-
-
     let mapForParticularUser = new Map();
-    for(let i = 0; i < overallPnl.length; i++){
-      // console.log(overallPnl[i])
-      if(mapForParticularUser.has(overallPnl[i].userId)){
+    console.log("Length of All Trade Array:",allTrade.length);
+    for(let i = 0; i < allTrade.length; i++){
+      // console.log(allTrade[i])
+      if(mapForParticularUser.has(allTrade[i]._id.traderId)){
+        console.log(marketData, "marketData")
         let marketDataInstrument = marketData.filter((elem)=>{
-          return elem.instrument_token == overallPnl[i].symbol
+          console.log("market Data Instrument",elem.instrument_token)
+          return elem.instrument_token == Number(allTrade[i]._id.symbol)
         })
 
-        let obj = mapForParticularUser.get(overallPnl[i].userId)
-        // console.log(marketDataInstrument)
-        obj.totalPnl += (-(overallPnl[i].totalBuy+overallPnl[i].totalSell-(overallPnl[i].totalBuyLot+overallPnl[i].totalSellLot)*marketDataInstrument[0]?.last_price));
-        obj.lotUsed += Math.abs(overallPnl[i].totalBuyLot) + Math.abs(overallPnl[i].totalSellLot);
-        obj.runninglots += overallPnl[i].totalBuyLot + overallPnl[i].totalSellLot;
-        obj.brokerage += overallPnl[i].brokerage;
-        obj.noOfTrade += overallPnl[i].noOfTrade
+        let obj = mapForParticularUser.get(allTrade[i]._id.traderId)
+        console.log(marketDataInstrument, "marketDataInstrument")
+        obj.totalPnl += ((allTrade[i].amount+((allTrade[i].lots)*marketDataInstrument[0]?.last_price)));
+        console.log("Total P&L: ",allTrade[i]._id.traderId, allTrade[i].amount,Number(allTrade[i]._id.symbol),marketDataInstrument[0]?.instrument_token,marketDataInstrument[0]?.last_price,allTrade[i].lots);
+        obj.lotUsed += Math.abs(allTrade[i].lotUsed)
+        obj.runninglots += allTrade[i].lots;
+        obj.brokerage += allTrade[i].brokerage;
+        obj.noOfTrade += allTrade[i].trades
 
       } else{
+        console.log(marketData, "marketData")
+        console.log(Number(allTrade[i]._id.symbol) ,Number(allTrade[i]._id.symbol), "symbol")
         let marketDataInstrument = marketData.filter((elem)=>{
-          return elem.instrument_token == overallPnl[i].symbol
+          return elem !== undefined && elem.instrument_token === Number(allTrade[i]._id.symbol)
         })
-        // console.log(marketDataInstrument)
-        mapForParticularUser.set(overallPnl[i].userId, {
-          name : overallPnl[i].name,
-          totalPnl : (-(overallPnl[i].totalBuy+overallPnl[i].totalSell-(overallPnl[i].totalBuyLot+overallPnl[i].totalSellLot)*marketDataInstrument[0]?.last_price)),
-          lotUsed : Math.abs(overallPnl[i].totalBuyLot) + Math.abs(overallPnl[i].totalSellLot),
-          runninglots : overallPnl[i].totalBuyLot + overallPnl[i].totalSellLot,
-          brokerage: overallPnl[i].brokerage,
-          noOfTrade: overallPnl[i].noOfTrade
-
-        })
+        //console.log(marketDataInstrument)
+        console.log(marketDataInstrument, "marketDataInstrument")
+        mapForParticularUser.set(allTrade[i]._id.traderId, {
+          name : allTrade[i]._id.traderName,
+          totalPnl : ((allTrade[i].amount+((allTrade[i].lots)*marketDataInstrument[0]?.last_price))),
+          lotUsed : Math.abs(allTrade[i].lotUsed),
+          runninglots : allTrade[i].lots,
+          brokerage: allTrade[i].brokerage,
+          noOfTrade: allTrade[i].trades
+        }) 
       }
 
     }
@@ -232,7 +164,7 @@ function LiveTraderwiseCompantPNL({socket}) {
     console.log(finalTraderPnl)
 
 
-    let totalGrossPnl = 0;
+    let totalGrossPnlGrid = 0;
     let totalTransactionCost = 0;
     let totalNoRunningLots = 0;
     let totalTrades = 0;
@@ -246,7 +178,8 @@ function LiveTraderwiseCompantPNL({socket}) {
         let runninglotscolor = subelem.runninglots != 0 ? "info" : "dark"
         let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
 
-       totalGrossPnl += (subelem.totalPnl);
+       totalGrossPnlGrid += (subelem.totalPnl);
+       console.log("Gross P&L: ",subelem.name,subelem.totalPnl );
        totalTransactionCost += (subelem.brokerage);
        totalNoRunningLots += (subelem.runninglots);
        totalLotsUsed += (subelem.lotUsed);
@@ -260,7 +193,7 @@ function LiveTraderwiseCompantPNL({socket}) {
    
        obj.grossPnl = (
          <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
-           {(subelem.totalPnl) > 0.00 ? "+₹" + ((subelem.totalPnl).toFixed(2)): "-₹" + ((-(subelem.totalPnl)).toFixed(2))}
+           {(subelem.totalPnl) > 0.00 ? "+₹" + ((subelem.totalPnl).toFixed(2)): "-₹" + (-subelem.totalPnl).toFixed(2)}
          </MDTypography>
        );
    
@@ -300,8 +233,8 @@ function LiveTraderwiseCompantPNL({socket}) {
    
      let obj = {};
 
-     const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
-       const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
+     const totalGrossPnlcolor = totalGrossPnlGrid >= 0 ? "success" : "error"
+       const totalnetPnlcolor = (totalGrossPnlGrid-totalTransactionCost) >= 0 ? "success" : "error"
 
    
      obj.traderName = (
@@ -311,8 +244,8 @@ function LiveTraderwiseCompantPNL({socket}) {
      );
    
      obj.grossPnl = (
-       <MDTypography component="a" variant="caption"  color={totalGrossPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-         Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+       <MDTypography component="a" variant="caption" color={totalGrossPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+         Gross P&L : {totalGrossPnlGrid >= 0.00 ? "+₹" + (totalGrossPnlGrid.toFixed(2)): "-₹" + ((-totalGrossPnlGrid).toFixed(2))}
        </MDTypography>
      );
    
@@ -343,7 +276,7 @@ function LiveTraderwiseCompantPNL({socket}) {
    
      obj.netPnl = (
        <MDTypography component="a" variant="caption"  color={totalnetPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-        Net P&L : {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+        Net P&L : {(totalGrossPnlGrid-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnlGrid-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnlGrid-totalTransactionCost)).toFixed(2))}
        </MDTypography>
      );
    

@@ -32,7 +32,6 @@ router.post("/login", async (req, res)=>{
             return res.status(422).json({error : "invalid details"})
         }else{
         
-
         const token = await userLogin.generateAuthToken();
         console.log(token);
         
