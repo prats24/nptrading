@@ -108,8 +108,6 @@ const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSch
       } 
 
     });
-    
-
 };
 
 function mailSender(length){
@@ -117,7 +115,7 @@ function mailSender(length){
     service: 'gmail',
     auth: {
             user: 'vvv201214@gmail.com',   //put your mail here
-            pass: 'hzgaoqlvatnweplm'              //password here
+            pass: process.env.PASSWORD              //password here
           }
   });
   
