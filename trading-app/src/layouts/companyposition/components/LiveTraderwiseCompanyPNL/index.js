@@ -172,11 +172,12 @@ function LiveTraderwiseCompantPNL({socket}) {
      finalTraderPnl.map((subelem, index)=>{
        let obj = {};
 
-       let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
-        let tradercolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
-        let gpnlcolor = (subelem.totalPnl) >= 0 ? "success" : "error"
-        let runninglotscolor = subelem.runninglots != 0 ? "info" : "dark"
-        let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
+      let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
+      let tradercolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
+      let gpnlcolor = (subelem.totalPnl) >= 0 ? "success" : "error"
+      let runninglotscolor = subelem.runninglots > 0 ? "info" : (subelem.runninglots < 0 ? "error" : "dark")
+      let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
+      let runninglotsbgcolor = subelem.runninglots > 0 ? "#ffff00" : ""
 
        totalGrossPnlGrid += (subelem.totalPnl);
        console.log("Gross P&L: ",subelem.name,subelem.totalPnl );
@@ -204,7 +205,7 @@ function LiveTraderwiseCompantPNL({socket}) {
        );
    
        obj.runningLots = (
-         <MDTypography component="a" variant="caption" color={runninglotscolor} fontWeight="medium">
+         <MDTypography component="a" variant="caption" color={runninglotscolor} backgroundColor={runninglotsbgcolor} fontWeight="medium">
            {subelem.runninglots}
          </MDTypography>
        );

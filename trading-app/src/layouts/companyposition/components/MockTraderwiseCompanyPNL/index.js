@@ -176,10 +176,11 @@ let totalLotsUsed = 0;
 
 finalTraderPnl.map((subelem, index)=>{
   let obj = {};
-  let npnlcolor = ((subelem.totalPnl)-(subelem.totalPnl)) >= 0 ? "success" : "error"
+  let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
   let tradercolor = ((subelem.totalPnl)-(subelem.totalPnl)) >= 0 ? "success" : "error"
   let gpnlcolor = (subelem.totalPnl) >= 0 ? "success" : "error"
-  let runninglotscolor = subelem.runninglots != 0 ? "info" : "dark"
+  let runninglotscolor = subelem.runninglots > 0 ? "info" : (subelem.runninglots < 0 ? "error" : "dark")
+  let runninglotsbgcolor = subelem.runninglots > 0 ? "#ffff00" : ""
   let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
 
   totalGrossPnl += (subelem.totalPnl);
@@ -207,7 +208,7 @@ finalTraderPnl.map((subelem, index)=>{
   );
 
   obj.runningLots = (
-    <MDTypography component="a" variant="caption" color={runninglotscolor} fontWeight="medium">
+    <MDTypography component="a" variant="caption" color={runninglotscolor} backgroundColor={runninglotsbgcolor} fontWeight="medium">
       {subelem.runninglots}
     </MDTypography>
   );
@@ -226,7 +227,7 @@ finalTraderPnl.map((subelem, index)=>{
 
   obj.netPnl = (
     <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
-      {((subelem.totalPnl)-(subelem.brokerage)) > 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
+      {((subelem.totalPnl)-(subelem.brokerage)) >= 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
     </MDTypography>
   );
 
