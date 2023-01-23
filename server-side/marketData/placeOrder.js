@@ -110,47 +110,46 @@ router.post("/placeorder", (async (req, res)=>{
 
      function retreiveOrderAndSave(url2, authOptions){
         setTimeout(()=>{
-            // axios.get(url2, authOptions)
-            responseTempraryFunc()
+            axios.get(url2, authOptions)
             .then(async (response)=>{
                 const allOrderData = (response.data).data;
                 console.log("allOrderData", allOrderData);
                 let len = allOrderData.length;
                 let orderData;
     
-                // for(let i = len-1; i >= 0; i--){
-                //     let {order_id, status, average_price, quantity, product, transaction_type, exchange_order_id,
-                //         order_timestamp, variety, validity, exchange, exchange_timestamp, order_type, price, filled_quantity, 
-                //         pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,     
-                //         status_message, status_message_raw} = allOrderData[i]
+                for(let i = len-1; i >= 0; i--){
+                    let {order_id, status, average_price, quantity, product, transaction_type, exchange_order_id,
+                        order_timestamp, variety, validity, exchange, exchange_timestamp, order_type, price, filled_quantity, 
+                        pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,     
+                        status_message, status_message_raw} = allOrderData[i]
     
-                //         if(!status_message){
-                //             status_message = "null"
-                //         }
-                //         if(!status_message_raw){
-                //             status_message_raw = "null"
-                //         }
-                //         if(!exchange_timestamp){
-                //             exchange_timestamp = "null"
-                //         }
-                //         if(!exchange_order_id){
-                //             exchange_order_id = "null"
-                //         }
+                        if(!status_message){
+                            status_message = "null"
+                        }
+                        if(!status_message_raw){
+                            status_message_raw = "null"
+                        }
+                        if(!exchange_timestamp){
+                            exchange_timestamp = "null"
+                        }
+                        if(!exchange_order_id){
+                            exchange_order_id = "null"
+                        }
     
-                //     const tradeData = (new TradeData({order_id, status, average_price, quantity, product, transaction_type,
-                //         order_timestamp, variety, validity, exchange, order_type, price, filled_quantity, 
-                //         pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,
-                //         status_message, status_message_raw, exchange_order_id, exchange_timestamp}))
+                    const tradeData = (new TradeData({order_id, status, average_price, quantity, product, transaction_type,
+                        order_timestamp, variety, validity, exchange, order_type, price, filled_quantity, 
+                        pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,
+                        status_message, status_message_raw, exchange_order_id, exchange_timestamp}))
                   
-                //         //console.log("this is trade data", tradeData, typeof(tradeData));
-                //         tradeData.save()
-                //         .then(()=>{
-                //             //console.log("data enter succesfully")
-                //         }).catch((err)=> {
-                //           res.status(500).json({error:"Failed to Enter trade data"});
-                //           //console.log("failed to enter data of order");
-                //         })
-                // }
+                        //console.log("this is trade data", tradeData, typeof(tradeData));
+                        tradeData.save()
+                        .then(()=>{
+                            //console.log("data enter succesfully")
+                        }).catch((err)=> {
+                          res.status(500).json({error:"Failed to Enter trade data"});
+                          //console.log("failed to enter data of order");
+                        })
+                }
     
                 for(let i = len-1; i >= 0; i--){
                   if(allOrderData[i].status === "COMPLETE" || allOrderData[i].status === "REJECTED" || allOrderData[i].status === "AMO REQ RECEIVED"){
@@ -241,141 +240,141 @@ router.post("/placeorder", (async (req, res)=>{
             
                 console.log("in placeorder", trade_time, new_order_timestamp)
     
-                // CompanyTradeData.findOne({order_id : order_id})
-                // .then((dateExist)=>{
-                //     if(dateExist){
-                //         console.log("data already");
-                //         return res.status(422).json({error : "data already exist..."})
-                //     }
-                //     const tempDate = new Date();
-                //     let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                //     function addMinutes(date, hours) {
-                //       date.setMinutes(date.getMinutes() + hours);
-                //       return date;
-                //      }
-                //     const date = new Date(temp_order_save_time);
-                //     const newDate = addMinutes(date, 330);
-                //     const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                CompanyTradeData.findOne({order_id : order_id})
+                .then((dateExist)=>{
+                    if(dateExist){
+                        console.log("data already");
+                        return res.status(422).json({error : "data already exist..."})
+                    }
+                    const tempDate = new Date();
+                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                    function addMinutes(date, hours) {
+                      date.setMinutes(date.getMinutes() + hours);
+                      return date;
+                     }
+                    const date = new Date(temp_order_save_time);
+                    const newDate = addMinutes(date, 330);
+                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
              
-                //     const companyTradeData = new CompanyTradeData({
-                //         disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-                //         status, uId, createdBy, average_price, Quantity: quantity, 
-                //         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
-                //         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
-                //         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                //         lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
-                //         tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
-                //         order_req_time: createdOn, order_save_time: order_save_time
+                    const companyTradeData = new CompanyTradeData({
+                        disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
+                        status, uId, createdBy, average_price, Quantity: quantity, 
+                        Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
+                        variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
+                        algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
             
-                //     });
-                //     // console.log("this is CompanyTradeData", companyTradeData);
-                //     console.log("companyTradeData", companyTradeData)
-                //     companyTradeData.save().then(()=>{
-                //     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                // }).catch(err => {console.log(err, "fail")});
+                    });
+                    // console.log("this is CompanyTradeData", companyTradeData);
+                    console.log("companyTradeData", companyTradeData)
+                    companyTradeData.save().then(()=>{
+                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                }).catch(err => {console.log(err, "fail")});
     
-                // UserTradeData.findOne({order_id : order_id})
-                // .then((dateExist)=>{
-                //     if(dateExist){
-                //         console.log("data already");
-                //         return res.status(422).json({error : "data already exist..."})
-                //     }
-                //     const tempDate = new Date();
-                //     let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                //     function addMinutes(date, hours) {
-                //       date.setMinutes(date.getMinutes() + hours);
-                //       return date;
-                //      }
-                //     const date = new Date(temp_order_save_time);
-                //     const newDate = addMinutes(date, 330);
-                //     const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                UserTradeData.findOne({order_id : order_id})
+                .then((dateExist)=>{
+                    if(dateExist){
+                        console.log("data already");
+                        return res.status(422).json({error : "data already exist..."})
+                    }
+                    const tempDate = new Date();
+                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                    function addMinutes(date, hours) {
+                      date.setMinutes(date.getMinutes() + hours);
+                      return date;
+                     }
+                    const date = new Date(temp_order_save_time);
+                    const newDate = addMinutes(date, 330);
+                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
              
-                //     const userTradeData = new UserTradeData({
-                //         disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-                //         status, uId, createdBy, average_price, Quantity: Quantity, 
-                //         Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
-                //         variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
-                //         order_id, instrumentToken, brokerage: brokerageUser,
-                //         tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
-                //         order_req_time: createdOn, order_save_time: order_save_time
+                    const userTradeData = new UserTradeData({
+                        disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
+                        status, uId, createdBy, average_price, Quantity: Quantity, 
+                        Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
+                        variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
+                        order_id, instrumentToken, brokerage: brokerageUser,
+                        tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
     
-                //     });
-                //     // console.log("this is userTradeData", userTradeData);
-                //     userTradeData.save().then(()=>{
-                //     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                // }).catch(err => {console.log(err, "fail")});
+                    });
+                    // console.log("this is userTradeData", userTradeData);
+                    userTradeData.save().then(()=>{
+                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                }).catch(err => {console.log(err, "fail")});
     
-                // MockTradeCompany.findOne({uId : uId})
-                // .then((dateExist)=>{
-                //     if(dateExist){
-                //         console.log("data already");
-                //         return res.status(422).json({error : "date already exist..."})
-                //     }
-                //     const tempDate = new Date();
-                //     let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                //     function addMinutes(date, hours) {
-                //       date.setMinutes(date.getMinutes() + hours);
-                //       return date;
-                //      }
-                //     const date = new Date(temp_order_save_time);
-                //     const newDate = addMinutes(date, 330);
-                //     const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                MockTradeCompany.findOne({uId : uId})
+                .then((dateExist)=>{
+                    if(dateExist){
+                        console.log("data already");
+                        return res.status(422).json({error : "date already exist..."})
+                    }
+                    const tempDate = new Date();
+                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                    function addMinutes(date, hours) {
+                      date.setMinutes(date.getMinutes() + hours);
+                      return date;
+                     }
+                    const date = new Date(temp_order_save_time);
+                    const newDate = addMinutes(date, 330);
+                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
              
-                //     const mockTradeDetails = new MockTradeCompany({
+                    const mockTradeDetails = new MockTradeCompany({
     
-                //         status, uId, createdBy, average_price, Quantity: quantity, 
-                //         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
-                //         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
-                //         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                //         lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
-                //         tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
-                //         order_req_time: createdOn, order_save_time: order_save_time
+                        status, uId, createdBy, average_price, Quantity: quantity, 
+                        Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
+                        variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
+                        algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        order_req_time: createdOn, order_save_time: order_save_time
     
-                //     });
+                    });
             
-                //     // console.log("mockTradeDetails comapny", mockTradeDetails);
-                //     mockTradeDetails.save().then(()=>{
-                //         // res.status(201).json({massage : "data enter succesfully"});
-                //     }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-                // }).catch(err => {console.log(err, "fail")});
+                    // console.log("mockTradeDetails comapny", mockTradeDetails);
+                    mockTradeDetails.save().then(()=>{
+                        // res.status(201).json({massage : "data enter succesfully"});
+                    }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
+                }).catch(err => {console.log(err, "fail")});
     
-                // MockTradeUser.findOne({uId : uId})
-                // .then((dateExist)=>{
-                //     if(dateExist){
-                //         console.log("data already");
-                //         return res.status(422).json({error : "date already exist..."})
-                //     }
-                //     const tempDate = new Date();
-                //     let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                //     function addMinutes(date, hours) {
-                //       date.setMinutes(date.getMinutes() + hours);
-                //       return date;
-                //      }
-                //     const date = new Date(temp_order_save_time);
-                //     const newDate = addMinutes(date, 330);
-                //     const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                MockTradeUser.findOne({uId : uId})
+                .then((dateExist)=>{
+                    if(dateExist){
+                        console.log("data already");
+                        return res.status(422).json({error : "date already exist..."})
+                    }
+                    const tempDate = new Date();
+                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                    function addMinutes(date, hours) {
+                      date.setMinutes(date.getMinutes() + hours);
+                      return date;
+                     }
+                    const date = new Date(temp_order_save_time);
+                    const newDate = addMinutes(date, 330);
+                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
              
-                //     const mockTradeDetailsUser = new MockTradeUser({
+                    const mockTradeDetailsUser = new MockTradeUser({
     
-                //         status, uId, createdBy, average_price, Quantity: Quantity, 
-                //         Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
-                //         variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
-                //         order_id, instrumentToken, brokerage: brokerageUser,
-                //         tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
-                //         order_req_time: createdOn, order_save_time: order_save_time
+                        status, uId, createdBy, average_price, Quantity: Quantity, 
+                        Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
+                        variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
+                        order_id, instrumentToken, brokerage: brokerageUser,
+                        tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                        order_req_time: createdOn, order_save_time: order_save_time
     
-                //     });
+                    });
             
-                //     // console.log("mockTradeDetails", mockTradeDetailsUser);
-                //     mockTradeDetailsUser.save().then(()=>{
-                //         // res.status(201).json({massage : "data enter succesfully"});
-                //     }).catch((err)=> {
-                //         // res.status(500).json({error:"Failed to enter data"})
-                //     });
+                    // console.log("mockTradeDetails", mockTradeDetailsUser);
+                    mockTradeDetailsUser.save().then(()=>{
+                        // res.status(201).json({massage : "data enter succesfully"});
+                    }).catch((err)=> {
+                        // res.status(500).json({error:"Failed to enter data"})
+                    });
             
-                // }).catch(err => {console.log(err, "fail")});
+                }).catch(err => {console.log(err, "fail")});
     
                 console.log("responseMsg", responseMsg);
     
@@ -390,13 +389,7 @@ router.post("/placeorder", (async (req, res)=>{
     
             // console.log("waiting till 500ms")
         }, 500)
-     }
-
-     async function responseTempraryFunc(){
-        setTimeout(()=>{ //status === "COMPLETE" || allOrderData[i].status === "REJECTED" || allOrderData[i].status === "AMO REQ RECEIVED"
-            return [{status: "COMPLETE"}, {status: "YES"}];
-        }, 3000)
-     }
+    }
 
 }))
 
