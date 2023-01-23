@@ -254,7 +254,7 @@ router.post("/mocktradecompany", async (req, res)=>{
     try{
         
         let liveData = await axios.get(`${baseUrl}api/v1/getliveprice`)
-        
+        console.log(liveData)
         for(let elem of liveData.data){
             console.log(elem)
             if(elem.instrument_token == instrumentToken){

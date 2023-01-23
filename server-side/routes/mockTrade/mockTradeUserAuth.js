@@ -512,6 +512,7 @@ router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=
               symbol: "$symbol",
               product: "$Product",
               instrumentToken: "$instrumentToken",
+              exchange: "$exchange"
             },
             amount: {
               $sum: {$multiply : ["$amount",-1]},
