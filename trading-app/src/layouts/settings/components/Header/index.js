@@ -18,14 +18,12 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
-import MDAvatar from "../../../../components/MDAvatar";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "../../../../assets/theme/base/breakpoints";
 
 // Images
-import burceMars from "../../../../assets/images/bruce-mars.jpg";
-import backgroundImage from "../../../../assets/images/bg-profile.jpeg";
+import backgroundImage from "../../../../assets/images/trading.jpg";
 
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
@@ -75,7 +73,7 @@ function Header({ children }) {
         display="flex"
         alignItems="center"
         position="relative"
-        minHeight="18.75rem"
+        minHeight="10rem"
         borderRadius="xl"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>

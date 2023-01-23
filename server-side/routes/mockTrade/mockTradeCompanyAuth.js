@@ -1378,8 +1378,9 @@ router.get("/getlastestmocktradecompany", async(req, res)=>{
     console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
-                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1  } },
-                    { $sort: { "trade_time": -1 }}
+                    { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "status" : 1 } },
+                    { $sort: { "trade_time": -1 }},
+                    { $limit : 1}
                 ]
 
     let x = await MockTradeDetails.aggregate(pipeline)

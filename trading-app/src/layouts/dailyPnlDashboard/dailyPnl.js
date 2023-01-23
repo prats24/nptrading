@@ -13,16 +13,11 @@ import MDTypography from "../../components/MDTypography";
 import { Typography } from "@mui/material";
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
 import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
 
 // Data
 import PNLData from './data/DailyPnlData';
-
-
 
 const Dailypnldata = () => {
 
@@ -186,7 +181,7 @@ const Dailypnldata = () => {
     
     return (
         <>
-          <MDBox mt={6} mb={6}>
+        <MDBox mt={2} mb={6}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={12} lg={12} >
             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
@@ -230,7 +225,7 @@ const Dailypnldata = () => {
         </Grid>
       </MDBox>
 
-            <MDBox mb={3} pt={6}> 
+            <MDBox mb={1} pt={1}> 
                 <ReportsLineChart
                   color="warning"
                   colorheight="25rem"
@@ -250,7 +245,7 @@ const Dailypnldata = () => {
                 />
               </MDBox>
 
-            <MDBox pt={6} pb={3}>
+            <MDBox pt={5} pb={3}>
                 <Grid container spacing={6}>
                     <Grid item xs={12} md={12} lg={12}>
                         <Card>

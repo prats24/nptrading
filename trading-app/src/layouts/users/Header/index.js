@@ -9,24 +9,17 @@ import Grid from "@mui/material/Grid";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Icon from "@mui/material/Icon";
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import PersonIcon from '@mui/icons-material/Person';
+
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
-import MDTypography from "../../../components/MDTypography";
-import MDAvatar from "../../../components/MDAvatar";
-import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
-import Footer from "../../../examples/Footer";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "../../../assets/theme/base/breakpoints";
 
 // Images
-import PersonIcon from '@mui/icons-material/Person';
-import burceMars from "../../../assets/images/bruce-mars.jpg";
-import backgroundImage from "../../../assets/images/bg-profile.jpeg";
+import backgroundImage from "../../../assets/images/trading.jpg";
 import User from "../User";
 import Roles from "../Roles";
 
@@ -69,7 +62,7 @@ function UserHeader({ children }) {
         display="flex"
         alignItems="center"
         position="relative"
-        minHeight="18.75rem"
+        minHeight="10rem"
         borderRadius="x1"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>

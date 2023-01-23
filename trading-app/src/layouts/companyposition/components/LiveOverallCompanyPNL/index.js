@@ -33,9 +33,14 @@ function LiveOverallCompantPNL({socket}) {
   const [marketData, setMarketData] = useState([]);
   const [instrumentData, setInstrumentData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
+  const [lastestTradeTime, setLatestTradeTime] = useState([]);
+  const [lastestTradeBy, setLatestTradeBy] = useState([]);
+  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
+  const [lastestTradeType, setLatestTradeType] = useState([]);
+  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
   const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
-
-
 
   var Total = 0;
   let avgPriceArr = [];
@@ -79,6 +84,23 @@ function LiveOverallCompantPNL({socket}) {
     }).catch((err) => {
         return new Error(err);
     })
+
+      // Get Lastest Trade timestamp
+      axios.get(`${baseUrl}api/v1/getlastestlivetradecompany`)
+      .then((res)=>{
+          console.log("Latest Live Trade:",res.data);
+          setLatestTradeTimearr(res.data);
+          setLatestTradeTime(res.data.trade_time) ;
+          setLatestTradeBy(res.data.createdBy) ;
+          setLatestTradeType(res.data.buyOrSell) ;
+          setLatestTradeQuantity(res.data.Quantity) ;
+          setLatestTradeSymbol(res.data.symbol) ;
+          setLatestTradeStatus(res.data.status)
+          console.log(lastestTradeTimearr);
+      }).catch((err) => { 
+        return new Error(err);
+      })
+
   }, [marketData])
 
 
@@ -254,7 +276,7 @@ function LiveOverallCompantPNL({socket}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last order at</strong> 11:10:23
+            &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime} - {lastestTradeStatus}
             </MDTypography>
           </MDBox>
         </MDBox>
