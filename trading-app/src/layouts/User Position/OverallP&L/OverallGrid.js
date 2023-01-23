@@ -18,6 +18,7 @@ import MDBox from '../../../components/MDBox';
 import MDTypography from '../../../components/MDTypography';
 import { userContext } from '../../../AuthContext';
 import MDButton from '../../../components/MDButton';
+import ExitPosition from './ExitPosition';
 // import Button from '@mui/material/Button';
 
 function OverallGrid({socket}) {
@@ -163,7 +164,7 @@ function OverallGrid({socket}) {
         );
       }
       obj.exit = (
-        <MDButton variant="contained" color="info">Exit Position</MDButton>
+        < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
       );
       //console.log(obj)
       rows.push(obj);

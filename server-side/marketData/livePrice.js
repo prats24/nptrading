@@ -11,7 +11,7 @@ router.get("/getliveprice", async (req, res)=>{
 
   const apiKey = await Account.find();
   const accessToken = await RequestToken.find();
-  console.log(accessToken);
+  // console.log(accessToken);
   let getApiKey, getAccessToken;
   let date = new Date();
   let today = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
@@ -58,14 +58,14 @@ router.get("/getliveprice", async (req, res)=>{
       try{
 
         const response = await axios.get(url, authOptions);
-        for (instrument in response.data.data) {
+        for (let instrument in response.data.data) {
             let obj = {};
             obj.last_price = response.data.data[instrument].last_price;
             obj.instrument_token = response.data.data[instrument].instrument_token;
             obj.average_price = response.data.data[instrument].ohlc.close;
             obj.timestamp = response.data.data[instrument].timestamp
             arr.push(obj);
-            console.log("ohcl",response.data.data[instrument].ohlc.close)
+            // console.log("ohcl",response.data.data[instrument].ohlc.close)
         }
         return res.status(201).send((arr));
   
