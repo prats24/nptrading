@@ -23,6 +23,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { Box, Typography } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+
 
 
 
@@ -42,26 +46,26 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
     const getDetails = React.useContext(userContext);
     let uId = uniqid();
     let date = new Date();
-    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+    // let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
     let createdBy = getDetails.userDetails.name;
     let userId = getDetails.userDetails.email;
-    let totalAmount = 0;
-    let tradeBy = getDetails.userDetails.name;
+    // let totalAmount = 0;
+    // let tradeBy = getDetails.userDetails.name;
     let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
     let isCompany = false;
    
   
     const [userPermission, setUserPermission] = useState([]);
-    const [bsBtn, setBsBtn] = useState(true)
+    // const [bsBtn, setBsBtn] = useState(true)
     const [modal, setModal] = useState(false);
   
   
-    const [selected, setSelected] = useState("NRML");
+    // const [selected, setSelected] = useState("NRML");
   
     let [accessTokenDetails, setAccessToken] = useState([]);
     let [apiKeyDetails, setApiKey] = useState([]);
     const [tradeData, setTradeData] = useState([]);
-    const [brokerageData, setBrokerageData] = useState([]);
+    // const [brokerageData, setBrokerageData] = useState([]);
     const [tradingAlgoData, setTradingAlgoData] = useState([]);
     const [otmData, setOtmData] = useState([]);
     const [companyTrade, setCompanyTrade] = useState({
@@ -108,14 +112,20 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
       otm_token: ""
     })
   
+    const [filledQuantity, setFilledQuantity] = useState((Math.abs(quantity) > 1800) ? 1800 : Math.abs(quantity));
+
+    function quantityChange(e){
+      setFilledQuantity(e.target.value)
+      exitPositionFormDetails.Quantity = e.target.value
+    }
   
     const [value, setValue] = React.useState('NRML');
     exitPositionFormDetails.Product = product;
-    const handleChange = (event) => {
-      setValue(event.target.value);
-      exitPositionFormDetails.Product = product;
+    // const handleChange = (event) => {
+    //   setValue(event.target.value);
+    //   exitPositionFormDetails.Product = product;
   
-    };
+    // };
   
     const [market, setMarket] = React.useState('MARKET');
     exitPositionFormDetails.OrderType = market;
@@ -170,7 +180,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
       axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
           .then((res) => {
               let dataArr = (res.data).filter((elem) => {
-                  return elem.status === "Active"
+                  return elem.status === "Active" && elem.symbol === symbol 
               })
               setTradeData(dataArr)
           }).catch((err) => {
@@ -212,6 +222,14 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
       ////console.log(perticularInstrumentData);
     }, [])
+
+  let lotSize = tradeData[0]?.lotSize;
+  let maxLot = tradeData[0]?.maxLot;
+  let finalLot = maxLot/lotSize;
+  let optionData = [];
+  for(let i =1; i<= finalLot; i++){
+      optionData.push( <MenuItem value={i * lotSize}>{ i * lotSize}</MenuItem>)      
+  }
   
 
   
@@ -250,8 +268,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
     function tradingAlgo() {
       // if (userPermissionAlgo.length) {
       userPermissionAlgo.map((elem) => {
-          ////console.log(elem);
-          // if(elem.isTradeEnable){
   
               if (elem.transactionChange === "TRUE") {
                     if(checkBuyOrSell === "BUY"){
@@ -270,7 +286,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
               companyTrade.realSymbol = symbol
   
-              companyTrade.realQuantity = elem.lotMultipler * (Math.abs(quantity));
+              companyTrade.realQuantity = elem.lotMultipler * filledQuantity;
               accessTokenDetails = accessTokenDetails.filter((element) => {
                   return elem.tradingAccount === element.accountId
               })
@@ -337,7 +353,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
         exitPositionFormDetails.exchange = exchange;
         exitPositionFormDetails.symbol = symbol;
-        exitPositionFormDetails.Quantity = Math.abs(quantity);
+        exitPositionFormDetails.Quantity = filledQuantity;
   
   
         // Algo box applied here....
@@ -351,7 +367,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         } else {
             companyTrade.realBuyOrSell = "BUY";
             companyTrade.realSymbol = symbol
-            companyTrade.realQuantity = Math.abs(quantity);
+            companyTrade.realQuantity = filledQuantity;
             
             setCompanyTrade(companyTrade)
             setexitPositionFormDetails(exitPositionFormDetails)
@@ -469,7 +485,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
 
   return (
     <div>
-    {/* <MDButton variant="contained" color="info" onClick={exitPosition}>Exit Position</MDButton> */}
 
 
     <MDButton variant="contained" color="info" onClick={handleClickOpen} fullWidth>
@@ -486,7 +501,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ display: "flex", flexDirection: "column", marginLeft: 2 }}>
-            {/* <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: 2 }}><Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600, padding:"5px", borderRadius:"5px" }}>{symbolName}</Box> &nbsp; &nbsp; &nbsp; <Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600, padding:"5px", borderRadius:"5px" }}>₹{ltp}</Box></Box> */}
             <FormControl >
 
               <FormLabel id="demo-controlled-radio-buttons-group" sx={{ width: "300px" }}></FormLabel>
@@ -503,13 +517,43 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
               </RadioGroup>
             </FormControl>
 
+            <Box label="Open Lots" sx={{ display: "flex", flexDirection: "row", justifyContent: "center", margin: 2 }}>
+                <Box sx={{ backgroundColor: "#ccccb3", fontWeight: 600, padding:"5px", borderRadius:"5px" }}>
+                  Open Lots: {Math.abs(quantity)}
+                </Box>
+              </Box>
            
             <Box sx={{ display: "flex", flexDirection: "row" }}>
 
-              <TextField
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120, }}>
+                  <InputLabel id="demo-simple-select-standard-label" >Quantity</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Quantity"
+                    value={filledQuantity}
+                    
+                    onChange={(e) => { quantityChange(e) }}
+                    sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }}
+                  >
+                    {/* <MenuItem value="100">100</MenuItem>
+                    <MenuItem value="150">150</MenuItem> */}
+                    {optionData.map((elem)=>{
+                      // console.log("optionData", elem, filledQuantity)
+                        return(
+                            <MenuItem value={elem.props.value}>
+                            {elem.props.children}
+                            </MenuItem>
+                        )
+                    }) 
+                    }
+                  </Select>
+                </FormControl>
+
+              {/* <TextField
                 disabled
                 id="outlined-basic" label="Quantity" variant="standard" value={Math.abs(quantity)}
-                sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
+                sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} /> */}
 
               {/* <TextField
                 disabled
