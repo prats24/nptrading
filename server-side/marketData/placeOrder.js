@@ -108,7 +108,7 @@ router.post("/placeorder", (async (req, res)=>{
         res.status(422).json({error : err.response.data.message})
     })
 
-     function retreiveOrderAndSave(url2, authOptions){
+    function retreiveOrderAndSave(url2, authOptions){
         setTimeout(()=>{
             axios.get(url2, authOptions)
             .then(async (response)=>{
