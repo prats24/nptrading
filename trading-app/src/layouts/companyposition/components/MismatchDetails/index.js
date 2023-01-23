@@ -92,15 +92,15 @@ function MismatchDetails({socket}) {
 
     let updatedValue = (appPnlData[0]?.amount+(appPnlData[0]?.lots)*liveDetail[0]?.last_price);
 
-    apprunninglotsTotal += (appPnlData[0] ? appPnlData[0]?.lots : 0);
-    zerodharunninglotsTotal += (elem.buy_quantity - elem.sell_quantity) 
+    apprunninglotsTotal += Math.abs(appPnlData[0] ? appPnlData[0]?.lots : 0);
+    zerodharunninglotsTotal += Math.abs(elem.buy_quantity - elem.sell_quantity) 
     appPnlTotal += (updatedValue ? updatedValue : 0); 
     zerodhaPnlTotal += elem.pnl;
     if(appPnlData[0]?._id.symbol === elem.tradingsymbol){
       appAndZerodhaSameSymbolRunningLotTotal += Math.abs(elem.buy_quantity - elem.sell_quantity);
       appAndZerodhaSameSymbolPnlTotal += elem.pnl;
     }
-    otmRunningLotsTotal = (zerodharunninglotsTotal - apprunninglotsTotal)
+    otmRunningLotsTotal = Math.abs(zerodharunninglotsTotal - apprunninglotsTotal)
     
     let obj = {};
     const productcolor = elem.product == "NRML" ? "info" : "warning"
@@ -155,7 +155,7 @@ function MismatchDetails({socket}) {
 
   let obj = {};
 
-  const zerodhaplusapplotsbgcolor = (otmRunningLotsTotal + apprunninglotsTotal)  == zerodharunninglotsTotal ? "#e0e1e5" : "#ffff00"
+  const zerodhaplusapplotsbgcolor = appAndZerodhaSameSymbolRunningLotTotal  == apprunninglotsTotal ? "#e0e1e5" : "#ffff00"
   const appAndZerodhaSameSymbolRunningLotTotalcolor = appAndZerodhaSameSymbolRunningLotTotal >= 0 ? "info" : "error"
   const apprunninglotsTotalcolor = apprunninglotsTotal >= 0 ? "info" : "error"
   const otmgrosspnlcolor = (zerodhaPnlTotal-appPnlTotal) >= 0 ? "success" : "error"
@@ -164,37 +164,37 @@ function MismatchDetails({socket}) {
   // const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "#e0e1e5" : "warning"
   obj.product = (
     <MDTypography component="a" variant="caption" color={otmgrosspnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      OTM Gross P&L : {(zerodhaPnlTotal-appPnlTotal) >= 0.00 ? "+₹" + ((zerodhaPnlTotal-appPnlTotal).toFixed(2)): "-₹" + ((-(zerodhaPnlTotal-appPnlTotal)).toFixed(2))}
+      OTM GP&L : {(zerodhaPnlTotal-appPnlTotal) >= 0.00 ? "+₹" + ((zerodhaPnlTotal-appPnlTotal).toFixed(2)): "-₹" + ((-(zerodhaPnlTotal-appPnlTotal)).toFixed(2))}
     </MDTypography>
   );
   obj.instrument = (
-    <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      OTM + App Running Lots : {appAndZerodhaSameSymbolRunningLotTotal}
+    <MDTypography component="a" variant="caption" color="dark" backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
+      Z&A Same Symbol RLots : {appAndZerodhaSameSymbolRunningLotTotal}
     </MDTypography>
   );
   obj.instrumenttype = (
-    <MDTypography component="a" variant="caption" color="dark" backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
-      OTM Running Lots : {otmRunningLotsTotal}
+    <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
+      OTM RLots : {otmRunningLotsTotal}
     </MDTypography>
   );
   obj.apprunninglots = (
     <MDTypography component="a" variant="caption" color="dark" backgroundColor={zerodhaplusapplotsbgcolor} borderRadius="5px" padding="5px" fontWeight="medium">
-      App Running Lots : {apprunninglotsTotal}
+      App RLots : {apprunninglotsTotal}
     </MDTypography>
   );
   obj.zerodharunninglots = (
     <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      Zerodha Running Lots : {zerodharunninglotsTotal}
+      Zerodha RLots : {zerodharunninglotsTotal}
     </MDTypography>
   );
   obj.appgrosspnl = (
     <MDTypography component="a" variant="caption" color={appPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      App Gross P&L : {appPnlTotal >= 0.00 ? "+₹" + (appPnlTotal.toFixed(2)): "-₹" + ((-appPnlTotal).toFixed(2))}
+      App GP&L : {appPnlTotal >= 0.00 ? "+₹" + (appPnlTotal.toFixed(2)): "-₹" + ((-appPnlTotal).toFixed(2))}
     </MDTypography>
   );
   obj.zerodhagrosspnl = (
     <MDTypography component="a" variant="caption" color={zerodhaPnlTotalcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-      Zerodha Gross P&L : {zerodhaPnlTotal >= 0.00 ? "+₹" + (zerodhaPnlTotal.toFixed(2)): "-₹" + ((-zerodhaPnlTotal).toFixed(2))}
+      Zerodha GP&L : {zerodhaPnlTotal >= 0.00 ? "+₹" + (zerodhaPnlTotal.toFixed(2)): "-₹" + ((-zerodhaPnlTotal).toFixed(2))}
     </MDTypography>
   );
   

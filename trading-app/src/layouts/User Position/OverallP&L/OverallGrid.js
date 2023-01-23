@@ -17,6 +17,8 @@ import DataTable from '../../../examples/Tables/DataTable';
 import MDBox from '../../../components/MDBox';
 import MDTypography from '../../../components/MDTypography';
 import { userContext } from '../../../AuthContext';
+import MDButton from '../../../components/MDButton';
+import Button from '@mui/material/Button';
 
 const OverallGrid = ({socket, Render}) => {
     // const { columns, rows } = authorsTableData();
@@ -293,7 +295,10 @@ const OverallGrid = ({socket, Render}) => {
               {(((liveDetail[index]?.last_price-liveDetail[index]?.average_price)/liveDetail[index]?.average_price)*100) >= 0 ?  "+" + (((liveDetail[index]?.last_price-liveDetail[index]?.average_price)/liveDetail[index]?.average_price)*100).toFixed(2)+"%" : (((liveDetail[index]?.last_price-liveDetail[index]?.average_price)/liveDetail[index]?.average_price)*100).toFixed(2)+"%"}
             </MDTypography>
           );
-        }
+        };
+        obj.exit = (
+          <MDButton variant="contained" color="info">Exit Position</MDButton>
+        );
         //console.log(obj)
         rows.push(obj);
       })

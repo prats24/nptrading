@@ -39,7 +39,6 @@ const User = () => {
 
     const [activeData, setActiveData] = useState([]);
     const [reRender, setReRender] = useState(true);
-    // const [inactiveData, setInactiveData] = useState([]);
   
     useEffect(()=>{
   
