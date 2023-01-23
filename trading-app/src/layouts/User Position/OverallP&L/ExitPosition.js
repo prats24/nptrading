@@ -131,6 +131,10 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
     };
   
     const handleClickOpen = () => {
+      if(Math.abs(quantity) === 0){
+        window.alert("You do not have any open position for this symbol.")
+        return;
+      }
       setOpen(true);
   
     }; 
