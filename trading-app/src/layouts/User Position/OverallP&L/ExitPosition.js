@@ -3,36 +3,19 @@ import React, {useEffect, useState, useContext} from 'react'
 import Card from "@mui/material/Card";
 import axios from "axios";
 
-// Material Dashboard 2 React components
-
-// Material Dashboard 2 React example components
-// import Menu from "@mui/material/Menu";
-// import MenuItem from "@mui/material/MenuItem";
-
-
 // // Data
-
-// import OverallPL from './Overall P&L';
-// import DataTable from '../../../examples/Tables/DataTable';
-// import MDBox from '../../../components/MDBox';
-// import MDTypography from '../../../components/MDTypography';
 import { userContext } from '../../../AuthContext';
 // import MDButton from '../../../components/MDButton';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import uniqid from "uniqid"
 
-
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import MDButton from '../../../components/MDButton';
 import Radio from '@mui/material/Radio';
@@ -40,8 +23,6 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import { Box, Typography } from '@mui/material';
-import MDBox from '../../../components/MDBox';
-import { borderBottom } from '@mui/system';
 
 
 
@@ -506,6 +487,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
 
               <FormLabel id="demo-controlled-radio-buttons-group" sx={{ width: "300px" }}></FormLabel>
               <RadioGroup
+                disabled
                 aria-labelledby="demo-controlled-radio-buttons-group"
                 name="controlled-radio-buttons-group"
                 value={product}
@@ -521,21 +503,25 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
             <Box sx={{ display: "flex", flexDirection: "row" }}>
 
               <TextField
+                disabled
                 id="outlined-basic" label="Quantity" variant="standard" value={Math.abs(quantity)}
                 sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
 
-              <TextField
+              {/* <TextField
+                disabled
                 id="outlined-basic" label="Price" variant="standard" onChange={(e) => { { exitPositionFormDetails.Price = (e.target.value) } }}
                 sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
 
               <TextField
+                disabled
                 id="outlined-basic" label="Trigger Price" variant="standard" onChange={(e) => { { exitPositionFormDetails.TriggerPrice = (e.target.value) } }}
-                sx={{ margin: 1, padding: 1, width: "300px" }} />
+                sx={{ margin: 1, padding: 1, width: "300px" }} /> */}
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
               <FormControl  >
                 <FormLabel id="demo-controlled-radio-buttons-group" ></FormLabel>
                 <RadioGroup
+                  disabled
                   aria-labelledby="demo-controlled-radio-buttons-group"
                   name="controlled-radio-buttons-group"
                   value={market}
@@ -543,10 +529,10 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                   sx={{ display: "flex", flexDirection: "row" }}
                 >
                   <FormControlLabel value="MARKET" control={<Radio />} label="MARKET" />
-                  <FormControlLabel value="LIMIT" control={<Radio />} label="LIMIT" />
+                  {/* <FormControlLabel value="LIMIT" control={<Radio />} label="LIMIT" /> */}
                 </RadioGroup>
               </FormControl>
-              <FormControl  >
+              {/* <FormControl  >
                 <FormLabel id="demo-controlled-radio-buttons-group" ></FormLabel>
                 <RadioGroup
                   aria-labelledby="demo-controlled-radio-buttons-group"
@@ -557,7 +543,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                   <FormControlLabel value="SL" control={<Radio />} label="SL" />
                   <FormControlLabel value="SLM" control={<Radio />} label="SL-M" />
                 </RadioGroup>
-              </FormControl>
+              </FormControl> */}
 
             </Box>
 
@@ -571,9 +557,9 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                   onChange={validityhandleChange}
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
-                  <FormControlLabel value="DAY" control={<Radio />} label="DAY" />
-                  <FormControlLabel value="IMMEDIATE" control={<Radio />} label="IMMEDIATE" />
-                  <FormControlLabel value="MINUTES" control={<Radio />} label="MINUTES" />
+                  <FormControlLabel disabled value="DAY" control={<Radio />} label="DAY" />
+                  <FormControlLabel disabled value="IMMEDIATE" control={<Radio />} label="IMMEDIATE" />
+                  <FormControlLabel disabled value="MINUTES" control={<Radio />} label="MINUTES" />
                 </RadioGroup>
               </FormControl>
             </Box>
