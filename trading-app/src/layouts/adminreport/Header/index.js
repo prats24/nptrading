@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // prop-types is a library for typechecking of props.
@@ -25,24 +10,17 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import StoreIcon from '@mui/icons-material/Store';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
-import MDTypography from "../../../components/MDTypography";
-import MDAvatar from "../../../components/MDAvatar";
-import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
-import Footer from "../../../examples/Footer";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "../../../assets/theme/base/breakpoints";
 
 // Images
-import burceMars from "../../../assets/images/bruce-mars.jpg";
-import backgroundImage from "../../../assets/images/bg-profile.jpeg";
+import backgroundImage from "../../../assets/images/trading.jpg";
 import CompanyDailyPNLTWise from "../CompanyDailyPNLTWise";
 import MockCompanyPNL from "../MockCompanyPNL"
 import TraderPNL from "../TraderPNLTWise";
@@ -86,7 +64,7 @@ function AdminReportHeader({ children }) {
         display="flex"
         alignItems="center"
         position="relative"
-        minHeight="18.75rem"
+        minHeight="10rem"
         borderRadius="x1"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>

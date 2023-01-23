@@ -133,14 +133,14 @@ function UserPosition() {
           </Grid>
         </MDBox>
 
-        <MDBox mt={1}>
+        <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
              <OverallGrid socket={socket} Render={{ reRender, setReRender }}/>
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox mt={1}>
+        <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <MarginGrid/>

@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
+import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
@@ -28,6 +29,7 @@ function LiveTraderwiseCompantPNL({socket}) {
   const [lastestLiveTradeSymbol, setLatestLiveTradeSymbol] = useState([]);
   const [lastestLiveTradeType, setLatestLiveTradeType] = useState([]);
   const [lastestLiveTradeQunaity, setLatestLiveTradeQuantity] = useState([]);
+  const [lastestLiveTradeStatus, setLatestLiveTradeStatus] = useState([]);
 
   const renderMenu = (
     <Menu
@@ -93,7 +95,7 @@ function LiveTraderwiseCompantPNL({socket}) {
 
   useEffect(()=>{
          // Get Lastest Trade timestamp
-  axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
+  axios.get(`${baseUrl}api/v1/getlastestlivetradecompany`)
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
       console.log(res.data);
@@ -103,6 +105,7 @@ function LiveTraderwiseCompantPNL({socket}) {
       setLatestLiveTradeType(res.data.buyOrSell) ;
       setLatestLiveTradeQuantity(res.data.Quantity) ;
       setLatestLiveTradeSymbol(res.data.symbol) ;
+      setLatestLiveTradeStatus(res.data.status)
         console.log(lastestLiveTradeTimearr);
   }).catch((err) => {
     return new Error(err);
@@ -227,6 +230,9 @@ function LiveTraderwiseCompantPNL({socket}) {
            {((subelem.totalPnl)-(subelem.brokerage)) > 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
          </MDTypography>
        );
+       obj.view = (
+        <MDButton variant="outlined" color="info" fontWeight="10px">View</MDButton>
+      );
    
        //console.log(obj)
        rows.push(obj);
@@ -306,7 +312,7 @@ function LiveTraderwiseCompantPNL({socket}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-            &nbsp;<strong>last trade</strong> {lastestLiveTradeBy} {lastestLiveTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestLiveTradeQunaity)} quantity of {lastestLiveTradeSymbol} at {lastestLiveTradeTime}
+            &nbsp;<strong>last trade</strong> {lastestLiveTradeBy} {lastestLiveTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestLiveTradeQunaity)} quantity of {lastestLiveTradeSymbol} at {lastestLiveTradeTime} - {lastestLiveTradeStatus}
             </MDTypography>
           </MDBox>
         </MDBox>

@@ -8,7 +8,9 @@ import MenuItem from "@mui/material/MenuItem";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
+import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
+import Button from '@mui/material/Button';
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
@@ -55,6 +57,7 @@ function MockTraderwiseCompantPNL({socket}) {
   const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
   const [lastestTradeType, setLatestTradeType] = useState([]);
   const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
 
   useEffect(()=>{
 
@@ -104,6 +107,7 @@ function MockTraderwiseCompantPNL({socket}) {
               setLatestTradeType(res.data.buyOrSell) ;
               setLatestTradeQuantity(res.data.Quantity) ;
               setLatestTradeSymbol(res.data.symbol) ;
+              setLatestTradeStatus(res.data.status);
                 console.log(lastestTradeTimearr);
           }).catch((err) => {
             return new Error(err);
@@ -151,11 +155,6 @@ function MockTraderwiseCompantPNL({socket}) {
     }
 
     console.log("mapForParticularUser", mapForParticularUser)
-    // allTrade.sort((a, b)=> {
-    //   return (b.amount-b.brokerage)-(a.amount-a.brokerage)
-    // });
-
-    // console.log(finalTraderPnl)
 
     let finalTraderPnl = [];
     for (let value of mapForParticularUser.values()){
@@ -230,6 +229,9 @@ finalTraderPnl.map((subelem, index)=>{
       {((subelem.totalPnl)-(subelem.brokerage)) >= 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
     </MDTypography>
   );
+  obj.view = (
+    <MDButton variant="outlined" color="info" fontWeight="10px">View</MDButton>
+  );
 
   rows.push(obj);
 })
@@ -303,7 +305,7 @@ rows.push(obj);
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-            &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime}
+            &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime} - {lastestTradeStatus}
             </MDTypography>
           </MDBox>
         </MDBox>

@@ -37,6 +37,7 @@ function MockOverallCompantPNL({socket}) {
   const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
   const [lastestTradeType, setLatestTradeType] = useState([]);
   const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
   const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
 
   // Get Latest Trade Time Stamp code ends
@@ -100,8 +101,9 @@ function MockOverallCompantPNL({socket}) {
           setLatestTradeType(res.data.buyOrSell) ;
           setLatestTradeQuantity(res.data.Quantity) ;
           setLatestTradeSymbol(res.data.symbol) ;
+          setLatestTradeStatus(res.data.status)
             console.log(lastestTradeTimearr);
-      }).catch((err) => {
+      }).catch((err) => { 
         return new Error(err);
       })
 
@@ -278,7 +280,7 @@ function MockOverallCompantPNL({socket}) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime}
+              &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime} - {lastestTradeStatus}
             </MDTypography>
           </MDBox>
         </MDBox>
