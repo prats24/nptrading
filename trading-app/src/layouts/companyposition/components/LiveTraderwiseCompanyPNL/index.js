@@ -13,6 +13,7 @@ import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
+import LiveViewTradeDetail from "./LiveViewTradeDetail"
 
 // Data
 import data from "./data";
@@ -147,7 +148,8 @@ function LiveTraderwiseCompantPNL({socket}) {
           lotUsed : Math.abs(allTrade[i].lotUsed),
           runninglots : allTrade[i].lots,
           brokerage: allTrade[i].brokerage,
-          noOfTrade: allTrade[i].trades
+          noOfTrade: allTrade[i].trades,
+          userId: allTrade[i]._id.traderId
         }) 
       }
 
@@ -188,6 +190,12 @@ function LiveTraderwiseCompantPNL({socket}) {
        totalNoRunningLots += (subelem.runninglots);
        totalLotsUsed += (subelem.lotUsed);
        totalTrades += (subelem.noOfTrade);
+
+       obj.userId = (
+        <MDTypography component="a" variant="caption" fontWeight="medium">
+          {subelem.userId}
+        </MDTypography>
+      );
 
        obj.traderName = (
          <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor} padding="5px" borderRadius="5px">
@@ -231,7 +239,7 @@ function LiveTraderwiseCompantPNL({socket}) {
          </MDTypography>
        );
        obj.view = (
-        <MDButton variant="outlined" color="info" fontWeight="10px">View</MDButton>
+        <LiveViewTradeDetail socket={socket} userId={subelem.userId}/>
       );
    
        //console.log(obj)
