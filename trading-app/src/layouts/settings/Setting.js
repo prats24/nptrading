@@ -1,145 +1,137 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
+import React from "react";
+import axios from "axios";
+import { useEffect, useState, useContext } from "react";
+import { userContext } from "../../AuthContext";
 
 // @mui material components
-import React, {useState, useEffect, useContext} from 'react'
-
 import Grid from "@mui/material/Grid";
+import Divider from "@mui/material/Divider";
+
+// @mui icons
+import FacebookIcon from "@mui/icons-material/Facebook";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
-import axios from "axios";
-import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
-import DataTable from "../../examples/Tables/DataTable";
-import SettingData from './data/SettingData'
-import { userContext } from '../../AuthContext';
+// Material Dashboard 2 React example components
+import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
+import Footer from "../../examples/Footer";
+import ProfileInfoCard from "../../examples/Cards/InfoCards/ProfileInfoCard";
+import ProfilesList from "../../examples/Lists/ProfilesList";
+import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProjectCard";
 
+// Overview page components
+import Header from "./components/Header";
+import PlatformSettings from "./components/PlatformSettings";
+import MarginSettings from "./components/MarginSettings";
+
+// Data
+// import profilesListData from "./data/profilesListData";
+
+// Images
+import homeDecor1 from "../../assets/images/home-decor-1.jpg";
+import homeDecor2 from "../../assets/images/home-decor-2.jpg";
+import homeDecor3 from "../../assets/images/home-decor-3.jpg";
+import homeDecor4 from "../../assets/images/home-decor-4.jpeg";
+import team1 from "../../assets/images/team-1.jpg";
+import team2 from "../../assets/images/team-2.jpg";
+import team3 from "../../assets/images/team-3.jpg";
+import team4 from "../../assets/images/team-4.jpg";
 
 function Setting() {
 
-    let date = new Date();
-    let modifiedOn = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
-  
-    const getDetails = useContext(userContext)
-    let modifiedBy = getDetails.userDetails.name;
-
+  const [marginData,setMarginData] = useState([]);
+  const [accountIdData, setAccountIdData] = useState([]);
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-  const { columns, rows } = SettingData();
-  const [settingData, setSettingData] = useState([]);
-  const [reRender, setReRender] = useState(true);
 
-  useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readsetting`)
-    .then((res)=>{
-        setSettingData(res.data)
-        console.log(res.data);
-    }).catch((err)=>{
-        window.alert("Server Down");
-        return new Error(err);
-    })
-    },[reRender])
+ useEffect(()=>{
+       axios.get(`${baseUrl}api/v1/getmargin`)
+      .then((res)=>{
+          console.log(res.data);
+          setMarginData(res.data)
+      }).catch((err)=>{
+          return new Error(err);
+      })
 
+      axios.get(`${baseUrl}api/v1/readAccountDetails`)
+      .then((res)=>{
+        let data = res.data;
+                let active = data.filter((elem) => {
+                    return elem.status === "Active"
+                })
+                setAccountIdData(active);
+                console.log(active);
 
+      }).catch((err)=>{
+          return new Error(err);
+      })
+  },[])
 
-    async function isAppLiveFunc(id, appLive){
-        if(appLive){
-            appLive = false
-        } else{
-            appLive = true
-        }
-        const res = await fetch(`${baseUrl}api/v1/applive/${id}`, {
-            method: "PATCH",
-            headers: {
-                "Accept": "application/json",
-                "content-type": "application/json"
-            },
-            body: JSON.stringify({
-                isAppLive: appLive, modifiedBy, modifiedOn
-            })
-        });
-        const dataResp = await res.json();
-        console.log(dataResp);
-        if (dataResp.status === 422 || dataResp.error || !dataResp) {
-            window.alert(dataResp.error);
-            // console.log("Failed to Edit");
-        } else {
-            if(appLive){
-                window.alert("App is Live Now");
-            } else{
-                window.alert("App Live is Disabled");
-            }
-        }
-        reRender ? setReRender(false) : setReRender(true)
-    }
+  console.log(marginData);
 
-    settingData.map((subelem)=>{
-        let obj = {};
-        obj.appLive = (
-            <MDBox mt={0.5}>
-                <Switch checked={subelem.isAppLive} onChange={() => {isAppLiveFunc(subelem._id, subelem.isAppLive)}} />
-            </MDBox>
-        );
-
-        rows.push(obj);
-    })
 
   return (
-
-    <>
-    <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-            <Grid item xs={12} md={12} lg={12}>
-                <Card>
-                    <MDBox
-                        mx={2}
-                        mt={-3}
-                        py={1}
-                        px={2}
-                        variant="gradient"
-                        bgColor="info"
-                        borderRadius="lg"
-                        coloredShadow="info"
-                        sx={{
-                            display: 'flex',
-                            justifyContent: "space-between",
-                          }}>
-
-                        <MDTypography variant="h6" color="white" py={2.5}>
-                            Settings
-                        </MDTypography>
-                    </MDBox>
-                    <MDBox pt={3}>
-                        <DataTable
-                            table={{ columns, rows }}
-                            isSorted={false}
-                            entriesPerPage={false}
-                            showTotalEntries={false}
-                            noEndBorder
-                        />
-                    </MDBox>
-                </Card>
+    <DashboardLayout>
+      <DashboardNavbar />
+      <MDBox mb={2} />
+      <Header>
+        <MDBox mt={5} mb={3}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={6} xl={4}>
+              <PlatformSettings />
             </Grid>
+            <Grid item xs={12} md={6} xl={4}>
+              <MarginSettings />
+            </Grid>
+            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
+              <ProfileInfoCard
+                title="Margin Information"
+                info={{
+                  AccountId: accountIdData[0] ? accountIdData[0].accountId : "Account Id not available",
+                  AvailableMargin: marginData.available ? (marginData.available.live_balance) >= 0.00 ? "+₹" + ((marginData.available.live_balance).toFixed(2)): "-₹" + ((-(marginData.available.live_balance)).toFixed(2)) : 0,
+                  UsedMargin: marginData.utilised ?  marginData.utilised.debits >= 0.00 ? "+₹" + (marginData.utilised.debits.toFixed(2)): "-₹" + ((-marginData.utilised.debits).toFixed(2)) : 0,
+                  AvailableCash: marginData.net ?  marginData.net >= 0.00 ? "+₹" + (marginData.net.toFixed(2)): "-₹" + ((-marginData.net).toFixed(2)) : 0,
+                  OpeningBalance: marginData.available ?  marginData.available.opening_balance >= 0.00 ? "+₹" + (marginData.available.opening_balance.toFixed(2)): "-₹" + ((-marginData.available.opening_balance).toFixed(2)) : 0,
+                  Payin: marginData.available ?  marginData.available.intraday_payin >= 0.00 ? "+₹" + (marginData.available.intraday_payin.toFixed(2)): "-₹" + ((-marginData.available.intraday_payin).toFixed(2)) : 0,
+                  Payout: marginData.utilised ?  marginData.utilised.payout >= 0.00 ? "+₹" + (marginData.utilised.payout.toFixed(2)): "-₹" + ((-marginData.utilised.payout).toFixed(2)) : 0,
+                  Span: marginData.utilised ?  marginData.utilised.span >= 0.00 ? "+₹" + (marginData.utilised.span.toFixed(2)): "-₹" + ((-marginData.utilised.span).toFixed(2)) : 0,
+                  Exposure: marginData.utilised ?  marginData.utilised.exposure >= 0.00 ? "+₹" + (marginData.utilised.exposure.toFixed(2)): "-₹" + ((-marginData.utilised.exposure).toFixed(2)) : 0,
+                  DeliveryMargin: marginData.utilised ?  marginData.utilised.delivery >= 0.00 ? "+₹" + (marginData.utilised.delivery.toFixed(2)): "-₹" + ((-marginData.utilised.delivery).toFixed(2)) : 0,
+                  
+                }}
+                social={[
+                    {
+                      link: "https://www.facebook.com/ninepointer/",
+                      icon: <FacebookIcon />,
+                      color: "facebook",
+                    },
+                    {
+                      link: "https://twitter.com/nine_pointers",
+                      icon: <TwitterIcon />,
+                      color: "twitter",
+                    },
+                    {
+                      link: "https://www.instagram.com/nine_pointer/",
+                      icon: <InstagramIcon />,
+                      color: "instagram",
+                    },
+                  ]}
+                  action={{ route: "", tooltip: "Edit Profile" }}
 
-        </Grid> 
-    </MDBox> 
-    </>
-
+                shadow={false}
+              />
+            </Grid>
+          </Grid>
+        </MDBox>
+      </Header>
+      <Footer />
+    </DashboardLayout>
   );
 }
 
 export default Setting;
+

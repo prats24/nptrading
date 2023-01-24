@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -148,14 +133,14 @@ function UserPosition() {
           </Grid>
         </MDBox>
 
-        <MDBox mt={1}>
+        <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
              <OverallGrid socket={socket} Render={{ reRender, setReRender }}/>
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox mt={1}>
+        <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <MarginGrid/>

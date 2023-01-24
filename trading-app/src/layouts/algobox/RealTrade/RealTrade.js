@@ -17,6 +17,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
     let [accessTokenDetails, setAccessToken] = useState([]);
     let [apiKeyDetails, setApiKey] = useState([]);
     const [tradeData, setTradeData] = useState([]);
+    let buttoncolor = buttonText == "ON" ? "success" : "error"
 
     const [companyTrade, setCompanyTrade] = useState({
         realSymbol: "",
@@ -331,12 +332,6 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             },
             body: JSON.stringify({
 
-                // apiKey, accessToken, userId,
-                // exchange, symbol: realSymbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
-                // stopLoss, validity, variety, last_price: real_last_price, createdBy, userId, createdOn, uId, 
-                // algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-                // productChange, tradingAccount}, instrumentToken, realTrade
-                
             })
         });
         const dataResp = await res.json();
@@ -352,7 +347,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
   return (
     <>
-    <MDButton variant="outlined" bgColor="blue" color="white" fontWeight="medium" sx={{width: "50px", cursor: "pointer"}} onClick={()=>{functionality()}}>
+    <MDButton variant="outlined" bgColor="white" color={buttoncolor} fontWeight="medium" sx={{width: "50px", cursor: "pointer"}} onClick={()=>{functionality()}}>
     {buttonText}
     </MDButton>
         

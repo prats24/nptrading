@@ -122,6 +122,16 @@ const liveTrade = new mongoose.Schema({
         type: String,
         required: true
     },
+    
+    otm:{
+        type: String,
+    },
+    otm_quantity:{
+        type: String,
+    },
+    otm_token:{
+        type: String,
+    },
 
     algoBox:{
         algoName:{

@@ -4,21 +4,40 @@ const router = express.Router();
 const cors = require('cors');
 const app = express();
 const dotenv = require('dotenv');
-// const kiteConnect = require('./marketData/kiteConnect');
 const fetch = require('./marketData/placeOrder');
-// const job = require("./routes/CronJobsRouter/runChroneJob")
 app.use(require("cookie-parser")());
-// app.use(job)
 const fetchData = require('./marketData/fetchToken');
 const io = require('./marketData/socketio');
-const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, onError} = require('./marketData/kiteTicker');
+const {createNewTicker, disconnectTicker, getTicker, subscribeTokens, getTicks, onError, getMargins} = require('./marketData/kiteTicker');
 const getKiteCred = require('./marketData/getKiteCred'); 
 const cronJobForHistoryData = require("./marketData/getinstrumenttickshistorydata");
+const helmet = require("helmet");
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xssClean = require("xss-clean");
+const hpp = require("hpp")
+const limiter = rateLimit({
+	windowMs: 1 * 60 * 1000, // 15 minutes
+	max: 5000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: "Too many request"
+})
+
+// Apply the rate limiting middleware to all requests
+app.use(limiter)
+app.use(mongoSanitize());
+app.use(helmet());
+app.use(xssClean());
+app.use(hpp());
 
 // issue fix --> if enviournment variable path is not work
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
+
+
+// dotenv.config({ path: './config.env' });
 
 getKiteCred.getAccess().then((data)=>{
   // console.log("this is code ",data);
@@ -47,7 +66,7 @@ io.on("connection", (socket) => {
 
 io.on('disconnection', () => {disconnectTicker()});
 
-// dotenv.config({ path: './config.env' });
+
 
 // console.log(kiteConnect);
 // app.get('/api/v1/ws', kiteConnect.parameters);
@@ -59,20 +78,25 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  // origin: "http://3.7.187.183/"
-   origin: "http://localhost:3000"
+  origin: "http://3.7.187.183/"  // staging
+  // origin: "http://3.108.76.71/"  // production
+  //  origin: "http://localhost:3000"
 
 }));
 
-app.use(express.json());
+app.use(express.json({limit: "20kb"}));
 
 
 //Update 
 // app.use('/api/v1', require("./routes/TradeData/getCompanyTrade"));
 //Update
+app.use('/api/v1', require("./routes/OpenPositions/openPositionsAuth"))
+app.use('/api/v1', require("./routes/expense/expenseAuth"))
+app.use('/api/v1', require("./routes/expense/categoryAuth"))
 app.use('/api/v1', require("./routes/setting/settingAuth"))
 app.use('/api/v1', require("./routes/DailyPnlData/dailyPnlDataRoute"))
 app.use('/api/v1', require("./marketData/livePrice"));
+app.use('/api/v1', require("./marketData/Margin"));
 app.use('/api/v1', require("./routes/user/userLogin"));
 app.use('/api/v1', require('./routes/TradeData/getUserTrade'));
 app.use('/api/v1', require('./routes/TradeData/getCompanyTrade'));
@@ -94,6 +118,7 @@ app.use('/api/v1', require("./routes/user/everyoneRoleAuth"));
 app.use('/api/v1', require("./routes/user/permissionAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeUserAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
+app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 require('./db/conn');
 
 // process.on('unhandledRejection', (err) => {
@@ -104,10 +129,13 @@ require('./db/conn');
 //   });
 // });
 
-  let date = new Date();
-  let weekDay = date.getDay();
-  if(weekDay > 0 && weekDay < 6){
-      const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+  if(process.env.PROD){
+    let date = new Date();
+    let weekDay = date.getDay();
+    if(weekDay > 0 && weekDay < 6){
+        // const job = nodeCron.schedule(`0 5 10 * * ${weekDay}`, cronJobForHistoryData);
+        const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+    }
   }
 
 

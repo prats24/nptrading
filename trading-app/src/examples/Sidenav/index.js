@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useEffect } from "react";
+import axios from "axios";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -51,6 +52,7 @@ import {
 } from "../../context";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
@@ -67,7 +69,15 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const closeSidenav = () => setMiniSidenav(dispatch, true);
 
   const navigate = useNavigate();
-  function goOut(){
+  async function goOut(){
+    await axios.get(`${baseUrl}api/v1/logout`, {
+      withCredentials: true,
+      // headers: {
+      //     Accept: "application/json",
+      //     "Content-Type": "application/json",
+      //     "Access-Control-Allow-Credentials": true
+      // },
+  });
     navigate("/");
   }
 

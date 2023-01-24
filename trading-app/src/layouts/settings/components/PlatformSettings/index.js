@@ -1,112 +1,242 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useState } from "react";
-
 // @mui material components
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
+import Icon from "@mui/material/Icon";
+import Tooltip from "@mui/material/Tooltip";
+import masterCardLogo from "../../../../assets/images/logos/mastercard.png";
+import visaLogo from "../../../../assets/images/logos/visa.png";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
+import MDButton from "../../../../components/MDButton";
+
+import React, {useState, useEffect, useContext} from 'react'
+
+import Grid from "@mui/material/Grid";
+import { useMaterialUIController } from "../../../../context";
+
+// Material Dashboard 2 React components
+import axios from "axios";
+import { userContext } from '../../../../AuthContext';
 
 function PlatformSettings() {
-  const [followsMe, setFollowsMe] = useState(true);
-  const [answersPost, setAnswersPost] = useState(false);
-  const [mentionsMe, setMentionsMe] = useState(true);
-  const [newLaunches, setNewLaunches] = useState(false);
-  const [productUpdate, setProductUpdate] = useState(true);
-  const [newsletter, setNewsletter] = useState(false);
+  const [controller] = useMaterialUIController();
+  const { darkMode } = controller;
+  const [reRender, setReRender] = useState(true);
+  const [settingData, setSettingData] = useState([]);
+  let date = new Date();
+  let modifiedOn = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
 
+  const getDetails = useContext(userContext)
+  let modifiedBy = getDetails.userDetails.name;
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  
+
+  useEffect(()=>{
+  axios.get(`${baseUrl}api/v1/readsetting`)
+  .then((res)=>{
+      setSettingData(res.data)
+      console.log(res.data);
+  }).catch((err)=>{
+      window.alert("Server Down");
+      return new Error(err);
+  })
+  },[reRender])
+
+
+
+  async function isAppLiveFunc(id, appLive){
+      if(appLive){
+          appLive = false
+      } else{
+          appLive = true
+      }
+      const res = await fetch(`${baseUrl}api/v1/applive/${id}`, {
+          method: "PATCH",
+          headers: {
+              "Accept": "application/json",
+              "content-type": "application/json"
+          },
+          body: JSON.stringify({
+              isAppLive: appLive, modifiedBy, modifiedOn
+          })
+      });
+      const dataResp = await res.json();
+      console.log(dataResp);
+      if (dataResp.status === 422 || dataResp.error || !dataResp) {
+          window.alert(dataResp.error);
+          // console.log("Failed to Edit");
+      } else {
+          if(appLive){
+              window.alert("Trading Enabled");
+          } else{
+              window.alert("Trading Disabled");
+          }
+      }
+      reRender ? setReRender(false) : setReRender(true)
+  }
+
+
+  console.log(settingData)
+ 
   return (
     <Card sx={{ boxShadow: "none" }}>
       <MDBox p={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-          platform settings
+          Settings
         </MDTypography>
       </MDBox>
       <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          account
+          App Settings
         </MDTypography>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={followsMe} onChange={() => setFollowsMe(!followsMe)} />
+              <Switch checked={settingData[0]?.isAppLive} onChange={() => {isAppLiveFunc(settingData[0]._id, settingData[0].isAppLive)}}/>
           </MDBox>
           <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when someone follows me
+            <MDTypography variant="button" fontWeight="regular" color="dark">
+              {(settingData[0]?.isAppLive ? "Trading Enabled" : "Trading Disabled")}    
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
+              <Switch checked={true}/>
           </MDBox>
           <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when someone answers on my post
+            <MDTypography variant="button" fontWeight="regular" color="dark">
+              {(true ? "Cron Job Email Notifications On" : "Cron Job Email Notifications Off")}    
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-            <Switch checked={mentionsMe} onChange={() => setMentionsMe(!mentionsMe)} />
+              <Switch checked={true}/>
           </MDBox>
           <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me when someone mentions me
+            <MDTypography variant="button" fontWeight="regular" color="dark">
+              {(true ? "Daily Report Email On" : "Daily Report Email Off")}    
             </MDTypography>
           </MDBox>
         </MDBox>
-        <MDBox mt={3}>
-          <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-            application
-          </MDTypography>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={newLaunches} onChange={() => setNewLaunches(!newLaunches)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              New launches and projects
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={productUpdate} onChange={() => setProductUpdate(!productUpdate)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Monthly product updates
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={newsletter} onChange={() => setNewsletter(!newsletter)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Subscribe to newsletter
-            </MDTypography>
-          </MDBox>
-        </MDBox>
+        <Card id="delete-account">
+      <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
+        <MDTypography variant="h6" fontWeight="medium">
+          Email ID for Notifications
+        </MDTypography>
+        <MDButton variant="gradient" color="dark">
+          <Icon sx={{ fontWeight: "bold" }}>add</Icon>
+          &nbsp;add email
+        </MDButton>
+      </MDBox>
+      <MDBox p={2}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}>
+            <MDBox
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              p={1}
+              sx={{
+                border: ({ borders: { borderWidth, borderColor } }) =>
+                  `${borderWidth[1]} solid ${borderColor}`,
+              }}
+            >
+              {/* <MDBox component="img" src={masterCardLogo} alt="master card" width="10%" mr={2} /> */}
+              <MDTypography variant="h6" fontWeight="medium">
+                prateek@ninepointer.com
+              </MDTypography>
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Edit Email" placement="top">
+                  <Icon sx={{ cursor: "pointer" }} fontSize="small">
+                    edit
+                  </Icon>
+                </Tooltip>
+              </MDBox>
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <MDBox
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              p={1}
+              sx={{
+                border: ({ borders: { borderWidth, borderColor } }) =>
+                  `${borderWidth[1]} solid ${borderColor}`,
+              }}
+            >
+              {/* <MDBox component="img" src={visaLogo} alt="master card" width="10%" mr={2} /> */}
+              <MDTypography variant="h6" fontWeight="medium">
+                kush@ninepointer.com
+              </MDTypography>
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Edit Email" placement="top">
+                  <Icon sx={{ cursor: "pointer" }} fontSize="small">
+                    edit
+                  </Icon>
+                </Tooltip>
+              </MDBox>
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <MDBox
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              p={1}
+              sx={{
+                border: ({ borders: { borderWidth, borderColor } }) =>
+                  `${borderWidth[1]} solid ${borderColor}`,
+              }}
+            >
+              {/* <MDBox component="img" src={visaLogo} alt="master card" width="10%" mr={2} /> */}
+              <MDTypography variant="h6" fontWeight="medium">
+                manish@ninepointer.com
+              </MDTypography>
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Edit Email" placement="top">
+                  <Icon sx={{ cursor: "pointer" }} fontSize="small">
+                    edit
+                  </Icon>
+                </Tooltip>
+              </MDBox>
+            </MDBox>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <MDBox
+              borderRadius="lg"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              p={1}
+              sx={{
+                border: ({ borders: { borderWidth, borderColor } }) =>
+                  `${borderWidth[1]} solid ${borderColor}`,
+              }}
+            >
+              {/* <MDBox component="img" src={visaLogo} alt="master card" width="10%" mr={2} /> */}
+              <MDTypography variant="h6" fontWeight="medium">
+                anshuman@ninepointer.com
+              </MDTypography>
+              <MDBox ml="auto" lineHeight={0} color={darkMode ? "white" : "dark"}>
+                <Tooltip title="Edit Email" placement="top">
+                  <Icon sx={{ cursor: "pointer" }} fontSize="small">
+                    edit
+                  </Icon>
+                </Tooltip>
+              </MDBox>
+            </MDBox>
+          </Grid>
+        </Grid>
+      </MDBox>
+        </Card>
       </MDBox>
     </Card>
   );

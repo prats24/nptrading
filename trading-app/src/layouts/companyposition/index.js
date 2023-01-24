@@ -1,17 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 import React from "react";
 import axios from "axios";
@@ -44,6 +30,7 @@ import reportsLineChartData from "./data/reportsLineChartData";
 // Dashboard components
 
 import Projects from "./components/Projects";
+import MismatchDetails from "./components/MismatchDetails";
 import InstrumentDetails from "./components/InstrumentDetails";
 import MockOverallCompanyPNL from "./components/MockOverallCompanyPNL";
 import LiveOverallCompanyPNL from "./components/LiveOverallCompanyPNL";
@@ -125,6 +112,8 @@ function CompanyPosition() {
             return new Error(err);
         })
     }, []);
+
+    console.log("company position is re rendering")
     console.log(todaymockcount)
     console.log(allmockcount)
     console.log(todaylivecount)
@@ -134,7 +123,13 @@ function CompanyPosition() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
-
+      <MDBox mt={1}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <MismatchDetails socket={socket}/>
+            </Grid>
+          </Grid>
+        </MDBox>
         <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>

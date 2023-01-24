@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // prop-types is a library for typechecking of props.
@@ -24,25 +9,18 @@ import Grid from "@mui/material/Grid";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import Icon from "@mui/material/Icon";
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
-import MDTypography from "../../../components/MDTypography";
-import MDAvatar from "../../../components/MDAvatar";
-import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
-import Footer from "../../../examples/Footer";
 
 // Material Dashboard 2 React base styles
 import breakpoints from "../../../assets/theme/base/breakpoints";
 
 // Images
 import PersonIcon from '@mui/icons-material/Person';
-import burceMars from "../../../assets/images/bruce-mars.jpg";
-import backgroundImage from "../../../assets/images/bg-profile.jpeg";
+import backgroundImage from "../../../assets/images/trading.jpg";
 import DailyPnlData from "../dailyPnl";
+import DailyPnlMaxMinData from "../dailyPnlMaxMin";
 
 
 
@@ -82,7 +60,7 @@ function DailyPNLHeader({ children }) {
         display="flex"
         alignItems="center"
         position="relative"
-        minHeight="18.75rem"
+        minHeight="10rem"
         borderRadius="x1"
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
@@ -116,6 +94,12 @@ function DailyPNLHeader({ children }) {
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
+                <Tab
+                  label="P&L Analysis"
+                  icon={
+                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
+                     }
+                />
 
                 <Tab
                   label="Real Trades"
@@ -127,6 +111,7 @@ function DailyPNLHeader({ children }) {
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><DailyPnlData/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><DailyPnlMaxMinData/> </TabPanel>
             {/* <TabPanel value={tabValue} index={1}><Roles/> </TabPanel> */}
             {/* <TabPaneltwo/> */}
           </Grid>

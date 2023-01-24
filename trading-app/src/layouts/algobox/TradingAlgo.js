@@ -48,6 +48,11 @@ const TradingAlgo = () => {
 
 
     async function marginDeduction(id, marginDeduction){
+        if(marginDeduction){
+            marginDeduction = false;
+        } else{
+            marginDeduction = true;
+        }
         const res = await fetch(`${baseUrl}api/v1/updatemargindeduction/${id}`, {
             method: "PATCH",
             headers: {
@@ -65,9 +70,9 @@ const TradingAlgo = () => {
             // console.log("Failed to Edit");
         } else {
             if(marginDeduction === false){
-                window.alert("Margin Deduction is Enabled");
-            } else{
                 window.alert("Margin Deduction is Disabled");
+            } else{
+                window.alert("Margin Deduction is Enabled");
             }
         }
         reRender ? setReRender(false) : setReRender(true)
@@ -200,6 +205,7 @@ const TradingAlgo = () => {
 
     algoData.map((subelem)=>{
         let obj = {};
+        let statuscolor = subelem.status == "Active" ? "success" : "error"
         obj.edit = (
             <MDButton variant="Contained" color="black" fontWeight="medium">
                 <TradingAlgoEditModel data={algoData} id={subelem._id} Render={{setReRender, reRender}}/>
@@ -236,7 +242,7 @@ const TradingAlgo = () => {
             </MDBox>
         );
         obj.status = (
-            <MDTypography component="a" variant="caption" fontWeight="medium">
+            <MDTypography component="a" color={statuscolor} variant="caption" fontWeight="medium">
               {(subelem.status)}
             </MDTypography>
         );
@@ -286,7 +292,7 @@ const TradingAlgo = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Algo(s)
                                     </MDTypography>
-                                    <TradingAlgoModel/>
+                                    <TradingAlgoModel Render={{reRender, setReRender}}/>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable

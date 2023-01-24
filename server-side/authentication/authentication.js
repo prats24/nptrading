@@ -19,7 +19,7 @@ const Authenticate = async (req, res, next)=>{
         req.user = user;
 
     } catch(err){
-        res.status(401).send("Unauthorised")
+        res.status(401).send("Unauthenthicated")
         console.log(err);
     }
     next();

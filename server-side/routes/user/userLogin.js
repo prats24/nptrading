@@ -17,22 +17,21 @@ router.post("/login", async (req, res)=>{
     //     return res.status(422).json({error : "invalid details"})
     // }
 
-    if(pass !== process.env.PASSWORD){
-        return res.status(422).json({error : "invalid details"})
-    }
+    // if(pass !== process.env.PASSWORD){
+    //     return res.status(422).json({error : "invalid details"})
+    // }
 
     const userLogin = await UserDetail.findOne({email : userId})
     console.log(userLogin);
-    // if(!userLogin && !(await userLogin.correctPassword(pass, userLogin.password))){
-    //     return res.status(422).json({error : "invalid details"})
-    // }else{
+    if(!userLogin || !(await userLogin.correctPassword(pass, userLogin.password))){
+        return res.status(422).json({error : "invalid details"})
+    }else{
     
-    //REMINDER ---> HAVE TO FIX ACCORDING ABOVE COMMENTED CODE.
+     //REMINDER ---> HAVE TO FIX ACCORDING ABOVE COMMENTED CODE.
         if(!userLogin ){
             return res.status(422).json({error : "invalid details"})
         }else{
         
-
         const token = await userLogin.generateAuthToken();
         console.log(token);
         
@@ -43,12 +42,23 @@ router.post("/login", async (req, res)=>{
         // res.json(token);
         res.status(201).json({massage : "user login succesfully"});
     }
+}
 })
 
 router.get("/loginDetail", authentication, (req, res)=>{
     console.log("hello my about", req.user);
     // res.json({message: "data"});
     res.json(req.user);
+})
+
+router.get("/logout", authentication, (req, res)=>{
+    res.clearCookie("jwtoken", { path: "/" });
+    res
+    .status(200)
+    .json({ success: true, message: "User logged out successfully" });
+    // console.log("hello my about", req.user);
+    // res.json({message: "data"});
+    // res.json(req.user);
 })
 
 

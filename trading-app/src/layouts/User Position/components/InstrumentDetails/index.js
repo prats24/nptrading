@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState } from "react";
 
 // @mui material components
@@ -44,6 +29,8 @@ function InstrumentDetails({socket, Render}) {
   const { columns, rows, instrumentData } = data();
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
+  const [isAppLive, setisAppLive] = useState('');
+
 
   useEffect(()=>{
 
@@ -62,6 +49,13 @@ function InstrumentDetails({socket, Render}) {
       // setDetails.setMarketData(data);
     })
   }, [])
+
+  useEffect(() => {
+    axios.get(`${baseUrl}api/v1/readsetting`)
+      .then((res) => {
+        setisAppLive(res.data[0].isAppLive);
+      });
+  }, []);
 
   //console.log("marketData", marketData)
   let ltpArr = [];
@@ -151,8 +145,8 @@ function InstrumentDetails({socket, Render}) {
             >
             
             </CheckCircleIcon>
-            <MDTypography variant="button" fontWeight="regular" color="success">
-              &nbsp;<strong>System Live</strong>
+            <MDTypography variant="button" fontWeight="regular" color={isAppLive ? "success" : "error"}>
+              &nbsp;<strong>{isAppLive ? "System Live" : "System Offline"}</strong>
             </MDTypography>
           </MDBox>
         </MDBox>
