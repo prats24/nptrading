@@ -17,6 +17,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
  
 // Data
 import data from "./data";
+import ViewTradeDetail from "./ViewTradeDetail";
 
 function MockTraderwiseCompantPNL({socket}) {
   const { columns, rows } = data();
@@ -148,7 +149,8 @@ function MockTraderwiseCompantPNL({socket}) {
           lotUsed : Math.abs(allTrade[i].lotUsed),
           runninglots : allTrade[i].lots,
           brokerage: allTrade[i].brokerage,
-          noOfTrade: allTrade[i].trades
+          noOfTrade: allTrade[i].trades,
+          userId: allTrade[i]._id.traderId
         }) 
       }
 
@@ -165,7 +167,9 @@ function MockTraderwiseCompantPNL({socket}) {
       return (b.totalPnl-b.brokerage)-(a.totalPnl-a.brokerage)
     });
 
-    console.log(finalTraderPnl)
+    console.log("finalTraderPnl", finalTraderPnl)
+
+
 
 let totalGrossPnl = 0;
 let totalTransactionCost = 0;
@@ -187,6 +191,12 @@ finalTraderPnl.map((subelem, index)=>{
   totalNoRunningLots += (subelem.runninglots);
   totalLotsUsed += (subelem.lotUsed);
   totalTrades += (subelem.noOfTrade);
+
+  obj.userId = (
+    <MDTypography component="a" variant="caption" fontWeight="medium">
+      {subelem.userId}
+    </MDTypography>
+  );
 
   obj.traderName = (
     <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor} padding="5px" borderRadius="5px">
@@ -230,7 +240,7 @@ finalTraderPnl.map((subelem, index)=>{
     </MDTypography>
   );
   obj.view = (
-    <MDButton variant="outlined" color="info" fontWeight="10px">View</MDButton>
+    <ViewTradeDetail socket={socket} userId={subelem.userId}/>
   );
 
   rows.push(obj);
@@ -240,6 +250,8 @@ let obj = {};
 
 const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
 const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
+
+
 
 obj.traderName = (
   <MDTypography component="a" variant="caption" fontWeight="medium">
@@ -285,6 +297,8 @@ obj.netPnl = (
 );
 
 rows.push(obj);
+
+console.log("traderwise row", rows)
 
 
   return (
