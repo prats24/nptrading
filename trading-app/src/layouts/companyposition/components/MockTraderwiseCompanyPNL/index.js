@@ -165,13 +165,17 @@ function MockTraderwiseCompantPNL({socket}) {
       return (b.totalPnl-b.brokerage)-(a.totalPnl-a.brokerage)
     });
 
-    console.log(finalTraderPnl)
+    console.log("finalTraderPnl", finalTraderPnl)
 
 let totalGrossPnl = 0;
 let totalTransactionCost = 0;
 let totalNoRunningLots = 0;
 let totalTrades = 0;
 let totalLotsUsed = 0;
+
+function viewTraderFullReport(){
+  
+}
 
 finalTraderPnl.map((subelem, index)=>{
   let obj = {};
@@ -230,7 +234,7 @@ finalTraderPnl.map((subelem, index)=>{
     </MDTypography>
   );
   obj.view = (
-    <MDButton variant="outlined" color="info" fontWeight="10px">View</MDButton>
+    <MDButton variant="outlined" color="info" fontWeight="10px" onClick={()=>{viewTraderFullReport()}}>View</MDButton>
   );
 
   rows.push(obj);
