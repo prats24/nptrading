@@ -58,11 +58,6 @@ router.get("/updatelivetradedata", async(req, res)=>{
 })
 
 router.get("/updatelivetradedataamount", async(req, res)=>{
-    // let date = new Date();
-    // let id = data._id;
-    // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    // const {email} = req.params
-    // console.log(todayDate)
     let datatoupdate = await LiveCompanyTradeData.find()
     console.log(datatoupdate);
 
@@ -560,7 +555,6 @@ router.get("/readlivetradecompanyagg",async (req, res)=>{
         { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
         { $sort:{ _id: -1 }}
      ])
-                //console.log(x)
 
         res.status(201).json(x);
 })
@@ -573,31 +567,9 @@ router.get("/readlivetradecompanytodayagg",async (req, res)=>{
          { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
          { $sort:{ _id: -1 }}
       ])
-                 //console.log(x)
  
          res.status(201).json(x);
  })
-
-
-//  router.get("/getlastestlivetradecompany", async(req, res)=>{
-//     console.log("Inside Aggregate API - Live Trade Details Latest Order")
-    
-//     let date = new Date();
-//     const days = date.getDay();
-//     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-//     console.log("Today "+todayDate)
-    
-//     let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
-//                     { $project: { "_id" : 0, "status" : 1, "trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 } },
-//                     { $sort: { "trade_time": -1 }},
-//                     { $limit : 1}
-//                 ]
-
-//     let x = await MockTradeDetails.aggregate(pipeline)
-
-//         res.status(201).json(x[0]);
-        
-// })
 
 
 router.get("/getoverallpnllivetradeparticularusertodaycompanyside/:email", async(req, res)=>{

@@ -6,6 +6,7 @@ import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
+
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
@@ -14,6 +15,7 @@ import MDTypography from "../../../../components/MDTypography";
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
 import LiveViewTradeDetail from "./LiveViewTradeDetail"
+import LiveTraderwiseOrders from "./LiveTraderwiseOrders"
 
 // Data
 import data from "./data";
@@ -174,6 +176,7 @@ function LiveTraderwiseCompantPNL({socket}) {
     let totalNoRunningLots = 0;
     let totalTrades = 0;
     let totalLotsUsed = 0;
+    let totalTraders = 0;
      finalTraderPnl.map((subelem, index)=>{
        let obj = {};
 
@@ -190,6 +193,7 @@ function LiveTraderwiseCompantPNL({socket}) {
        totalNoRunningLots += (subelem.runninglots);
        totalLotsUsed += (subelem.lotUsed);
        totalTrades += (subelem.noOfTrade);
+       totalTraders += 1;
 
        obj.userId = (
         <MDTypography component="a" variant="caption" fontWeight="medium">
@@ -241,6 +245,9 @@ function LiveTraderwiseCompantPNL({socket}) {
        obj.view = (
         <LiveViewTradeDetail socket={socket} userId={subelem.userId}/>
       );
+      obj.orders = (
+        <LiveTraderwiseOrders userId={subelem.userId}/>
+      );
    
        //console.log(obj)
        rows.push(obj);
@@ -253,8 +260,8 @@ function LiveTraderwiseCompantPNL({socket}) {
 
    
      obj.traderName = (
-       <MDTypography component="a" variant="caption" fontWeight="medium">
-         {}
+       <MDTypography component="a" variant="caption" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+         Traders: {totalTraders}
        </MDTypography>
      );
    

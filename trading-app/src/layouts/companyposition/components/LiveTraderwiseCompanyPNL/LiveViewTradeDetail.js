@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -279,8 +280,8 @@ return (
 <div>
 
 
-<MDButton variant="contained" color="info" onClick={handleClickOpen} fullWidth>
-    View
+<MDButton variant="" color="black" onClick={handleClickOpen} fullWidth>
+  <RemoveRedEyeIcon/>
 </MDButton>
 <div>
   <Dialog
@@ -305,14 +306,6 @@ return (
 
       </DialogContentText>
     </DialogContent>
-    {/* <DialogActions>
-      <MDButton autoFocus variant="contained" color="info" onClick={(e) => { exitPosition(e) }}>
-        EXIT
-      </MDButton>
-      <MDButton variant="contained" color="info" onClick={handleClose} autoFocus>
-        Close
-      </MDButton>
-    </DialogActions> */}
   </Dialog>
 </div >
 

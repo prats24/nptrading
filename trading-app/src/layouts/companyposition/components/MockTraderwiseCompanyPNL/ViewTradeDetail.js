@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -277,9 +278,9 @@ return (
   <div>
 
 
-  <MDButton variant="contained" color="info" onClick={handleClickOpen} fullWidth>
-      View
-  </MDButton>
+  <Button variant="" color="black" onClick={handleClickOpen} width="10px">
+      <RemoveRedEyeIcon/>
+  </Button>
   <div>
     <Dialog
       fullScreen={fullScreen}

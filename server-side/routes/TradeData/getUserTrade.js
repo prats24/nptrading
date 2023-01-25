@@ -279,5 +279,46 @@ router.get("/readlivetradeusertodayagg",async (req, res)=>{
          res.status(201).json(x);
  })
 
+router.get("/getusertrades/:userId", async(req, res)=>{
+    const {userId} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let todaysTrade = await UserTradeData.aggregate([
+        [
+            {
+              $match: {
+                trade_time: {
+                  $regex: todayDate,
+                },
+                userId:userId,
+              },
+            },
+            {
+              $project: {
+                _id : 0,
+                createdBy: 1,
+                Product: 1,
+                buyOrSell: 1,
+                Quantity: 1,
+                symbol: 1,
+                average_price: 1,
+                brokerage: 1,
+                amount: 1,
+                trade_time: 1,
+                order_id: 1,
+              },
+            },
+            {
+              $sort:
+                {
+                  trade_time: -1,
+                },
+            },
+          ]
+    ])
+        res.status(201).json(todaysTrade);
+ 
+})
 
 module.exports = router;

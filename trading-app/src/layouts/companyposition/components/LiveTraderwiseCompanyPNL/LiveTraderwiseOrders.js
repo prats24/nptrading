@@ -1,0 +1,210 @@
+import {useState, useEffect} from "react"
+import axios from "axios";
+// @mui material components
+import Card from "@mui/material/Card";
+import Icon from "@mui/material/Icon";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+
+// Material Dashboard 2 React components
+import MDBox from "../../../../components/MDBox";
+import MDButton from "../../../../components/MDButton";
+import MDTypography from "../../../../components/MDTypography";
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+// import MDButton from '../../../components/MDButton';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
+import { Box, Typography } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+// import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import ViewOrders from '@mui/icons-material/ViewList';
+
+// Material Dashboard 2 React examples
+import DataTable from "../../../../examples/Tables/DataTable";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import LiveViewTradeDetailData from "./data/LiveTraderwiseOrdersData";
+
+ 
+// Data
+// import data from "./data";
+
+
+function TraderOrders({userId}) {
+  const {columns, rows} = LiveViewTradeDetailData();
+
+const [open, setOpen] = useState(false);
+const theme = useTheme();
+const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+const [menu, setMenu] = useState(null);
+
+const closeMenu = () => setMenu(null);
+
+
+const [regularSwitch, setRegularSwitch] = useState(true);
+const handleClickOpen = () => {
+
+  setOpen(true);
+
+}; 
+
+const handleClose = (e) => {
+  setOpen(false);
+};
+
+
+
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+const [orderData, setOrderData] = useState([]);
+const [tradeData, setTradeData] = useState([]);
+
+let liveDetailsArr = [];
+let totalTransactionCost = 0;
+let totalGrossPnl = 0;
+let totalRunningLots = 0;
+
+  useEffect(()=>{
+
+    axios.get(`${baseUrl}api/v1/getusertrades/${userId}`)
+    .then((res) => {
+        setOrderData(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
+  }, [orderData])
+
+  console.log("orderData", orderData)
+  orderData.map((elem,index)=>{
+    let obj = {};
+
+    //const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
+    // const quantitycolor = subelem.lots >= 0 ? "success" : "error"
+    // const gpnlcolor = updatedValue >= 0 ? "success" : "error"
+    // const pchangecolor = (liveDetail[index]?.change) >= 0 ? "success" : "error"
+    // const productcolor =  subelem._id.product === "NRML" ? "info" : subelem._id.product == "MIS" ? "warning" : "error"
+
+    obj.trader = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {(elem.createdBy)}
+      </MDTypography>
+    );
+
+    obj.product = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {(elem.Product)}
+      </MDTypography>
+    );
+
+    obj.instrument = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {(elem.symbol)}
+      </MDTypography>
+    );
+
+    obj.type = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.buyOrSell}
+      </MDTypography>
+    );
+
+    obj.quantity = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.Quantity}
+      </MDTypography>
+    );
+
+    obj.averageprice = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {"₹"+elem.average_price.toFixed(2)}
+      </MDTypography>
+    );
+
+    obj.brokerage = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {"₹"+Number(elem.brokerage).toFixed(2)}
+      </MDTypography>
+    );
+
+    obj.amount = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {"₹"+elem.amount.toFixed(2)}
+      </MDTypography>
+    );
+    obj.timestamp = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.trade_time}
+      </MDTypography>
+    );
+
+    rows.push(obj);
+  })
+
+// const renderMenu = (
+//   <Menu
+//     id="simple-menu"
+//     anchorEl={menu}
+//     anchorOrigin={{
+//       vertical: "top",
+//       horizontal: "left",
+//     }}
+//     transformOrigin={{
+//       vertical: "top",
+//       horizontal: "right",
+//     }}
+//     open={Boolean(menu)}
+//     onClose={closeMenu}
+//   >
+//     <MenuItem onClick={closeMenu}>Action</MenuItem>
+//     <MenuItem onClick={closeMenu}>Another action</MenuItem>
+//     <MenuItem onClick={closeMenu}>Something else</MenuItem>
+//   </Menu>
+// );
+
+return (
+<div>
+<MDButton variant="" color="black" onClick={handleClickOpen} fullWidth>
+  <ViewOrders/>
+</MDButton>
+<div>
+  <Dialog
+    fullScreen={fullScreen}
+    open={open}
+    onClose={handleClose}
+    aria-labelledby="responsive-dialog-title">
+    <DialogTitle id="responsive-dialog-title" sx={{ textAlign: 'center' }}>
+      {"Regular"}
+    </DialogTitle>
+    <DialogContent>
+      <DialogContentText sx={{ display: "flex", flexDirection: "column", marginLeft: 2, width: "500px" }}>
+
+        <MDBox>
+          <DataTable
+            table={{ columns, rows }}
+            showTotalEntries={true}
+            isSorted={false}
+            pagination={false}
+            noEndBorder
+          />
+        </MDBox>
+
+      </DialogContentText>
+    </DialogContent>
+  </Dialog>
+</div >
+
+</div >
+);
+
+}
+export default TraderOrders;
