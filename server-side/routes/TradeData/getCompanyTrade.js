@@ -600,4 +600,59 @@ router.get("/readlivetradecompanytodayagg",async (req, res)=>{
 // })
 
 
+router.get("/getoverallpnllivetradeparticularusertodaycompanyside/:email", async(req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            userId: email
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange"
+            },
+            amount: {
+              $sum: {$multiply : ["$amount",-1]},
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+                // console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+
 module.exports = router;
