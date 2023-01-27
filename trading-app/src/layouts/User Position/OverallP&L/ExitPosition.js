@@ -549,21 +549,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                     }
                   </Select>
                 </FormControl>
-
-              {/* <TextField
-                disabled
-                id="outlined-basic" label="Quantity" variant="standard" value={Math.abs(quantity)}
-                sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} /> */}
-
-              {/* <TextField
-                disabled
-                id="outlined-basic" label="Price" variant="standard" onChange={(e) => { { exitPositionFormDetails.Price = (e.target.value) } }}
-                sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
-
-              <TextField
-                disabled
-                id="outlined-basic" label="Trigger Price" variant="standard" onChange={(e) => { { exitPositionFormDetails.TriggerPrice = (e.target.value) } }}
-                sx={{ margin: 1, padding: 1, width: "300px" }} /> */}
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
               <FormControl  >
@@ -580,19 +565,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                   {/* <FormControlLabel value="LIMIT" control={<Radio />} label="LIMIT" /> */}
                 </RadioGroup>
               </FormControl>
-              {/* <FormControl  >
-                <FormLabel id="demo-controlled-radio-buttons-group" ></FormLabel>
-                <RadioGroup
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  onChange={(e) => { { exitPositionFormDetails.stopLoss = (e.target.value) } }}
-                  sx={{ display: "flex", flexDirection: "row" }}
-                >
-                  <FormControlLabel value="SL" control={<Radio />} label="SL" />
-                  <FormControlLabel value="SLM" control={<Radio />} label="SL-M" />
-                </RadioGroup>
-              </FormControl> */}
-
             </Box>
 
             <Box>
