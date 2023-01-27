@@ -307,6 +307,7 @@ router.get("/getusertrades/:userId", async(req, res)=>{
                 amount: 1,
                 trade_time: 1,
                 order_id: 1,
+                status: 1,
               },
             },
             {

@@ -9,7 +9,7 @@ router.get("/companylivetradedatatodaywithemail/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate);
+    //console.log(todayDate);
     LiveCompanyTradeData.find({order_timestamp: {$regex: todayDate}, userId: {$regex: email}}).sort({trade_time: -1})
     .then((data)=>{
         return res.status(200).send(data);
@@ -23,7 +23,7 @@ router.get("/readlivetradecompanyDate", (req, res)=>{
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     const {email} = req.params
-    console.log(todayDate)
+    //console.log(todayDate)
     LiveCompanyTradeData.find({order_timestamp: {$regex: todayDate}}).sort({trade_time: -1})
     .then((data)=>{
         return res.status(200).send(data);
@@ -40,7 +40,7 @@ router.get("/updatelivetradedata", async(req, res)=>{
     // const {email} = req.params
     // console.log(todayDate)
     let datatoupdate = await LiveCompanyTradeData.find()
-    console.log(datatoupdate);
+    //console.log(datatoupdate);
 
 
         for(let i = 0; i< datatoupdate.length; i++ ){
@@ -59,7 +59,7 @@ router.get("/updatelivetradedata", async(req, res)=>{
 
 router.get("/updatelivetradedataamount", async(req, res)=>{
     let datatoupdate = await LiveCompanyTradeData.find()
-    console.log(datatoupdate);
+    //console.log(datatoupdate);
 
 
         for(let i = 0; i< datatoupdate.length; i++ ){
@@ -373,7 +373,7 @@ router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
         },
       ])
             
-                console.log(pnlDetails)
+                //console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  
@@ -424,7 +424,7 @@ router.get("/getavgpricelivetradecompany", async(req, res)=>{
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}, status: "COMPLETE"} },
 
@@ -445,19 +445,19 @@ router.get("/getavgpricelivetradecompany", async(req, res)=>{
 
     let getAvgPrice = await LiveCompanyTradeData.aggregate(pipeline)
             
-                console.log(getAvgPrice);
+                //console.log(getAvgPrice);
 
         res.status(201).json(getAvgPrice);
         
 })
 
 router.get("/getlastestlivetradecompany", async(req, res)=>{
-    console.log("Inside Aggregate API - Latest Live Trade API")
+    //console.log("Inside Aggregate API - Latest Live Trade API")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1, "status" : 1  } },
@@ -471,17 +471,17 @@ router.get("/getlastestlivetradecompany", async(req, res)=>{
 })
 
 router.get("/getpnllivetradecompanylastfivedays", async(req, res)=>{
-    console.log("Inside Aggregate API - Last 5 days chart data live pnl")
+    //console.log("Inside Aggregate API - Last 5 days chart data live pnl")
     const days = 6
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("ToDay Date :"+day); // Apr 30 2000
+    //console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
-    console.log("StartDate"+yesterday);
+    //console.log("StartDate"+yesterday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let x = await LiveCompanyTradeData.aggregate([
@@ -509,17 +509,17 @@ router.get("/getpnllivetradecompanylastfivedays", async(req, res)=>{
 })
 
 router.get("/getpnllivetradecompanydailythismonth", async(req, res)=>{
-    console.log("Inside Aggregate API - Last 5 days chart data")
+    //console.log("Inside Aggregate API - Last 5 days chart data")
     const days = 6
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("ToDay Date :"+day); // Apr 30 2000
+    //console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
-    console.log("StartDate"+yesterday);
+    //console.log("StartDate"+yesterday);
 
     let yesterdayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     let x = await LiveCompanyTradeData.aggregate([
@@ -540,7 +540,7 @@ router.get("/getpnllivetradecompanydailythismonth", async(req, res)=>{
         { $sort: {_id: 1}}
             ])
             
-                console.log(x);
+                //console.log(x);
 
         res.status(201).json(x);
         

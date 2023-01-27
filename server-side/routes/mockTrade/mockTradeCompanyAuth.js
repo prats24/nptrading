@@ -659,7 +659,7 @@ router.get("/readmocktradecompanyThisYear/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today Date"+todayDate);
+    //console.log("Today Date"+todayDate);
 
     var day = new Date(todayDate);
     console.log(day); // Apr 30 2000
@@ -942,7 +942,7 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("ToDay Date :"+day); // Apr 30 2000
+    //console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
@@ -980,7 +980,7 @@ router.get("/getpnlmocktradecompanydailythismonth", async(req, res)=>{
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("ToDay Date :"+day); // Apr 30 2000
+    //console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
@@ -1017,18 +1017,18 @@ router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
     let date = new Date(); 
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
     console.log("Day "+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - days);
-    console.log("StartDate "+startday);
+    //console.log("StartDate "+startday);
 
     let startdayDate = `${(startday.getFullYear())}-${String(startday.getMonth() + 1).padStart(2, '0')}-${String(startday.getDate()).padStart(2, '0')}`
     let pipeline = [{ $match: { trade_time : {$gte : `${startdayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }, status: "COMPLETE"} },
@@ -1370,7 +1370,7 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
 })
 
 router.get("/getlastestmocktradecompany", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Latest Order")
+    //console.log("Inside Aggregate API - Mock Trade Details Latest Order")
     
     let date = new Date();
     const days = date.getDay();

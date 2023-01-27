@@ -11,38 +11,27 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-// import MDButton from '../../../components/MDButton';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import { Box, Typography } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 // import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 import ViewOrders from '@mui/icons-material/ViewList';
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import LiveViewTradeDetailData from "./data/LiveTraderwiseOrdersData";
+import MockViewTradeDetailData from "./data/MockTraderwiseOrdersData";
 
  
 // Data
 // import data from "./data";
 
 
-function TraderOrders({userId}) {
-  const {columns, rows} = LiveViewTradeDetailData();
+function TraderMockOrders({userId}) {
+  const {columns, rows} = MockViewTradeDetailData();
 
 const [open, setOpen] = useState(false);
 const theme = useTheme();
@@ -76,7 +65,7 @@ let totalRunningLots = 0;
 
   useEffect(()=>{
 
-    axios.get(`${baseUrl}api/v1/getusertrades/${userId}`)
+    axios.get(`${baseUrl}api/v1/getusermocktrades/${userId}`)
     .then((res) => {
         setOrderData(res.data);
     }).catch((err) => {
@@ -84,7 +73,7 @@ let totalRunningLots = 0;
     })
   }, [orderData])
 
-  console.log("orderData", orderData)
+  console.log("mockorderData", orderData)
   orderData.map((elem,index)=>{
     let obj = {};
 
@@ -190,4 +179,4 @@ return (
 );
 
 }
-export default TraderOrders;
+export default TraderMockOrders;
