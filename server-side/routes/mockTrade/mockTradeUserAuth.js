@@ -384,7 +384,7 @@ router.get("/pnlcalucationmocktradeusertoday", async(req, res)=>{
         let overallnewpnl = await pnlcalucationnorunninglotsuser(data);
         //console.log(overallnewpnl);
         //traderwisepnl.push(overallnewpnl);
-        //console.log(overallnewpnl);
+       //console.log(overallnewpnl);
         return res.status(200).send(overallnewpnl);
     })
     .catch((err)=>{
@@ -799,6 +799,88 @@ router.get("/traderwisetraderpnlreport/:startDate/:endDate", async(req, res)=>{
                     },
                 { $sort :
                     { npnl: -1 }
+                }
+                ]
+
+    let x = await MockTradeDetails.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/getusermocktrades/:userId", async(req, res)=>{
+    const {userId} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let todaysTrade = await MockTradeDetails.aggregate([
+        [
+            {
+              $match: {
+                trade_time: {
+                  $regex: todayDate,
+                },
+                userId:userId,
+              },
+            },
+            {
+              $project: {
+                _id : 0,
+                createdBy: 1,
+                Product: 1,
+                buyOrSell: 1,
+                Quantity: 1,
+                symbol: 1,
+                average_price: 1,
+                brokerage: 1,
+                amount: 1,
+                trade_time: 1,
+                order_id: 1,
+                status: 1,
+              },
+            },
+            {
+              $sort:
+                {
+                  trade_time: -1,
+                },
+            },
+          ]
+    ])
+        res.status(201).json(todaysTrade);
+ 
+})
+
+router.get("/datewisetraderpnl/:queryDate/:traderName", async(req, res)=>{
+    console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+    let {queryDate,traderName} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${queryDate} 00:00:00`, $lte : `${queryDate} 23:59:59`},
+                        status : "COMPLETE",
+                        createdBy : traderName
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: {
+                                "date": {$substr: [ "$trade_time", 0, 10 ]},
+                                "traderName": "$createdBy"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    }
                 }
                 ]
 

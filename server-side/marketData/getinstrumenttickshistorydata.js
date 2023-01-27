@@ -7,7 +7,10 @@ const HistoryData = require("../models/InstrumentHistoricalData/InstrumentHistor
 const getKiteCred = require('../marketData/getKiteCred'); 
 const nodemailer = require('nodemailer');
 const dailyPnlDataController = require("../controllers/dailyPnlDataController")
+const traderwiseDailyPnlController = require("../controllers/traderwiseDailyPnlController")
 const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSchema")
+const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
+
 
 
 
@@ -66,14 +69,17 @@ const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSch
 
               const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
               const dailyPnl = await DailyPNLData.find({timestamp: {$regex:matchingDate}})
+              const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:matchingDate}})
               
-
-
               let length = historyDataforLen.length;
               mailSender(length);
 
               if(dailyPnl.length === 0){
                 await dailyPnlDataController.dailyPnlCalculation(matchingDate);
+              }
+
+              if(traderDailyPnl.length === 0){
+                await traderwiseDailyPnlController.traderDailyPnlCalculation(matchingDate);
               }
 
             },20000)

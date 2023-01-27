@@ -19,6 +19,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
 // Data
 import data from "./data";
 import ViewTradeDetail from "./ViewTradeDetail";
+import ViewOrderDetail from "./MockTraderwiseOrders";
 
 function MockTraderwiseCompantPNL({socket}) {
   const { columns, rows } = data();
@@ -250,7 +251,7 @@ finalTraderPnl.map((subelem, index)=>{
     <ViewTradeDetail socket={socket} userId={subelem.userId}/>
   );
   obj.orders = (
-    <ViewOrders/>
+    <ViewOrderDetail userId={subelem.userId}/>
   );
 
   rows.push(obj);

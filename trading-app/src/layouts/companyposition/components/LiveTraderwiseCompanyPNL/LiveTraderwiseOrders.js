@@ -88,11 +88,10 @@ let totalRunningLots = 0;
   orderData.map((elem,index)=>{
     let obj = {};
 
-    //const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
-    // const quantitycolor = subelem.lots >= 0 ? "success" : "error"
-    // const gpnlcolor = updatedValue >= 0 ? "success" : "error"
-    // const pchangecolor = (liveDetail[index]?.change) >= 0 ? "success" : "error"
-    // const productcolor =  subelem._id.product === "NRML" ? "info" : subelem._id.product == "MIS" ? "warning" : "error"
+    const typecolor = elem.buyOrSell == "BUY" ? "info" : "error"
+    const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
+    const quantitycolor = elem.Quantity > 0 ? "info" : "error"
+    const productcolor = elem.Product == "MIS" ? "warning" : "info"
 
     obj.trader = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -101,7 +100,7 @@ let totalRunningLots = 0;
     );
 
     obj.product = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={productcolor} fontWeight="medium">
         {(elem.Product)}
       </MDTypography>
     );
@@ -113,13 +112,13 @@ let totalRunningLots = 0;
     );
 
     obj.type = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={quantitycolor} fontWeight="medium">
         {elem.buyOrSell}
       </MDTypography>
     );
 
     obj.quantity = (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+      <MDTypography component="a" variant="caption" color={quantitycolor} fontWeight="medium">
         {elem.Quantity}
       </MDTypography>
     );
@@ -138,38 +137,22 @@ let totalRunningLots = 0;
 
     obj.amount = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {"₹"+elem.amount.toFixed(2)}
+        {"₹"+Math.abs(elem.amount).toFixed(2)}
       </MDTypography>
     );
     obj.timestamp = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.trade_time}
+        {(elem.trade_time).slice(11)}
+      </MDTypography>
+    );
+    obj.status = (
+      <MDTypography component="a" variant="caption" color={statuscolor} fontWeight="medium">
+        {elem.status}
       </MDTypography>
     );
 
     rows.push(obj);
   })
-
-// const renderMenu = (
-//   <Menu
-//     id="simple-menu"
-//     anchorEl={menu}
-//     anchorOrigin={{
-//       vertical: "top",
-//       horizontal: "left",
-//     }}
-//     transformOrigin={{
-//       vertical: "top",
-//       horizontal: "right",
-//     }}
-//     open={Boolean(menu)}
-//     onClose={closeMenu}
-//   >
-//     <MenuItem onClick={closeMenu}>Action</MenuItem>
-//     <MenuItem onClick={closeMenu}>Another action</MenuItem>
-//     <MenuItem onClick={closeMenu}>Something else</MenuItem>
-//   </Menu>
-// );
 
 return (
 <div>

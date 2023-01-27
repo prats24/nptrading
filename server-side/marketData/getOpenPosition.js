@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 
   const getOpenPositionData = async (req,res) => {
     getKiteCred.getAccess().then(async (data)=>{
+    //console.log("Inside Open Position Code")
     const api_key = data.getApiKey;
     const access_token = data.getAccessToken;
     let auth = 'token' + api_key + ':' + access_token;
