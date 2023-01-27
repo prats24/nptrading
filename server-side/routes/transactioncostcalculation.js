@@ -5,7 +5,7 @@ let transactionCost = 0;
 let day = 4;
 
 for(let j = data.length-1; j >= 0 ; j--){
-    console.log("Inside for loop");
+    // console.log("Inside for loop");
     transactionCost += Number(data[j].brokerage);
 }
 // tcostarr.push(transactionCost);

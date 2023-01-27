@@ -26,7 +26,6 @@ router.get("/getmargin", (req, res)=>{
             const response = await axios.get(url, authOptions);
             for (let elem in response.data.data) {
                 if(elem === equity){
-                    console.log(response.data.data[elem]);
                     return res.status(201).send((response.data.data[elem]));
                 }
             }

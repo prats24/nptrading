@@ -22,7 +22,7 @@ router.post("/login", async (req, res)=>{
     // }
 
     const userLogin = await UserDetail.findOne({email : userId})
-    console.log(userLogin);
+    //console.log(userLogin);
     if(!userLogin || !(await userLogin.correctPassword(pass, userLogin.password))){
         return res.status(422).json({error : "invalid details"})
     }else{
@@ -33,7 +33,7 @@ router.post("/login", async (req, res)=>{
         }else{
         
         const token = await userLogin.generateAuthToken();
-        console.log(token);
+        //console.log(token);
         
         res.cookie("jwtoken", token, {
             expires: new Date(Date.now() + 25892000000),
@@ -46,7 +46,7 @@ router.post("/login", async (req, res)=>{
 })
 
 router.get("/loginDetail", authentication, (req, res)=>{
-    console.log("hello my about", req.user);
+    //console.log("hello my about", req.user);
     // res.json({message: "data"});
     res.json(req.user);
 })
@@ -56,7 +56,7 @@ router.get("/logout", authentication, (req, res)=>{
     res
     .status(200)
     .json({ success: true, message: "User logged out successfully" });
-    // console.log("hello my about", req.user);
+    // //console.log("hello my about", req.user);
     // res.json({message: "data"});
     // res.json(req.user);
 })

@@ -11,14 +11,14 @@ router.post("/apiValidity", (req, res)=>{
     const {name, active, modifiedOn, createdOn} = req.body;
 
     if(!name || !active || !modifiedOn || !createdOn){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     ApiValidity.findOne({name : name})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const apiValidity = new ApiValidity({name, active, modifiedOn, createdOn});
@@ -26,7 +26,7 @@ router.post("/apiValidity", (req, res)=>{
         apiValidity.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail")});
 })
 
 router.get("/readApiValidity", (req, res)=>{

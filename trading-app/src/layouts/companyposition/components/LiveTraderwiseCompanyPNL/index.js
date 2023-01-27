@@ -65,7 +65,7 @@ function LiveTraderwiseCompantPNL({socket}) {
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        console.log("live price data", res)
+        //console.log("live price data", res)
         setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
@@ -73,7 +73,7 @@ function LiveTraderwiseCompantPNL({socket}) {
     })
 
     socket.on("tick", (data) => {
-      console.log("this is live market data", data);
+      //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
     })
@@ -91,7 +91,7 @@ function LiveTraderwiseCompantPNL({socket}) {
 
   useEffect(() => {
     return () => {
-        console.log('closing');
+        //console.log('closing');
         socket.close();
     }
   }, [])
@@ -101,7 +101,7 @@ function LiveTraderwiseCompantPNL({socket}) {
   axios.get(`${baseUrl}api/v1/getlastestlivetradecompany`)
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
-      console.log(res.data);
+      //console.log(res.data);
       setLatestLiveTradeTimearr(res.data);
       setLatestLiveTradeTime(res.data.trade_time) ;
       setLatestLiveTradeBy(res.data.createdBy) ;
@@ -109,7 +109,7 @@ function LiveTraderwiseCompantPNL({socket}) {
       setLatestLiveTradeQuantity(res.data.Quantity) ;
       setLatestLiveTradeSymbol(res.data.symbol) ;
       setLatestLiveTradeStatus(res.data.status)
-        console.log(lastestLiveTradeTimearr);
+        //console.log(lastestLiveTradeTimearr);
   }).catch((err) => {
     return new Error(err);
   })
@@ -117,33 +117,33 @@ function LiveTraderwiseCompantPNL({socket}) {
 
 
     let mapForParticularUser = new Map();
-    console.log("Length of All Trade Array:",allTrade.length);
+    //console.log("Length of All Trade Array:",allTrade.length);
     for(let i = 0; i < allTrade.length; i++){
-      // console.log(allTrade[i])
+      // //console.log(allTrade[i])
       if(mapForParticularUser.has(allTrade[i]._id.traderId)){
-        console.log(marketData, "marketData")
+        //console.log(marketData, "marketData")
         let marketDataInstrument = marketData.filter((elem)=>{
-          console.log("market Data Instrument",elem.instrument_token)
+          //console.log("market Data Instrument",elem.instrument_token)
           return elem.instrument_token == Number(allTrade[i]._id.symbol)
         })
 
         let obj = mapForParticularUser.get(allTrade[i]._id.traderId)
-        console.log(marketDataInstrument, "marketDataInstrument")
+        //console.log(marketDataInstrument, "marketDataInstrument")
         obj.totalPnl += ((allTrade[i].amount+((allTrade[i].lots)*marketDataInstrument[0]?.last_price)));
-        console.log("Total P&L: ",allTrade[i]._id.traderId, allTrade[i].amount,Number(allTrade[i]._id.symbol),marketDataInstrument[0]?.instrument_token,marketDataInstrument[0]?.last_price,allTrade[i].lots);
+        //console.log("Total P&L: ",allTrade[i]._id.traderId, allTrade[i].amount,Number(allTrade[i]._id.symbol),marketDataInstrument[0]?.instrument_token,marketDataInstrument[0]?.last_price,allTrade[i].lots);
         obj.lotUsed += Math.abs(allTrade[i].lotUsed)
         obj.runninglots += allTrade[i].lots;
         obj.brokerage += allTrade[i].brokerage;
         obj.noOfTrade += allTrade[i].trades
 
       } else{
-        console.log(marketData, "marketData")
-        console.log(Number(allTrade[i]._id.symbol) ,Number(allTrade[i]._id.symbol), "symbol")
+        //console.log(marketData, "marketData")
+        //console.log(Number(allTrade[i]._id.symbol) ,Number(allTrade[i]._id.symbol), "symbol")
         let marketDataInstrument = marketData.filter((elem)=>{
           return elem !== undefined && elem.instrument_token === Number(allTrade[i]._id.symbol)
         })
-        //console.log(marketDataInstrument)
-        console.log(marketDataInstrument, "marketDataInstrument")
+        ////console.log(marketDataInstrument)
+        //console.log(marketDataInstrument, "marketDataInstrument")
         mapForParticularUser.set(allTrade[i]._id.traderId, {
           name : allTrade[i]._id.traderName,
           totalPnl : ((allTrade[i].amount+((allTrade[i].lots)*marketDataInstrument[0]?.last_price))),
@@ -157,7 +157,7 @@ function LiveTraderwiseCompantPNL({socket}) {
 
     }
 
-    console.log("mapForParticularUser", mapForParticularUser)
+    //console.log("mapForParticularUser", mapForParticularUser)
 
     let finalTraderPnl = [];
     for (let value of mapForParticularUser.values()){
@@ -168,7 +168,7 @@ function LiveTraderwiseCompantPNL({socket}) {
       return (b.totalPnl-b.brokerage)-(a.totalPnl-a.brokerage)
     });
 
-    console.log(finalTraderPnl)
+    //console.log(finalTraderPnl)
 
 
     let totalGrossPnlGrid = 0;
@@ -188,7 +188,7 @@ function LiveTraderwiseCompantPNL({socket}) {
       let runninglotsbgcolor = subelem.runninglots > 0 ? "#ffff00" : ""
 
        totalGrossPnlGrid += (subelem.totalPnl);
-       console.log("Gross P&L: ",subelem.name,subelem.totalPnl );
+       //console.log("Gross P&L: ",subelem.name,subelem.totalPnl );
        totalTransactionCost += (subelem.brokerage);
        totalNoRunningLots += (subelem.runninglots);
        totalLotsUsed += (subelem.lotUsed);
@@ -249,7 +249,7 @@ function LiveTraderwiseCompantPNL({socket}) {
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
    
-       //console.log(obj)
+       ////console.log(obj)
        rows.push(obj);
      })
    
@@ -302,7 +302,7 @@ function LiveTraderwiseCompantPNL({socket}) {
        </MDTypography>
      );
    
-     //console.log(obj)
+     ////console.log(obj)
      rows.push(obj);
 
   // }, [marketData])

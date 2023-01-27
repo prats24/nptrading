@@ -19,23 +19,23 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     getKiteCred.getAccess().then( (data)=>{
-//         // console.log("this is code ",data);
+//         // //console.log("this is code ",data);
 //         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-//         // console.log("ticksdata", ticksdata)
+//         // //console.log("ticksdata", ticksdata)
 //       });
 // })
 
 // router.get("/deleteinhistory", async(req, res)=>{
 //     // HistoryData.deleteMany({timestamp: {$regex: "2023-01-19"}})
 //     // .then(()=>{
-//     //     console.log("deleted")
+//     //     //console.log("deleted")
 //     // }).catch(()=>{
-//     //     console.log("err")
+//     //     //console.log("err")
 //     // })
 //     if(!process.env.PROD){
-//         console.log("yes its true")
+//         //console.log("yes its true")
 //     } else{
-//         console.log("no its true")
+//         //console.log("no its true")
 //     }
 //     res.send(process.env.PROD)
     
@@ -53,8 +53,8 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 //     createdOn, uId, placed_by, order_id, status, average_price, order_timestamp, 
 //     brokerage, instrumentToken, tradeBy, isRealTrade, amount, trade_time, algoBox } = req.body 
 
-//         console.log(req.body);
-//         console.log("in the company auth");
+//         //console.log(req.body);
+//         //console.log("in the company auth");
 //     const {algoName, transactionChange, instrumentChange
 //         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
@@ -72,7 +72,7 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 //     MockTradeDetails.findOne({uId : uId})
 //     .then((dateExist)=>{
 //         if(dateExist){
-//             console.log("data already");
+//             //console.log("data already");
 //             return res.status(422).json({error : "date already exist..."})
 //         }
 
@@ -86,17 +86,17 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
             
 //         });
 
-//         console.log("mockTradeDetails comapny", mockTradeDetails);
+//         //console.log("mockTradeDetails comapny", mockTradeDetails);
 //         mockTradeDetails.save().then(()=>{
 //             res.status(201).json({massage : "data enter succesfully"});
 //         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
-//     }).catch(err => {console.log(err, "fail")});
+//     }).catch(err => {//console.log(err, "fail")});
 
 //     MockTradeDetailsUser.findOne({uId : uId})
 //     .then((dateExist)=>{
 //         if(dateExist){
-//             console.log("data already");
+//             //console.log("data already");
 //             return res.status(422).json({error : "date already exist..."})
 //         }
 
@@ -108,7 +108,7 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
             
 //         });
 
-//         console.log("mockTradeDetails", mockTradeDetailsUser);
+//         //console.log("mockTradeDetails", mockTradeDetailsUser);
 //         mockTradeDetailsUser.save().then(()=>{
 //             // res.status(201).json({massage : "data enter succesfully"});
 //         }).catch((err)=> {
@@ -116,7 +116,7 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 //         });
         
 
-//     }).catch(err => {console.log(err, "fail")});
+//     }).catch(err => {//console.log(err, "fail")});
     
 
 // })
@@ -141,8 +141,8 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 //     createdOn, uId, placed_by, order_id, status, average_price, order_timestamp, 
 //     brokerage, instrumentToken, tradeBy, isRealTrade, amount, trade_time, algoBox, disclosed_quantity, price, guid, market_protection, cancelled_quantity, pending_quantity, filled_quantity } = req.body 
 
-//         console.log(req.body);
-//         console.log("in the company auth");
+//         //console.log(req.body);
+//         //console.log("in the company auth");
 //     const {algoName, transactionChange, instrumentChange
 //         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
@@ -164,7 +164,7 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 //                  CompanyTradeData.findOne({order_id : order_id})
 //                 .then((dateExist)=>{
 //                     if(dateExist){
-//                         console.log("data already");
+//                         //console.log("data already");
 //                         return res.status(422).json({error : "data already exist..."})
 //                     }
              
@@ -180,17 +180,17 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
     
             
 //                     });
-//                     // console.log("this is CompanyTradeData", companyTradeData);
-//                     console.log("companyTradeData", companyTradeData)
+//                     // //console.log("this is CompanyTradeData", companyTradeData);
+//                     //console.log("companyTradeData", companyTradeData)
 //                     companyTradeData.save().then(()=>{
 //                         res.status(200).json("susscess")
 //                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-//                 }).catch(err => {console.log(err, "fail")});
+//                 }).catch(err => {//console.log(err, "fail")});
     
 //                 UserTradeData.findOne({order_id : order_id})
 //                 .then((dateExist)=>{
 //                     if(dateExist){
-//                         console.log("data already");
+//                         //console.log("data already");
 //                         return res.status(422).json({error : "data already exist..."})
 //                     }
              
@@ -205,10 +205,10 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
     
     
 //                     });
-//                     // console.log("this is userTradeData", userTradeData);
+//                     // //console.log("this is userTradeData", userTradeData);
 //                     userTradeData.save().then(()=>{
 //                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-//                 }).catch(err => {console.log(err, "fail")});
+//                 }).catch(err => {//console.log(err, "fail")});
 
 
     
@@ -225,8 +225,8 @@ router.post("/mocktradecompany", async (req, res)=>{
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
           realBuyOrSell, realQuantity } = req.body 
 
-        console.log(req.body);
-        console.log("in the company auth");
+        //console.log(req.body);
+        //console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
@@ -235,8 +235,8 @@ router.post("/mocktradecompany", async (req, res)=>{
 
 
     if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !algoName || !transactionChange || !instrumentChange || !exchangeChange || !lotMultipler || !productChange || !tradingAccount){
-        console.log(Boolean(exchange)); console.log(Boolean(symbol)); console.log(Boolean(buyOrSell)); console.log(Boolean(Quantity)); console.log(Boolean(Product)); console.log(Boolean(OrderType)); console.log(Boolean(validity)); console.log(Boolean(variety));  console.log(Boolean(algoName)); console.log(Boolean(transactionChange)); console.log(Boolean(instrumentChange)); console.log(Boolean(exchangeChange)); console.log(Boolean(lotMultipler)); console.log(Boolean(productChange)); console.log(Boolean(tradingAccount));
-        console.log("data is not complete");
+        //console.log(Boolean(exchange)); //console.log(Boolean(symbol)); //console.log(Boolean(buyOrSell)); //console.log(Boolean(Quantity)); //console.log(Boolean(Product)); //console.log(Boolean(OrderType)); //console.log(Boolean(validity)); //console.log(Boolean(variety));  //console.log(Boolean(algoName)); //console.log(Boolean(transactionChange)); //console.log(Boolean(instrumentChange)); //console.log(Boolean(exchangeChange)); //console.log(Boolean(lotMultipler)); //console.log(Boolean(productChange)); //console.log(Boolean(tradingAccount));
+        //console.log("data is not complete");
         return res.status(422).json({error : "please fill all the feilds..."})
     }
 
@@ -254,13 +254,13 @@ router.post("/mocktradecompany", async (req, res)=>{
     try{
         
         let liveData = await axios.get(`${baseUrl}api/v1/getliveprice`)
-        console.log(liveData)
+        //console.log(liveData)
         for(let elem of liveData.data){
-            console.log(elem)
+            //console.log(elem)
             if(elem.instrument_token == instrumentToken){
                 newTimeStamp = elem.timestamp;
                 originalLastPrice = elem.last_price;
-                console.log("originalLastPrice ", originalLastPrice)
+                //console.log("originalLastPrice ", originalLastPrice)
             }
         }
 
@@ -274,7 +274,7 @@ router.post("/mocktradecompany", async (req, res)=>{
         return new Error(err);
     }
 
-    console.log("newTimeStamp", newTimeStamp);
+    //console.log("newTimeStamp", newTimeStamp);
 
 
     function buyBrokerage(totalAmount){
@@ -319,7 +319,7 @@ router.post("/mocktradecompany", async (req, res)=>{
     MockTradeDetails.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
 
@@ -333,17 +333,17 @@ router.post("/mocktradecompany", async (req, res)=>{
             
         });
 
-        console.log("mockTradeDetails comapny", mockTradeDetails);
+        //console.log("mockTradeDetails comapny", mockTradeDetails);
         mockTradeDetails.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail")});
 
     MockTradeDetailsUser.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
 
@@ -355,7 +355,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             
         });
 
-        console.log("mockTradeDetails", mockTradeDetailsUser);
+        //console.log("mockTradeDetails", mockTradeDetailsUser);
         mockTradeDetailsUser.save().then(()=>{
             // res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> {
@@ -363,7 +363,7 @@ router.post("/mocktradecompany", async (req, res)=>{
         });
         
 
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail")});
     
 
 })
@@ -405,21 +405,21 @@ router.get("/readmocktradecompanycountToday", (req, res)=>{
 router.get("/readmocktradecompanyYesterday", (req, res)=>{
     const {email} = req.params
     let date = new Date();
-    console.log(date);
+    //console.log(date);
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate);
+    //console.log(todayDate);
 
     let daytosubs = 1;
-    console.log("Days to Subs"+daytosubs);
+    //console.log("Days to Subs"+daytosubs);
     
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - daytosubs);
-    console.log(String(yesterday).slice(0,10));
+    //console.log(String(yesterday).slice(0,10));
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    console.log(yesterdayDate);
+    //console.log(yesterdayDate);
 
     MockTradeDetails.count({trade_time: {$regex: yesterdayDate}},(err, data)=>{
         if(err){
@@ -432,7 +432,7 @@ router.get("/readmocktradecompanyYesterday", (req, res)=>{
 })
 
 router.get("/readmocktradecompany/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     MockTradeDetails.findOne({_id : id})
     .then((data)=>{
@@ -459,7 +459,7 @@ router.get("/readmocktradecompanyDate", (req, res)=>{
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     const {email} = req.params
-    console.log(todayDate)
+    //console.log(todayDate)
     MockTradeDetails.find({order_timestamp: {$regex: "06-01-2023"}}).sort({trade_time: -1})
     .then((data)=>{
         return res.status(200).send(data);
@@ -481,7 +481,7 @@ router.get("/readmocktradecompanypariculardate/:date", (req, res)=>{
 })
 
 router.get("/readmocktradecompanypagination/:skip/:limit", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {limit, skip} = req.params
     MockTradeDetails.find().sort({trade_time:-1}).skip(skip).limit(limit)
     .then((data)=>{
@@ -520,7 +520,7 @@ router.get("/readmocktradecompanyDate/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate);
+    //console.log(todayDate);
     MockTradeDetails.find({order_timestamp: {$regex: todayDate}, userId: {$regex: email}}).sort({trade_time:-1})
     .then((data)=>{
         return res.status(200).send(data);
@@ -535,7 +535,7 @@ router.get("/readmocktradecompanyThisMonth", (req, res)=>{
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     const {email} = req.params
     let monthStart = `${String(01).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate)
+    //console.log(todayDate)
     // MockTradeDetails.find({order_timestamp: {$regex: todayDate}})
     MockTradeDetails.find({trade_time: {$gte:monthStart,$lt: todayDate}})
     .then((data)=>{
@@ -565,13 +565,13 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
         return new Date(year, month, 0).getDate();
     }
     let nodaysinmonth =  daysInMonth(month, year);
-    console.log("No of days in previous month : "+nodaysinmonth)
+    //console.log("No of days in previous month : "+nodaysinmonth)
 
     let todayDate = `${(date.getFullYear()-1 == date.getFullYear() ? date.getFullYear() : date.getFullYear()-1)}-${String(date.getFullYear()-1 == date.getFullYear() ? date.getMonth() : '12').padStart(2, '0')}-${String('01').padStart(2, '0')}`
     const {email} = req.params
     let lastmonthEnd = `${(date.getFullYear()-1 == date.getFullYear() ? date.getFullYear() : date.getFullYear()-1)}-${String(date.getMonth() != 0 ? date.getMonth() : '12').padStart(2, '0')}-${String(nodaysinmonth).padStart(2, '0')}`
-    console.log("LastMonthStart "+todayDate)
-    console.log("Last Month End "+lastmonthEnd)
+    //console.log("LastMonthStart "+todayDate)
+    //console.log("Last Month End "+lastmonthEnd)
 
 
     // MockTradeDetails.find({order_timestamp: {$regex: todayDate}})
@@ -593,7 +593,7 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
 
 let x = await MockTradeDetails.aggregate(pipeline)
 
-    //console.log(x);
+    ////console.log(x);
 
 res.status(201).json(x);
 
@@ -602,24 +602,24 @@ res.status(201).json(x);
 router.get("/readmocktradecompanyThisWeek/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
-    console.log(date);
+    //console.log(date);
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate);
+    //console.log(todayDate);
 
     let weekday = date.getDay();
-    console.log("Weekday"+weekday);
+    //console.log("Weekday"+weekday);
     
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var nextDay = new Date(day);
     nextDay.setDate(day.getDate() + 2);
-    console.log(nextDay);
+    //console.log(nextDay);
     let nextDate = `${(nextDay.getFullYear())}-${String(nextDay.getMonth() + 1).padStart(2, '0')}-${String(nextDay.getDate()).padStart(2, '0')}`
 
     var weekStartDay = new Date(day);
     weekStartDay.setDate(day.getDate() - weekday);
-    //console.log(String(weekStartDay).slice(0,10));
+    ////console.log(String(weekStartDay).slice(0,10));
     let weekStartDate = `${(weekStartDay.getFullYear())}-${String(weekStartDay.getMonth() + 1).padStart(2, '0')}-${String(weekStartDay.getDate()).padStart(2, '0')}`
 
     MockTradeDetails.find({trade_time: {$gte:weekStartDate,$lt:nextDate}, userId:email})
@@ -636,14 +636,14 @@ router.get("/readmocktradecompanyThisMonth/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate);
+    //console.log(todayDate);
 
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var nextDay = new Date(day);
     nextDay.setDate(day.getDate() + 1);
-    console.log(nextDay);
+    //console.log(nextDay);
 
     let monthStart = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     MockTradeDetails.find({trade_time: {$gte:monthStart,$lt: nextDay}, userId: {$regex: email}})
@@ -659,18 +659,18 @@ router.get("/readmocktradecompanyThisYear/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today Date"+todayDate);
+    //console.log("Today Date"+todayDate);
 
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var nextDay = new Date(day);
     nextDay.setDate(day.getDate() + 1);
-    console.log(nextDay);
+    //console.log(nextDay);
 
     let yearStart = `${(date.getFullYear())}-01-01`
-    console.log(yearStart);
-    console.log(email);
+    //console.log(yearStart);
+    //console.log(email);
     MockTradeDetails.find({trade_time: {$gte:yearStart,$lt:nextDay}, userId:email})
     .then((data)=>{
         return res.status(200).send(data);
@@ -685,29 +685,29 @@ router.get("/updatemocktradedatatradetime", async(req, res)=>{
     // let id = data._id;
     // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     // const {email} = req.params
-    // console.log(todayDate)
+    // //console.log(todayDate)
     let datatoupdate = await MockTradeDetails.find()
    
-    //console.log(datatoupdate);
+    ////console.log(datatoupdate);
 
 
         for(let i = 0; i< datatoupdate.length; i++ ){
-            // console.log(datatoupdate[i]);
+            // //console.log(datatoupdate[i]);
             if(!datatoupdate[i].trade_time){
             let datetime = datatoupdate[i].order_timestamp.split(" ");
             let datepart = datetime[0];
             let datetoupdate = datetime[0].split("-");
             let timepart = datetime[1]; 
             let trade_time = `${datetoupdate[2]}-${datetoupdate[1]}-${datetoupdate[0]} ${datetime[1]}`
-            console.log(trade_time);
+            //console.log(trade_time);
 
             await MockTradeDetails.findByIdAndUpdate(datatoupdate[i]._id, {trade_time : trade_time},
                 function (err, trade_time) {
                     if (err){
-                        console.log(err)
+                        //console.log(err)
                     }
                     else{
-                        console.log("Trade Time : ", trade_time);
+                        //console.log("Trade Time : ", trade_time);
                     }
         }).clone();
         }
@@ -719,21 +719,21 @@ router.get("/updatemocktradedataamount", async(req, res)=>{
     // let id = data._id;
     // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     // const {email} = req.params
-    // console.log(todayDate)
+    // //console.log(todayDate)
     let datatoupdate = await MockTradeDetails.find()
-    console.log(datatoupdate);
+    //console.log(datatoupdate);
 
 
         for(let i = 0; i< datatoupdate.length; i++ ){
             if(!datatoupdate[i].amount){
-            //console.log(datatoupdate[i]);
+            ////console.log(datatoupdate[i]);
             await MockTradeDetails.findByIdAndUpdate(datatoupdate[i]._id, {amount : Number(datatoupdate[i].Quantity) * datatoupdate[i].average_price},
                 function (err, amount) {
                     if (err){
-                        console.log(err)
+                        //console.log(err)
                     }
                     else{
-                        console.log("Trade Time : ", amount);
+                        //console.log("Trade Time : ", amount);
                     }
         }).clone();
         }
@@ -757,7 +757,7 @@ router.get("/tcmocktradecompanytoday", (req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     const {email} = req.params
-    console.log(todayDate)
+    //console.log(todayDate)
     let tcost = 0;
     MockTradeDetails.find({trade_time: {$regex: todayDate}})
     .then((data)=>{
@@ -773,9 +773,9 @@ router.get("/tcmocktradecompanyyesterday", (req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     const {email} = req.params
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
@@ -795,9 +795,9 @@ router.get("/tcmocktradecompanyyesterday", (req, res)=>{
 //     const {days} = req.params
 //     let date = new Date();
 //     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-//     console.log(todayDate)
+//     //console.log(todayDate)
 //     var day = new Date(todayDate);
-//     console.log(day); // Apr 30 2000
+//     //console.log(day); // Apr 30 2000
 
 //     var yesterday = new Date(day);
 //     yesterday.setDate(day.getDate() - days);
@@ -817,13 +817,13 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
     const days = 5
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("Day"+day); // Apr 30 2000
+    //console.log("Day"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
-    console.log("StartDate"+yesterday);
+    //console.log("StartDate"+yesterday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let tcost = [];
@@ -832,7 +832,7 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
         
         )
     .then((data)=>{
-        console.log("Data"+data)
+        //console.log("Data"+data)
         tcost = transactioncostcalculation(data);
         res.status(201).json(tcost);
         
@@ -843,17 +843,17 @@ router.get("/tcmocktradecompanylastfivedays", (req, res)=>{
 })
 
 router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
-    console.log("Inside Aggregate API")
+    //console.log("Inside Aggregate API")
     const days = 5
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("Day"+day); // Apr 30 2000
+    //console.log("Day"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
-    console.log("StartDate"+yesterday);
+    //console.log("StartDate"+yesterday);
     //{ trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} }
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let x = await MockTradeDetails.aggregate([
@@ -862,9 +862,9 @@ router.get("/gettcostmocktradecompanylastfivedays", async(req, res)=>{
         { $sort:{ _id: 1 }}
             ])
             
-                //console.log(x)
+                ////console.log(x)
             
-    //console.log("Data"+x)
+    ////console.log("Data"+x)
     // .then((data)=>{
 
         res.status(201).json(x);
@@ -880,28 +880,28 @@ router.get("/updatemocktradedatadatefield", async(req, res)=>{
     // let id = data._id;
     // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     // const {email} = req.params
-    // console.log(todayDate)
+    // //console.log(todayDate)
     let datatoupdate = await MockTradeDetails.find()
    
-    //console.log(datatoupdate);
+    ////console.log(datatoupdate);
 
 
         for(let i = 0; i< datatoupdate.length; i++ ){
-            // console.log(datatoupdate[i]);
+            // //console.log(datatoupdate[i]);
             if(!datatoupdate[i].date_part){
             let datetime = datatoupdate[i].trade_time.split(" ");
             let datepart = datetime[0];
             
             let date_part = datepart;
-            console.log(date_part);
+            //console.log(date_part);
 
             await MockTradeDetails.findByIdAndUpdate(datatoupdate[i]._id, {date_part : datepart},
                 function (err, data) {
                     if (err){
-                        console.log(err)
+                        //console.log(err)
                     }
                     else{
-                        console.log("Date Part : ", data);
+                        //console.log("Date Part : ", data);
                     }
         }).clone();
         }
@@ -917,7 +917,7 @@ router.get("/readmocktradecompanyagg",async (req, res)=>{
         { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
         { $sort:{ _id: -1 }}
      ])
-                //console.log(x)
+                ////console.log(x)
 
         res.status(201).json(x);
 })
@@ -930,23 +930,23 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
          { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "algoBox.algoName": 1, "placed_by": 1 } },
          { $sort:{ _id: -1 }}
       ])
-                 //console.log(x)
+                 ////console.log(x)
  
          res.status(201).json(x);
  })
 
  router.get("/getpnlmocktradecompanylastfivedays", async(req, res)=>{
-    console.log("Inside Aggregate API - Last 5 days chart data")
+    //console.log("Inside Aggregate API - Last 5 days chart data")
     const days = 6
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("ToDay Date :"+day); // Apr 30 2000
+    //console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
-    console.log("StartDate"+yesterday);
+    //console.log("StartDate"+yesterday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let x = await MockTradeDetails.aggregate([
@@ -967,24 +967,24 @@ router.get("/readmocktradecompanytodayagg",async (req, res)=>{
         { $sort: {_id: 1}}
             ])
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getpnlmocktradecompanydailythismonth", async(req, res)=>{
-    console.log("Inside Aggregate API - Last 5 days chart data")
+    //console.log("Inside Aggregate API - Last 5 days chart data")
     const days = 6
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
-    console.log(todayDate)
+    //console.log(todayDate)
     var day = new Date(todayDate);
-    console.log("ToDay Date :"+day); // Apr 30 2000
+    //console.log("ToDay Date :"+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - days);
-    console.log("StartDate"+yesterday);
+    //console.log("StartDate"+yesterday);
 
     let yesterdayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     let x = await MockTradeDetails.aggregate([
@@ -1005,30 +1005,30 @@ router.get("/getpnlmocktradecompanydailythismonth", async(req, res)=>{
         { $sort: {_id: 1}}
             ])
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Week")
+    //console.log("Inside Aggregate API - Mock Trade Details Week")
      
     let date = new Date(); 
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - days);
-    console.log("StartDate "+startday);
+    //console.log("StartDate "+startday);
 
     let startdayDate = `${(startday.getFullYear())}-${String(startday.getMonth() + 1).padStart(2, '0')}-${String(startday.getDate()).padStart(2, '0')}`
     let pipeline = [{ $match: { trade_time : {$gte : `${startdayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }, status: "COMPLETE"} },
@@ -1049,34 +1049,34 @@ router.get("/getmocktradecompanydetailsthisweek", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getmocktradecompanydetailslastweek", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Last Week")
+    //console.log("Inside Aggregate API - Mock Trade Details Last Week")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - (days+1));
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    console.log("EndDate: "+yesterdayDate);
+    //console.log("EndDate: "+yesterdayDate);
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - (7+days));
-    // console.log("StartDate "+startday);
+    // //console.log("StartDate "+startday);
 
     let startdayDate = `${(startday.getFullYear())}-${String(startday.getMonth() + 1).padStart(2, '0')}-${String(startday.getDate()).padStart(2, '0')}`
-    console.log("StartDate "+startdayDate);
+    //console.log("StartDate "+startdayDate);
     let pipeline = [{ $match: { trade_time : {$gte : `${startdayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }, status: "COMPLETE"} },
                     { $group: { _id: {},
                                 amount: {
@@ -1095,32 +1095,32 @@ router.get("/getmocktradecompanydetailslastweek", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                // //console.log(x);
+                // ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getmocktradecompanydetailsthismonth", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Month")
+    //console.log("Inside Aggregate API - Mock Trade Details Month")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var month = day.getMonth();
     var year = day.getFullYear();
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     let monthStartDate = `${(day.getFullYear())}-${String(day.getMonth() + 1).padStart(2, '0')}-01`
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - days);
-    console.log("StartDate "+startday);
+    //console.log("StartDate "+startday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let pipeline = [{ $match: { trade_time : {$gte : `${monthStartDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }, status: "COMPLETE"} },
@@ -1141,32 +1141,32 @@ router.get("/getmocktradecompanydetailsthismonth", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getmocktradecompanydetailsthisyear", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Year")
+    //console.log("Inside Aggregate API - Mock Trade Details Year")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var month = day.getMonth();
     var year = day.getFullYear();
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     let monthStartDate = `${(day.getFullYear())}-01-01`
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - days);
-    console.log("StartDate "+startday);
+    //console.log("StartDate "+startday);
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
     let pipeline = [{ $match: { trade_time : {$gte : `${monthStartDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }, status: "COMPLETE"} },
@@ -1187,35 +1187,35 @@ router.get("/getmocktradecompanydetailsthisyear", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getmocktradecompanydetailslastyear", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Year")
+    //console.log("Inside Aggregate API - Mock Trade Details Year")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear()-1)}-${String('01').padStart(2, '0')}-${String('01').padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var month = day.getMonth();
     var year = day.getFullYear();
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     let monthStartDate = `${(day.getFullYear())}-01-01`
 
     var startday = new Date(day);
     startday.setDate(day.getDate() - days);
-    // console.log("StartDate "+startday);
+    // //console.log("StartDate "+startday);
 
     let yesterdayDate = `${(date.getFullYear()-1)}-${String('12').padStart(2, '0')}-${String('31').padStart(2, '0')}`
-    console.log(yesterdayDate);
+    //console.log(yesterdayDate);
     let pipeline = [{ $match: { trade_time : {$gte :`${todayDate} 00:00:00`, $lte: `${yesterdayDate} 23:59:59` }, status: "COMPLETE"} },
                     { $group: { _id: {},
                                 amount: {
@@ -1234,29 +1234,29 @@ router.get("/getmocktradecompanydetailslastyear", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Yesterday")
+    //console.log("Inside Aggregate API - Mock Trade Details Yesterday")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 1);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
 
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    console.log("Yesterday Date :"+yesterdayDate)
+    //console.log("Yesterday Date :"+yesterdayDate)
     let pipeline = [{ $match: { trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} , status: "COMPLETE"} },
                     { $group: { _id: {},
                                 amount: {
@@ -1275,7 +1275,7 @@ router.get("/getmocktradecompanydetailsyesterday", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                // //console.log(x);
+                // ////console.log(x);
 
         res.status(201).json(x);
         
@@ -1326,7 +1326,7 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
         },
       ])
             
-                // console.log(pnlDetails)
+                // //console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  
@@ -1363,19 +1363,19 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
         
             ])
             
-                // console.log(pnlDetails)
+                // //console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  
 })
 
 router.get("/getlastestmocktradecompany", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Latest Order")
+    //console.log("Inside Aggregate API - Mock Trade Details Latest Order")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1 , "status" : 1 } },
@@ -1394,7 +1394,7 @@ router.get("/getavgpricemocktradecompany", async(req, res)=>{
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    // console.log("Today "+todayDate)
+    // //console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}, status: "COMPLETE"} },
 
@@ -1415,24 +1415,24 @@ router.get("/getavgpricemocktradecompany", async(req, res)=>{
 
     let getAvgPrice = await MockTradeDetails.aggregate(pipeline)
             
-                // console.log(getAvgPrice);
+                // //console.log(getAvgPrice);
 
         res.status(201).json(getAvgPrice);
 })
 
 router.get("/getmocktradecompanydetailsdaybeforeyesterday", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details Yesterday")
+    //console.log("Inside Aggregate API - Mock Trade Details Yesterday")
     let todayDate = new Date();
     var day = new Date(todayDate);
-    console.log("Day "+day); // Apr 30 2000
+    //console.log("Day "+day); // Apr 30 2000
 
     var yesterday = new Date(day);
     yesterday.setDate(day.getDate() - 2);
-    console.log("Yesterday "+yesterday);
+    //console.log("Yesterday "+yesterday);
     // let todayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
 
     let yesterdayDate = `${(yesterday.getFullYear())}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`
-    console.log("Yesterday Date :"+yesterdayDate)
+    //console.log("Yesterday Date :"+yesterdayDate)
     let pipeline = [{ $match: { trade_time: {$gte : `${yesterdayDate} 00:00:00`, $lte : `${yesterdayDate} 23:59:59`} , status: "COMPLETE"} },
                     { $group: { _id: {},
                                 amount: {
@@ -1451,19 +1451,19 @@ router.get("/getmocktradecompanydetailsdaybeforeyesterday", async(req, res)=>{
 
     let x = await MockTradeDetails.aggregate(pipeline)
             
-                //console.log(x);
+                ////console.log(x);
 
         res.status(201).json(x);
         
 })
 
 router.get("/getlastfivemocktradecompany", async(req, res)=>{
-    console.log("Inside Aggregate API - Mock Trade Details of last 5 Order")
+    //console.log("Inside Aggregate API - Mock Trade Details of last 5 Order")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate} , status: "COMPLETE"} },
                     { $project: { "_id" : 0,"trade_time" : 1,  "createdBy" : 1, "buyOrSell" : 1, "Quantity" : 1, "symbol" : 1  } },
@@ -1479,12 +1479,12 @@ router.get("/getlastfivemocktradecompany", async(req, res)=>{
 
 
 router.get("/daywisecompanypnl", async(req, res)=>{
-    console.log("Inside Aggregate API - Day wise company pnl")
+    //console.log("Inside Aggregate API - Day wise company pnl")
     
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [ {$match: { status: "COMPLETE"}},
                     { $group :
@@ -1508,12 +1508,12 @@ router.get("/daywisecompanypnl", async(req, res)=>{
 })
 
 router.get("/datewisecompanypnl/:queryDate", async(req, res)=>{
-    console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+    //console.log("Inside Aggregate API - Date wise company pnl based on date entered")
     let {queryDate} = req.params
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [ {$match: {
                         trade_time : {$gte : `${queryDate} 00:00:00`, $lte : `${queryDate} 23:59:59`},
@@ -1546,12 +1546,12 @@ router.get("/datewisecompanypnl/:queryDate", async(req, res)=>{
 
 
 router.get("/companypnlreport/:startDate/:endDate", async(req, res)=>{
-    console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+    //console.log("Inside Aggregate API - Date wise company pnl based on date entered")
     let {startDate,endDate} = req.params
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [ {$match: {
                         trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
@@ -1592,12 +1592,12 @@ router.get("/companypnlreport/:startDate/:endDate", async(req, res)=>{
 })
 
 router.get("/traderwisecompanypnlreport/:startDate/:endDate", async(req, res)=>{
-    console.log("Inside Aggregate API - Trader wise company pnl based on date entered")
+    //console.log("Inside Aggregate API - Trader wise company pnl based on date entered")
     let {startDate,endDate} = req.params
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today "+todayDate)
+    //console.log("Today "+todayDate)
     
     let pipeline = [ {$match: {
                         trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
@@ -1683,7 +1683,7 @@ router.get("/getoverallpnlmocktradeparticularusertodaycompanyside/:email", async
         },
       ])
             
-                // console.log(pnlDetails)
+                // //console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  

@@ -18,9 +18,8 @@ const router = express.Router();
 
   try{
     const response = await axios.get(url, authOptions);
-    // console.log("its json data", JSON.stringify(res.data));
     const allOrderData = (response.data).data;
-    console.log("in retrieve order", allOrderData);
+    console.log("in retrieve order", allOrderData.length);
     let len = allOrderData.length;
     let orderData;
     for(let i = len-1; i >= 0; i--){
@@ -28,7 +27,7 @@ const router = express.Router();
         orderData = JSON.parse(JSON.stringify(allOrderData[i]));
       }
     }
-    console.log("order data", orderData);
+    // console.log("order data", orderData);
     let {order_id, status, average_price, quantity, product, transaction_type, exchange_order_id,
            order_timestamp, variety, validity, exchange, exchange_timestamp, order_type, price, filled_quantity, 
            pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,     
@@ -47,13 +46,13 @@ const router = express.Router();
               pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,
               status_message, status_message_raw}))
         
-              console.log("this is trade data", tradeData, typeof(tradeData));
+              // console.log("this is trade data", tradeData, typeof(tradeData));
               tradeData.save()
               .then(()=>{
-                  console.log("data enter succesfully")
+                  // console.log("data enter succesfully")
               }).catch((err)=> {
                 res.status(500).json({error:"Failed to Trade"});
-                console.log("failed to enter data of order");
+                // console.log("failed to enter data of order");
               })
   
           }else{
@@ -62,7 +61,7 @@ const router = express.Router();
                 pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,
                 status_message, status_message_raw }))
   
-              console.log("this is trade data", tradeData, typeof(tradeData));
+              // console.log("this is trade data", tradeData, typeof(tradeData));
               tradeData.save()
               .then(()=>{
                   console.log("data enter succesfully")
@@ -71,7 +70,7 @@ const router = express.Router();
                 console.log("failed to enter data of order");
               })
           }
-        console.log("data save hona chahiye....");  
+        // console.log("data save hona chahiye....");  
   } catch (err){
       return new Error(err);
   }

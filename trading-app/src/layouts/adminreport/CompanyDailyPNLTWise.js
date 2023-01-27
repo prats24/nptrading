@@ -41,14 +41,14 @@ const TableTwo = () => {
     let [totalPositiveTrader, setTotalPositiveTrader] = useState(0);
     let [totalNegativeTrader, setNegativeTrader] = useState(0);
     let [overallPnl, setOverallPnl] = useState([]);
-    console.log("Dates: "+firstDate,secondDate)
-    console.log(`${baseUrl}api/v1/traderwisecompanypnlreport/${firstDate}/${secondDate}`)
+    //console.log("Dates: "+firstDate,secondDate)
+    //console.log(`${baseUrl}api/v1/traderwisecompanypnlreport/${firstDate}/${secondDate}`)
    
     useEffect(()=>{
-        console.log(`${baseUrl}api/v1/traderwisecompanypnlreport/${firstDate}/${secondDate}`)
+        //console.log(`${baseUrl}api/v1/traderwisecompanypnlreport/${firstDate}/${secondDate}`)
         axios.get(`${baseUrl}api/v1/traderwisecompanypnlreport/${firstDate}/${secondDate}`)
         .then((res)=>{
-          console.log(res.data)
+          //console.log(res.data)
           setTraderPNLData(res.data);
         }).catch((err)=>{
             window.alert("Server Down");
@@ -65,7 +65,7 @@ const TableTwo = () => {
           return;
         }
         setFirstDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
       function endDate(e){
         e.preventDefault();
@@ -74,13 +74,13 @@ const TableTwo = () => {
           return;
         }
         setSecondDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
     
     let tradername = [];
     let tradernpnl = [];
     let traderpnl = [];
-    console.log(traderpnldata);
+    //console.log(traderpnldata);
     traderpnldata?.map((elem)=>{
     let tpnl = {}
     tradername.push(elem._id);
@@ -127,10 +127,10 @@ const TableTwo = () => {
         {elem.trades}
       </MDTypography>
     );
-    console.log(typeof(tpnl));
-    console.log(tpnl)
+    //console.log(typeof(tpnl));
+    //console.log(tpnl)
     //companypnl.push(cpnl)
-    console.log(traderpnl)
+    //console.log(traderpnl)
     rows.push(tpnl)
 
     })

@@ -9,14 +9,14 @@ router.post("/requestToken", (req, res)=>{
     const {accountId, accessToken, requestToken, status, generatedOn, lastModified, createdBy, uId} = req.body;
 
     if(!accountId || !accessToken || !requestToken || !status || !generatedOn || !lastModified || !createdBy || !uId){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     RequestToken.findOne({uId : uId})
     .then((accountIdExist)=>{
         if(accountIdExist){
-            console.log("accountId already");
+            //console.log("accountId already");
             return res.status(422).json({error : "account Id already exist..."})
         }
         const requestTokens = new RequestToken({accountId, accessToken, requestToken, status, generatedOn, lastModified, createdBy, uId});
@@ -25,13 +25,13 @@ router.post("/requestToken", (req, res)=>{
 
             disconnectTicker();
             getKiteCred.getAccess().then((data) => {
-                console.log(data);
+                //console.log(data);
                 createNewTicker(data.getApiKey, data.getAccessToken);
             });
             
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail in accesstoken auth")});
     
 })
 
@@ -46,7 +46,7 @@ router.get("/readRequestToken", (req, res)=>{
 })
 
 router.get("/readRequestToken/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     RequestToken.findOne({_id : id})
     .then((data)=>{
@@ -58,8 +58,8 @@ router.get("/readRequestToken/:id", (req, res)=>{
 })
 
 router.put("/readRequestToken/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{
         const {id} = req.params
         const requestToken = await RequestToken.findOneAndUpdate({_id : id}, {
@@ -73,11 +73,11 @@ router.put("/readRequestToken/:id", async (req, res)=>{
         });
         disconnectTicker();
         getKiteCred.getAccess().then((data) => {
-            console.log(data);
+            //console.log(data);
             createNewTicker(data.getApiKey, data.getAccessToken);
         });
         
-        console.log("this is role", requestToken);
+        //console.log("this is role", requestToken);
         res.send(requestToken)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -86,11 +86,11 @@ router.put("/readRequestToken/:id", async (req, res)=>{
 })
 
 router.delete("/readRequestToken/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const requestToken = await RequestToken.deleteOne({_id : id})
-        console.log("this is userdetail", requestToken);
+        //console.log("this is userdetail", requestToken);
         // res.send(userDetail)
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
@@ -100,8 +100,8 @@ router.delete("/readRequestToken/:id", async (req, res)=>{
 })
 
 router.patch("/readRequestToken/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ // Broker, AccountID, AccountName, APIKey, APISecret, Status, lastModified
         const {id} = req.params
         const account = await Account.findOneAndUpdate({_id : id}, {
@@ -110,7 +110,7 @@ router.patch("/readRequestToken/:id", async (req, res)=>{
                 lastModified: req.body.lastModified
             }
         })
-        console.log("this is role", account);
+        //console.log("this is role", account);
         res.send(account)
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});

@@ -6,8 +6,8 @@ const Expense = require("../../models/Expense/expenseSchema");
 router.post("/expense", async (req, res)=>{ 
     try{
         let {expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, created_by, invoice_upload, createdOn, lastmodified_by, lastmodifiedOn, uId} = req.body;
-        console.log("Req Body for Expense: "+req.body);
-        console.log("Field Data: "+expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, created_by, invoice_upload, createdOn, lastmodified_by, lastmodifiedOn, uId);
+        //console.log("Req Body for Expense: "+req.body);
+        //console.log("Field Data: "+expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, created_by, invoice_upload, createdOn, lastmodified_by, lastmodifiedOn, uId);
         if(!expense_date || !sub_category || !category || !amount || !total_amount || !description || !payment_status || !expense_by || !created_by || !createdOn || !lastmodified_by || !lastmodifiedOn || !uId){
             return res.status(422).json({error : "Please enter all the mandatory fields."})
         }
@@ -15,15 +15,15 @@ router.post("/expense", async (req, res)=>{
         Expense.findOne({uId : uId})
         .then((dateExist)=>{
             if(dateExist){
-                console.log("Data already exists");
+                //console.log("Data already exists");
                 return res.status(422).json({error : "Data already exists"})
             }
             const expense = new Expense({expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, created_by, invoice_upload, createdOn, lastmodified_by, lastmodifiedOn, uId});
-            console.log("Expense", expense)
+            //console.log("Expense", expense)
             expense.save().then(async()=>{
                 res.status(201).json({massage : "Data entered succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-        }).catch(err => {console.log(err, "fail")});
+        }).catch(err => {console.log( "fail")});
 
     } catch(err) {
         res.status(500).json({error:"Failed to enter data"});
@@ -42,7 +42,7 @@ router.get("/readExpenseDetails", (req, res)=>{
 })
 
 router.get("/readExpenseDetails/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     Expense.findOne({_id : id})
     .then((data)=>{
@@ -54,8 +54,8 @@ router.get("/readExpenseDetails/:id", (req, res)=>{
 })
 
 router.put("/readExpenseDetails/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log( req.body)
+    //console.log(req.params)
+    //console.log( req.body)
     let {expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, invoice_upload, lastmodified_by, lastmodifiedOn} = req.body;
 
     try{ 
@@ -65,7 +65,7 @@ router.put("/readExpenseDetails/:id", async (req, res)=>{
                 expense_date, sub_category, category, amount, gst, total_amount, description, payment_status, expense_by, invoice_upload, lastmodified_by, lastmodifiedOn  
             }
         })
-        console.log("Edited Expense: ", expense);          
+        //console.log("Edited Expense: ", expense);          
         res.send(expense)
     } catch (e){
         res.status(500).json({error:"Failed to edit data Check"});
@@ -73,12 +73,12 @@ router.put("/readExpenseDetails/:id", async (req, res)=>{
 })
 
 router.delete("/readExpenseDetails/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const expenseDetail = await Expense.findOne({_id : id})
         const expense = await Expense.deleteOne({_id : id})
-        console.log("Expense Details: ", expense, expenseDetail);
+        //console.log("Expense Details: ", expense, expenseDetail);
         res.status(201).json({massage : "Data deleted succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to delete data"});

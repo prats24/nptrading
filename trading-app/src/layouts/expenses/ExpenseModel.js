@@ -74,17 +74,17 @@ const ExpenseModel = () => {
     setOpen(false);
   };
 
-  console.log("Admins: "+Admins)
+  //console.log("Admins: "+Admins)
   let adminnames = [];
   Admins.map((elem)=>{
     adminnames.push(elem.name);
   })
 
-  console.log("Admin Names: "+adminnames);
+  //console.log("Admin Names: "+adminnames);
 
   async function formSubmit() {
     setformstate(formstate);
-    console.log(formstate)
+    //console.log(formstate)
 
     const { expense_date,sub_category,category,amount,gst,total_amount,description,payment_status,expense_by,invoice_upload} = formstate;
 
@@ -103,13 +103,13 @@ const ExpenseModel = () => {
 
 
     const data = await res.json();
-    console.log(data);
+    //console.log(data);
     if(data.status === 422 || data.error || !data){ 
         window.alert(data.error);
-        console.log("Invalid Entry");
+        //console.log("Invalid Entry");
     }else{
         window.alert("Expense Created Successfully");
-        console.log("Expense Entry Succesfull");
+        //console.log("Expense Entry Succesfull");
     }
     setOpen(false);
     reRender ? setReRender(false) : setReRender(true)
@@ -183,7 +183,7 @@ const ExpenseModel = () => {
                     sx={{ margin: 1, padding: 2, }}
                   >
                     {adminnames.map((elem)=>{
-                      console.log("Admin Names: ", elem)
+                      //console.log("Admin Names: ", elem)
                         return(
                             <MenuItem value={elem}>
                             {elem}

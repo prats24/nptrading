@@ -19,8 +19,6 @@ router.post("/placeorder", (async (req, res)=>{
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, accessToken, userId} = req.body
-       console.log(req.body);
-       console.log("in the company auth");
 
 
     const {algoName, transactionChange, instrumentChange
@@ -32,7 +30,6 @@ router.post("/placeorder", (async (req, res)=>{
     const api_key = apiKey;
     const access_token = accessToken;
     let auth = 'token ' + api_key + ':' + access_token;
-    // console.log("this is data ",req.body);
 
     let headers = {
         'X-Kite-Version':'3',
@@ -76,7 +73,6 @@ router.post("/placeorder", (async (req, res)=>{
     axios.post(`https://api.kite.trade/orders/${variety}`, orderData, {headers : headers})
     .then(async (resp)=>{
 
-        console.log("its json data", JSON.stringify(resp.data));
         const order_Id = resp.data.data.order_id
         console.log("order_id", resp.data.data.order_id);
 
@@ -90,21 +86,10 @@ router.post("/placeorder", (async (req, res)=>{
         };
 
 
-        // let allOrderData;
-
         await retreiveOrderAndSave(url2, authOptions);
 
 
-
-
-
-
     }).catch((err)=>{
-        // console.log("error to getting order_id", err);
-        // // console.log("error to getting config", err.config);
-        // console.log("error to getting request",  err.response.data.message);
-        // console.log("error to getting data", err.data);
-
         res.status(422).json({error : err.response.data.message})
     })
 
@@ -113,7 +98,7 @@ router.post("/placeorder", (async (req, res)=>{
             axios.get(url2, authOptions)
             .then(async (response)=>{
                 const allOrderData = (response.data).data;
-                console.log("allOrderData", allOrderData);
+                console.log("allOrderData", allOrderData.length);
                 let len = allOrderData.length;
                 let orderData;
     
@@ -238,12 +223,11 @@ router.post("/placeorder", (async (req, res)=>{
                     brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * average_price);
                 }
             
-                console.log("in placeorder", trade_time, new_order_timestamp)
     
                 CompanyTradeData.findOne({order_id : order_id})
                 .then((dateExist)=>{
                     if(dateExist){
-                        console.log("data already");
+                        console.log("data already in real company");
                         return res.status(422).json({error : "data already exist..."})
                     }
                     const tempDate = new Date();
@@ -269,15 +253,15 @@ router.post("/placeorder", (async (req, res)=>{
             
                     });
                     // console.log("this is CompanyTradeData", companyTradeData);
-                    console.log("companyTradeData", companyTradeData)
+                    // console.log("companyTradeData", companyTradeData)
                     companyTradeData.save().then(()=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                }).catch(err => {console.log(err, "fail")});
+                }).catch(err => {console.log( "fail company live data saving")});
     
                 UserTradeData.findOne({order_id : order_id})
                 .then((dateExist)=>{
                     if(dateExist){
-                        console.log("data already");
+                        console.log("data already in real user");
                         return res.status(422).json({error : "data already exist..."})
                     }
                     const tempDate = new Date();
@@ -304,12 +288,12 @@ router.post("/placeorder", (async (req, res)=>{
                     // console.log("this is userTradeData", userTradeData);
                     userTradeData.save().then(()=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                }).catch(err => {console.log(err, "fail")});
+                }).catch(err => {console.log("fail trader live data saving")});
     
                 MockTradeCompany.findOne({uId : uId})
                 .then((dateExist)=>{
                     if(dateExist){
-                        console.log("data already");
+                        console.log("data already in mock company");
                         return res.status(422).json({error : "date already exist..."})
                     }
                     const tempDate = new Date();
@@ -338,12 +322,12 @@ router.post("/placeorder", (async (req, res)=>{
                     mockTradeDetails.save().then(()=>{
                         // res.status(201).json({massage : "data enter succesfully"});
                     }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-                }).catch(err => {console.log(err, "fail")});
+                }).catch(err => {console.log("fail company mock in placeorder")});
     
                 MockTradeUser.findOne({uId : uId})
                 .then((dateExist)=>{
                     if(dateExist){
-                        console.log("data already");
+                        console.log("data already in mock user");
                         return res.status(422).json({error : "date already exist..."})
                     }
                     const tempDate = new Date();
@@ -374,9 +358,8 @@ router.post("/placeorder", (async (req, res)=>{
                         // res.status(500).json({error:"Failed to enter data"})
                     });
             
-                }).catch(err => {console.log(err, "fail")});
+                }).catch(err => {console.log("fail company mock in placeorder")});
     
-                console.log("responseMsg", responseMsg);
     
                 setTimeout(()=>{
                     return res.status(201).json({massage : responseMsg, err: responseErr})
@@ -384,10 +367,9 @@ router.post("/placeorder", (async (req, res)=>{
     
         
             }).catch((err)=>{
-                console.log(err);
+                console.log("err in retreiving data in placeorder");
             })
     
-            // console.log("waiting till 500ms")
         }, 500)
     }
 
@@ -399,11 +381,3 @@ router.post("/placeorder", (async (req, res)=>{
 
 
 module.exports = router;
-
-
-
-
-
-
-
-

@@ -1,9 +1,9 @@
 const UserDetails = require("../models/User/userDetailSchema");
 
 async function pnlcalucationnorunninglotsuser(traderdata){
-console.log("Inside Trader wise pnl calculation function")
+// console.log("Inside Trader wise pnl calculation function")
 const userdetails = await UserDetails.find();
-console.log(userdetails.length);
+// console.log(userdetails.length);
 let name = '';
 //console.log(data[0]);
 let traderpnldata = [];
@@ -16,21 +16,21 @@ let hashForTraderCount = new Map();
             let totalPnl = 0;
             let lotUsed = 0;
 
-            console.log(userdetails[i]);
+            // console.log(userdetails[i]);
 
 
             let data = traderdata.filter((element)=>{
-                console.log("Data filtered for :" +element.userId)
-                console.log("Data filtered for :" +userdetails[i].email)
+                // console.log("Data filtered for :" +element.userId)
+                // console.log("Data filtered for :" +userdetails[i].email)
                 //console.log(elem,element)
                 return element.userId === userdetails[i].email
                 
             });
 
-            console.log(data)
+            // console.log(data)
             if(data.length == 0){
             for(let i = data.length-1; i >= 0 ; i--){
-                console.log("Inside for loop");
+                // console.log("Inside for loop");
                 numberOfTrade += 1;
                 transactionCost += Number(data[i].brokerage);
 
@@ -108,11 +108,11 @@ let hashForTraderCount = new Map();
             // })
 
             //console.log(hashForTraderCount)
-            console.log(overallPnl);
+            // console.log(overallPnl);
 
             let runningLots;
             overallPnl.map((elem, index)=>{
-                console.log("Inside Overall pnl loop");
+                // console.log("Inside Overall pnl loop");
                 // name = elem.name;
                 
                 if(elem.totalBuyLot+elem.totalSellLot === 0){

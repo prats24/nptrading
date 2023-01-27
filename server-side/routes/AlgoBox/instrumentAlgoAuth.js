@@ -7,15 +7,15 @@ router.post("/instrumentAlgo", (req, res)=>{
     const {InstrumentNameIncoming, IncomingInstrumentCode, InstrumentNameOutgoing, OutgoingInstrumentCode, Status, lastModified, uId, createdBy, createdOn} = req.body;
 
     if(!InstrumentNameIncoming || !IncomingInstrumentCode || !InstrumentNameOutgoing || !OutgoingInstrumentCode || !Status || !lastModified || !uId || !createdBy || !createdOn){
-        console.log(req.body);
-        console.log("data nhi h pura");
+        //console.log(req.body);
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     InstrumentAlgo.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const instrumentAlgo = new InstrumentAlgo({InstrumentNameIncoming, IncomingInstrumentCode, InstrumentNameOutgoing, OutgoingInstrumentCode, Status, lastModified, uId, createdBy, createdOn});
@@ -23,7 +23,7 @@ router.post("/instrumentAlgo", (req, res)=>{
         instrumentAlgo.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail")});
 })
 
 router.get("/readInstrumentAlgo", (req, res)=>{
@@ -37,7 +37,7 @@ router.get("/readInstrumentAlgo", (req, res)=>{
 })
 
 router.get("/readInstrumentAlgo/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     InstrumentAlgo.findOne({_id : id})
     .then((data)=>{
@@ -49,8 +49,8 @@ router.get("/readInstrumentAlgo/:id", (req, res)=>{
 })
 
 router.put("/readInstrumentAlgo/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const instrumentAlgo = await InstrumentAlgo.findOneAndUpdate({_id : id}, {
@@ -63,7 +63,7 @@ router.put("/readInstrumentAlgo/:id", async (req, res)=>{
                 lastModified: req.body.lastModified
             }
         })
-        console.log("this is role", instrumentAlgo);
+        //console.log("this is role", instrumentAlgo);
         res.send(instrumentAlgo)
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});
@@ -71,11 +71,11 @@ router.put("/readInstrumentAlgo/:id", async (req, res)=>{
 })
 
 router.delete("/readInstrumentAlgo/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const instrumentAlgo = await InstrumentAlgo.deleteOne({_id : id})
-        console.log("this is userdetail", instrumentAlgo);
+        //console.log("this is userdetail", instrumentAlgo);
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to delete data"});
