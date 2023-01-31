@@ -90,6 +90,7 @@ router.post("/placeorder", (async (req, res)=>{
 
 
     }).catch((err)=>{
+        console.log("order id not receive", err)
         res.status(422).json({error : err.response.data.message})
     })
 

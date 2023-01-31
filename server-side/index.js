@@ -36,8 +36,40 @@ const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 
+// Kite connect auto generate seesion
 
-// dotenv.config({ path: './config.env' });
+/*
+var KiteConnect = require("kiteconnect").KiteConnect;
+
+var kc = new KiteConnect({
+  api_key: "4o77ska70avpfx5e",
+});
+
+kc.generateSession("request_token", "f80ys08yesvw8da99y8p49wx9rr372fa")
+  .then(function (response) {
+    console.log("response of generate session", response)
+    init();
+  })
+  .catch(function (err) {
+    console.log("generate session error", err);
+  });
+
+function init() {
+  // Fetch equity margins.
+  // You can have other api calls here.
+  kc.getMargins()
+    .then(function (response) {
+      // You got user's margin details.
+      console.log("response of margin", response)
+    })
+    .catch(function (err) {
+      console.log("error of margin", err)
+    });
+}
+*/
+
+
+
 
 getKiteCred.getAccess().then((data)=>{
   createNewTicker(data.getApiKey, data.getAccessToken);
@@ -114,14 +146,9 @@ require('./db/conn');
     let date = new Date();
     let weekDay = date.getDay();
     if(weekDay > 0 && weekDay < 6){
-        // const job = nodeCron.schedule(`0 5 10 * * ${weekDay}`, cronJobForHistoryData);
         const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
     }
   }
-
-
-
-// app.use(require("./utils/errorHandler"));
 
 const PORT = process.env.PORT;
 
