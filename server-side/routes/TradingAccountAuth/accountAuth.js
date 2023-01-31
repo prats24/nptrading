@@ -9,14 +9,14 @@ router.post("/account", (req, res)=>{
     const {brokerName, accountId, accountName, apiKey, apiSecret, status, uId, createdOn, lastModified, createdBy} = req.body;
 
     if(!brokerName || !accountId || !accountName || !apiKey || !apiSecret || !status || !uId || !createdOn || !lastModified || !createdBy){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     Account.findOne({accountId : accountId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const account = new Account({brokerName, accountId, accountName, apiKey, apiSecret, status, uId, createdOn, lastModified, createdBy});
@@ -25,14 +25,14 @@ router.post("/account", (req, res)=>{
 
             disconnectTicker();
             getKiteCred.getAccess().then((data) => {
-                console.log(data);
+                //console.log(data);
                 createNewTicker(data.getApiKey, data.getAccessToken);
             });  
 
             
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail in account auth")});
     
 })
 
@@ -47,7 +47,7 @@ router.get("/readAccountDetails", (req, res)=>{
 })
 
 router.get("/readAccountDetails/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     Account.findOne({_id : id})
     .then((data)=>{
@@ -59,8 +59,8 @@ router.get("/readAccountDetails/:id", (req, res)=>{
 })
 
 router.put("/readAccountDetails/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const account = await Account.findOneAndUpdate({_id : id}, {
@@ -77,11 +77,11 @@ router.put("/readAccountDetails/:id", async (req, res)=>{
         
         disconnectTicker();
         getKiteCred.getAccess().then((data) => {
-            console.log(data);
+            //console.log(data);
             createNewTicker(data.getApiKey, data.getAccessToken);
         });      
 
-        console.log("this is role", account);
+        //console.log("this is role", account);
         res.send(account)
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});
@@ -89,11 +89,11 @@ router.put("/readAccountDetails/:id", async (req, res)=>{
 })
 
 router.delete("/readAccountDetails/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const account = await Account.deleteOne({_id : id})
-        console.log("this is userdetail", account);
+        //console.log("this is userdetail", account);
         // res.send(userDetail)
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
@@ -102,8 +102,8 @@ router.delete("/readAccountDetails/:id", async (req, res)=>{
 })
 
 router.patch("/readAccountDetails/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ // Broker, AccountID, AccountName, APIKey, APISecret, Status, lastModified
         const {id} = req.params
         const account = await Account.findOneAndUpdate({_id : id}, {
@@ -112,7 +112,7 @@ router.patch("/readAccountDetails/:id", async (req, res)=>{
                 lastModified: req.body.lastModified
             }
         })
-        console.log("this is role", account);
+        //console.log("this is role", account);
         res.send(account)
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});

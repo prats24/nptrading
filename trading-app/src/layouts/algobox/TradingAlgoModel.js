@@ -56,7 +56,7 @@ const TradingAlgoModel = ({Render}) => {
   const formSubmit = async () => {
     
     setFormData(formData);
-    console.log(formData)
+    //console.log(formData)
 
     const {algoName, transaction, instrument, exchange, product, lotMultiplier, accountName, status} = formData;
 
@@ -75,13 +75,13 @@ const TradingAlgoModel = ({Render}) => {
     });
     
     const data = await res.json();
-    console.log(data);
+    //console.log(data);
     if(data.status === 422 || data.error || !data){
         window.alert(data.error);
-        console.log("invalid entry");
+        //console.log("invalid entry");
     }else{
         window.alert("entry succesfull");
-        console.log("entry succesfull");
+        //console.log("entry succesfull");
     }
     reRender ? setReRender(false) : setReRender(true)
 

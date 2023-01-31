@@ -11,7 +11,7 @@ router.post("/parameterDetails", (req, res)=>{
     const {date, uId, quantity, allowedLot, amount} = req.body;
 
     if (!date || !uId || !quantity || !allowedLot || !amount){
-        console.log("data nhi h pura");
+        // console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
@@ -26,7 +26,7 @@ router.post("/parameterDetails", (req, res)=>{
         perams.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log( "fail")});
     
 })
 
@@ -41,7 +41,7 @@ router.get("/readParametersDetails", (req, res)=>{
 })
 
 router.get("/readParametersDetails/:id", (req, res)=>{
-    console.log(req.params)
+    // console.log(req.params)
     const {id} = req.params
     Perameters.findOne({_id : id})
     .then((data)=>{

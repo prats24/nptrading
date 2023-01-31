@@ -11,14 +11,14 @@ router.post("/apiProduct", (req, res)=>{
     const {name, active, modifiedOn, createdOn} = req.body;
 
     if(!name || !active || !modifiedOn || !createdOn){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     ApiProduct.findOne({name : name})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const apiProduct = new ApiProduct({name, active, modifiedOn, createdOn});
@@ -26,7 +26,7 @@ router.post("/apiProduct", (req, res)=>{
         apiProduct.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log( "fail")});
     
 })
 

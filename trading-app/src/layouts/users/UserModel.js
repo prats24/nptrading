@@ -63,7 +63,7 @@ const UserModel = () => {
 
   async function formSubmit() {
     setformstate(formstate);
-    console.log(formstate)
+    //console.log(formstate)
 
     const { Name, Designation, EmailID, MobileNo, Degree, DOB, Gender, TradingExp, Location, LastOccupation , DateofJoining, Role, Status, userPassword, employeeId} = formstate;
 
@@ -83,13 +83,13 @@ const UserModel = () => {
 
 
     const data = await res.json();
-    console.log(data);
+    //console.log(data);
     if(data.status === 422 || data.error || !data){ 
         window.alert(data.error);
-        console.log("Invalid Entry");
+        //console.log("Invalid Entry");
     }else{
         window.alert("User Created Successfully");
-        console.log("entry succesfull");
+        //console.log("entry succesfull");
     }
     setOpen(false);
     reRender ? setReRender(false) : setReRender(true)

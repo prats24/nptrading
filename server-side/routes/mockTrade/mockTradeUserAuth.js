@@ -14,13 +14,13 @@ router.post("/mocktradeuser", async (req, res)=>{
          TriggerPrice, stopLoss, validity, variety, last_price, createdBy, userId,
           createdOn, uId, isRealTrade, order_id, instrumentToken} = req.body
 
-          console.log(req.body);
-          console.log("in the company auth");
+          //console.log(req.body);
+          //console.log("in the company auth");
 
     if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !last_price || !instrumentToken){
-        console.log(exchange); console.log(symbol); console.log(buyOrSell); console.log(Quantity); console.log(Product); console.log(OrderType); console.log(validity); console.log(variety); console.log(last_price); console.log(instrumentToken);
-        console.log(req.body);
-        console.log("data nhi h pura");
+        //console.log(exchange); //console.log(symbol); //console.log(buyOrSell); //console.log(Quantity); //console.log(Product); //console.log(OrderType); //console.log(validity); //console.log(variety); //console.log(last_price); //console.log(instrumentToken);
+        //console.log(req.body);
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "please fill all the feilds..."})
     }
 
@@ -38,7 +38,7 @@ router.post("/mocktradeuser", async (req, res)=>{
             if(elem.instrument_token == instrumentToken){
 
                 originalLastPrice = elem.last_price;
-                console.log("originalLastPrice 38 line", originalLastPrice)
+                //console.log("originalLastPrice 38 line", originalLastPrice)
             }
         }
 
@@ -46,7 +46,7 @@ router.post("/mocktradeuser", async (req, res)=>{
         return new Error(err);
     }
 
-    console.log("originalLastPrice", a)
+    //console.log("originalLastPrice", a)
 })
 
 router.get("/readmocktradeuser", (req, res)=>{
@@ -60,7 +60,7 @@ router.get("/readmocktradeuser", (req, res)=>{
 })
 
 router.get("/readmocktradeuser/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     MockTradeDetails.findOne({_id : id})
     .then((data)=>{
@@ -122,7 +122,7 @@ router.get("/readmocktradeuserDate/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate);
+    //console.log(todayDate);
     MockTradeDetails.find({order_timestamp: {$regex: todayDate}, userId: {$regex: email}}).sort({trade_time: -1})
     .then((data)=>{
         return res.status(200).send(data);
@@ -136,7 +136,7 @@ router.get("/readmocktradeusertodaydatapagination/:email/:skip/:limit", (req, re
     const {email, skip, limit} = req.params
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate);
+    //console.log(todayDate);
     MockTradeDetails.find({order_timestamp: {$regex: todayDate}, userId: {$regex: email}}).sort({trade_time: -1}).skip(skip).limit(limit)
     .then((data)=>{
         return res.status(200).send(data);
@@ -236,7 +236,7 @@ router.get("/readmocktradeuserThisWeek/:email", (req, res)=>{
 
     var weekStartDay = new Date(day);
     weekStartDay.setDate(day.getDate() - weekday);
-    //console.log(String(weekStartDay).slice(0,10));
+    ////console.log(String(weekStartDay).slice(0,10));
     let weekStartDate = `${(weekStartDay.getFullYear())}-${String(weekStartDay.getMonth() + 1).padStart(2, '0')}-${String(weekStartDay.getDate()).padStart(2, '0')}`
 
     MockTradeDetails.find({trade_time: {$gte:weekStartDate,$lt:nextDate}, userId:email})
@@ -302,21 +302,21 @@ router.get("/updatemocktradedatatradetimeuser", async(req, res)=>{
     // let id = data._id;
     // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     // const {email} = req.params
-    // console.log(todayDate)
+    // //console.log(todayDate)
     let datatoupdate = await MockTradeDetails.find()
    
-    //console.log(datatoupdate);
+    ////console.log(datatoupdate);
 
    
         for(let i = 0; i< datatoupdate.length; i++ ){
             if(!datatoupdate[i].trade_time){
-            // console.log(datatoupdate[i]);
+            // //console.log(datatoupdate[i]);
             let datetime = datatoupdate[i].order_timestamp.split(" ");
             let datepart = datetime[0];
             let datetoupdate = datetime[0].split("-");
             let timepart = datetime[1]; 
             let trade_time = `${datetoupdate[2]}-${datetoupdate[1]}-${datetoupdate[0]} ${datetime[1]}`
-            console.log(trade_time);
+            //console.log(trade_time);
 
             await MockTradeDetails.findByIdAndUpdate(datatoupdate[i]._id, {trade_time : trade_time},
                 function (err, trade_time) {
@@ -336,14 +336,14 @@ router.get("/updatemocktradedataamountuser", async(req, res)=>{
     // let id = data._id;
     // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
     // const {email} = req.params
-    // console.log(todayDate)
+    // //console.log(todayDate)
     let datatoupdate = await MockTradeDetails.find()
-    console.log(datatoupdate);
+    //console.log(datatoupdate);
 
 
         for(let i = 0; i< datatoupdate.length; i++ ){
             if(!datatoupdate[i].amount){
-            //console.log(datatoupdate[i]);
+            ////console.log(datatoupdate[i]);
             await MockTradeDetails.findByIdAndUpdate(datatoupdate[i]._id, {amount : Number(datatoupdate[i].Quantity) * datatoupdate[i].average_price},
                 function (err, amount) {
                     if (err){
@@ -465,7 +465,7 @@ router.get("/getavgpricemocktradeparticularuser/:email", async(req, res)=>{
     let date = new Date();
     const days = date.getDay();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    // console.log("Today "+todayDate)
+    // //console.log("Today "+todayDate)
     
     let pipeline = [{ $match: { trade_time : {$regex : todayDate}, userId: email, status: "COMPLETE"} },
 
@@ -486,7 +486,7 @@ router.get("/getavgpricemocktradeparticularuser/:email", async(req, res)=>{
 
     let getAvgPrice = await MockTradeDetails.aggregate(pipeline)
             
-                // console.log(getAvgPrice);
+                // //console.log(getAvgPrice);
 
         res.status(201).json(getAvgPrice);
 })
@@ -539,7 +539,7 @@ router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=
         },
       ])
             
-                // console.log(pnlDetails)
+                // //console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  
@@ -593,7 +593,7 @@ router.get("/getuserreportdatewise/:email/:firstDate/:secondDate", async(req, re
              { $sort: {_id: -1}},
             ])
             
-                // console.log(pnlDetails)
+                // //console.log(pnlDetails)
 
         res.status(201).json(pnlDetails);
  
@@ -703,7 +703,7 @@ router.get("/readmocktradeuseragg",async (req, res)=>{
         { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1,  "placed_by": 1 } },
         { $sort:{ _id: -1 }}
      ])
-                //console.log(x)
+                ////console.log(x)
 
         res.status(201).json(x);
 })
@@ -716,7 +716,7 @@ router.get("/readmocktradeusertodayagg",async (req, res)=>{
          { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1,  "placed_by": 1 } },
          { $sort:{ _id: -1 }}
       ])
-                 //console.log(x)
+                 ////console.log(x)
  
          res.status(201).json(x);
  })

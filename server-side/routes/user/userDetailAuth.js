@@ -6,24 +6,24 @@ const authController = require("../../controllers/authController")
 
 router.post("/userdetail", authController.protect, authController.restrictTo("admin"), (req, res)=>{
     const {status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
-    console.log(req.body)
+    //console.log(req.body)
     if(!status || !uId || !createdOn || !lastModified || !createdBy || !name || !designation || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation || !joining_date || !role){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     UserDetail.findOne({email : email})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
-        console.log(userDetail)
+        //console.log(userDetail)
         userDetail.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail in   userAuth")});
 })
 
 router.get("/readuserdetails", (req, res)=>{
@@ -37,7 +37,7 @@ router.get("/readuserdetails", (req, res)=>{
 })
 
 router.get("/readuserdetails/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     UserDetail.findOne({_id : id})
     .then((data)=>{
@@ -49,15 +49,15 @@ router.get("/readuserdetails/:id", (req, res)=>{
 })
 
 router.put("/readuserdetails/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
 
     try{
         const {id} = req.params
-        console.log(id)
+        //console.log(id)
 
         const user = await UserDetail.findOne({_id: id})
-        console.log("user", user)
+        //console.log("user", user)
 
         if(req.body.userPassword){
             user.lastModified = req.body.lastModified,
@@ -103,11 +103,11 @@ router.put("/readuserdetails/:id", async (req, res)=>{
 })
 
 router.delete("/readuserdetails/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const userDetail = await UserDetail.deleteOne({_id : id})
-        console.log("this is userdetail", userDetail);
+        //console.log("this is userdetail", userDetail);
         // res.send(userDetail)
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
@@ -117,7 +117,7 @@ router.delete("/readuserdetails/:id", async (req, res)=>{
 })
 
 router.get("/readparticularuserdetails/:email", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {email} = req.params
     UserDetail.findOne({email : email})
     .then((data)=>{

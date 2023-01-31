@@ -45,14 +45,14 @@ const TableOne = () => {
     let [greenDaysAvgPnl, setGreenDaysAvgPnl] = useState(0);
     let [redDaysAvgPnl, setRedDaysAvgPnl] = useState(0);
     let [overallPnl, setOverallPnl] = useState([]);
-    console.log("Dates: "+firstDate,secondDate)
-    console.log(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
+    //console.log("Dates: "+firstDate,secondDate)
+    //console.log(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
    
     useEffect(()=>{
-        console.log(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
+        //console.log(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
         axios.get(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
         .then((res)=>{
-          console.log(res.data)
+          //console.log(res.data)
           setCompanyPNLData(res.data);
         }).catch((err)=>{
             window.alert("Server Down");
@@ -69,7 +69,7 @@ const TableOne = () => {
           return;
         }
         setFirstDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
       function endDate(e){
         e.preventDefault();
@@ -78,13 +78,13 @@ const TableOne = () => {
           return;
         }
         setSecondDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
     
     let pnldate = [];
     let companynpnl = [];
     let companypnl = [];
-    console.log(companypnldata);
+    //console.log(companypnldata);
     companypnldata?.map((elem)=>{
     let cpnl = {}
     pnldate.push(elem._id.date);
@@ -138,10 +138,10 @@ const TableOne = () => {
         {elem.trades}
       </MDTypography>
     );
-    console.log(typeof(cpnl));
-    console.log(cpnl)
+    //console.log(typeof(cpnl));
+    //console.log(cpnl)
     //companypnl.push(cpnl)
-    console.log(companypnl)
+    //console.log(companypnl)
     rows.push(cpnl)
 
     })

@@ -12,7 +12,6 @@ const createNewTicker = (api_key, access_token) => {
    
     ticker.connect();
     ticker.autoReconnect(true, 10000000000, 5);
-    console.log('ticker is', ticker);
     return ticker;    
 }
 
@@ -22,7 +21,6 @@ const disconnectTicker = () => {
 }
 
 const subscribeTokens = async() => {
-  console.log(ticker);
   getKiteCred.getAccess().then(async (data)=>{
     let tokens = await fetchData(data.getApiKey, data.getAccessToken);
     ticker.subscribe(tokens);
@@ -30,7 +28,6 @@ const subscribeTokens = async() => {
 }
 
 const unSubscribeTokens = async(token) => {
-    console.log("unsubscribe");
     let tokens = [];
     tokens.push(token)
    let x =  ticker.unsubscribe(tokens);

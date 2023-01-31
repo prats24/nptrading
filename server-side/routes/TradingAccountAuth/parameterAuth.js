@@ -7,14 +7,14 @@ router.post("/parameter", (req, res)=>{
     const {createdOn, variety, exchange, orderType, validity, status, lastModified, createdBy } = req.body;
 
     if(!createdOn || !variety || !exchange || !orderType || !validity || !status || !lastModified || !createdBy){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     Parameter.findOne({createdOn : createdOn})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const parameter = new Parameter({createdOn, variety, exchange, orderType, validity, status, lastModified, createdBy});
@@ -22,7 +22,7 @@ router.post("/parameter", (req, res)=>{
         parameter.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail")});
     
 })
 
@@ -37,7 +37,7 @@ router.get("/readParameter", (req, res)=>{
 })
 
 router.get("/readParameter/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     Parameter.findOne({_id : id})
     .then((data)=>{

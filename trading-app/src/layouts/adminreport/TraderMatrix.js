@@ -39,14 +39,14 @@ const TableThree = () => {
     let [totalPositivePnl, setTotalPositivePnl] = useState(0);
     let [totalNegativePnl, setNegativePnl] = useState(0);
     let [overallPnl, setOverallPnl] = useState([]);
-    console.log("Dates: "+firstDate,secondDate)
-    console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
+    //console.log("Dates: "+firstDate,secondDate)
+    //console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
    
     useEffect(()=>{
-        console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
+        //console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
         axios.get(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
         .then((res)=>{
-          console.log(res.data)
+          //console.log(res.data)
           setTraderPNLData(res.data);
         }).catch((err)=>{
             window.alert("Server Down");
@@ -63,7 +63,7 @@ const TableThree = () => {
           return;
         }
         setFirstDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
       function endDate(e){
         e.preventDefault();
@@ -72,7 +72,7 @@ const TableThree = () => {
           return;
         }
         setSecondDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
     
     let tradername = [];
@@ -80,7 +80,7 @@ const TableThree = () => {
     let traderpnl = [];
     let tradermatrix = [];
     let createdBy = '';
-    console.log(traderpnldata);
+    //console.log(traderpnldata);
 
     //New code for hash map of traders
 
@@ -105,7 +105,7 @@ const TableThree = () => {
                 obj.Brokerage += traderpnldata[i].brokerage
                 obj.LifetimeGPnl += traderpnldata[i].gpnl
                 obj.LifetimeNPnl += Number(traderpnldata[i].npnl)
-                console.log("LTNPNL: "+obj.LifetimeNPnl,traderpnldata[i].npnl);
+                //console.log("LTNPNL: "+obj.LifetimeNPnl,traderpnldata[i].npnl);
           } else {
             hash.set(traderpnldata[i]._id.createdBy, {
               createdBy: traderpnldata[i]._id.createdBy,
@@ -121,14 +121,14 @@ const TableThree = () => {
           }
     }
 
-    console.log(hash)
+    //console.log(hash)
     
     let pnlmatrixArr = []
     for (let value of hash.values()) {
       pnlmatrixArr.push(value);
     }
 
-    console.log("PNL Matrix Array: "+pnlmatrixArr[0]);
+    //console.log("PNL Matrix Array: "+pnlmatrixArr[0]);
 
 
     //Code Ends
@@ -147,7 +147,7 @@ const TableThree = () => {
     tradermatrix.push(JSON.parse(JSON.stringify({totalPositivePnl,totalNegativePnl,createdBy})))
     })
     
-    console.log(tradermatrix);
+    //console.log(tradermatrix);
     
     //Sorting the array based on ratio
     pnlmatrixArr.sort((a, b) => {
@@ -262,10 +262,10 @@ const TableThree = () => {
         {averagereddaysgpnl >= 0 ? "+₹" + averagereddaysgpnl.toFixed(0) : "-₹" + (-averagereddaysgpnl).toFixed(0)}
       </MDTypography>
     );
-    console.log(typeof(tpnl));
-    console.log(tpnl)
+    //console.log(typeof(tpnl));
+    //console.log(tpnl)
     //companypnl.push(cpnl)
-    console.log(traderpnl)
+    //console.log(traderpnl)
     rows.push(tpnl)
 
     })

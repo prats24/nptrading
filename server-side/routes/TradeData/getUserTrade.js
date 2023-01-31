@@ -15,7 +15,7 @@ router.get("/readliveTradeuser", (req, res)=>{
 })
 
 router.get("/readliveTradeuser/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     UserTradeData.findOne({_id : id})
     .then((data)=>{
@@ -77,7 +77,7 @@ router.get("/readliveTradeuserDate/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate);
+    //console.log(todayDate);
     UserTradeData.find({order_timestamp: {$regex: todayDate}, userId: {$regex: email}}).sort({trade_time: -1})
     .then((data)=>{
         return res.status(200).send(data);
@@ -91,7 +91,7 @@ router.get("/readliveTradeusertodaydatapagination/:email/:skip/:limit", (req, re
     const {email, skip, limit} = req.params
     let date = new Date();
     let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-    console.log(todayDate);
+    //console.log(todayDate);
     UserTradeData.find({order_timestamp: {$regex: todayDate}, userId: {$regex: email}}).sort({trade_time: -1}).skip(skip).limit(limit)
     .then((data)=>{
         return res.status(200).send(data);
@@ -174,24 +174,24 @@ router.get("/readliveTradeuserpariculardate/:date", (req, res)=>{
 router.get("/readliveTradeuserThisWeek/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
-    console.log(date);
+    //console.log(date);
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate);
+    //console.log(todayDate);
 
     let weekday = date.getDay();
-    console.log("Weekday"+weekday);
+    //console.log("Weekday"+weekday);
     
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var nextDay = new Date(day);
     nextDay.setDate(day.getDate() + 2);
-    console.log(nextDay);
+    //console.log(nextDay);
     let nextDate = `${(nextDay.getFullYear())}-${String(nextDay.getMonth() + 1).padStart(2, '0')}-${String(nextDay.getDate()).padStart(2, '0')}`
 
     var weekStartDay = new Date(day);
     weekStartDay.setDate(day.getDate() - weekday);
-    //console.log(String(weekStartDay).slice(0,10));
+    ////console.log(String(weekStartDay).slice(0,10));
     let weekStartDate = `${(weekStartDay.getFullYear())}-${String(weekStartDay.getMonth() + 1).padStart(2, '0')}-${String(weekStartDay.getDate()).padStart(2, '0')}`
 
     UserTradeData.find({trade_time: {$gte:weekStartDate,$lt:nextDate}, userId:email})
@@ -208,14 +208,14 @@ router.get("/readliveTradeuserThisMonth/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log(todayDate);
+    //console.log(todayDate);
 
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var nextDay = new Date(day);
     nextDay.setDate(day.getDate() + 1);
-    console.log(nextDay);
+    //console.log(nextDay);
 
     let monthStart = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     UserTradeData.find({trade_time: {$gte:monthStart,$lt: nextDay}, userId: {$regex: email}})
@@ -231,18 +231,18 @@ router.get("/readliveTradeuserThisYear/:email", (req, res)=>{
     const {email} = req.params
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
-    console.log("Today Date"+todayDate);
+    //console.log("Today Date"+todayDate);
 
     var day = new Date(todayDate);
-    console.log(day); // Apr 30 2000
+    //console.log(day); // Apr 30 2000
 
     var nextDay = new Date(day);
     nextDay.setDate(day.getDate() + 1);
-    console.log(nextDay);
+    //console.log(nextDay);
 
     let yearStart = `${(date.getFullYear())}-01-01`
-    console.log(yearStart);
-    console.log(email);
+    //console.log(yearStart);
+    //console.log(email);
     UserTradeData.find({trade_time: {$gte:yearStart,$lt:nextDay}, userId:email})
     .then((data)=>{
         return res.status(200).send(data);
@@ -261,7 +261,7 @@ router.get("/readlivetradeuseragg",async (req, res)=>{
         { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "placed_by": 1 } },
         { $sort:{ _id: -1 }}
      ])
-                //console.log(x)
+                ////console.log(x)
 
         res.status(201).json(x);
 })
@@ -274,7 +274,7 @@ router.get("/readlivetradeusertodayagg",async (req, res)=>{
          { $project: { "createdBy": 1, "order_id": 1, "buyOrSell": 1, "Quantity": 1, "average_price": 1, "order_timestamp": 1, "symbol": 1, "Product": 1, "amount": 1, "status": 1, "placed_by": 1 } },
          { $sort:{ _id: -1 }}
       ])
-                 //console.log(x)
+                 ////console.log(x)
  
          res.status(201).json(x);
  })

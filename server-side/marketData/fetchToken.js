@@ -39,12 +39,10 @@ const fetchData = async (getApiKey, getAccessToken) => {
   let arr = [];
   try{
     const res = await axios.get(url, authOptions);
-    // console.log("its json data", JSON.stringify(res.data));
     for (instrument in res.data.data) {
       arr.push(res.data.data[instrument].instrument_token);
     }
 
-    console.log("arr in fetch token", arr);
     return arr;
 
   } catch (err){

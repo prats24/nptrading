@@ -5,23 +5,23 @@ const Role = require("../../models/User/everyoneRoleSchema");
 
 router.post("/everyonerole", (req, res)=>{
     const {uId, createdOn, lastModified, createdBy, roleName, instruments, tradingAccount, APIParameters, users, algoBox, reports} = req.body;
-    console.log(req.body)
+    //console.log(req.body)
     if(!uId || !createdOn || !lastModified || !createdBy || !roleName || !instruments || !tradingAccount || !APIParameters || !users || !algoBox || !reports){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     Role.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const role = new Role({uId, createdOn, lastModified, createdBy, roleName, instruments, tradingAccount, APIParameters, users, algoBox, reports});
         role.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log( "fail in role auth")});
 })
 
 router.get("/readeveryonerole", (req, res)=>{
@@ -35,7 +35,7 @@ router.get("/readeveryonerole", (req, res)=>{
 })
 
 router.get("/readeveryonerole/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     Role.findOne({_id : id})
     .then((data)=>{
@@ -47,8 +47,8 @@ router.get("/readeveryonerole/:id", (req, res)=>{
 })
 
 router.put("/readeveryonerole/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{
         const {id} = req.params
         const role = await Role.findOneAndUpdate({_id : id}, {
@@ -63,7 +63,7 @@ router.put("/readeveryonerole/:id", async (req, res)=>{
                 reports: req.body.reports1
             }
         })
-        console.log("this is role", role);
+        //console.log("this is role", role);
         res.send(role)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -72,11 +72,11 @@ router.put("/readeveryonerole/:id", async (req, res)=>{
 })
 
 router.delete("/readeveryonerole/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const role = await Role.deleteOne({_id : id})
-        console.log("this is userdetail", role);
+        //console.log("this is userdetail", role);
         // res.send(userDetail)
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
