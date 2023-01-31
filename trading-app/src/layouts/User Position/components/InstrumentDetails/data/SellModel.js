@@ -325,7 +325,7 @@ useEffect(()=>{
             //console.log("userPermission", userPermission)
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
-                    if(subElem.isRealTradeEnable || elem.isRealTrade){
+                    if(subElem.isRealTradeEnable){
                         sendOrderReq(elem);
                     } else{
                         mockTradeCompany(elem);

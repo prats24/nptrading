@@ -8,13 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import MDButton from '../../../components/MDButton';
-import TextField from '@mui/material/TextField';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 import { userContext } from '../../../AuthContext';
-import uniqid from "uniqid";
 import UserList from "./UserList"
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
@@ -38,27 +32,17 @@ const MapUser = ({algoName}) => {
   const [open, setOpen] = React.useState(false);
   
   const { columns, rows } = Data();
-  // let valueForRealTrade = useRef(0);
-  // let valueForEnableTrade = useRef(0);
-  const [valueForEnableTrade, setvalueForEnableTrade] = useState("");
-  const [valueForRealTrade, setvalueForRealTrade] = useState("");
 
   let date = new Date();
   const getDetails = useContext(userContext);
   let modifiedOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
   let modifiedBy = getDetails.userDetails.name;
 
-  const [userNam, setUserNam] = useState();
-  const [entrading, setEntrading] = useState();
-  const [reTrading, setreTrading] = useState();
-
 
   
   const [reRender, setReRender] = useState(true);
   const [permissionData, setPermissionData] = useState([]);
-  //console.log(permissionData);
   
-  const [modal, setModal] = useState(false);
   const [addUser, setAddUser] = useState([]);
 
   async function tradeEnableChange(e, userId, tradeEnable, userName){
@@ -119,7 +103,6 @@ const MapUser = ({algoName}) => {
         realTrade = true;
       }
       algoData.realTrading = realTrade;
-    console.log("in real", valueForRealTrade, realTrade, e, userId)
     const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${userId}`, {
       method: "PATCH",
       headers: {
@@ -198,16 +181,12 @@ const MapUser = ({algoName}) => {
 
   function formbtn(e, id) {
       e.preventDefault();
-      // setModal(!modal);
       let flag = true;
       let newDataUpdated = newData.filter((elem)=>{
           return elem._id === id
       })
       algoData.name=newDataUpdated[0].userName;
-      setEntrading(algoData.tradingEnable);
-      setreTrading(algoData.realTrading)
       setAlgoData(algoData);
-      //console.log(algoData, newDataUpdated);
 
       if(permissionDataUpdated.length){
           for(let elem of permissionDataUpdated){
@@ -300,14 +279,8 @@ const MapUser = ({algoName}) => {
       }
   }
 
-  //console.log("newData", newData)
   newData.map((elem)=>{
-    // if(valueForEnableTrade === "" && valueForRealTrade === ""){
-    //   setvalueForEnableTrade(elem.isTradeEnable);
-    //   setvalueForRealTrade(elem.isRealTradeEnable)
-    // }
 
-    console.log(elem.isTradeEnable, valueForRealTrade)
     let obj = {};
     obj.name = (
         <MDTypography component="a" href="#" variant="caption" fontWeight="medium">

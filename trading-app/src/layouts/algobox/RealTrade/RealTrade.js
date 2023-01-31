@@ -38,6 +38,9 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
     const uId = uniqid();
     const createdOn = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
     const createdBy = getDetails.userDetails.name;
+    let modifiedOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+    let modifiedBy = getDetails.userDetails.name;
+  
 
     const allUserRunningPnl = [];
     const companyAllRunningPnl = [];
@@ -271,11 +274,35 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         })
     }
 
+    function changeAllUserRealTrade(realTrade){
+        mappedUser.map(async (elem)=>{
+            const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${elem.userId}`, {
+                method: "PATCH",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Credentials": true
+                },
+                body: JSON.stringify({
+                    modifiedOn, modifiedBy, isRealTradeEnable: realTrade
+                })
+            });
+          
+            const permissionData = await response.json();
+        
+            if (permissionData.status === 422 || permissionData.error || !permissionData) {
+                window.alert(permissionData.error);
+            }
+        })
+    }
+
     function functionality(){
 
         if(realTrade.current){
+            changeAllUserRealTrade(false)
             realTrade.current = false;
         } else{
+            changeAllUserRealTrade(true)
             realTrade.current = true;
         }
         
