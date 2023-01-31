@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // prop-types is a library for typechecking of props.
@@ -24,6 +9,8 @@ import Grid from "@mui/material/Grid";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Icon from "@mui/material/Icon";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
@@ -32,16 +19,27 @@ import MDBox from "../../../components/MDBox";
 import breakpoints from "../../../assets/theme/base/breakpoints";
 
 // Images
-import CategoryIcon from '@mui/icons-material/Category';
-import Shop2Icon from '@mui/icons-material/Shop2';
+import PersonIcon from '@mui/icons-material/Person';
+import burceMars from "../../../assets/images/bruce-mars.jpg";
 import backgroundImage from "../../../assets/images/trading.jpg";
-import Category from "../Category";
-import Expense from "../Expense";
+import CategoryTable from "../CategoryTable";
+import CreateCategory from "../CreateCategory";
+import EditCategory from "../EditCategory";
+import ExpenseTable from "../ExpenseTable";
+import CreateExpense from "../CreateExpense";
+import EditExpense from "../EditExpense";
 
 
-function ExpenseHeader({ children }) {
+
+function UserHeader({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+  const [isCreate, checkIsCreate] = useState(false);
+  const [isView, checkIsView] = useState(false);
+  const [getId, setGetId] = useState("");
+  const [reRender, setReRender] = useState(false);
+  const [editData, setEditData] = useState([]);
+
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -51,6 +49,7 @@ function ExpenseHeader({ children }) {
         : setTabsOrientation("horizontal");
     }
 
+    
     /** 
      The event listener that's calling the handleTabsOrientation function when resizing the window.
     */
@@ -104,24 +103,41 @@ function ExpenseHeader({ children }) {
               {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}> */}
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Expense"
+                  label="Expenses"
                   icon={
-                    <Shop2Icon fontSize="small" sx={{ mt: -0.25}}/>
+                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
-
                 <Tab
-                  label="Catagery"
+                  label="Category"
                   icon={
-                    <CategoryIcon fontSize="small" sx={{ mt: -0.25}}/>
-                     }
+                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
+                  }
                 />
              
               </Tabs>
-            </AppBar>
-            <TabPanel value={tabValue} index={0}><Expense /> </TabPanel>
-            <TabPanel value={tabValue} index={1}>< Category /> </TabPanel>
-            {/* <TabPaneltwo/> */}
+            </AppBar> 
+            {isCreate || isView ?
+
+(isCreate ?
+<TabPanel value={tabValue} index={0}>< CreateExpense setCreateExpense={checkIsCreate}/> </TabPanel>
+:
+<TabPanel value={tabValue} index={0}>< EditExpense Render={{reRender, setReRender}} setView={checkIsView} ExpenseData={editData} id={getId}/> </TabPanel>)
+  :
+<TabPanel value={tabValue} index={0}>< ExpenseTable reRender={reRender} setEditData={setEditData} setView={{checkIsView, setGetId}} setCreateExpense={checkIsCreate}/> </TabPanel>}
+
+
+            {isCreate || isView ?
+
+            (isCreate ?
+            <TabPanel value={tabValue} index={1}>< CreateCategory setCreateCategory={checkIsCreate}/> </TabPanel>
+            :
+            <TabPanel value={tabValue} index={1}>< EditCategory Render={{reRender, setReRender}} setView={checkIsView} CategoryData={editData} id={getId}/> </TabPanel>)
+              :
+            <TabPanel value={tabValue} index={1}>< CategoryTable reRender={reRender} setEditData={setEditData} setView={{checkIsView, setGetId}} setCreateCategory={checkIsCreate}/> </TabPanel>}
+
+            
+
           </Grid>
         </Grid>
         </Card>
@@ -134,12 +150,12 @@ function ExpenseHeader({ children }) {
 }
 
 // Setting default props for the Header
-ExpenseHeader.defaultProps = {
+UserHeader.defaultProps = {
   children: "",
 };
 
 // Typechecking props for the Header
-ExpenseHeader.propTypes = {
+UserHeader.propTypes = {
   children: PropTypes.node,
 };
 
@@ -157,4 +173,4 @@ function TabPanel(props){
   )
 }
 
-export default ExpenseHeader;
+export default UserHeader;

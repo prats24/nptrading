@@ -6,9 +6,11 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 
+
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
 import MDButton from "../../components/MDBox";
+import Button from '@mui/material/Button';
 import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -207,18 +209,18 @@ const TradingAlgo = () => {
         let obj = {};
         let statuscolor = subelem.status == "Active" ? "success" : "error"
         obj.edit = (
-            <MDButton variant="Contained" color="black" fontWeight="medium">
+            <Button variant="" color="black" fontWeight="small">
                 <TradingAlgoEditModel data={algoData} id={subelem._id} Render={{setReRender, reRender}}/>
-            </MDButton>
+            </Button>
         );
         obj.algoName = (
-            <MDTypography component="a" href="#" variant="caption" fontWeight="medium">
+            <MDTypography component="a" variant="caption" fontWeight="medium">
               {(subelem.algoName)}
             </MDTypography>
         );
         obj.mapUser = (
-            <MDButton variant="outlined" bgColor="blue" color="dark" fontWeight="medium">
-              <MapUser color="white" algoName={subelem.algoName}/>
+            <MDButton variant="" color="black" fontWeight="medium">
+              <MapUser color="" algoName={subelem.algoName}/>
             </MDButton>
         );
         obj.lotMultipler = (
@@ -262,9 +264,9 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.isRealTrade = (
-            <MDButton variant="outlined" bgColor="blue" color="dark" fontWeight="medium">
+            <Button variant="contained" borderRadius="1rem" bgColor="light" color="black" fontWeight="small">
                 <RealTrade id={subelem._id} Render={{reRender, setReRender}} tradingAlgo={algoData} buttonTextBool={subelem.isRealTrade} />
-            </MDButton>
+            </Button>
         );
 
         rows.push(obj);
@@ -305,7 +307,7 @@ const TradingAlgo = () => {
                                 </MDBox>
                             </Card>
                         </Grid>
-                        <Grid item xs={12} md={12} lg={12}>
+                        {/* <Grid item xs={12} md={12} lg={12}>
                             <Card>
                                 <MDBox
                                     mx={2}
@@ -331,7 +333,7 @@ const TradingAlgo = () => {
                                     />
                                 </MDBox>
                             </Card>
-                        </Grid>
+                        </Grid> */}
                     </Grid> 
                 </MDBox> 
                 </>

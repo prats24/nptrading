@@ -41,74 +41,12 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
     const allUserRunningPnl = [];
     const companyAllRunningPnl = [];
-    // useEffect(()=>{
-    //     axios.get(`${baseUrl}api/v1/readpermission`)
-    //     .then((res)=>{
-    //         let permissionData = res.data
-
-    //         let perticularAlgo = tradingAlgo.filter((elem)=>{
-    //             return elem._id === id && elem.status === "Active";
-    //         })
-    
-    //         let mappedUser = permissionData.filter((elem)=>{
-    //             return perticularAlgo[0].algoName === elem.algoName;
-    //         })
-
-    //         setMappedUser(mappedUser);
-
-
-    
-    //     }).catch((err)=>{
-    //         window.alert("Server Down");
-    //         return new Error(err);
-    //     })
-
-    //     axios.get(`${baseUrl}api/v1/readRequestToken`)
-    //     .then((res) => {
-    //         let activeAccessToken = (res.data).filter((elem)=>{
-    //             return elem.status === "Active"
-    //         })
-    //         setAccessToken(activeAccessToken);
-    //     }).catch((err)=>{
-            
-    //         return new Error(err);
-    //     })
-
-    //     axios.get(`${baseUrl}api/v1/readAccountDetails`)
-    //     .then((res) => {
-    //         let activeApiKey = (res.data).filter((elem)=>{
-    //             return elem.status === "Active"
-    //         })
-    //         setApiKey(activeApiKey);
-    //     }).catch((err)=>{
-            
-    //         return new Error(err);
-    //     })
-
-    //     axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
-    //     .then((res) => {
-    //         let dataArr = (res.data).filter((elem) => {
-    //             return elem.status === "Active"
-    //         })
-    //         setTradeData(dataArr)
-    //     }).catch((err)=>{
-            
-    //         return new Error(err);
-    //     })
-
-    // }, [])
-
-    // console.log("mappedUser", mappedUser);
 
     mappedUser.map((elem)=>{
         // console.log(oneUserRunningPnl(elem));
         // allUserRunningPnl.push(oneUserRunningPnl(elem))
         axios.get(`${baseUrl}api/v1/readmocktradeuserDate/${elem.userId}`)
         .then((res) => {
-            // let singleUserPnl = (res.data).filter((element)=>{
-            //     return element.order_timestamp.includes(todayDate) && element.status === "COMPLETE" && element.userId === elem.userId;
-            // })
-            // setSingleUserPnl(data);
 
             let hash = mappedUserHelper(res.data, elem);
             // console.log(hash);

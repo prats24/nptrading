@@ -33,16 +33,6 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
         })
 
     },[reRender])
-    //console.log(data, permissionArr)
-
-    // permissionArr.map((elem, index)=>{
-    //     data.map((subElem, subIndex)=>{
-    //         if(subElem.email === elem.userId && elem.algoName === algoName){
-    //             data.splice(subIndex, 1);
-                
-    //         }
-    //     })
-    // })
 
     if(data.length !== 0 && permissionArr.length !== 0){
         for(let i = 0; i < data.length; i++){

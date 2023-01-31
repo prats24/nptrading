@@ -17,7 +17,7 @@ export default function TradingAlgoData() {
     columns: [
       { Header: "Edit", accessor: "edit", align: "center" },
       { Header: "Algo Name", accessor: "algoName", align: "center" },
-      { Header: "users", accessor: "mapUser", align: "center" },
+      { Header: "Map Users", accessor: "mapUser", align: "center" },
       { Header: "Lot Multiplier", accessor: "lotMultipler", align: "center" },
       { Header: "Transaction", accessor: "transactionChange", align: "center" },
       { Header: "Margin Deduction", accessor: "marginDeduction", align: "center" },
