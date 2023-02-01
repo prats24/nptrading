@@ -20,11 +20,13 @@ import DataTable from "../../../../examples/Tables/DataTable";
 import data from "./data";
 import ViewTradeDetail from "./ViewTradeDetail";
 import ViewOrderDetail from "./MockTraderwiseOrders";
+import SwitchRealMock from "../LiveTraderwiseCompanyPNL/SwitchRealMock"
 
-function MockTraderwiseCompantPNL({socket}) {
+function MockTraderwiseCompantPNL({socket, Render}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
+  const {render, setRender} = Render
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -89,7 +91,7 @@ function MockTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-  }, [marketData])
+  }, [marketData, render]) 
 
   useEffect(() => {
     return () => {
@@ -252,6 +254,10 @@ finalTraderPnl.map((subelem, index)=>{
   );
   obj.orders = (
     <ViewOrderDetail userId={subelem.userId}/>
+  );
+
+  obj.realOrMock = (
+    <SwitchRealMock Render={{render, setRender}} userId={subelem.userId} />
   );
 
   rows.push(obj);

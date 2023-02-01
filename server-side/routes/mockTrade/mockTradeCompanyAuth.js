@@ -66,18 +66,76 @@ router.post("/mocktradecompanytemp", async (req, res)=>{
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
+        const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
+        const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
+
 
         let realQuantity = Quantity;
         let realBuyOrSell = buyOrSell;
+        // let realAmount = amount;
+
+        if(realBuyOrSell === "SELL"){
+            realQuantity = "-"+realQuantity;
+            // realAmount = "-"+realAmount;
+            
+        }
+
+    if(buyOrSell === "SELL"){
+        buyOrSell = "BUY"
+        
+    }
+
+    if(buyOrSell === "BUY"){
+        buyOrSell = "SELL"
+    }
+
     if(buyOrSell === "SELL"){
         Quantity = "-"+Quantity;
-        buyOrSell = "BUY"
+        amount = "-"+amount;
+        
     }
 
 
+    function buyBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailBuy[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailBuy[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailBuy[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailBuy[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailBuy[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailBuy[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+        return finalCharge;
+    }
+
+    function sellBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailSell[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailSell[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailSell[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailSell[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailSell[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailSell[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+
+        return finalCharge
+    }
+
+    let brokerageUser;
+    let brokerageCompany;
+
+    if(realBuyOrSell === "BUY"){
+        brokerageCompany = buyBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    } else{
+        brokerageCompany = sellBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    }
+
+    if(buyOrSell === "BUY"){
+        brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * average_price);
+    } else{
+        brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * average_price);
+    }
  
 
-    MockTradeDetails.findOne({uId : uId})
+    MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
         if(dateExist){
             //console.log("data already");
@@ -89,19 +147,19 @@ router.post("/mocktradecompanytemp", async (req, res)=>{
             Product, buyOrSell:realBuyOrSell, order_timestamp,
             variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-            lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage,
-            tradeBy, isRealTrade, amount, trade_time,
+            lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+            tradeBy, isRealTrade: false, amount: (Number(realQuantity)*average_price), trade_time,
             
         });
 
-        //console.log("mockTradeDetails comapny", mockTradeDetails);
+        console.log("mockTradeDetails comapny", mockTradeDetails);
         mockTradeDetails.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
     }).catch(err => {console.log(err, "fail")});
 
-    MockTradeDetailsUser.findOne({uId : uId})
+    MockTradeDetailsUser.findOne({order_id : order_id})
     .then((dateExist)=>{
         if(dateExist){
             //console.log("data already");
@@ -111,12 +169,12 @@ router.post("/mocktradecompanytemp", async (req, res)=>{
         const mockTradeDetailsUser = new MockTradeDetailsUser({
             status:"COMPLETE", uId, createdBy, average_price, Quantity, Product, buyOrSell, order_timestamp,
             variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
-            isRealTrade, order_id, instrumentToken, brokerage, 
-            tradeBy, amount, trade_time,
+            isRealTrade: false, order_id, instrumentToken, brokerage: brokerageCompany, 
+            tradeBy, amount: (Number(Quantity)*average_price), trade_time,
             
         });
 
-        //console.log("mockTradeDetails", mockTradeDetailsUser);
+        console.log("mockTradeDetails", mockTradeDetailsUser);
         mockTradeDetailsUser.save().then(()=>{
             // res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> {
@@ -156,18 +214,74 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
 
+        const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
+        const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
+
+
         let realQuantity = Quantity;
         let realBuyOrSell = buyOrSell;
-    // if(buyOrSell === "SELL"){
-    //     realQuantity = "-"+realQuantity;
-    //     buyOrSell = "BUY"
-    // } else{
-    //     buyOrSell = "SELL"
-    // }
+        // let realAmount = amount;
 
-    // if(buyOrSell === "SELL"){
-    //     Quantity = "-"+Quantity;
-    // }
+        if(realBuyOrSell === "SELL"){
+            realQuantity = "-"+realQuantity;
+            // realAmount = "-"+realAmount;
+            
+        }
+
+    if(buyOrSell === "SELL"){
+        buyOrSell = "BUY"
+        
+    }
+
+    if(buyOrSell === "BUY"){
+        buyOrSell = "SELL"
+    }
+
+    if(buyOrSell === "SELL"){
+        Quantity = "-"+Quantity;
+        amount = "-"+amount;
+        
+    }
+
+
+    function buyBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailBuy[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailBuy[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailBuy[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailBuy[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailBuy[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailBuy[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+        return finalCharge;
+    }
+
+    function sellBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailSell[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailSell[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailSell[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailSell[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailSell[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailSell[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+
+        return finalCharge
+    }
+
+    let brokerageUser;
+    let brokerageCompany;
+
+    if(realBuyOrSell === "BUY"){
+        brokerageCompany = buyBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    } else{
+        brokerageCompany = sellBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    }
+
+    if(buyOrSell === "BUY"){
+        brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * average_price);
+    } else{
+        brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * average_price);
+    }
+ 
 
 
                  CompanyTradeData.findOne({order_id : order_id})
@@ -183,8 +297,8 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell: realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage,
-                        tradeBy, isRealTrade, amount, trade_time,
+                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        tradeBy, isRealTrade: true, amount: (Number(realQuantity)*average_price), trade_time,
                         order_req_time: order_timestamp, order_save_time: order_timestamp
     
             
@@ -208,8 +322,8 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         status, uId, createdBy, average_price, Quantity, 
                         Product, buyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by, userId,
-                        order_id, instrumentToken, brokerage,
-                        tradeBy, isRealTrade, amount, trade_time,
+                        order_id, instrumentToken, brokerage: brokerageUser,
+                        tradeBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time,
                         order_req_time: order_timestamp, order_save_time: order_timestamp
     
     
@@ -1696,6 +1810,46 @@ router.get("/getoverallpnlmocktradeparticularusertodaycompanyside/:email", async
 
         res.status(201).json(pnlDetails);
  
+})
+
+
+router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            userId: email
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange",
+              validity: "$validity",
+              order_type: "$order_type",
+              variety: "$variety",
+              algoBoxName: "$algoBox.algoName",
+              name: "$tradeBy"
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              }
+            }
+          }
+        }
+      ])
+    res.status(201).json(pnlDetails);
 })
 
 module.exports = router;

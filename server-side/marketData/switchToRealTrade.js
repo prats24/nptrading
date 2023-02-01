@@ -12,13 +12,10 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     let responseErr;
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-    // let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
-    //     TriggerPrice, validity, variety, createdBy,
-    //      createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, accessToken, userId} = req.body
-
     let { apiKey, accessToken, userId, tradeBy, exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Product, OrderType, 
-        validity, variety, createdBy, createdOn, uId, instrumentToken} = req.body
+        validity, variety, createdBy, createdOn, uId, instrumentToken, algoBox} = req.body
 
+        console.log("switching", req.body)
     const {algoName, transactionChange, instrumentChange
        , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 

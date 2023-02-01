@@ -45,7 +45,7 @@ var kc = new KiteConnect({
   api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("DyXc3P24q0nQ77hcFoTTbjWxHBi1hZtb", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+kc.generateSession("vErXWx2LnJRKwbPWTFEuTQ3ZNNAknBRI", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -129,6 +129,7 @@ app.use('/api/v1', require('./routes/CronJobsRouter/historyTrade'));
 app.use('/api/v1', require('./routes/AlgoBox/tradingAlgoAuth'));
 app.use('/api/v1', require("./marketData/getRetrieveOrder"));
 app.use('/api/v1', require('./marketData/placeOrder'));
+app.use('/api/v1', require('./marketData/switchToRealTrade'));
 app.use('/api/v1', require('./routes/instrument/instrumentAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/accountAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/brokerageAuth'));

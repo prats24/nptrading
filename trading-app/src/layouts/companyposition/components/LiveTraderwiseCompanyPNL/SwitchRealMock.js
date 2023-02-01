@@ -7,7 +7,7 @@ import MDBox from "../../../../components/MDBox";
 import Switch from "@mui/material/Switch";
 
 
-export default function SwitchRealMock({userId}) {
+export default function SwitchRealMock({userId, Render}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});
@@ -15,6 +15,7 @@ export default function SwitchRealMock({userId}) {
     const [algoUsed, setAlgoUsed] = useState([]);
     const [accessTokenDetails, setAccessToken] = useState([]);
     const [apiKeyDetails, setApiKey] = useState([]);
+    const {render, setRender} = Render;
 
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
@@ -28,7 +29,7 @@ export default function SwitchRealMock({userId}) {
 
     useEffect(()=>{
 
-        axios.get(`${baseUrl}api/v1/getLiveTradeDetailsUser/${userId}`)
+        axios.get(`${baseUrl}api/v1/getMockTradeDetailsUser/${userId}`)
         .then((res)=>{
             setTradeDetail(res.data)
             console.log(res.data);
@@ -39,7 +40,7 @@ export default function SwitchRealMock({userId}) {
         axios.get(`${baseUrl}api/v1/readpermissionbyemail/${userId}`)
         .then((res)=>{
             setPermissionDetail(res.data)
-            console.log(res.data);
+            console.log("tradeDetailReal", res.data);
         }).catch((err)=>{
             return new Error(err);
         })
@@ -73,7 +74,9 @@ export default function SwitchRealMock({userId}) {
             return new Error(err);
         })
 
-    }, [])
+    }, [render])
+
+    // console.log("tradeDetailReal", permissionDetail)
 
     const switchButtonFunc = (checkRealTrade)=>{
         for(let i = 0; i < tradeDetail.length; i++){
@@ -92,6 +95,7 @@ export default function SwitchRealMock({userId}) {
             })
 
             let transaction_type = tradeDetail[i]._id.lots > 0 ? "BUY" : "SELL";
+            let quantity = Math.abs(tradeDetail[i].lots);
             let detailObj = {
                 symbol: tradeDetail[i]._id.symbol,
                 Product: tradeDetail[i]._id.product,
@@ -101,14 +105,19 @@ export default function SwitchRealMock({userId}) {
                 OrderType: tradeDetail[i]._id.order_type,
                 variety: tradeDetail[i]._id.variety,
                 buyOrSell: transaction_type,
-                Quantity: Math.abs(tradeDetail[i]._id.lots),
+                Quantity: quantity,
                 tradeBy: tradeDetail[i]._id.name
             }
 
-            placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr)
-
+            if(checkRealTrade){
+                let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
+            } else{
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
+            }
         }
 
+        console.log("checkRealTrade", checkRealTrade)
         if(checkRealTrade){
             changeIsRealTrade(false)
         } else{
@@ -116,7 +125,7 @@ export default function SwitchRealMock({userId}) {
         }
     }
 
-    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr)=>{
+    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type)=>{
   
         const { exchange, symbol, buyOrSell, Quantity, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
         const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
@@ -124,6 +133,7 @@ export default function SwitchRealMock({userId}) {
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
   
+        console.log("detailObj", detailObj, apiKey, accessToken, algoBox)
         const res = await fetch(`${baseUrl}api/v1/switchToRealTrade`, {
             method: "POST",
             headers: {
@@ -132,7 +142,7 @@ export default function SwitchRealMock({userId}) {
             body: JSON.stringify({
                 
                 apiKey, accessToken, tradeBy,
-                exchange, symbol, buyOrSell, realBuyOrSell: buyOrSell, Quantity, realQuantity: Quantity, Product, OrderType, 
+                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity, realQuantity: Quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
                 productChange, tradingAccount}, instrumentToken
@@ -180,6 +190,8 @@ export default function SwitchRealMock({userId}) {
         if (permissionData.status === 422 || permissionData.error || !permissionData) {
             window.alert(permissionData.error);
         }
+
+        // render ? setRender(false) : setRender(true);
     }
 
     console.log("permissionDetail", permissionDetail)
@@ -189,3 +201,5 @@ export default function SwitchRealMock({userId}) {
     </MDBox>
   )
 }
+
+

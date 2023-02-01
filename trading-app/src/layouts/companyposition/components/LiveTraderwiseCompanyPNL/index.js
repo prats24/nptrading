@@ -21,7 +21,7 @@ import SwitchRealMock from "./SwitchRealMock";
 // Data
 import data from "./data";
 
-function LiveTraderwiseCompantPNL({socket}) {
+function LiveTraderwiseCompantPNL({socket, Render}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -34,6 +34,8 @@ function LiveTraderwiseCompantPNL({socket}) {
   const [lastestLiveTradeType, setLatestLiveTradeType] = useState([]);
   const [lastestLiveTradeQunaity, setLatestLiveTradeQuantity] = useState([]);
   const [lastestLiveTradeStatus, setLatestLiveTradeStatus] = useState([]);
+
+  const {render, setRender} = Render
 
   const renderMenu = (
     <Menu
@@ -88,7 +90,7 @@ function LiveTraderwiseCompantPNL({socket}) {
     }).catch((err)=>{
         return new Error(err);
     })
-  }, [marketData])
+  }, [marketData, render])
 
   useEffect(() => {
     return () => {
@@ -250,7 +252,7 @@ function LiveTraderwiseCompantPNL({socket}) {
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
       obj.realOrMock = (
-        <SwitchRealMock userId={subelem.userId} />
+        <SwitchRealMock Render={{render, setRender}} userId={subelem.userId} />
       );
    
        rows.push(obj);
