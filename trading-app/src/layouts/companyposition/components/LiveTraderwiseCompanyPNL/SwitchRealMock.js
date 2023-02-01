@@ -10,7 +10,7 @@ import Switch from "@mui/material/Switch";
 export default function SwitchRealMock({userId}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    const [permissionDetail, setPermissionDetail] = useState([]);
+    const [permissionDetail, setPermissionDetail] = useState({});
     const [tradeDetail, setTradeDetail] = useState([]);
     const [algoUsed, setAlgoUsed] = useState([]);
     const [accessTokenDetails, setAccessToken] = useState([]);
@@ -182,10 +182,10 @@ export default function SwitchRealMock({userId}) {
         }
     }
 
-
+    console.log("permissionDetail", permissionDetail)
   return (
     <MDBox mt={0.5}>
-        <Switch checked={permissionDetail[0]?.isRealTradeEnable} onChange={() => {switchButtonFunc(permissionDetail[0]?.isRealTradeEnable)}} />
+        <Switch checked={permissionDetail.isRealTradeEnable} onChange={() => {switchButtonFunc(permissionDetail.isRealTradeEnable)}} />
     </MDBox>
   )
 }

@@ -42,10 +42,10 @@ require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 var KiteConnect = require("kiteconnect").KiteConnect;
 
 var kc = new KiteConnect({
-  api_key: "4o77ska70avpfx5e",
+  api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("request_token", "f80ys08yesvw8da99y8p49wx9rr372fa")
+kc.generateSession("DyXc3P24q0nQ77hcFoTTbjWxHBi1hZtb", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -66,7 +66,9 @@ function init() {
       console.log("error of margin", err)
     });
 }
+
 */
+
 
 
 
