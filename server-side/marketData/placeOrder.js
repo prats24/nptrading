@@ -368,7 +368,7 @@ router.post("/placeorder", (async (req, res)=>{
     
         
             }).catch((err)=>{
-                console.log("err in retreiving data in placeorder");
+                console.log("err in retreiving data in placeorder", err);
             })
     
         }, 500)
