@@ -45,7 +45,7 @@ var kc = new KiteConnect({
   api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("vErXWx2LnJRKwbPWTFEuTQ3ZNNAknBRI", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+kc.generateSession("7bC6Pi0I4yJiRiJ6j4w6sdNOwiqWHi8f", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -68,6 +68,7 @@ function init() {
 }
 
 */
+
 
 
 

@@ -91,7 +91,7 @@ router.post("/mocktradecompanytemp", async (req, res)=>{
 
     if(buyOrSell === "SELL"){
         Quantity = "-"+Quantity;
-        amount = "-"+amount;
+        // amount = "-"+amount;
         
     }
 
@@ -1840,6 +1840,45 @@ router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
               variety: "$variety",
               algoBoxName: "$algoBox.algoName",
               name: "$tradeBy"
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              }
+            }
+          }
+        }
+      ])
+    res.status(201).json(pnlDetails);
+})
+
+router.get("/getMockTradeDetailsAllUser", async(req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange",
+              validity: "$validity",
+              order_type: "$order_type",
+              variety: "$variety",
+              algoBoxName: "$algoBox.algoName",
+              name: "$tradeBy",
+              userId: "$userId"
             },
             lots: {
               $sum: {

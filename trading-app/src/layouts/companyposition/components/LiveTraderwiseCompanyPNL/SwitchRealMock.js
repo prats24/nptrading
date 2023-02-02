@@ -16,6 +16,7 @@ export default function SwitchRealMock({userId, Render}) {
     const [accessTokenDetails, setAccessToken] = useState([]);
     const [apiKeyDetails, setApiKey] = useState([]);
     const {render, setRender} = Render;
+    const [reRender, setReRender] = useState(true);
 
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
@@ -74,7 +75,7 @@ export default function SwitchRealMock({userId, Render}) {
             return new Error(err);
         })
 
-    }, [render])
+    }, [reRender])
 
     // console.log("tradeDetailReal", permissionDetail)
 
@@ -94,7 +95,7 @@ export default function SwitchRealMock({userId, Render}) {
                 
             })
 
-            let transaction_type = tradeDetail[i]._id.lots > 0 ? "BUY" : "SELL";
+            let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
             let quantity = Math.abs(tradeDetail[i].lots);
             let detailObj = {
                 symbol: tradeDetail[i]._id.symbol,
@@ -111,9 +112,9 @@ export default function SwitchRealMock({userId, Render}) {
 
             if(checkRealTrade){
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
+                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
             } else{
-                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
+                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
             }
         }
 
@@ -191,7 +192,8 @@ export default function SwitchRealMock({userId, Render}) {
             window.alert(permissionData.error);
         }
 
-        // render ? setRender(false) : setRender(true);
+        render ? setRender(false) : setRender(true);
+        reRender? setReRender(false) : setReRender(true)
     }
 
     console.log("permissionDetail", permissionDetail)
