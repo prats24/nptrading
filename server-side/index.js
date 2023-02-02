@@ -68,9 +68,9 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  origin: "http://3.7.187.183/"  // staging
+  //origin: "http://3.7.187.183/"  // staging
   // origin: "http://3.108.76.71/"  // production
-  //  origin: "http://localhost:3000"
+    origin: "http://localhost:3000"
 
 }));
 

@@ -15,6 +15,9 @@ router.get("/deleteduplicate/",dailyPnlDataController.deleteDuplicateData)
 
 router.get("/traderdailypnldata/:selectDate/:traderName",traderDailyPnlDataController.getTraderDailyPnlData)
 
+router.get("/getstoplossstopprofitpnl/",traderDailyPnlDataController.getstoplossstopprofitpnl)
+
+
 
 
 

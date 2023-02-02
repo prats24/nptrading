@@ -550,6 +550,7 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
     let date = new Date();
     let month = date.getMonth();
     let year = date.getFullYear();
+    //console.log("Indian Date, UTC Date, Month & Year",indiaDate,date,month, year);
     if(month == 0)
     {
         month = '12'
@@ -565,7 +566,7 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
         return new Date(year, month, 0).getDate();
     }
     let nodaysinmonth =  daysInMonth(month, year);
-    //console.log("No of days in previous month : "+nodaysinmonth)
+   // console.log("No of days in previous month : "+nodaysinmonth)
 
     let todayDate = `${(date.getFullYear()-1 == date.getFullYear() ? date.getFullYear() : date.getFullYear()-1)}-${String(date.getFullYear()-1 == date.getFullYear() ? date.getMonth() : '12').padStart(2, '0')}-${String('01').padStart(2, '0')}`
     const {email} = req.params
