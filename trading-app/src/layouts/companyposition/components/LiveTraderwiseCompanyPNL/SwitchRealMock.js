@@ -112,9 +112,9 @@ export default function SwitchRealMock({userId, Render}) {
 
             if(checkRealTrade){
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
             } else{
-                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
             }
         }
 
