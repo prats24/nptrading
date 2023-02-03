@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import uniqid from "uniqid";
 
-import MDBox from "../../../../components/MDBox";
+import MDBox from "../../../components/MDBox";
 
 import Switch from "@mui/material/Switch";
 
 
-export default function SwitchRealMock({userId, Render}) {
+export default function MockRealSwitch({userId, Render}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});

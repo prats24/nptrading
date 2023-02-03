@@ -25,10 +25,10 @@ import FormLabel from '@mui/material/FormLabel';
 import MDBox from '../../../../../components/MDBox';
 import { Box, Typography } from '@mui/material';
 
-const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp}) => {
+const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render}) => {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  // const { reRender, setReRender } = Render;
+  const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -419,9 +419,9 @@ useEffect(()=>{
       } 
 
       // rerenderParentCallback();
-      // let id = setTimeout(()=>{
-      //     reRender ? setReRender(false) : setReRender(true)
-      // }, 1000);
+      let id = setTimeout(()=>{
+          reRender ? setReRender(false) : setReRender(true)
+      }, 1000);
       
   }
 
