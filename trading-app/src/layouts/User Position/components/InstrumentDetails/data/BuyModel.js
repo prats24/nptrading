@@ -425,7 +425,7 @@ useEffect(()=>{
       // rerenderParentCallback();
       let id = setTimeout(()=>{
           reRender ? setReRender(false) : setReRender(true)
-      }, 1500);
+      }, 1000);
       
   }
 

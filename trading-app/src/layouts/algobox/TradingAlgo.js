@@ -263,7 +263,7 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.isRealTrade = (
-            <Button variant="contained" borderRadius="1rem" bgColor="light" color="black" fontWeight="small">
+            <Button variant="" bgColor="" color="black" fontWeight="small">
                 <RealTrade id={subelem._id} Render={{reRender, setReRender}} tradingAlgo={algoData} buttonTextBool={subelem.isRealTrade} />
             </Button>
         );

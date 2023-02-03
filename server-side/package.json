@@ -28,6 +28,7 @@
     "nodemon": "^2.0.20",
     "socket.io": "^4.5.3",
     "websocket": "^1.0.34",
-    "xss-clean": "^0.1.1"
+    "xss-clean": "^0.1.1",
+    "zerodha-auto-login": "^1.0.6"
   }
 }

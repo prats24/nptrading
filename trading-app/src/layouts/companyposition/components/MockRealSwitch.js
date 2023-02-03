@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import uniqid from "uniqid";
 
-import MDBox from "../../../../components/MDBox";
+import MDBox from "../../../components/MDBox";
 
 import Switch from "@mui/material/Switch";
 
 
-export default function SwitchRealMock({userId, Render}) {
+export default function MockRealSwitch({userId, Render}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});
@@ -22,9 +22,9 @@ export default function SwitchRealMock({userId, Render}) {
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const uId = uniqid();
-    const tradeBy = "Admin";
+    const createdBy = "system";
     let modifiedOn = createdOn;
-    let modifiedBy = "Admin";
+    let modifiedBy = "system";
 
   
 
@@ -97,6 +97,7 @@ export default function SwitchRealMock({userId, Render}) {
 
             let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
             let quantity = Math.abs(tradeDetail[i].lots);
+
             let detailObj = {
                 symbol: tradeDetail[i]._id.symbol,
                 Product: tradeDetail[i]._id.product,
@@ -106,14 +107,28 @@ export default function SwitchRealMock({userId, Render}) {
                 OrderType: tradeDetail[i]._id.order_type,
                 variety: tradeDetail[i]._id.variety,
                 buyOrSell: transaction_type,
-                Quantity: quantity,
-                createdBy: tradeDetail[i]._id.name
+                // Quantity: quantity,
+                tradeBy: tradeDetail[i]._id.name
             }
 
             if(checkRealTrade){
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
+                while(quantity > 1800){
+                    console.log("quantity", quantity)
+                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
+                    quantity = quantity - 1800;
+                }
+                console.log("quantity", quantity)
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
             } else{
+                while(quantity > 1800){
+                    console.log("quantity", quantity)
+                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
+                    quantity = quantity - 1800;
+                }
+                console.log("quantity", quantity)
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
+
                 // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
             }
         }
@@ -126,9 +141,9 @@ export default function SwitchRealMock({userId, Render}) {
         }
     }
 
-    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type)=>{
+    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
-        const { exchange, symbol, buyOrSell, Quantity, Product, OrderType, validity, variety, instrumentToken, createdBy } = detailObj;
+        const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
         const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
@@ -143,7 +158,7 @@ export default function SwitchRealMock({userId, Render}) {
             body: JSON.stringify({
                 
                 apiKey, accessToken, tradeBy,
-                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity, realQuantity: Quantity, Product, OrderType, 
+                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
                 productChange, tradingAccount}, instrumentToken

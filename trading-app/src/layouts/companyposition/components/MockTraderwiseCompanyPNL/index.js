@@ -20,7 +20,8 @@ import DataTable from "../../../../examples/Tables/DataTable";
 import data from "./data";
 import ViewTradeDetail from "./ViewTradeDetail";
 import ViewOrderDetail from "./MockTraderwiseOrders";
-import SwitchRealMock from "../LiveTraderwiseCompanyPNL/SwitchRealMock"
+// import MockRealSwitch from "../LiveTraderwiseCompanyPNL/MockRealSwitch"
+import MockRealSwitch from "../MockRealSwitch";
 
 function MockTraderwiseCompantPNL({socket, Render}) {
   const { columns, rows } = data();
@@ -257,7 +258,7 @@ finalTraderPnl.map((subelem, index)=>{
   );
 
   obj.realOrMock = (
-    <SwitchRealMock Render={{render, setRender}} userId={subelem.userId} />
+    <MockRealSwitch Render={{render, setRender}} userId={subelem.userId} />
   );
 
   rows.push(obj);

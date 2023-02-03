@@ -16,7 +16,8 @@ import MDTypography from "../../../../components/MDTypography";
 import DataTable from "../../../../examples/Tables/DataTable";
 import LiveViewTradeDetail from "./LiveViewTradeDetail"
 import LiveTraderwiseOrders from "./LiveTraderwiseOrders"
-import SwitchRealMock from "./SwitchRealMock";
+// import MockRealSwitch from "./MockRealSwitch";
+import MockRealSwitch from "../MockRealSwitch";
 
 // Data
 import data from "./data";
@@ -252,7 +253,7 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
       obj.realOrMock = (
-        <SwitchRealMock Render={{render, setRender}} userId={subelem.userId} />
+        <MockRealSwitch Render={{render, setRender}} userId={subelem.userId} />
       );
    
        rows.push(obj);
