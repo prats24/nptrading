@@ -75,7 +75,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
     }, [])
 
-
+    let intervalId ;
     function takingTradeHelper(data, isSquaringOff){
         data.map((elem)=>{
             if(elem.lots && elem._id.algoBoxName === tradingAlgo[0].algoName){
@@ -99,24 +99,51 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
                     OrderType: elem._id.order_type,
                     variety: elem._id.variety,
                     buyOrSell: transaction_type,
-                    Quantity: quantity,
+                    // Quantity: quantity,
                     tradeBy: elem._id.name,
                     userId: elem._id.userId
                 }
 
                 if(isSquaringOff){
                     let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                    placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
+                    let timeDelay = 250;
+                    while(quantity > 1800){
+                        setTimeout(()=>{
+                            placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800)
+                        }, timeDelay)
+                        timeDelay += 250;
+                        quantity = quantity - 1800;
+                    }
+
+                    timeDelay += 250
+                    setTimeout(()=>{
+                        placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity)
+                    }, 250)
+                    
                 } else{
-                    placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
+                    let timeDelay = 250;
+                    while(quantity > 1800){
+                        setTimeout(()=>{
+                            placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800)
+                        }, timeDelay)
+                        timeDelay += 250;
+                        quantity = quantity - 1800;
+                    }
+
+                    timeDelay += 250
+                    setTimeout(()=>{
+                        placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)
+                    }, 250)
+
+
                 }
 
             }
         })
 
     }
-
-
+      
+      
     function changeAllUserRealTrade(realTrade){
         mappedUser.map(async (elem)=>{
             const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${elem.userId}`, {
@@ -193,9 +220,9 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         reRender ? setReRender(false) : setReRender(true)
     }
 
-    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type)=>{
+    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
-        const { exchange, symbol, buyOrSell, Quantity, Product, OrderType, validity, variety, instrumentToken, tradeBy, userId } = detailObj;
+        const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy, userId } = detailObj;
         const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
@@ -210,7 +237,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             body: JSON.stringify({
                 
                 apiKey, accessToken, tradeBy,
-                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity, realQuantity: Quantity, Product, OrderType, 
+                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
                 productChange, tradingAccount}, instrumentToken
@@ -249,6 +276,9 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
     </>
   )
 }
+
+
+
 
 
 

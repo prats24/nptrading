@@ -97,6 +97,7 @@ export default function MockRealSwitch({userId, Render}) {
 
             let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
             let quantity = Math.abs(tradeDetail[i].lots);
+
             let detailObj = {
                 symbol: tradeDetail[i]._id.symbol,
                 Product: tradeDetail[i]._id.product,
@@ -106,14 +107,28 @@ export default function MockRealSwitch({userId, Render}) {
                 OrderType: tradeDetail[i]._id.order_type,
                 variety: tradeDetail[i]._id.variety,
                 buyOrSell: transaction_type,
-                Quantity: quantity,
+                // Quantity: quantity,
                 tradeBy: tradeDetail[i]._id.name
             }
 
             if(checkRealTrade){
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type)
+                while(quantity > 1800){
+                    console.log("quantity", quantity)
+                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
+                    quantity = quantity - 1800;
+                }
+                console.log("quantity", quantity)
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
             } else{
+                while(quantity > 1800){
+                    console.log("quantity", quantity)
+                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
+                    quantity = quantity - 1800;
+                }
+                console.log("quantity", quantity)
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
+
                 // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
             }
         }
@@ -126,9 +141,9 @@ export default function MockRealSwitch({userId, Render}) {
         }
     }
 
-    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type)=>{
+    const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
-        const { exchange, symbol, buyOrSell, Quantity, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
+        const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
         const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
@@ -143,7 +158,7 @@ export default function MockRealSwitch({userId, Render}) {
             body: JSON.stringify({
                 
                 apiKey, accessToken, tradeBy,
-                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity, realQuantity: Quantity, Product, OrderType, 
+                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
                 productChange, tradingAccount}, instrumentToken
