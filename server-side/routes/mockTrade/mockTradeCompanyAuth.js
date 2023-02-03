@@ -41,85 +41,152 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
     
 // })
 
+// "disclosed_quantity": "0",
+// "price": "0",
+// "filled_quantity": "50",
+// "pending_quantity": "0",
+// "cancelled_quantity":"0",
+// "market_protection":"0",
+// "guid": "57936X3XRhv2U0CSJsgg",
 
 
-// router.post("/mocktradecompanytemp", async (req, res)=>{
 
-//     // let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
-//     //       validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-//     //        } = req.body 
+router.post("/mocktradecompanytemp", async (req, res)=>{
 
-// let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerPrice, stopLoss, validity, variety, last_price, createdBy, userId, 
-//     createdOn, uId, placed_by, order_id, status, average_price, order_timestamp, 
-//     brokerage, instrumentToken, tradeBy, isRealTrade, amount, trade_time, algoBox } = req.body 
+    // let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
+    //       validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
+    //        } = req.body 
 
-//         //console.log(req.body);
-//         //console.log("in the company auth");
-//     const {algoName, transactionChange, instrumentChange
-//         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
+ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerPrice, stopLoss, validity, variety, last_price, createdBy, userId, 
+    createdOn, uId, placed_by, order_id, status, average_price, order_timestamp, 
+    brokerage, instrumentToken, tradeBy, isRealTrade, amount, trade_time, algoBox } = req.body 
 
+        //console.log(req.body);
+        //console.log("in the company auth");
+    const {algoName, transactionChange, instrumentChange
+        , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
-//         let realQuantity = Quantity;
-//         let realBuyOrSell = buyOrSell;
-//     if(buyOrSell === "SELL"){
-//         Quantity = "-"+Quantity;
-//         buyOrSell = "BUY"
-//     }
+        const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
+        const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
 
 
+        let realQuantity = Quantity;
+        let realBuyOrSell = buyOrSell;
+        // let realAmount = amount;
+
+        if(realBuyOrSell === "SELL"){
+            realQuantity = "-"+realQuantity;
+            // realAmount = "-"+realAmount;
+            
+        }
+
+    if(buyOrSell === "SELL"){
+        buyOrSell = "BUY"
+        
+    }
+
+    if(buyOrSell === "BUY"){
+        buyOrSell = "SELL"
+    }
+
+    if(buyOrSell === "SELL"){
+        Quantity = "-"+Quantity;
+        // amount = "-"+amount;
+        
+    }
+
+
+    function buyBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailBuy[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailBuy[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailBuy[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailBuy[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailBuy[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailBuy[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+        return finalCharge;
+    }
+
+    function sellBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailSell[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailSell[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailSell[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailSell[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailSell[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailSell[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+
+        return finalCharge
+    }
+
+    let brokerageUser;
+    let brokerageCompany;
+
+    if(realBuyOrSell === "BUY"){
+        brokerageCompany = buyBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    } else{
+        brokerageCompany = sellBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    }
+
+    if(buyOrSell === "BUY"){
+        brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * average_price);
+    } else{
+        brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * average_price);
+    }
  
 
-//     MockTradeDetails.findOne({uId : uId})
-//     .then((dateExist)=>{
-//         if(dateExist){
-//             //console.log("data already");
-//             return res.status(422).json({error : "date already exist..."})
-//         }
+    MockTradeDetails.findOne({order_id : order_id})
+    .then((dateExist)=>{
+        if(dateExist){
+            //console.log("data already");
+            return res.status(422).json({error : "date already exist..."})
+        }
 
-//         const mockTradeDetails = new MockTradeDetails({
-//             status:"COMPLETE", uId, createdBy, average_price: average_price, Quantity: realQuantity, 
-//             Product, buyOrSell:realBuyOrSell, order_timestamp,
-//             variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
-//                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-//             lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage,
-//             tradeBy, isRealTrade, amount, trade_time,
+        const mockTradeDetails = new MockTradeDetails({
+            status:"COMPLETE", uId, createdBy, average_price: average_price, Quantity: realQuantity, 
+            Product, buyOrSell:realBuyOrSell, order_timestamp,
+            variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
+                algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+            lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+            tradeBy, isRealTrade: false, amount: (Number(realQuantity)*average_price), trade_time,
             
-//         });
+        });
 
-//         //console.log("mockTradeDetails comapny", mockTradeDetails);
-//         mockTradeDetails.save().then(()=>{
-//             res.status(201).json({massage : "data enter succesfully"});
-//         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
+        console.log("mockTradeDetails comapny", mockTradeDetails);
+        mockTradeDetails.save().then(()=>{
+            res.status(201).json({massage : "data enter succesfully"});
+        }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
-//     }).catch(err => {//console.log(err, "fail")});
+    }).catch(err => {console.log(err, "fail")});
 
-//     MockTradeDetailsUser.findOne({uId : uId})
-//     .then((dateExist)=>{
-//         if(dateExist){
-//             //console.log("data already");
-//             return res.status(422).json({error : "date already exist..."})
-//         }
+    MockTradeDetailsUser.findOne({order_id : order_id})
+    .then((dateExist)=>{
+        if(dateExist){
+            //console.log("data already");
+            return res.status(422).json({error : "date already exist..."})
+        }
 
-//         const mockTradeDetailsUser = new MockTradeDetailsUser({
-//             status:"COMPLETE", uId, createdBy, average_price, Quantity, Product, buyOrSell, order_timestamp,
-//             variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
-//             isRealTrade, order_id, instrumentToken, brokerage, 
-//             tradeBy, amount, trade_time,
+        const mockTradeDetailsUser = new MockTradeDetailsUser({
+            status:"COMPLETE", uId, createdBy, average_price, Quantity, Product, buyOrSell, order_timestamp,
+            variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
+            isRealTrade: false, order_id, instrumentToken, brokerage: brokerageCompany, 
+            tradeBy, amount: (Number(Quantity)*average_price), trade_time,
             
-//         });
+        });
 
-//         //console.log("mockTradeDetails", mockTradeDetailsUser);
-//         mockTradeDetailsUser.save().then(()=>{
-//             // res.status(201).json({massage : "data enter succesfully"});
-//         }).catch((err)=> {
-//             // res.status(500).json({error:"Failed to enter data"})
-//         });
+        console.log("mockTradeDetails", mockTradeDetailsUser);
+        mockTradeDetailsUser.save().then(()=>{
+            // res.status(201).json({massage : "data enter succesfully"});
+        }).catch((err)=> {
+            // res.status(500).json({error:"Failed to enter data"})
+        });
         
 
-//     }).catch(err => {//console.log(err, "fail")});
+    }).catch(err => {console.log(err, "fail")});
     
 
-// })
+    // })
+})
 
 // "disclosed_quantity": "0",
 // "price": "0",
@@ -131,89 +198,145 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 
 
 
-// router.post("/livetradecompanytemp", async (req, res)=>{
+router.post("/livetradecompanytemp", async (req, res)=>{
 
-//     // let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
-//     //       validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-//     //        } = req.body 
+    // let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
+    //       validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
+    //        } = req.body 
 
-// let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerPrice, stopLoss, validity, variety, last_price, createdBy, userId, 
-//     createdOn, uId, placed_by, order_id, status, average_price, order_timestamp, 
-//     brokerage, instrumentToken, tradeBy, isRealTrade, amount, trade_time, algoBox, disclosed_quantity, price, guid, market_protection, cancelled_quantity, pending_quantity, filled_quantity } = req.body 
+let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerPrice, stopLoss, validity, variety, last_price, createdBy, userId, 
+    createdOn, uId, placed_by, order_id, status, average_price, order_timestamp, 
+    brokerage, instrumentToken, tradeBy, isRealTrade, amount, trade_time, algoBox, disclosed_quantity, price, guid, market_protection, cancelled_quantity, pending_quantity, filled_quantity } = req.body 
 
-//         //console.log(req.body);
-//         //console.log("in the company auth");
-//     const {algoName, transactionChange, instrumentChange
-//         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
-
-
-//         let realQuantity = Quantity;
-//         let realBuyOrSell = buyOrSell;
-//     // if(buyOrSell === "SELL"){
-//     //     realQuantity = "-"+realQuantity;
-//     //     buyOrSell = "BUY"
-//     // } else{
-//     //     buyOrSell = "SELL"
-//     // }
-
-//     // if(buyOrSell === "SELL"){
-//     //     Quantity = "-"+Quantity;
-//     // }
+        //console.log(req.body);
+        //console.log("in the company auth");
+    const {algoName, transactionChange, instrumentChange
+        , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
 
-//                  CompanyTradeData.findOne({order_id : order_id})
-//                 .then((dateExist)=>{
-//                     if(dateExist){
-//                         //console.log("data already");
-//                         return res.status(422).json({error : "data already exist..."})
-//                     }
+        const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
+        const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
+
+
+        let realQuantity = Quantity;
+        let realBuyOrSell = buyOrSell;
+        // let realAmount = amount;
+
+        if(realBuyOrSell === "SELL"){
+            realQuantity = "-"+realQuantity;
+            // realAmount = "-"+realAmount;
+            
+        }
+
+    if(buyOrSell === "SELL"){
+        buyOrSell = "BUY"
+        
+    }
+
+    if(buyOrSell === "BUY"){
+        buyOrSell = "SELL"
+    }
+
+    if(buyOrSell === "SELL"){
+        Quantity = "-"+Quantity;
+        amount = "-"+amount;
+        
+    }
+
+
+    function buyBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailBuy[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailBuy[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailBuy[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailBuy[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailBuy[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailBuy[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+        return finalCharge;
+    }
+
+    function sellBrokerage(totalAmount){
+        let brokerage = Number(brokerageDetailSell[0].brokerageCharge);
+        let exchangeCharge = totalAmount * (Number(brokerageDetailSell[0].exchangeCharge) / 100);
+        let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailSell[0].gst) / 100);
+        let sebiCharges = totalAmount * (Number(brokerageDetailSell[0].sebiCharge) / 100);
+        let stampDuty = totalAmount * (Number(brokerageDetailSell[0].stampDuty) / 100);
+        let sst = totalAmount * (Number(brokerageDetailSell[0].sst) / 100);
+        let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
+
+        return finalCharge
+    }
+
+    let brokerageUser;
+    let brokerageCompany;
+
+    if(realBuyOrSell === "BUY"){
+        brokerageCompany = buyBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    } else{
+        brokerageCompany = sellBrokerage(Math.abs(Number(realQuantity)) * average_price);
+    }
+
+    if(buyOrSell === "BUY"){
+        brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * average_price);
+    } else{
+        brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * average_price);
+    }
+ 
+
+
+                 CompanyTradeData.findOne({order_id : order_id})
+                .then((dateExist)=>{
+                    if(dateExist){
+                        //console.log("data already");
+                        return res.status(422).json({error : "data already exist..."})
+                    }
              
-//                     const companyTradeData = new CompanyTradeData({
-//                         disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-//                         status, uId, createdBy, average_price, Quantity: realQuantity, 
-//                         Product, buyOrSell: realBuyOrSell, order_timestamp,
-//                         variety, validity, exchange, order_type, symbol, placed_by, userId,
-//                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-//                         lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage,
-//                         tradeBy, isRealTrade, amount, trade_time,
-//                         order_req_time: order_timestamp, order_save_time: order_timestamp
+                    const companyTradeData = new CompanyTradeData({
+                        disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
+                        status, uId, createdBy, average_price, Quantity: realQuantity, 
+                        Product, buyOrSell: realBuyOrSell, order_timestamp,
+                        variety, validity, exchange, order_type, symbol, placed_by, userId,
+                        algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        tradeBy, isRealTrade: true, amount: (Number(realQuantity)*average_price), trade_time,
+                        order_req_time: order_timestamp, order_save_time: order_timestamp
     
             
-//                     });
-//                     // //console.log("this is CompanyTradeData", companyTradeData);
-//                     //console.log("companyTradeData", companyTradeData)
-//                     companyTradeData.save().then(()=>{
-//                         res.status(200).json("susscess")
-//                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-//                 }).catch(err => {//console.log(err, "fail")});
+                    });
+                    // //console.log("this is CompanyTradeData", companyTradeData);
+                    //console.log("companyTradeData", companyTradeData)
+                    companyTradeData.save().then(()=>{
+                        res.status(200).json("susscess")
+                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                }).catch(err => {console.log(err, "fail")});
     
-//                 UserTradeData.findOne({order_id : order_id})
-//                 .then((dateExist)=>{
-//                     if(dateExist){
-//                         //console.log("data already");
-//                         return res.status(422).json({error : "data already exist..."})
-//                     }
+                UserTradeData.findOne({order_id : order_id})
+                .then((dateExist)=>{
+                    if(dateExist){
+                        //console.log("data already");
+                        return res.status(422).json({error : "data already exist..."})
+                    }
              
-//                     const userTradeData = new UserTradeData({
-//                         disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-//                         status, uId, createdBy, average_price, Quantity, 
-//                         Product, buyOrSell, order_timestamp,
-//                         variety, validity, exchange, order_type, symbol, placed_by, userId,
-//                         order_id, instrumentToken, brokerage,
-//                         tradeBy, isRealTrade, amount, trade_time,
-//                         order_req_time: order_timestamp, order_save_time: order_timestamp
+                    const userTradeData = new UserTradeData({
+                        disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
+                        status, uId, createdBy, average_price, Quantity, 
+                        Product, buyOrSell, order_timestamp,
+                        variety, validity, exchange, order_type, symbol, placed_by, userId,
+                        order_id, instrumentToken, brokerage: brokerageUser,
+                        tradeBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time,
+                        order_req_time: order_timestamp, order_save_time: order_timestamp
     
     
-//                     });
-//                     // //console.log("this is userTradeData", userTradeData);
-//                     userTradeData.save().then(()=>{
-//                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-//                 }).catch(err => {//console.log(err, "fail")});
+                    });
+                    // //console.log("this is userTradeData", userTradeData);
+                    userTradeData.save().then(()=>{
+                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                }).catch(err => {console.log(err, "fail")});
 
 
     
 
-// })
+})
 
 
 
@@ -1688,6 +1811,85 @@ router.get("/getoverallpnlmocktradeparticularusertodaycompanyside/:email", async
 
         res.status(201).json(pnlDetails);
  
+})
+
+
+router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            userId: email
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange",
+              validity: "$validity",
+              order_type: "$order_type",
+              variety: "$variety",
+              algoBoxName: "$algoBox.algoName",
+              name: "$tradeBy"
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              }
+            }
+          }
+        }
+      ])
+    res.status(201).json(pnlDetails);
+})
+
+router.get("/getMockTradeDetailsAllUser", async(req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange",
+              validity: "$validity",
+              order_type: "$order_type",
+              variety: "$variety",
+              algoBoxName: "$algoBox.algoName",
+              name: "$tradeBy",
+              userId: "$userId"
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              }
+            }
+          }
+        }
+      ])
+    res.status(201).json(pnlDetails);
 })
 
 module.exports = router;

@@ -128,7 +128,26 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   };
 
   const handleClickOpen = () => {
+    axios.get(`${baseUrl}api/v1/readpermission`)
+    .then((res) => {
+    let perticularUser = (res.data).filter((elem) => {
+        ////console.log(elem.userId, userId);
+        return elem.userId === userId;
+    })
+    setUserPermission(perticularUser);
+    }).catch((err) => {
+        // window.alert("Server Down");
+        return new Error(err);
+    })
+
+    // axios.get(`${baseUrl}api/v1/readtradingAlgo`)
+    // .then((res) => {
+    //     setTradingAlgoData(res.data);
+    // }).catch((err) => {
+    //     return new Error(err);
+    // })
     setOpen(true);
+
 
   }; 
 
@@ -205,6 +224,8 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
     ////console.log(perticularInstrumentData);
 }, [getDetails])
+
+console.log("in open", userPermission, tradingAlgoData, userId)
 
 useEffect(()=>{
   axios.get(`${baseUrl}api/v1/userwiseOtm/${userId}`)
@@ -320,7 +341,7 @@ useEffect(()=>{
             console.log("otmDetailsForm", otmDetailsForm)
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
-                    if(subElem.isRealTradeEnable || elem.isRealTrade){
+                    if(subElem.isRealTradeEnable){
                         sendOrderReq(elem);
                     } else{
                         mockTradeCompany(elem);

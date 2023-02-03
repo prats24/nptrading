@@ -36,8 +36,43 @@ const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 
+// Kite connect auto generate seesion
 
-// dotenv.config({ path: './config.env' });
+/*
+var KiteConnect = require("kiteconnect").KiteConnect;
+
+var kc = new KiteConnect({
+  api_key: "nq0gipdzk0yexyko",
+});
+
+kc.generateSession("7bC6Pi0I4yJiRiJ6j4w6sdNOwiqWHi8f", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+  .then(function (response) {
+    console.log("response of generate session", response)
+    init();
+  })
+  .catch(function (err) {
+    console.log("generate session error", err);
+  });
+
+function init() {
+  // Fetch equity margins.
+  // You can have other api calls here.
+  kc.getMargins()
+    .then(function (response) {
+      // You got user's margin details.
+      console.log("response of margin", response)
+    })
+    .catch(function (err) {
+      console.log("error of margin", err)
+    });
+}
+
+*/
+
+
+
+
+
 
 getKiteCred.getAccess().then((data)=>{
   createNewTicker(data.getApiKey, data.getAccessToken);
@@ -95,6 +130,7 @@ app.use('/api/v1', require('./routes/CronJobsRouter/historyTrade'));
 app.use('/api/v1', require('./routes/AlgoBox/tradingAlgoAuth'));
 app.use('/api/v1', require("./marketData/getRetrieveOrder"));
 app.use('/api/v1', require('./marketData/placeOrder'));
+app.use('/api/v1', require('./marketData/switchToRealTrade'));
 app.use('/api/v1', require('./routes/instrument/instrumentAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/accountAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/brokerageAuth'));
@@ -114,14 +150,9 @@ require('./db/conn');
     let date = new Date();
     let weekDay = date.getDay();
     if(weekDay > 0 && weekDay < 6){
-        // const job = nodeCron.schedule(`0 5 10 * * ${weekDay}`, cronJobForHistoryData);
         const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
     }
   }
-
-
-
-// app.use(require("./utils/errorHandler"));
 
 const PORT = process.env.PORT;
 

@@ -54,6 +54,8 @@ function CompanyPosition() {
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
+
+    const [render, setRender] = useState(true);
    
     useEffect(()=>{
 
@@ -154,19 +156,17 @@ function CompanyPosition() {
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <MockTraderwiseCompanyPNL socket={socket} />
+              <MockTraderwiseCompanyPNL Render={{render, setRender}} socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <LiveTraderwiseCompanyPNL socket={socket} />
+              <LiveTraderwiseCompanyPNL Render={{render, setRender}} socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
-       
-        
       </MDBox>
       <Footer />
     </DashboardLayout>

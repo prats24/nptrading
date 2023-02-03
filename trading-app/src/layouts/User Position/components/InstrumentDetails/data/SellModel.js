@@ -127,6 +127,17 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   };
 
   const handleClickOpen = () => {
+    axios.get(`${baseUrl}api/v1/readpermission`)
+    .then((res) => {
+    let perticularUser = (res.data).filter((elem) => {
+        ////console.log(elem.userId, userId);
+        return elem.userId === userId;
+    })
+    setUserPermission(perticularUser);
+    }).catch((err) => {
+        // window.alert("Server Down");
+        return new Error(err);
+    })
     setOpen(true);
 
   }; 
@@ -134,6 +145,9 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   const handleClose = (e) => {
     setOpen(false);
   };
+
+  console.log("in open", userPermission, tradingAlgoData, userId)
+
 
   const [appLive, setAppLive] = useState([]);
 
@@ -325,7 +339,7 @@ useEffect(()=>{
             //console.log("userPermission", userPermission)
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
-                    if(subElem.isRealTradeEnable || elem.isRealTrade){
+                    if(subElem.isRealTradeEnable){
                         sendOrderReq(elem);
                     } else{
                         mockTradeCompany(elem);

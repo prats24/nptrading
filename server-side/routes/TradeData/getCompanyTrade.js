@@ -626,5 +626,84 @@ router.get("/getoverallpnllivetradeparticularusertodaycompanyside/:email", async
  
 })
 
+router.get("/getLiveTradeDetailsUser/:email", async(req, res)=>{
+    const {email} = req.params
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            userId: email
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange",
+              validity: "$validity",
+              order_type: "$order_type",
+              variety: "$variety",
+              algoBoxName: "$algoBox.algoName",
+              name: "$tradeBy"
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              }
+            }
+          }
+        }
+      ])
+    res.status(201).json(pnlDetails);
+ 
+})
+
+
+router.get("/getLiveTradeDetailsAllUser", async(req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+              exchange: "$exchange",
+              validity: "$validity",
+              order_type: "$order_type",
+              variety: "$variety",
+              algoBoxName: "$algoBox.algoName",
+              name: "$tradeBy",
+              userId: "$userId"
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              }
+            }
+          }
+        }
+      ])
+    res.status(201).json(pnlDetails);
+})
+
 
 module.exports = router;

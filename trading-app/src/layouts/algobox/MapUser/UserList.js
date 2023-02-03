@@ -45,22 +45,12 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
         }
     }
 
-
-    //console.log("data", data, permissionArr);
-
     let options = [];
     if(data.length !== 0){
         for(let elem of data){
-            //console.log(elem);
             options.push({value: elem.email, label: elem.name, userId: elem.email, userName: elem.name, _id:_id});
-            //console.log(options);
         }
     }
-    //console.log(data);
-    //console.log(options);
-
-
-    //console.log(addUser);
 
     return (
         <div>

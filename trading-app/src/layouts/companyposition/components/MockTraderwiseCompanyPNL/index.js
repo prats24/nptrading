@@ -20,11 +20,13 @@ import DataTable from "../../../../examples/Tables/DataTable";
 import data from "./data";
 import ViewTradeDetail from "./ViewTradeDetail";
 import ViewOrderDetail from "./MockTraderwiseOrders";
+import SwitchRealMock from "../LiveTraderwiseCompanyPNL/SwitchRealMock"
 
-function MockTraderwiseCompantPNL({socket}) {
+function MockTraderwiseCompantPNL({socket, Render}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
+  const {render, setRender} = Render
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -89,7 +91,7 @@ function MockTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-  }, [marketData])
+  }, [marketData, render]) 
 
   useEffect(() => {
     return () => {
@@ -254,6 +256,10 @@ finalTraderPnl.map((subelem, index)=>{
     <ViewOrderDetail userId={subelem.userId}/>
   );
 
+  obj.realOrMock = (
+    <SwitchRealMock Render={{render, setRender}} userId={subelem.userId} />
+  );
+
   rows.push(obj);
 })
 
@@ -272,38 +278,38 @@ obj.traderName = (
 
 obj.grossPnl = (
   <MDTypography component="a" variant="caption"  color={totalGrossPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-    Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
+    {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
   </MDTypography>
 );
 
 obj.noOfTrade = (
   <MDTypography component="a" variant="caption" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-    Total Trades : {totalTrades}
+    {totalTrades}
   </MDTypography>
 );
 
 obj.runningLots = (
   <MDTypography component="a" variant="caption" color="dark" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-    Running Lots : {totalNoRunningLots}
+    {totalNoRunningLots}
   </MDTypography>
 );
 
 obj.lotUsed = (
   <MDTypography component="a" variant="caption" color="dark" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-    Lots Used : {totalLotsUsed}
+    {totalLotsUsed}
   </MDTypography>
 );
 
 
 obj.brokerage = (
   <MDTypography component="a" variant="caption"  color="dark" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-    Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}
+    {"₹"+(totalTransactionCost).toFixed(2)}
   </MDTypography>
 );
 
 obj.netPnl = (
   <MDTypography component="a" variant="caption"  color={totalnetPnlcolor} padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
-   Net P&L : {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
+   {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
   </MDTypography>
 );
 

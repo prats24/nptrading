@@ -3,6 +3,13 @@ const fetchData = require('./fetchToken');
 const getKiteCred = require('./getKiteCred'); 
 
 
+
+
+
+
+
+
+
 let ticker;
 const createNewTicker = (api_key, access_token) => {
     ticker = new kiteTicker({
