@@ -4,7 +4,9 @@ import { useEffect } from 'react';
 import { useRef } from 'react'
 import { userContext } from '../../../AuthContext';
 import uniqid from "uniqid";
-import MDButton from "../../../components/MDBox";
+import MDBox from "../../../components/MDBox";
+import Switch from "@mui/material/Switch";
+
 
 
 export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
@@ -119,7 +121,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
                     setTimeout(()=>{
                         placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity)
                     }, 250)
-                    
+
                 } else{
                     let timeDelay = 250;
                     while(quantity > 1800){
@@ -166,12 +168,16 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         })
     }
 
-    function functionality(){
+    function functionality(isRealTrade){
 
-        if(realTrade.current){
+        patchReqForRealTradeSwitching(id, isRealTrade);
+
+        if(isRealTrade){
             // real trade off meaning squaring off from all trade
+
+            console.log("real trade", isRealTrade)
             changeAllUserRealTrade(false)
-            realTrade.current = false;
+            isRealTrade = false;
             axios.get(`${baseUrl}api/v1/getLiveTradeDetailsAllUser`)
             .then((res) => {
                 takingTradeHelper(res.data, true)
@@ -180,8 +186,9 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             })
             
         } else{
+            console.log("real trade", isRealTrade)
             changeAllUserRealTrade(true)
-            realTrade.current = true;
+            isRealTrade = true;
             axios.get(`${baseUrl}api/v1/getMockTradeDetailsAllUser`)
             .then((res) => {
                 takingTradeHelper(res.data, false)
@@ -190,13 +197,19 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             })
         }
         
-        patchReqForRealTradeSwitching(id, realTrade.current);
+        
 
         reRender ? setReRender(false) : setReRender(true);
     }
 
 
     async function patchReqForRealTradeSwitching(id, realTrade){
+        console.log("realTrade", realTrade)
+        if(realTrade){
+            realTrade = false;
+        } else{
+            realTrade = true;
+        }
         const res = await fetch(`${baseUrl}api/v1/readtradingAlgo/${id}`, {
             method: "PATCH",
             headers: {
@@ -267,11 +280,13 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         }
     }
 
+    console.log("tradingAlgo", tradingAlgo)
+
   return (
     <>
-    <MDButton variant="outlined" bgColor="white" color={buttoncolor} fontWeight="medium" sx={{width: "50px", cursor: "pointer"}} onClick={()=>{functionality()}}>
-    {buttonText}
-    </MDButton>
+    <MDBox mt={0.5}>
+        <Switch checked={tradingAlgo[0].isRealTrade} onChange={() => {functionality(tradingAlgo[0].isRealTrade)}} />
+    </MDBox>
         
     </>
   )
