@@ -23,11 +23,11 @@ import ViewOrderDetail from "./MockTraderwiseOrders";
 // import MockRealSwitch from "../LiveTraderwiseCompanyPNL/MockRealSwitch"
 import MockRealSwitch from "../MockRealSwitch";
 
-function MockTraderwiseCompantPNL({socket, Render}) {
+function MockTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
-  const {render, setRender} = Render
+  // const {render, setRender} = Render
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -77,7 +77,7 @@ function MockTraderwiseCompantPNL({socket, Render}) {
         return new Error(err);
     })
 
-    socket.on("tick", (data) => {
+    props.socket.on("tick", (data) => {
       //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
@@ -98,7 +98,7 @@ function MockTraderwiseCompantPNL({socket, Render}) {
   useEffect(() => {
     return () => {
         //console.log('closing');
-        socket.close();
+        props.socket.close();
     }
   }, [])
 
@@ -188,6 +188,8 @@ function viewTraderFullReport(){
   
 }
 
+console.log("re rendering index mock")
+
 finalTraderPnl.map((subelem, index)=>{
   let obj = {};
   let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
@@ -252,14 +254,14 @@ finalTraderPnl.map((subelem, index)=>{
     </MDTypography>
   );
   obj.view = (
-    <ViewTradeDetail socket={socket} userId={subelem.userId}/>
+    <ViewTradeDetail socket={props.socket} userId={subelem.userId}/>
   );
   obj.orders = (
     <ViewOrderDetail userId={subelem.userId}/>
   );
 
   obj.realOrMock = (
-    <MockRealSwitch Render={{render, setRender}} userId={subelem.userId} />
+    <MockRealSwitch props={props} userId={subelem.userId} />
   );
 
   rows.push(obj);

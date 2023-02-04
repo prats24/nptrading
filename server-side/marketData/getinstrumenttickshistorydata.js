@@ -10,122 +10,102 @@ const dailyPnlDataController = require("../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../controllers/traderwiseDailyPnlController")
 const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSchema")
 const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
-const dbBackup = require("./mongodbBackup")
+const dbBackup = require("../mongodbBackup")
 
 
 
 
 
 
-  const getInstrumentTicksHistoryData = async () => {
-    getKiteCred.getAccess().then(async (data)=>{
-      const activeInstrument = await ActiveInstruments.find({status: "Active"});
-      for(let i = 0; i < activeInstrument.length; i++){
-        let {instrumentToken, createdOn, symbol} = activeInstrument[i];
-        let date = createdOn.split(" ")[0];
+const getInstrumentTicksHistoryData = async () => {
+  getKiteCred.getAccess().then(async (data)=>{
+    const activeInstrument = await ActiveInstruments.find({status: "Active"});
+    for(let i = 0; i < activeInstrument.length; i++){
+      let {instrumentToken, createdOn, symbol} = activeInstrument[i];
+      let date = createdOn.split(" ")[0];
 
-        let tempData = date.split("-");
-        // let "2023-02-02" = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
+      let tempData = date.split("-");
+      let matchingDate = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
 
-        const historyData = await HistoryData.find({instrumentToken: instrumentToken, timestamp: {$regex:"2023-02-02"}})
-        if(historyData.length === 0){
-          const api_key = data.getApiKey;
-          const access_token = data.getAccessToken;
-          let auth = 'token' + api_key + ':' + access_token;
+      const historyData = await HistoryData.find({instrumentToken: instrumentToken, timestamp: {$regex:matchingDate}})
+      if(historyData.length === 0){
+        const api_key = data.getApiKey;
+        const access_token = data.getAccessToken;
+        let auth = 'token' + api_key + ':' + access_token;
 
-          
-          const url = `https://api.kite.trade/instruments/historical/${instrumentToken}/minute?from=${"2023-02-02"}+09:15:00&to=${"2023-02-02"}+15:30:00`;
-          
-      
-          let authOptions = {
-            headers: {
-              'X-Kite-Version': '3',
-              Authorization: auth,
-            },
-          };
-      
+        
+        const url = `https://api.kite.trade/instruments/historical/${instrumentToken}/minute?from=${matchingDate}+09:15:00&to=${matchingDate}+15:30:00`;
+        
+    
+        let authOptions = {
+          headers: {
+            'X-Kite-Version': '3',
+            Authorization: auth,
+          },
+        };
+    
 
-          try{
-            const response = await axios.get(url, authOptions);
-            const instrumentticks = (response.data).data;
-            let len = instrumentticks.candles.length;
-            let instrumentticksdata;
-            for(let j = len-1; j >= 0; j--){
-              instrumentticksdata = JSON.parse(JSON.stringify(instrumentticks.candles[j]));
-      
-              let [timestamp, open, high, low, close, volume] = instrumentticksdata
-              let runtime = new Date()
-              let createdOn = `${String(runtime.getDate()).padStart(2, '0')}-${String(runtime.getMonth() + 1).padStart(2, '0')}-${(runtime.getFullYear())}`;
-                  
-              const instrumentticks_data = (new InstrumentTicksDataSchema({timestamp, symbol, instrumentToken, open, high, low, close, volume, createdOn }))
+        try{
+          const response = await axios.get(url, authOptions);
+          const instrumentticks = (response.data).data;
+          let len = instrumentticks.candles.length;
+          let instrumentticksdata;
+          for(let j = len-1; j >= 0; j--){
+            instrumentticksdata = JSON.parse(JSON.stringify(instrumentticks.candles[j]));
+    
+            let [timestamp, open, high, low, close, volume] = instrumentticksdata
+            let runtime = new Date()
+            let createdOn = `${String(runtime.getDate()).padStart(2, '0')}-${String(runtime.getMonth() + 1).padStart(2, '0')}-${(runtime.getFullYear())}`;
+                
+            const instrumentticks_data = (new InstrumentTicksDataSchema({timestamp, symbol, instrumentToken, open, high, low, close, volume, createdOn }))
 
-              instrumentticks_data.save()
-              .then(()=>{
-              }).catch((err)=> {
-                    mailSender("Fail to enter data")
-                // res.status(500).json({error:"Failed to enter data"});
-              })
-              }
-
-            setTimeout(async ()=>{
-
-              const historyDataforLen = await HistoryData.find({timestamp: {$regex:"2023-02-02"}})
-              const dailyPnl = await DailyPNLData.find({timestamp: {$regex:"2023-02-02"}})
-              const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:"2023-02-02"}})
-              
-              let length = historyDataforLen.length;
-              mailSender(length);
-
-              if(dailyPnl.length === 0){
-                await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
-              }
-
-              if(traderDailyPnl.length === 0){
-                await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
-              }
-
-            },20000)
-
-
-            
-          } catch (err){
-              return new Error(err);
-          }
-      
-        } else{
-
-          const historyDataforLen = await HistoryData.find({timestamp: {$regex:"2023-02-02"}})
-
-          let length = historyDataforLen.length;
-          let message = length + " data already present"
-          // mailSender(message)
+            instrumentticks_data.save()
+            .then(()=>{
+            }).catch((err)=> {
+                  mailSender("Fail to enter data")
+              // res.status(500).json({error:"Failed to enter data"});
+            })
+            }
 
           setTimeout(async ()=>{
 
-            const historyDataforLen = await HistoryData.find({timestamp: {$regex:"2023-02-02"}})
-            const dailyPnl = await DailyPNLData.find({timestamp: {$regex:"2023-02-02"}})
-            const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:"2023-02-02"}})
+            const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
+            const dailyPnl = await DailyPNLData.find({timestamp: {$regex:matchingDate}})
+            const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:matchingDate}})
             
             let length = historyDataforLen.length;
             mailSender(length);
 
             if(dailyPnl.length === 0){
-              console.log("dailyPnlCalculation running")
-              await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
+              await dailyPnlDataController.dailyPnlCalculation(matchingDate);
             }
 
             if(traderDailyPnl.length === 0){
-              console.log("traderDailyPnlCalculation running")
-              await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
+              await traderwiseDailyPnlController.traderDailyPnlCalculation(matchingDate);
             }
+
+            await dbBackup();
 
           },20000)
 
+
+          
+        } catch (err){
+            return new Error(err);
         }
     
-      } 
+      } else{
 
-    });
+        const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
+
+        let length = historyDataforLen.length;
+        let message = length + " data already present"
+        mailSender(message)
+      }
+  
+    } 
+
+  });
 };
 
 function mailSender(length){

@@ -147,15 +147,14 @@ require('./db/conn');
 
 
 
-  // if(process.env.PROD){
+  if(process.env.PROD){
     let date = new Date();
     let weekDay = date.getDay();
-    // if(weekDay > 0 && weekDay < 6){
-    //     const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
-    // }
-    const job = nodeCron.schedule(`0 59 * * * *`, cronJobForHistoryData);
+    if(weekDay > 0 && weekDay < 6){
+        const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+    }
 
-  // }
+  }
 
 const PORT = process.env.PORT;
 

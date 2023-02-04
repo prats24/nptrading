@@ -17,6 +17,7 @@ import Card from "@mui/material/Card";
 import Data from "./MapUserData";
 import DataTable from "../../../examples/Tables/DataTable";
 import Switch from "@mui/material/Switch";
+import MapUsersIcon from '@mui/icons-material/GroupAddSharp';
 
 
 
@@ -339,9 +340,9 @@ const MapUser = ({algoName}) => {
   return (
     <div>
 
-      <MDButton variant="outlined" color="light" bgColor="light" onClick={handleClickOpen}>
-        Map Traders
-      </MDButton>
+      <Button variant="" color="black" onClick={handleClickOpen}>
+        <MapUsersIcon/>
+      </Button>
 
       <Dialog
         fullScreen={fullScreen}

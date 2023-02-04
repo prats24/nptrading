@@ -7,7 +7,8 @@ import MDBox from "../../../components/MDBox";
 import Switch from "@mui/material/Switch";
 
 
-export default function MockRealSwitch({userId, Render}) {
+
+export default function MockRealSwitch({userId, props}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});
@@ -15,8 +16,9 @@ export default function MockRealSwitch({userId, Render}) {
     const [algoUsed, setAlgoUsed] = useState([]);
     const [accessTokenDetails, setAccessToken] = useState([]);
     const [apiKeyDetails, setApiKey] = useState([]);
-    const {render, setRender} = Render;
+    // const {render, setRender} = Render;
     const [reRender, setReRender] = useState(true);
+    const [realTradeState, setRealTradeState] = useState(true);
 
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
@@ -25,6 +27,7 @@ export default function MockRealSwitch({userId, Render}) {
     const createdBy = "system";
     let modifiedOn = createdOn;
     let modifiedBy = "system";
+
 
 
     useEffect(()=>{
@@ -67,18 +70,20 @@ export default function MockRealSwitch({userId, Render}) {
             return new Error(err);
         })
 
-    }, [])
+    }, [realTradeState])
 
     useEffect(()=>{
         axios.get(`${baseUrl}api/v1/readpermissionbyemail/${userId}`)
         .then((res)=>{
             setPermissionDetail(res.data)
+            setRealTradeState(res.data.isRealTradeEnable)
+            // setRender(res.data.isRealTradeEnable)
             console.log("tradeDetailReal", res.data);
         }).catch((err)=>{
             return new Error(err);
         })
         // reRender? setReRender(false) : setReRender(true)
-    }, [reRender])
+    }, [])
 
 
     console.log("rendering", permissionDetail, userId)
@@ -133,22 +138,21 @@ export default function MockRealSwitch({userId, Render}) {
                 console.log("quantity", quantity)
                 placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
 
-                // placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type)
             }
         }
 
         console.log("checkRealTrade", checkRealTrade)
         if(checkRealTrade){
             changeIsRealTrade(false)
+            // setRealTradeState(false)
         } else{
             changeIsRealTrade(true)
+            
         }
 
-        setTimeout(()=>{
-            reRender? setReRender(false) : setReRender(true)
-        }, 1000)
+        props.handleSwitchChange(userId)
     }
-
+// onChange={() => props.handleSwitchChange(user.id)}
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
         const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
@@ -215,17 +219,36 @@ export default function MockRealSwitch({userId, Render}) {
             window.alert(permissionData.error);
         }
 
-        render ? setRender(false) : setRender(true);
-        setTimeout(()=>{
-            reRender? setReRender(false) : setReRender(true)
-        }, 1000)
+        // render ? setRender(true) : setRender(false);
+        // setTimeout(()=>{
+        //     reRender? setReRender(false) : setReRender(true)
+        // }, 1000) checked={render}
     
     }
 
+    let real;
+    console.log("props", props)
+    props.users.map((elem)=>{
+        if(elem.userId === userId){
+            real = (elem.isRealTradeEnable);
+        }
+    })
   return (
-    <MDBox mt={0.5}>
-        <Switch checked={permissionDetail.isRealTradeEnable} onChange={() => {switchButtonFunc(permissionDetail.isRealTradeEnable)}} />
-    </MDBox>
+
+
+    props.users.map((elem)=>{
+        console.log("elem.userId === userId", elem.userId, userId)
+
+        if(elem.userId === userId){
+            // real = (elem.isRealTradeEnable);
+            return(
+            <MDBox mt={0.5}>
+            <Switch  checked={elem.isRealTradeEnable}   onChange={() => {switchButtonFunc(elem.isRealTradeEnable)}} />
+            </MDBox>
+            )
+        }
+    })
+
   )
 }
 
