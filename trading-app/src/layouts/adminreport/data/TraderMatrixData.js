@@ -15,6 +15,7 @@ export default function MockCompanyPNLTWise() {
         { Header: "% Green Days", accessor: "pgreendays", align: "center" },
         { Header: "# Red Days", accessor: "reddays", align: "center" },
         { Header: "# Green Days", accessor: "greendays", align: "center" },
+        { Header: "Avg. Green Days G-P&L", accessor: "agreendaysgpnl", align: "center" },
         { Header: "Avg. Red Days G-P&L", accessor: "areddaysgpnl", align: "center" },
       ],
   

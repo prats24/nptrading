@@ -315,7 +315,7 @@ router.post("/placeorder", (async (req, res)=>{
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                         lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time
+                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
                     });
             
@@ -348,7 +348,7 @@ router.post("/placeorder", (async (req, res)=>{
                         variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                         order_id, instrumentToken, brokerage: brokerageUser,
                         tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time
+                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
                     });
             

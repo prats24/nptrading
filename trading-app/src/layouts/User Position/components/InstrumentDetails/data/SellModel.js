@@ -25,10 +25,10 @@ import FormLabel from '@mui/material/FormLabel';
 import MDBox from '../../../../../components/MDBox';
 import { Box, Typography } from '@mui/material';
 
-const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp}) => {
+const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render}) => {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  // const { reRender, setReRender } = Render;
+  const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -127,6 +127,17 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   };
 
   const handleClickOpen = () => {
+    axios.get(`${baseUrl}api/v1/readpermission`)
+    .then((res) => {
+    let perticularUser = (res.data).filter((elem) => {
+        ////console.log(elem.userId, userId);
+        return elem.userId === userId;
+    })
+    setUserPermission(perticularUser);
+    }).catch((err) => {
+        // window.alert("Server Down");
+        return new Error(err);
+    })
     setOpen(true);
 
   }; 
@@ -134,6 +145,9 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   const handleClose = (e) => {
     setOpen(false);
   };
+
+  console.log("in open", userPermission, tradingAlgoData, userId)
+
 
   const [appLive, setAppLive] = useState([]);
 
@@ -325,7 +339,7 @@ useEffect(()=>{
             //console.log("userPermission", userPermission)
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
-                    if(subElem.isRealTradeEnable || elem.isRealTrade){
+                    if(subElem.isRealTradeEnable){
                         sendOrderReq(elem);
                     } else{
                         mockTradeCompany(elem);
@@ -405,9 +419,9 @@ useEffect(()=>{
       } 
 
       // rerenderParentCallback();
-      // let id = setTimeout(()=>{
-      //     reRender ? setReRender(false) : setReRender(true)
-      // }, 1000);
+      let id = setTimeout(()=>{
+          reRender ? setReRender(false) : setReRender(true)
+      }, 1000);
       
   }
 

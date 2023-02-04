@@ -38,7 +38,7 @@ function DataTable({
   const defaultValue = entriesPerPage.defaultValue ? entriesPerPage.defaultValue : 10;
   const entries = entriesPerPage.entries
     ? entriesPerPage.entries.map((el) => el.toString())
-    : ["100", "200", "300", "400", "500"];
+    : ["10", "20", "30", "40", "50"];
   const columns = useMemo(() => table.columns, [table]);
   const data = useMemo(() => table.rows, [table]);
 
@@ -68,7 +68,7 @@ function DataTable({
   } = tableInstance;
 
   // Set the default value for the entries per page when component mounts
-  useEffect(() => setPageSize(defaultValue || 10), [defaultValue]);
+  useEffect(() => setPageSize(defaultValue || 20), [defaultValue]);
 
   // Set the entries per page value based on the select value
   const setEntriesPerPage = (value) => setPageSize(value);
@@ -137,7 +137,7 @@ function DataTable({
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
       {entriesPerPage || canSearch ? (
-        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+        <MDBox display="flex" justifyContent="space-between" alignItems="center" p={1}>
           {entriesPerPage && (
             <MDBox display="flex" alignItems="center">
               <Autocomplete
@@ -145,10 +145,10 @@ function DataTable({
                 value={pageSize.toString()}
                 options={entries}
                 onChange={(event, newValue) => {
-                  setEntriesPerPage(parseInt(newValue, 10));
+                  setEntriesPerPage(parseInt(newValue, 20));
                 }}
                 size="small"
-                sx={{ width: "5rem" }}
+                sx={{ width: "4rem" }}
                 renderInput={(params) => <MDInput {...params} />}
               />
               <MDTypography variant="caption" color="secondary">
@@ -286,7 +286,7 @@ function DataTable({
 
 // Setting default values for the props of DataTable
 DataTable.defaultProps = {
-  entriesPerPage: { defaultValue: 15, entries: [5, 10, 15, 20, 25] },
+  entriesPerPage: { defaultValue: 25, entries: [5, 10, 15, 20, 25, 30, 35, 40] },
   canSearch: false,
   showTotalEntries: true,
   pagination: { variant: "gradient", color: "info" },

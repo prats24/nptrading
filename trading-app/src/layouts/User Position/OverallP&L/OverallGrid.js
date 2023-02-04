@@ -21,18 +21,19 @@ import MDButton from '../../../components/MDButton';
 import ExitPosition from './ExitPosition';
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket}) {
+function OverallGrid({socket, Render}) {
   const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
 
   const closeMenu = () => setMenu(null);
 
   const getDetails = useContext(userContext);
-
+  const { reRender, setReRender } = Render
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [liveDetail, setLiveDetail] = useState([]);
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [render, setRender] = useState(true);
 
   let liveDetailsArr = [];
   let totalTransactionCost = 0;
@@ -79,8 +80,8 @@ function OverallGrid({socket}) {
           return new Error(err);
       })
 
-
-    }, [marketData])
+      reRender ? setRender(false) : setRender(true);
+    }, [marketData, render])
 
 
     useEffect(() => {

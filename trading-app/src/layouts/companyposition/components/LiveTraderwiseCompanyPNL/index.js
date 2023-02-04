@@ -16,11 +16,13 @@ import MDTypography from "../../../../components/MDTypography";
 import DataTable from "../../../../examples/Tables/DataTable";
 import LiveViewTradeDetail from "./LiveViewTradeDetail"
 import LiveTraderwiseOrders from "./LiveTraderwiseOrders"
+// import MockRealSwitch from "./MockRealSwitch";
+import MockRealSwitch from "../MockRealSwitch";
 
 // Data
 import data from "./data";
 
-function LiveTraderwiseCompantPNL({socket}) {
+function LiveTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -33,6 +35,9 @@ function LiveTraderwiseCompantPNL({socket}) {
   const [lastestLiveTradeType, setLatestLiveTradeType] = useState([]);
   const [lastestLiveTradeQunaity, setLatestLiveTradeQuantity] = useState([]);
   const [lastestLiveTradeStatus, setLatestLiveTradeStatus] = useState([]);
+
+  console.log("re rendering index live")
+  // const {render, setRender} = Render
 
   const renderMenu = (
     <Menu
@@ -72,7 +77,7 @@ function LiveTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-    socket.on("tick", (data) => {
+    props.socket.on("tick", (data) => {
       //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
@@ -92,7 +97,7 @@ function LiveTraderwiseCompantPNL({socket}) {
   useEffect(() => {
     return () => {
         //console.log('closing');
-        socket.close();
+        props.socket.close();
     }
   }, [])
 
@@ -243,16 +248,20 @@ function LiveTraderwiseCompantPNL({socket}) {
          </MDTypography>
        );
        obj.view = (
-        <LiveViewTradeDetail socket={socket} userId={subelem.userId}/>
+        <LiveViewTradeDetail socket={props.socket} userId={subelem.userId}/>
       );
       obj.orders = (
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
+      obj.realOrMock = (
+        <MockRealSwitch props={props} userId={subelem.userId} />
+      );
    
-       ////console.log(obj)
        rows.push(obj);
      })
    
+
+
      let obj = {};
 
      const totalGrossPnlcolor = totalGrossPnlGrid >= 0 ? "success" : "error"

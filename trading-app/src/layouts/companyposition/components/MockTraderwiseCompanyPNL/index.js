@@ -20,11 +20,14 @@ import DataTable from "../../../../examples/Tables/DataTable";
 import data from "./data";
 import ViewTradeDetail from "./ViewTradeDetail";
 import ViewOrderDetail from "./MockTraderwiseOrders";
+// import MockRealSwitch from "../LiveTraderwiseCompanyPNL/MockRealSwitch"
+import MockRealSwitch from "../MockRealSwitch";
 
-function MockTraderwiseCompantPNL({socket}) {
+function MockTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
+  // const {render, setRender} = Render
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -50,6 +53,7 @@ function MockTraderwiseCompantPNL({socket}) {
   );
 
 
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [allTrade, setAllTrade] = useState([]);
@@ -73,7 +77,7 @@ function MockTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-    socket.on("tick", (data) => {
+    props.socket.on("tick", (data) => {
       //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
@@ -89,12 +93,12 @@ function MockTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-  }, [marketData])
+  }, [marketData]) 
 
   useEffect(() => {
     return () => {
         //console.log('closing');
-        socket.close();
+        props.socket.close();
     }
   }, [])
 
@@ -184,6 +188,8 @@ function viewTraderFullReport(){
   
 }
 
+console.log("re rendering index mock")
+
 finalTraderPnl.map((subelem, index)=>{
   let obj = {};
   let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
@@ -248,10 +254,14 @@ finalTraderPnl.map((subelem, index)=>{
     </MDTypography>
   );
   obj.view = (
-    <ViewTradeDetail socket={socket} userId={subelem.userId}/>
+    <ViewTradeDetail socket={props.socket} userId={subelem.userId}/>
   );
   obj.orders = (
     <ViewOrderDetail userId={subelem.userId}/>
+  );
+
+  obj.realOrMock = (
+    <MockRealSwitch props={props} userId={subelem.userId} />
   );
 
   rows.push(obj);

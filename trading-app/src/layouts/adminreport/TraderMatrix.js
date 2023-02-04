@@ -3,21 +3,17 @@ import {useState, useEffect} from "react"
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+// import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
-import Header from "./Header";
 import TextField from '@mui/material/TextField';
 import { Typography } from "@mui/material";
 import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
 
 // Data
 import TraderMatrix from "./data/TraderMatrixData";
@@ -178,12 +174,14 @@ const TableThree = () => {
     const npnlcolor = (elem.LifetimeNPnl) >= 0 ? "success" : "error"
     const gpnlcolor = (elem.LifetimeGPnl) >= 0 ? "success" : "error"
     const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][elem.dayOfWeek-1];
-    let probableavgpnl = ((elem.RedDays/elem.TradingDays)*elem.NegativePnl + (elem.GreenDays/elem.TradingDays)*elem.PositivePnl)
     let ratio = 0;
-    const probableavgpnlcolor = probableavgpnl >= 0 ? "success" : "error"
     let averagereddaysgpnl = elem.RedDays != 0 ? elem.NegativePnl/elem.RedDays : 0
+    let averagegreendaysgpnl = elem.GreenDays != 0 ? elem.PositivePnl/elem.GreenDays : 0
     const averagereddaysgpnlcolor = averagereddaysgpnl >= 0 ? "success" : "error"
-    
+    const averagegreendaysgpnlcolor = averagegreendaysgpnl >= 0 ? "success" : "error"
+    const probableavgpnl = ((elem.RedDays/elem.TradingDays)*averagereddaysgpnl + (elem.GreenDays/elem.TradingDays)*averagegreendaysgpnl)
+    const probableavgpnlcolor = probableavgpnl >= 0 ? "success" : "error"
+
     if(elem.GreenDays == 0){
       ratio = 0;
     }
@@ -254,6 +252,11 @@ const TableThree = () => {
         {elem.GreenDays}
       </MDTypography>
     );
+    tpnl.agreendaysgpnl = (
+      <MDTypography component="a" variant="caption" color={averagegreendaysgpnlcolor} fontWeight="medium">
+        {averagegreendaysgpnl >= 0 ? "+₹" + averagegreendaysgpnl.toFixed(0) : "-₹" + (-averagegreendaysgpnl).toFixed(0)}
+      </MDTypography>
+    );
     tpnl.areddaysgpnl = (
       <MDTypography component="a" variant="caption" color={averagereddaysgpnlcolor} fontWeight="medium">
         {averagereddaysgpnl >= 0 ? "+₹" + averagereddaysgpnl.toFixed(0) : "-₹" + (-averagereddaysgpnl).toFixed(0)}
@@ -271,6 +274,7 @@ const TableThree = () => {
     let totalnpnlcolor = totalnPnl >= 0 ? "success" : "error"
     const firstDateFormat = `${String(new Date(firstDate).getDate()).padStart(2, '0')}-${String(new Date(firstDate).getMonth() + 1).padStart(2, '0')}-${(new Date(firstDate).getFullYear())}`
     const secondDateFormat = `${String(new Date(secondDate).getDate()).padStart(2, '0')}-${String(new Date(secondDate).getMonth() + 1).padStart(2, '0')}-${(new Date(secondDate).getFullYear())}`
+
 
     return (
 

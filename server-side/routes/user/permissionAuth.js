@@ -42,7 +42,20 @@ router.get("/readpermission/:id", (req, res)=>{
         return res.status(200).send(data);
     })
     .catch((err)=>{
-        return res.status(422).json({error : "date not found"})
+        return res.status(422).json({error : "data not found"})
+    })
+})
+
+router.get("/readpermissionbyemail/:email", (req, res)=>{
+    //console.log(req.params)
+    const {email} = req.params
+    console.log(email)
+    Permission.findOne({userId : email})
+    .then((data)=>{
+        return res.status(200).send(data);
+    })
+    .catch((err)=>{
+        return res.status(422).json({error : "data not found"})
     })
 })
 
@@ -180,13 +193,34 @@ router.patch("/updaterealtradeenable/:id", async (req, res)=>{
                 isRealTradeEnable: req.body.isRealTradeEnable,
             }
         })
-        //console.log("this is role", permission);
+        console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});
     }
 })
+
+// router.patch("/updaterealtradeenable/:email", async (req, res)=>{
+//     //console.log(req.params)
+//     const {email} = req.params
+//     //console.log("this is body", req.body, id);
+//     try{ 
+        
+//         const permission = await Permission.findOneAndUpdate({userId : email}, {
+//             $set:{ 
+//                 modifiedOn: req.body.modifiedOn,
+//                 modifiedBy: req.body.modifiedBy,
+//                 isRealTradeEnable: req.body.isRealTradeEnable,
+//             }
+//         })
+//         //console.log("this is role", permission);
+//         res.send(permission)
+//         // res.status(201).json({massage : "data edit succesfully"});
+//     } catch (e){
+//         res.status(500).json({error:"Failed to edit data"});
+//     }
+// })
 
 
 module.exports = router;

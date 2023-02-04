@@ -62,7 +62,7 @@ function Footer({ light }) {
                 &nbsp;ninepointer&nbsp;
               </MDTypography>
             </Link>
-            for a better web.
+            for a better trading experience.
           </MDBox>
           <MDBox
             component="ul"

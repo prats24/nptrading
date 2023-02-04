@@ -1,4 +1,5 @@
 // prop-types is a library for typechecking of props
+import { lightBlue } from "@mui/material/colors";
 import PropTypes from "prop-types";
 
 // Material Dashboard 2 React components
@@ -9,7 +10,7 @@ function DataTableBodyCell({ noBorder, align, children }) {
     <MDBox
       component="td"
       textAlign={align}
-      py={1.5}
+      py={1}
       px={3}
       sx={({ palette: { light }, typography: { size }, borders: { borderWidth } }) => ({
         fontSize: size.sm,

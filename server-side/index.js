@@ -24,6 +24,7 @@ const limiter = rateLimit({
   message: "Too many request"
 })
 
+
 // Apply the rate limiting middleware to all requests
 app.use(limiter)
 app.use(mongoSanitize());
@@ -42,10 +43,10 @@ require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 var KiteConnect = require("kiteconnect").KiteConnect;
 
 var kc = new KiteConnect({
-  api_key: "4o77ska70avpfx5e",
+  api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("request_token", "f80ys08yesvw8da99y8p49wx9rr372fa")
+kc.generateSession("00l8N7KoiW0zXs8kR71EDW9S1Dxqy2Cb", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -66,7 +67,10 @@ function init() {
       console.log("error of margin", err)
     });
 }
+
+
 */
+
 
 
 
@@ -127,6 +131,7 @@ app.use('/api/v1', require('./routes/CronJobsRouter/historyTrade'));
 app.use('/api/v1', require('./routes/AlgoBox/tradingAlgoAuth'));
 app.use('/api/v1', require("./marketData/getRetrieveOrder"));
 app.use('/api/v1', require('./marketData/placeOrder'));
+app.use('/api/v1', require('./marketData/switchToRealTrade'));
 app.use('/api/v1', require('./routes/instrument/instrumentAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/accountAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/brokerageAuth'));
@@ -148,6 +153,7 @@ require('./db/conn');
     if(weekDay > 0 && weekDay < 6){
         const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
     }
+
   }
 
 const PORT = process.env.PORT;

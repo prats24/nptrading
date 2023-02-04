@@ -161,9 +161,9 @@ const InstrumentEditModel = ({Render, data, id}) => {
   
     return (
       <div>
-        <MDButton variant="outlined" color="info" onClick={handleClickOpen}>
+        <Button variant="" color="black" onClick={handleClickOpen}>
          <EditSharpIcon/>
-        </MDButton>
+        </Button>
         <Dialog
           fullScreen={fullScreen}
           open={open}
