@@ -16,18 +16,25 @@ const getKiteCred = require('../../marketData/getKiteCred');
 
 const CompanyTradeData = require("../../models/TradeDetails/liveTradeSchema");
 const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema"); 
+const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
+const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-//     getKiteCred.getAccess().then( (data)=>{
-//         // //console.log("this is code ",data);
-//         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-//         // //console.log("ticksdata", ticksdata)
-//       });
-// })
+
+router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+    // if(dailyPnl.length === 0){
+        console.log("dailyPnlCalculation running")
+        await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
+    //   }
+
+    //   if(traderDailyPnl.length === 0){
+        console.log("traderDailyPnlCalculation running")
+        await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
+    //   }
+})
 
 // router.get("/deleteinhistory", async(req, res)=>{
-//     PNLData.deleteMany({timestamp: {$regex: "2023-01-19"}})
+//     TraderPNLData.deleteMany({timestamp: {$regex: "2023-02-02"}})
 //     .then(()=>{
 //         console.log("deleted")
 //     }).catch(()=>{

@@ -53,6 +53,7 @@ function MockTraderwiseCompantPNL({socket, Render}) {
   );
 
 
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [allTrade, setAllTrade] = useState([]);
@@ -92,7 +93,7 @@ function MockTraderwiseCompantPNL({socket, Render}) {
         return new Error(err);
     })
 
-  }, [marketData, render]) 
+  }, [marketData]) 
 
   useEffect(() => {
     return () => {

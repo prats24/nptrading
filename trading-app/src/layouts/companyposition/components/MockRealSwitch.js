@@ -26,7 +26,6 @@ export default function MockRealSwitch({userId, Render}) {
     let modifiedOn = createdOn;
     let modifiedBy = "system";
 
-  
 
     useEffect(()=>{
 
@@ -38,13 +37,6 @@ export default function MockRealSwitch({userId, Render}) {
             return new Error(err);
         })
 
-        axios.get(`${baseUrl}api/v1/readpermissionbyemail/${userId}`)
-        .then((res)=>{
-            setPermissionDetail(res.data)
-            console.log("tradeDetailReal", res.data);
-        }).catch((err)=>{
-            return new Error(err);
-        })
 
         axios.get(`${baseUrl}api/v1/readtradingAlgo`)
         .then((res)=>{
@@ -75,9 +67,21 @@ export default function MockRealSwitch({userId, Render}) {
             return new Error(err);
         })
 
+    }, [])
+
+    useEffect(()=>{
+        axios.get(`${baseUrl}api/v1/readpermissionbyemail/${userId}`)
+        .then((res)=>{
+            setPermissionDetail(res.data)
+            console.log("tradeDetailReal", res.data);
+        }).catch((err)=>{
+            return new Error(err);
+        })
+        // reRender? setReRender(false) : setReRender(true)
     }, [reRender])
 
-    // console.log("tradeDetailReal", permissionDetail)
+
+    console.log("rendering", permissionDetail, userId)
 
     const switchButtonFunc = (checkRealTrade)=>{
         for(let i = 0; i < tradeDetail.length; i++){
@@ -139,6 +143,10 @@ export default function MockRealSwitch({userId, Render}) {
         } else{
             changeIsRealTrade(true)
         }
+
+        setTimeout(()=>{
+            reRender? setReRender(false) : setReRender(true)
+        }, 1000)
     }
 
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
@@ -208,10 +216,12 @@ export default function MockRealSwitch({userId, Render}) {
         }
 
         render ? setRender(false) : setRender(true);
-        reRender? setReRender(false) : setReRender(true)
+        setTimeout(()=>{
+            reRender? setReRender(false) : setReRender(true)
+        }, 1000)
+    
     }
 
-    console.log("permissionDetail", permissionDetail)
   return (
     <MDBox mt={0.5}>
         <Switch checked={permissionDetail.isRealTradeEnable} onChange={() => {switchButtonFunc(permissionDetail.isRealTradeEnable)}} />

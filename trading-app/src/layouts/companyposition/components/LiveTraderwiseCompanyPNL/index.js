@@ -91,7 +91,7 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
     }).catch((err)=>{
         return new Error(err);
     })
-  }, [marketData, render])
+  }, [marketData])
 
   useEffect(() => {
     return () => {
@@ -259,6 +259,8 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
        rows.push(obj);
      })
    
+
+
      let obj = {};
 
      const totalGrossPnlcolor = totalGrossPnlGrid >= 0 ? "success" : "error"

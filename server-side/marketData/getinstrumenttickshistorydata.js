@@ -10,6 +10,8 @@ const dailyPnlDataController = require("../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../controllers/traderwiseDailyPnlController")
 const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSchema")
 const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
+const dbBackup = require("./mongodbBackup")
+
 
 
 
@@ -23,16 +25,16 @@ const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDai
         let date = createdOn.split(" ")[0];
 
         let tempData = date.split("-");
-        let matchingDate = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
+        // let "2023-02-02" = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
 
-        const historyData = await HistoryData.find({instrumentToken: instrumentToken, timestamp: {$regex:matchingDate}})
+        const historyData = await HistoryData.find({instrumentToken: instrumentToken, timestamp: {$regex:"2023-02-02"}})
         if(historyData.length === 0){
           const api_key = data.getApiKey;
           const access_token = data.getAccessToken;
           let auth = 'token' + api_key + ':' + access_token;
 
           
-          const url = `https://api.kite.trade/instruments/historical/${instrumentToken}/minute?from=${matchingDate}+09:15:00&to=${matchingDate}+15:30:00`;
+          const url = `https://api.kite.trade/instruments/historical/${instrumentToken}/minute?from=${"2023-02-02"}+09:15:00&to=${"2023-02-02"}+15:30:00`;
           
       
           let authOptions = {
@@ -67,19 +69,19 @@ const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDai
 
             setTimeout(async ()=>{
 
-              const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
-              const dailyPnl = await DailyPNLData.find({timestamp: {$regex:matchingDate}})
-              const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:matchingDate}})
+              const historyDataforLen = await HistoryData.find({timestamp: {$regex:"2023-02-02"}})
+              const dailyPnl = await DailyPNLData.find({timestamp: {$regex:"2023-02-02"}})
+              const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:"2023-02-02"}})
               
               let length = historyDataforLen.length;
               mailSender(length);
 
               if(dailyPnl.length === 0){
-                await dailyPnlDataController.dailyPnlCalculation(matchingDate);
+                await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
               }
 
               if(traderDailyPnl.length === 0){
-                await traderwiseDailyPnlController.traderDailyPnlCalculation(matchingDate);
+                await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
               }
 
             },20000)
@@ -92,11 +94,33 @@ const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDai
       
         } else{
 
-          const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
+          const historyDataforLen = await HistoryData.find({timestamp: {$regex:"2023-02-02"}})
 
           let length = historyDataforLen.length;
           let message = length + " data already present"
-          mailSender(message)
+          // mailSender(message)
+
+          setTimeout(async ()=>{
+
+            const historyDataforLen = await HistoryData.find({timestamp: {$regex:"2023-02-02"}})
+            const dailyPnl = await DailyPNLData.find({timestamp: {$regex:"2023-02-02"}})
+            const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:"2023-02-02"}})
+            
+            let length = historyDataforLen.length;
+            mailSender(length);
+
+            if(dailyPnl.length === 0){
+              console.log("dailyPnlCalculation running")
+              await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
+            }
+
+            if(traderDailyPnl.length === 0){
+              console.log("traderDailyPnlCalculation running")
+              await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
+            }
+
+          },20000)
+
         }
     
       } 

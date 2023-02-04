@@ -128,7 +128,7 @@ function CompanyPosition() {
       <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <MismatchDetails socket={socket}/>
+              {/* <MismatchDetails socket={socket}/> */}
             </Grid>
           </Grid>
         </MDBox>
