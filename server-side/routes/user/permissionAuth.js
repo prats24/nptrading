@@ -165,7 +165,7 @@ router.patch("/updatetradeenable/:id", async (req, res)=>{
     try{ 
         
 
-        const permission = await Permission.findOneAndUpdate({userId : id}, {
+        const permission = await Permission.findOneAndUpdate({_id : id}, {
             $set:{ 
                 modifiedOn: req.body.modifiedOn,
                 modifiedBy: req.body.modifiedBy,
@@ -186,7 +186,7 @@ router.patch("/updaterealtradeenable/:id", async (req, res)=>{
     //console.log("this is body", req.body, id);
     try{ 
         
-        const permission = await Permission.findOneAndUpdate({userId : id}, {
+        const permission = await Permission.findOneAndUpdate({_id : id}, {
             $set:{ 
                 modifiedOn: req.body.modifiedOn,
                 modifiedBy: req.body.modifiedBy,

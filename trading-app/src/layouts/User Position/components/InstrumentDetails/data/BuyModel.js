@@ -42,6 +42,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   let tradeBy = getDetails.userDetails.name;
   let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
   let isCompany = false;
+  let checkingMultipleAlgoFlag = 1;
  
 
   const [userPermission, setUserPermission] = useState([]);
@@ -205,7 +206,10 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
         axios.get(`${baseUrl}api/v1/readtradingAlgo`)
         .then((res) => {
-            setTradingAlgoData(res.data);
+            let dataArr = (res.data).filter((elem) => {
+              return elem.status === "Active"
+            })
+            setTradingAlgoData(dataArr);
         }).catch((err) => {
             return new Error(err);
         })
@@ -259,14 +263,15 @@ useEffect(()=>{
       }
   }
 
+  console.log("tradingAlgoArr, userPermissionAlgo", tradingAlgoArr, userPermissionAlgo, userPermission)
 
-  let tradeEnable ;
-  userPermission.map((elem)=>{
-      //console.log(elem)
-      if(elem.isTradeEnable){
-          tradeEnable = true;
-      }
-  })
+  let tradeEnable = false;
+  // userPermission.map((elem)=>{
+  //     //console.log(elem)
+  //     if(elem.isTradeEnable){
+  //         tradeEnable = true;
+  //     }
+  // })
 
   function tradingAlgo() {
     // if (userPermissionAlgo.length) {
@@ -339,15 +344,29 @@ useEffect(()=>{
             }
 
             console.log("otmDetailsForm", otmDetailsForm)
+
+            
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
-                    if(subElem.isRealTradeEnable){
-                        sendOrderReq(elem);
-                    } else{
-                        mockTradeCompany(elem);
+                    if(subElem.isRealTradeEnable && subElem.isTradeEnable){
+                        sendOrderReq(elem, checkingMultipleAlgoFlag);
+                        checkingMultipleAlgoFlag += 1;
+                        tradeEnable = true;
+                    } else if(subElem.isTradeEnable){
+                        mockTradeCompany(elem, checkingMultipleAlgoFlag);
+                        checkingMultipleAlgoFlag += 1;
+                        tradeEnable = true;
                     }
                 }
             })
+
+            if(!tradeEnable){
+              console.log("tradeEnable", tradeEnable)
+              window.alert("Your trade is disable, please contact to authorise person");
+              return;
+            }
+
+
         setModal(!modal);
     })
   }
@@ -363,11 +382,11 @@ useEffect(()=>{
         return;
       }
 
-      if(!tradeEnable){
-        //console.log("tradeEnable", tradeEnable)
-        window.alert("Your trade is disable, please contact to authorise person");
-        return;
-      }
+      // if(!tradeEnable){
+      //   //console.log("tradeEnable", tradeEnable)
+      //   window.alert("Your trade is disable, please contact to authorise person");
+      //   return;
+      // }
 
       buyFormDetails.buyOrSell = "BUY";
   
@@ -429,7 +448,7 @@ useEffect(()=>{
       
   }
 
-  async function sendOrderReq(algoBox) {
+  async function sendOrderReq(algoBox, checkingMultipleAlgoFlag) {
       let date = new Date();
       let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
@@ -451,7 +470,7 @@ useEffect(()=>{
               exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
               stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
               algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-              productChange, tradingAccount}, order_id:dummyOrderId, instrumentToken
+              productChange, tradingAccount}, order_id:dummyOrderId, instrumentToken, checkingMultipleAlgoFlag
 
           })
       });
@@ -478,7 +497,7 @@ useEffect(()=>{
       }
   }
 
-  async function mockTradeCompany(algoBox){
+  async function mockTradeCompany(algoBox, checkingMultipleAlgoFlag){
     
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
@@ -498,7 +517,7 @@ useEffect(()=>{
             stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
             algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
             productChange, tradingAccount}, order_id:dummyOrderId, instrumentToken,
-             otm, otm_quantity, otm_token
+             otm, otm_quantity, otm_token, checkingMultipleAlgoFlag
         })
       });
       const dataResp = await res.json();

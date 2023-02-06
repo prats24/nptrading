@@ -26,7 +26,7 @@ const limiter = rateLimit({
 
 
 // Apply the rate limiting middleware to all requests
-app.use(limiter)
+// app.use(limiter)
 app.use(mongoSanitize());
 app.use(helmet());
 app.use(xssClean());
