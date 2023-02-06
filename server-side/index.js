@@ -46,7 +46,7 @@ var kc = new KiteConnect({
   api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("00l8N7KoiW0zXs8kR71EDW9S1Dxqy2Cb", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+kc.generateSession("RsLGVc6J7qmax3j9beAb6zSVp1qilqMj", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -104,9 +104,9 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  origin: "http://3.7.187.183/"  // staging
+  // origin: "http://3.7.187.183/"  // staging
   // origin: "http://3.108.76.71/"  // production
-  //  origin: "http://localhost:3000"
+   origin: "http://localhost:3000"
 
 }));
 
