@@ -263,9 +263,9 @@ const TradingAlgo = () => {
             </MDTypography>
         );
         obj.isRealTrade = (
-            <Button variant="" bgColor="" color="black" fontWeight="small">
+            <MDButton variant="outlined" color="dark" fontWeight="medium">
                 <RealTrade id={subelem._id} Render={{reRender, setReRender}} tradingAlgo={algoData} buttonTextBool={subelem.isRealTrade} />
-            </Button>
+            </MDButton>
         );
 
         rows.push(obj);
