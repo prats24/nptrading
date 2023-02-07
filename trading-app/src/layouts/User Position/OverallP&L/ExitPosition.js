@@ -292,14 +292,14 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
               companyTrade.realSymbol = symbol
   
               companyTrade.realQuantity = elem.lotMultipler * filledQuantity;
-              accessTokenDetails = accessTokenDetails.filter((element) => {
+              let accessTokenParticular = accessTokenDetails.filter((element) => {
+                return elem.tradingAccount === element.accountId
+              })
+              setAccessToken(accessTokenParticular);
+              let apiKeyParticular = apiKeyDetails.filter((element) => {
                   return elem.tradingAccount === element.accountId
               })
-              setAccessToken(accessTokenDetails);
-              apiKeyDetails = apiKeyDetails.filter((element) => {
-                  return elem.tradingAccount === element.accountId
-              })
-              setApiKey(apiKeyDetails);
+              setApiKey(apiKeyParticular);
               
               setCompanyTrade(companyTrade)
               //////console.log("companyTrade", companyTrade);
@@ -310,7 +310,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
               userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
                     if(subElem.isRealTradeEnable && subElem.isTradeEnable){
-                        sendOrderReq(elem, checkingMultipleAlgoFlag);
+                        sendOrderReq(elem, checkingMultipleAlgoFlag, apiKeyParticular, accessTokenParticular);
                         checkingMultipleAlgoFlag += 1;
                         tradeEnable = true;
                     } else if(subElem.isTradeEnable){
@@ -414,7 +414,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         
     }
   
-    async function sendOrderReq(algoBox, checkingMultipleAlgoFlag) {
+    async function sendOrderReq(algoBox, checkingMultipleAlgoFlag, apiKeyParticular, accessTokenParticular) {
         let date = new Date();
         let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
   
@@ -422,8 +422,8 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
         const { realBuyOrSell, realQuantity } = companyTrade;
   
-        const { apiKey } = apiKeyDetails[0];
-        const { accessToken } = accessTokenDetails[0];
+        const { apiKey } = apiKeyParticular[0];
+        const { accessToken } = accessTokenParticular[0];
   
         const res = await fetch(`${baseUrl}api/v1/placeorder`, {
             method: "POST",

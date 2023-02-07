@@ -18,8 +18,11 @@ const CompanyTradeData = require("../../models/TradeDetails/liveTradeSchema");
 const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema"); 
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
+const dbBackup = require("../../mongodbBackup");
 
-
+router.get("/dbBackup", async(req, res)=>{
+    await dbBackup();
+})
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     // if(dailyPnl.length === 0){
