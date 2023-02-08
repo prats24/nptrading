@@ -124,7 +124,7 @@ function AlgoPositionHeader({ children }) {
             </AppBar>
             {algoBox.map((elem, index)=>{
               return (
-                <TabPanel value={tabValue} index={index}><AlgoBoxMain /> </TabPanel>
+                <TabPanel value={tabValue} index={index}><AlgoBoxMain id={elem._id} algoName={elem.algoName}/> </TabPanel>
               )
             })}
             

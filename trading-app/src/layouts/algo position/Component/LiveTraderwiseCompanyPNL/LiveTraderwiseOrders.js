@@ -82,7 +82,7 @@ let totalRunningLots = 0;
     }).catch((err) => {
         return new Error(err);
     })
-  }, [orderData])
+  }, [])
 
   console.log("orderData", orderData)
   orderData.map((elem,index)=>{

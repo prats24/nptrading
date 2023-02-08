@@ -71,7 +71,7 @@ let totalRunningLots = 0;
     }).catch((err) => {
         return new Error(err);
     })
-  }, [orderData])
+  }, [])
 
   console.log("mockorderData", orderData)
   orderData.map((elem,index)=>{
