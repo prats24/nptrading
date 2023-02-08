@@ -40,7 +40,7 @@ function Header({ children }) {
           console.log(res.data);
           setuserDetail(res.data)
       }).catch((err)=>{
-          window.alert("Server Down");
+          //window.alert("Server Down");
           return new Error(err);
       })
   },[getDetails])

@@ -15,7 +15,8 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     let { apiKey, accessToken, userId, tradeBy, exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Product, OrderType, 
         validity, variety, createdBy, createdOn, uId, instrumentToken, algoBox} = req.body
 
-        console.log("switching", req.body)
+       // console.log("switching", req.body)
+
     const {algoName, transactionChange, instrumentChange
        , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 

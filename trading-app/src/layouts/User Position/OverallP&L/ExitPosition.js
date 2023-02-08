@@ -197,7 +197,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
           })
           setUserPermission(perticularUser);
           }).catch((err) => {
-              // window.alert("Server Down");
+              // //window.alert("Server Down");
               return new Error(err);
           })
   

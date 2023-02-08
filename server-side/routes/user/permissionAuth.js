@@ -193,7 +193,7 @@ router.patch("/updaterealtradeenable/:id", async (req, res)=>{
                 isRealTradeEnable: req.body.isRealTradeEnable,
             }
         })
-        console.log("this is role", permission);
+        //console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){

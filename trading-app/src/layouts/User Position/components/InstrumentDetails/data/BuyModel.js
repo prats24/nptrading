@@ -136,7 +136,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     })
     setUserPermission(perticularUser);
     }).catch((err) => {
-        // window.alert("Server Down");
+        // //window.alert("Server Down");
         return new Error(err);
     })
 
@@ -199,7 +199,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
         })
         setUserPermission(perticularUser);
         }).catch((err) => {
-            // window.alert("Server Down");
+            // //window.alert("Server Down");
             return new Error(err);
         })
 

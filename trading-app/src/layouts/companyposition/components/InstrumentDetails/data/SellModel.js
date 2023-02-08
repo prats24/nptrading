@@ -171,7 +171,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         })
         setUserPermission(perticularUser);
         }).catch((err) => {
-            // window.alert("Server Down");
+            // //window.alert("Server Down");
             return new Error(err);
         })
 

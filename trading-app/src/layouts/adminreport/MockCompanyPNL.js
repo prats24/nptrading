@@ -55,7 +55,7 @@ const TableOne = () => {
           //console.log(res.data)
           setCompanyPNLData(res.data);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
     },[firstDate,secondDate])
