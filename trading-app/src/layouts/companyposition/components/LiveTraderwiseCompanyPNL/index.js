@@ -22,7 +22,7 @@ import MockRealSwitch from "../MockRealSwitch";
 // Data
 import data from "./data";
 
-function LiveTraderwiseCompantPNL({socket, Render}) {
+function LiveTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -36,7 +36,8 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
   const [lastestLiveTradeQunaity, setLatestLiveTradeQuantity] = useState([]);
   const [lastestLiveTradeStatus, setLatestLiveTradeStatus] = useState([]);
 
-  const {render, setRender} = Render
+  console.log("re rendering index live")
+  // const {render, setRender} = Render
 
   const renderMenu = (
     <Menu
@@ -76,7 +77,7 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
         return new Error(err);
     })
 
-    socket.on("tick", (data) => {
+    props.socket.on("tick", (data) => {
       //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
@@ -91,12 +92,12 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
     }).catch((err)=>{
         return new Error(err);
     })
-  }, [marketData, render])
+  }, [marketData])
 
   useEffect(() => {
     return () => {
         //console.log('closing');
-        socket.close();
+        props.socket.close();
     }
   }, [])
 
@@ -247,18 +248,20 @@ function LiveTraderwiseCompantPNL({socket, Render}) {
          </MDTypography>
        );
        obj.view = (
-        <LiveViewTradeDetail socket={socket} userId={subelem.userId}/>
+        <LiveViewTradeDetail socket={props.socket} userId={subelem.userId}/>
       );
       obj.orders = (
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
       obj.realOrMock = (
-        <MockRealSwitch Render={{render, setRender}} userId={subelem.userId} />
+        <MockRealSwitch props={props} userId={subelem.userId} />
       );
    
        rows.push(obj);
      })
    
+
+
      let obj = {};
 
      const totalGrossPnlcolor = totalGrossPnlGrid >= 0 ? "success" : "error"

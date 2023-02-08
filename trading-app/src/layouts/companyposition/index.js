@@ -55,7 +55,7 @@ function CompanyPosition() {
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
 
-    const [render, setRender] = useState(true);
+    const [userPermission, setUserPermission] = useState([]);
    
     useEffect(()=>{
 
@@ -113,13 +113,30 @@ function CompanyPosition() {
             window.alert("Server Down");
             return new Error(err);
         })
+
+        axios.get(`${baseUrl}api/v1/readpermission`)
+        .then((res)=>{
+          setUserPermission((res.data));            
+            //setOrderCountTodayCompany((res.data).length);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+
     }, []);
 
-    //console.log("company position is re rendering")
-    //console.log(todaymockcount)
-    //console.log(allmockcount)
-    //console.log(todaylivecount)
-    //console.log(alllivecount)
+    const handleSwitchChange = id => {
+      setUserPermission(prevUsers =>
+        prevUsers.map(user => {
+          if (user.userId === id) {
+            return { ...user, isRealTradeEnable: !user.isRealTradeEnable };
+          }
+          return user;
+        })
+      );
+    };
+
+    console.log("re rendering index")
 
   return (
     <DashboardLayout>
@@ -156,14 +173,14 @@ function CompanyPosition() {
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <MockTraderwiseCompanyPNL Render={{render, setRender}} socket={socket} />
+              <MockTraderwiseCompanyPNL users={userPermission} handleSwitchChange={handleSwitchChange} socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <LiveTraderwiseCompanyPNL Render={{render, setRender}} socket={socket} />
+              <LiveTraderwiseCompanyPNL users={userPermission} handleSwitchChange={handleSwitchChange} socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
@@ -175,3 +192,4 @@ function CompanyPosition() {
 
 export default CompanyPosition;
 
+// todo ---> mismatch

@@ -46,56 +46,14 @@ const MapUser = ({algoName}) => {
   
   const [addUser, setAddUser] = useState([]);
 
-  async function tradeEnableChange(e, userId, tradeEnable, userName){
+  console.log("permissionData", permissionData)
 
-    if(tradeEnable !== undefined){
-      if(tradeEnable){
-        tradeEnable = false;
-      } else{
-        tradeEnable = true;
-      }
-      algoData.tradingEnable = tradeEnable
-      // console.log("in enable", valueForEnableTrade, tradeEnable, e, userId)
-      const response = await fetch(`${baseUrl}api/v1/updatetradeenable/${userId}`, {
-          method: "PATCH",
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Credentials": true
-          },
-          body: JSON.stringify({
-              modifiedOn, modifiedBy, isTradeEnable: tradeEnable
-          })
-      });
-
-      const permissionData = await response.json();
-
-      if (permissionData.status === 422 || permissionData.error || !permissionData) {
-          window.alert(permissionData.error);
-          //console.log("Failed to Edit");
-      }else {
-          if(tradeEnable){
-            window.alert(`Trade is enabled for ${userName}`);
-          } else{
-            window.alert(`Trade is disabled for ${userName}`);
-          }
-          
-      }
-    } else{
-      console.log("tradeEnable", tradeEnable,e)
-      if(algoData.tradingEnable){
-        tradeEnable = false;
-      } else{
-        tradeEnable = true;
-      }
-      algoData.tradingEnable = tradeEnable
-      setAlgoData(algoData)
-    }
-    reRender ? setReRender(false) : setReRender(true)
-
-  }
 
   async function realTradeChange(e, userId, realTrade, userName){
+
+    let perticularUserWithMappedAlgo = permissionData.filter((elem)=>{
+      return elem.algoName === algoName && elem.userId === userId
+    })
     console.log(userId, realTrade)
     if(realTrade !== undefined){
       if(realTrade){
@@ -104,7 +62,7 @@ const MapUser = ({algoName}) => {
         realTrade = true;
       }
       algoData.realTrading = realTrade;
-    const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${userId}`, {
+    const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${perticularUserWithMappedAlgo[0]._id}`, {
       method: "PATCH",
       headers: {
           Accept: "application/json",
@@ -139,6 +97,58 @@ const MapUser = ({algoName}) => {
       setAlgoData(algoData)
     }
     
+    reRender ? setReRender(false) : setReRender(true)
+
+  }
+
+  async function tradeEnableChange(e, userId, tradeEnable, userName){
+
+    if(tradeEnable !== undefined){
+      if(tradeEnable){
+        tradeEnable = false;
+      } else{
+        tradeEnable = true;
+      }
+      let perticularUserWithMappedAlgo = permissionData.filter((elem)=>{
+        return elem.algoName === algoName && elem.userId === userId
+      })
+      algoData.tradingEnable = tradeEnable
+      // console.log("in enable", valueForEnableTrade, tradeEnable, e, userId)
+      const response = await fetch(`${baseUrl}api/v1/updatetradeenable/${perticularUserWithMappedAlgo[0]._id}`, {
+          method: "PATCH",
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+          body: JSON.stringify({
+              modifiedOn, modifiedBy, isTradeEnable: tradeEnable
+          })
+      });
+
+      const permissionDataResp = await response.json();
+
+      if (permissionDataResp.status === 422 || permissionDataResp.error || !permissionDataResp) {
+          window.alert(permissionDataResp.error);
+          //console.log("Failed to Edit");
+      }else {
+          if(tradeEnable){
+            window.alert(`Trade is enabled for ${userName}`);
+          } else{
+            window.alert(`Trade is disabled for ${userName}`);
+          }
+          
+      }
+    } else{
+      console.log("tradeEnable", tradeEnable,e)
+      if(algoData.tradingEnable){
+        tradeEnable = false;
+      } else{
+        tradeEnable = true;
+      }
+      algoData.tradingEnable = tradeEnable
+      setAlgoData(algoData)
+    }
     reRender ? setReRender(false) : setReRender(true)
 
   }

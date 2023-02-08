@@ -16,18 +16,28 @@ const getKiteCred = require('../../marketData/getKiteCred');
 
 const CompanyTradeData = require("../../models/TradeDetails/liveTradeSchema");
 const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema"); 
+const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
+const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
+const dbBackup = require("../../mongodbBackup");
 
+router.get("/dbBackup", async(req, res)=>{
+    await dbBackup();
+})
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-//     getKiteCred.getAccess().then( (data)=>{
-//         // //console.log("this is code ",data);
-//         let ticksdata = instrumenttickshistorydatafunction(data.getApiKey, data.getAccessToken);
-//         // //console.log("ticksdata", ticksdata)
-//       });
+//     // if(dailyPnl.length === 0){
+//         console.log("dailyPnlCalculation running")
+//         await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
+//     //   }
+
+//     //   if(traderDailyPnl.length === 0){
+//         console.log("traderDailyPnlCalculation running")
+//         await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
+//     //   }
 // })
 
 // router.get("/deleteinhistory", async(req, res)=>{
-//     PNLData.deleteMany({timestamp: {$regex: "2023-01-19"}})
+//     TraderPNLData.deleteMany({timestamp: {$regex: "2023-02-02"}})
 //     .then(()=>{
 //         console.log("deleted")
 //     }).catch(()=>{
@@ -240,9 +250,9 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-          realBuyOrSell, realQuantity } = req.body 
+          realBuyOrSell, realQuantity, checkingMultipleAlgoFlag } = req.body 
 
-        //console.log(req.body);
+        console.log(req.body);
         //console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
@@ -333,9 +343,9 @@ router.post("/mocktradecompany", async (req, res)=>{
     }
  
 
-    MockTradeDetails.findOne({uId : uId})
+    MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
-        if(dateExist){
+        if(dateExist && checkingMultipleAlgoFlag === 1){
             //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
@@ -352,35 +362,37 @@ router.post("/mocktradecompany", async (req, res)=>{
 
         //console.log("mockTradeDetails comapny", mockTradeDetails);
         mockTradeDetails.save().then(()=>{
-            res.status(201).json({massage : "data enter succesfully"});
+            
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
     }).catch(err => {console.log("fail")});
 
-    MockTradeDetailsUser.findOne({uId : uId})
-    .then((dateExist)=>{
-        if(dateExist){
-            //console.log("data already");
-            return res.status(422).json({error : "date already exist..."})
-        }
+    if(checkingMultipleAlgoFlag === 1){
+        MockTradeDetailsUser.findOne({order_id : order_id})
+        .then((dateExist)=>{
+            if(dateExist){
+                //console.log("data already");
+                return res.status(422).json({error : "date already exist..."})
+            }
 
-        const mockTradeDetailsUser = new MockTradeDetailsUser({
-            status:"COMPLETE", uId, createdBy, average_price: originalLastPrice, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
-            variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
-            isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
-            tradeBy: createdBy, amount: (Number(Quantity)*originalLastPrice), trade_time:trade_time,
+            const mockTradeDetailsUser = new MockTradeDetailsUser({
+                status:"COMPLETE", uId, createdBy, average_price: originalLastPrice, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
+                variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
+                isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
+                tradeBy: createdBy, amount: (Number(Quantity)*originalLastPrice), trade_time:trade_time,
+                
+            });
+
+            //console.log("mockTradeDetails", mockTradeDetailsUser);
+            mockTradeDetailsUser.save().then(()=>{
+                res.status(201).json({massage : "data enter succesfully"});
+            }).catch((err)=> {
+                // res.status(500).json({error:"Failed to enter data"})
+            });
             
-        });
 
-        //console.log("mockTradeDetails", mockTradeDetailsUser);
-        mockTradeDetailsUser.save().then(()=>{
-            // res.status(201).json({massage : "data enter succesfully"});
-        }).catch((err)=> {
-            // res.status(500).json({error:"Failed to enter data"})
-        });
-        
-
-    }).catch(err => {console.log("fail")});
+        }).catch(err => {console.log("fail")});
+    }
     
 
 })

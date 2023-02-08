@@ -35,13 +35,9 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         axios.get(`${baseUrl}api/v1/readpermission`)
         .then((res)=>{
             let permissionData = res.data
-
-            let perticularAlgo = tradingAlgo.filter((elem)=>{
-                return elem._id === id && elem.status === "Active";
-            })
     
             let mappedUser = permissionData.filter((elem)=>{
-                return perticularAlgo[0].algoName === elem.algoName;
+                return tradingAlgo.algoName === elem.algoName;
             })
 
             setMappedUser(mappedUser);
@@ -77,17 +73,16 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
     }, [])
 
-    let intervalId ;
     function takingTradeHelper(data, isSquaringOff){
         data.map((elem)=>{
-            if(elem.lots && elem._id.algoBoxName === tradingAlgo[0].algoName){
+            if(elem.lots && elem._id.algoBoxName === tradingAlgo.algoName){
 
                 let apiKeyArr = apiKeyDetails.filter((elem)=>{
-                    return elem.accountId == tradingAlgo[0]?.tradingAccount
+                    return elem.accountId == tradingAlgo?.tradingAccount
                 })
     
                 let accessTokenArr = accessTokenDetails.filter((elem)=>{
-                    return elem.accountId == tradingAlgo[0]?.tradingAccount
+                    return elem.accountId == tradingAlgo?.tradingAccount
                 })
     
                 let transaction_type = elem.lots > 0 ? "BUY" : "SELL";
@@ -111,7 +106,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
                     let timeDelay = 250;
                     while(quantity > 1800){
                         setTimeout(()=>{
-                            placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800)
+                            placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800)
                         }, timeDelay)
                         timeDelay += 250;
                         quantity = quantity - 1800;
@@ -119,14 +114,14 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
                     timeDelay += 250
                     setTimeout(()=>{
-                        placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity)
+                        placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity)
                     }, 250)
 
                 } else{
                     let timeDelay = 250;
                     while(quantity > 1800){
                         setTimeout(()=>{
-                            placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800)
+                            placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800)
                         }, timeDelay)
                         timeDelay += 250;
                         quantity = quantity - 1800;
@@ -134,7 +129,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
                     timeDelay += 250
                     setTimeout(()=>{
-                        placeLiveOrder(tradingAlgo[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)
+                        placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)
                     }, 250)
 
 
@@ -147,24 +142,31 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
       
       
     function changeAllUserRealTrade(realTrade){
+        //console.log("realTrade", realTrade)
         mappedUser.map(async (elem)=>{
-            const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${elem.userId}`, {
-                method: "PATCH",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Credentials": true
-                },
-                body: JSON.stringify({
-                    modifiedOn, modifiedBy, isRealTradeEnable: realTrade
-                })
-            });
-          
-            const permissionData = await response.json();
-        
-            if (permissionData.status === 422 || permissionData.error || !permissionData) {
-                window.alert(permissionData.error);
+
+            if(elem.algoName === tradingAlgo.algoName){
+                console.log(elem.algoName , tradingAlgo.algoName)
+                const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${elem._id}`, {
+                    method: "PATCH",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Credentials": true
+                    },
+                    body: JSON.stringify({
+                        modifiedOn, modifiedBy, isRealTradeEnable: realTrade
+                    })
+                });
+              
+                const permissionData = await response.json();
+            
+                if (permissionData.status === 422 || permissionData.error || !permissionData) {
+                    window.alert(permissionData.error);
+                }
+
             }
+
         })
     }
 
@@ -175,7 +177,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         if(isRealTrade){
             // real trade off meaning squaring off from all trade
 
-            console.log("real trade", isRealTrade)
+            //console.log("real trade", isRealTrade)
             changeAllUserRealTrade(false)
             isRealTrade = false;
             axios.get(`${baseUrl}api/v1/getLiveTradeDetailsAllUser`)
@@ -186,7 +188,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             })
             
         } else{
-            console.log("real trade", isRealTrade)
+            //console.log("real trade", isRealTrade)
             changeAllUserRealTrade(true)
             isRealTrade = true;
             axios.get(`${baseUrl}api/v1/getMockTradeDetailsAllUser`)
@@ -204,7 +206,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
 
     async function patchReqForRealTradeSwitching(id, realTrade){
-        console.log("realTrade", realTrade)
+        //console.log("realTrade", realTrade)
         if(realTrade){
             realTrade = false;
         } else{
@@ -221,14 +223,14 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             })
         });
         const dataResp = await res.json();
-        console.log(dataResp);
+        //console.log(dataResp);
         if (dataResp.status === 422 || dataResp.error || !dataResp) {
             window.alert(dataResp.error);
-            // console.log("Failed to Edit");
+            // //console.log("Failed to Edit");
         } else {
-            // console.log(dataResp);
-            window.alert("Switched Succesfull");
-            // console.log("Edit succesfull");
+            // //console.log(dataResp);
+            window.alert("Switched succesfull");
+            // //console.log("Edit succesfull");
         }
         reRender ? setReRender(false) : setReRender(true)
     }
@@ -242,7 +244,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
   
-        console.log("detailObj", detailObj, apiKey, accessToken, algoBox)
+        //console.log("detailObj", detailObj, apiKey, accessToken, algoBox)
         const res = await fetch(`${baseUrl}api/v1/switchToRealTrade`, {
             method: "POST",
             headers: {
@@ -259,34 +261,34 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             })
         });
         const dataResp = await res.json();
-        //console.log("dataResp", dataResp)
+        ////console.log("dataResp", dataResp)
         if (dataResp.status === 422 || dataResp.error || !dataResp) {
-            //console.log(dataResp.error)
+            ////console.log(dataResp.error)
             window.alert(dataResp.error);
-            ////console.log("Failed to Trade");
+            //////console.log("Failed to Trade");
         } else {
             if(dataResp.massage === "COMPLETE"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("Trade Succesfull Completed");
             } else if(dataResp.massage === "REJECTED"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("Trade is Rejected due to Insufficient Fund");
             } else if(dataResp.massage === "AMO REQ RECEIVED"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("AMO Request Recieved");
             } else{
-                console.log("this is dataResp", dataResp)
+                //console.log("this is dataResp", dataResp)
                 window.alert("on order placing nothing happen");
             }
         }
     }
 
-    console.log("tradingAlgo", tradingAlgo)
+    console.log("tradingAlgo mappedUser", tradingAlgo, id, mappedUser)
 
   return (
     <>
     <MDBox mt={0.5}>
-        <Switch checked={tradingAlgo[0].isRealTrade} onChange={() => {functionality(tradingAlgo[0].isRealTrade)}} />
+        <Switch checked={tradingAlgo.isRealTrade} onChange={() => {functionality(tradingAlgo.isRealTrade)}} />
     </MDBox>
         
     </>

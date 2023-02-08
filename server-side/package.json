@@ -21,6 +21,7 @@
     "hpp": "^0.2.3",
     "jsonwebtoken": "^8.5.1",
     "kiteconnect": "^4.0.1",
+    "mongodb": "^5.0.0",
     "mongoose": "^6.7.1",
     "node-cron": "^3.0.2",
     "node-fetch": "^3.2.10",

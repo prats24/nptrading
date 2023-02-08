@@ -13,7 +13,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     let { apiKey, accessToken, userId, tradeBy, exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Product, OrderType, 
-        validity, variety, createdBy, createdOn, uId, instrumentToken, algoBox} = req.body
+        validity, variety, createdBy, createdOn, uId, instrumentToken, algoBox, checkingMultipleAlgoFlag} = req.body
 
         console.log("switching", req.body)
     const {algoName, transactionChange, instrumentChange
@@ -241,40 +241,46 @@ router.post("/switchToRealTrade", (async (req, res)=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log( "fail company live data saving")});
     
-                UserTradeData.findOne({order_id : order_id})
-                .then((dateExist)=>{
-                    if(dateExist){
-                        console.log("data already in real user");
-                        return res.status(422).json({error : "data already exist..."})
-                    }
-                    const tempDate = new Date();
-                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                    function addMinutes(date, hours) {
-                      date.setMinutes(date.getMinutes() + hours);
-                      return date;
-                     }
-                    const date = new Date(temp_order_save_time);
-                    const newDate = addMinutes(date, 330);
-                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
-             
-                    const userTradeData = new UserTradeData({
-                        disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-                        status, uId, createdBy, average_price, Quantity: Quantity, 
-                        Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
-                        variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
-                        order_id, instrumentToken, brokerage: brokerageUser,
-                        tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
-    
-    
-                    });
-                    // console.log("this is userTradeData", userTradeData);
-                    userTradeData.save().then(()=>{
-                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                }).catch(err => {console.log("fail trader live data saving")});
+                if(checkingMultipleAlgoFlag === 1){
+                    UserTradeData.findOne({order_id : order_id})
+                    .then((dateExist)=>{
+                        if(dateExist){
+                            console.log("data already in real user");
+                            return res.status(422).json({error : "data already exist..."})
+                        }
+                        const tempDate = new Date();
+                        let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                        function addMinutes(date, hours) {
+                          date.setMinutes(date.getMinutes() + hours);
+                          return date;
+                         }
+                        const date = new Date(temp_order_save_time);
+                        const newDate = addMinutes(date, 330);
+                        const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                 
+                        const userTradeData = new UserTradeData({
+                            disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
+                            status, uId, createdBy, average_price, Quantity: Quantity, 
+                            Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
+                            variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
+                            order_id, instrumentToken, brokerage: brokerageUser,
+                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                            order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
         
+        
+                        });
+                        // console.log("this is userTradeData", userTradeData);
+                        userTradeData.save().then(()=>{
+                        }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                    }).catch(err => {console.log("fail trader live data saving")});
+    
+                }
+        
+                
                 setTimeout(()=>{
-                    return res.status(201).json({massage : responseMsg, err: responseErr})
+                    if(checkingMultipleAlgoFlag === 1){
+                        return res.status(201).json({massage : responseMsg, err: responseErr})
+                    }
                 },0)
     
         
