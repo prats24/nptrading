@@ -56,6 +56,10 @@ const tradingAlgoSchema = new mongoose.Schema({
     marginDeduction:{
         type: Boolean,
         required : true
+    },
+    isDefault:{
+        type: Boolean,
+        required : true
     }
 })
 

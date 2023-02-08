@@ -260,7 +260,7 @@ finalTraderPnl.map((subelem, index)=>{
   );
 
   obj.realOrMock = (
-    <MockRealSwitch props={props} userId={subelem.userId} />
+    <MockRealSwitch props={props} userId={subelem.userId}/>
   );
 
   rows.push(obj);

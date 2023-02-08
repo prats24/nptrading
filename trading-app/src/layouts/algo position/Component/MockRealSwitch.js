@@ -132,7 +132,6 @@ export default function MockRealSwitch({userId, props}) {
                     OrderType: tradeDetail[i]._id.order_type,
                     variety: tradeDetail[i]._id.variety,
                     buyOrSell: transaction_type,
-                    // Quantity: quantity,
                     tradeBy: tradeDetail[i]._id.name
                 }
 
@@ -145,19 +144,7 @@ export default function MockRealSwitch({userId, props}) {
                 console.log("quantity", quantity)
                 //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
 
-    
-                // if(checkRealTrade){
-                //     let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                //     while(quantity > 1800){
-                //         console.log("quantity", quantity)
-                //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
-                //         quantity = quantity - 1800;
-                //     }
-                //     console.log("quantity", quantity)
-                //     //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
-                // } else{
 
-                // }
             }
         } else{
             for(let i = 0; i < liveTradeDetail.length; i++){
@@ -187,7 +174,6 @@ export default function MockRealSwitch({userId, props}) {
                     OrderType: liveTradeDetail[i]._id.order_type,
                     variety: liveTradeDetail[i]._id.variety,
                     buyOrSell: transaction_type,
-                    // Quantity: quantity,
                     tradeBy: liveTradeDetail[i]._id.name
                 }
 
@@ -200,72 +186,9 @@ export default function MockRealSwitch({userId, props}) {
                 console.log("quantity", quantity)
                 //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
 
-    
-                // if(checkRealTrade){
-                // } else{
-                //     while(quantity > 1800){
-                //         console.log("quantity", quantity)
-                //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
-                //         quantity = quantity - 1800;
-                //     }
-                //     console.log("quantity", quantity)
-                //     //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-    
-                // }
             }
         }
 
-        // for(let i = 0; i < tradeDetail.length; i++){
-        //     let usedAlgoBox = algoUsed.filter((elem)=>{
-        //         return elem.algoName === tradeDetail[i]._id.algoBoxName;
-        //     })
-
-        //     let apiKeyArr = apiKeyDetails.filter((elem)=>{
-        //         return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                
-        //     })
-
-        //     let accessTokenArr = accessTokenDetails.filter((elem)=>{
-        //         return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                
-        //     })
-
-        //     let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
-        //     let quantity = Math.abs(tradeDetail[i].lots);
-
-        //     let detailObj = {
-        //         symbol: tradeDetail[i]._id.symbol,
-        //         Product: tradeDetail[i]._id.product,
-        //         instrumentToken: tradeDetail[i]._id.instrumentToken,
-        //         exchange: tradeDetail[i]._id.exchange,
-        //         validity: tradeDetail[i]._id.validity,
-        //         OrderType: tradeDetail[i]._id.order_type,
-        //         variety: tradeDetail[i]._id.variety,
-        //         buyOrSell: transaction_type,
-        //         // Quantity: quantity,
-        //         tradeBy: tradeDetail[i]._id.name
-        //     }
-
-        //     if(checkRealTrade){
-        //         let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-        //         while(quantity > 1800){
-        //             console.log("quantity", quantity)
-        //             //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
-        //             quantity = quantity - 1800;
-        //         }
-        //         console.log("quantity", quantity)
-        //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
-        //     } else{
-        //         while(quantity > 1800){
-        //             console.log("quantity", quantity)
-        //             //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
-        //             quantity = quantity - 1800;
-        //         }
-        //         console.log("quantity", quantity)
-        //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-
-        //     }
-        // }
 
         console.log("checkRealTrade", checkRealTrade)
         if(checkRealTrade){
@@ -278,11 +201,11 @@ export default function MockRealSwitch({userId, props}) {
 
         props.handleSwitchChange(userId)
     }
-// onChange={() => props.handleSwitchChange(user.id)}
+
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
         const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
-        const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id } = algoBox;
+        const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
@@ -299,7 +222,7 @@ export default function MockRealSwitch({userId, props}) {
                 exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-                productChange, tradingAccount, _id}, instrumentToken
+                productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken
   
             })
         });
@@ -363,9 +286,9 @@ export default function MockRealSwitch({userId, props}) {
 
 
     props.users.map((elem)=>{
-        console.log("elem.userId === userId", elem.userId, userId)
+        console.log("elem.userId === userId", elem, userId)
 
-        if(elem.userId === userId){
+        if(elem.userId === userId && elem.algoName === props.algoName){
             // real = (elem.isRealTradeEnable);
             return(
             <MDBox mt={0.5}>

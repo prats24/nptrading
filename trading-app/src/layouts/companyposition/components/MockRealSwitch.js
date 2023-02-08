@@ -282,7 +282,7 @@ export default function MockRealSwitch({userId, props}) {
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
         const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
-        const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id } = algoBox;
+        const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
@@ -299,7 +299,7 @@ export default function MockRealSwitch({userId, props}) {
                 exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-                productChange, tradingAccount, _id}, instrumentToken
+                productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken
   
             })
         });
