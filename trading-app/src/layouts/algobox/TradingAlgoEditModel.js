@@ -57,7 +57,7 @@ const TradingAlgoModel = ({ data, id, Render }) => {
       axios.get(`${baseUrl}api/v1/readpermission`)
       .then((res)=>{
           let mappedUserUpdate = (res.data).filter((elem)=>{
-              console.log(elem.algoName, updatedData[0].algoName);
+              //console.log(elem.algoName, updatedData[0].algoName);
               return elem.algoName === updatedData[0].algoName
           })
           setMappedUser(mappedUserUpdate);
@@ -68,7 +68,7 @@ const TradingAlgoModel = ({ data, id, Render }) => {
   }, [])
 
   useEffect(() => {
-      console.log("edit data", editData);
+      //console.log("edit data", editData);
 
 
       setAlgoName(editData[0].algoName)
@@ -77,8 +77,8 @@ const TradingAlgoModel = ({ data, id, Render }) => {
       setStatus(editData[0].status);
 
   }, [editData, reRender])
-  console.log(editData, id);
-  console.log("mappedUser", mappedUser);
+  //console.log(editData, id);
+  //console.log("mappedUser", mappedUser);
 
   const [formstate, setformstate] = useState({
       algo_Name: "",
@@ -87,7 +87,7 @@ const TradingAlgoModel = ({ data, id, Render }) => {
       trading_Account:""
   });
 
-  console.log(formstate);
+  //console.log(formstate);
 
   async function formbtn() {
 
@@ -111,14 +111,14 @@ const TradingAlgoModel = ({ data, id, Render }) => {
           })
       });
       const dataResp = await res.json();
-      console.log(dataResp);
+      //console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
-          console.log("Failed to Edit");
+          //console.log("Failed to Edit");
       } else {
-          console.log(dataResp);
+          //console.log(dataResp);
           window.alert("Edit succesfull");
-          console.log("Edit succesfull");
+          //console.log("Edit succesfull");
       }
 
       mappedUser.map((elem)=>{
@@ -130,20 +130,20 @@ const TradingAlgoModel = ({ data, id, Render }) => {
   }
 
   async function Ondelete() {
-      console.log(editData)
+      //console.log(editData)
       const res = await fetch(`${baseUrl}api/v1/readtradingAlgo/${id}`, {
           method: "DELETE",
       });
 
       const dataResp = await res.json();
-      console.log(dataResp);
+      //console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
-          console.log("Failed to Delete");
+          //console.log("Failed to Delete");
       } else {
-          console.log(dataResp);
+          //console.log(dataResp);
           window.alert("Delete succesfull");
-          console.log("Delete succesfull");
+          //console.log("Delete succesfull");
       }
 
       mappedUser.map((elem)=>{
@@ -171,11 +171,11 @@ const TradingAlgoModel = ({ data, id, Render }) => {
 
       if (permissionData.status === 422 || permissionData.error || !permissionData) {
           window.alert(permissionData.error);
-          console.log("Failed to Edit");
+          //console.log("Failed to Edit");
       }else {
-          console.log(permissionData);
+          //console.log(permissionData);
           // window.alert("Edit succesfull");
-          console.log("Edit succesfull");
+          //console.log("Edit succesfull");
       }
   }
 
@@ -188,11 +188,11 @@ const TradingAlgoModel = ({ data, id, Render }) => {
 
       if(permissionData.status === 422 || permissionData.error || !permissionData){
           window.alert(permissionData.error);
-          console.log("Failed to Delete");
+          //console.log("Failed to Delete");
       }else {
-          console.log(permissionData);
+          //console.log(permissionData);
           // window.alert("Delete succesfull");
-          console.log("Delete succesfull");
+          //console.log("Delete succesfull");
       }
   }
 
@@ -203,9 +203,9 @@ const TradingAlgoModel = ({ data, id, Render }) => {
 
   return (
     <div>
-      <MDButton variant="outlined" color="info" onClick={handleClickOpen}>
+      <Button variant="" color="black" onClick={handleClickOpen}>
         <EditSharpIcon/>
-      </MDButton>
+      </Button>
       <Dialog
         fullScreen={fullScreen}
         open={open}

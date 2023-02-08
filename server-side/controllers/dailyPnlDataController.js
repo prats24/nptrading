@@ -12,24 +12,18 @@ exports.dailyPnlCalculation = async(date) => {
   if(dailyPnl.length === 0){
 
     const instrumentData = await HistoryInstrumentData.find({timestamp : {$gte: `${date}T00:00:00+0530`,$lte:`${date}T23:59:59+0530`}}).select("timestamp symbol open").sort({timestamp: 1})
-    console.log("History Instrument Data: "+instrumentData);
 
     //Extracting mock trade data for the particular date
     const mockTradeData = await MockTradeData.find({trade_time : {$gte: `${date} 00:00:00`,$lte:`${date} 23:59:59`}}).select("trade_time symbol amount Quantity buyOrSell algoBox brokerage createdBy status").sort({trade_time : 1})
-  //   console.log("Mock Trade Data: "+mockTradeData);
 
     instrumentData.map(async(elem)=>{
       //Converting the date time format
       let filteringTimestamp = elem.timestamp.split("T")[0] + " " + elem.timestamp.split("T")[1].split("+")[0]
-      //console.log("Filtering Date: "+filteringTimestamp);
       
       let pnlTimeTradeData = mockTradeData.filter((e)=> {
-          //console.log("Compare Time: ",Date(filteringTimestamp),Date(e.trade_time))
-          console.log(elem.open,e.Quantity,elem.symbol,e.symbol,e.status);
           return filteringTimestamp >= e.trade_time && elem.symbol == e.symbol && e.status == "COMPLETE"
           
       })
-      // console.log(pnlTimeTradeData.length);
 
       let totalAmount = 0;
       let totalRunningLots = 0;
@@ -46,35 +40,24 @@ exports.dailyPnlCalculation = async(date) => {
 
       pnlTimeTradeData.map((element)=>{
           totalAmount += element.amount
-          console.log("Amount: "+element.amount)
           totalRunningLots += Number(-element.Quantity)
-          console.log("Quantity: "+element.Quantity)
 
       })
       
-      //console.log("Total Running Lots: "+totalRunningLots)
 
       let finalPnlTimeData = totalAmount + (totalRunningLots*elem.open)
-      //console.log("Data: "+filteringTimestamp,elem.symbol,finalPnlTimeData,totalAmount,totalRunningLots)
-      //console.log(finalPnlTimeData,elem.open,totalAmount,totalRunningLots)
 
       let x = await DailyPnlData.create({symbol:elem.symbol,timestamp:filteringTimestamp,calculatedGpnl:-finalPnlTimeData,noOfTrades:totalTrades,noOfTraders:totalTraders}, function (err, DailyPnlData){
           if (err) return console.log(err);
           // saved!
       });
     
-
-    //  console.log(x);
-
-
-    // console.log("PNL Time Trade Data: "+pnlTimeTradeData)
   })
 }
 }
 
 exports.getDailyPnlData = async(req,res,next) => {
 const {selectDate} = req.params;
-console.log("Select Date in the API: "+selectDate)
 const pipeline = [
   {$match: {
     timestamp : {$gte : `${selectDate} 00:00:00`, $lte : `${selectDate} 23:59:59`}

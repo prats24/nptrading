@@ -6,7 +6,7 @@ const Category = require("../../models/Expense/categorySchema");
 router.post("/category", async (req, res)=>{ 
     try{
         let {sub_category, category, isCategory, created_by, createdOn, lastmodified_by, lastmodifiedOn, uId} = req.body;
-        console.log(req.body);
+        //console.log(req.body);
 
         if(!sub_category || !category || !isCategory || !created_by || !createdOn || !lastmodified_by || !lastmodifiedOn || !uId){
             return res.status(422).json({error : "Please enter all the mandatory fields."})
@@ -15,15 +15,15 @@ router.post("/category", async (req, res)=>{
         Category.findOne({uId : uId})
         .then((dateExist)=>{
             if(dateExist){
-                console.log("Data already exists");
+                //console.log("Data already exists");
                 return res.status(422).json({error : "Data already exists"})
             }
             const categoryDetail = new Category({sub_category, category, isCategory, created_by, createdOn, lastmodified_by, lastmodifiedOn, uId});
-            console.log("Category", categoryDetail)
+            //console.log("Category", categoryDetail)
             categoryDetail.save().then(async()=>{
                 res.status(201).json({massage : "Data entered succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-        }).catch(err => {console.log(err, "fail")});
+        }).catch(err => {console.log( "fail")});
 
     } catch(err) {
         res.status(500).json({error:"Failed to enter data"});
@@ -42,7 +42,7 @@ router.get("/readCategoryDetails", (req, res)=>{
 })
 
 router.get("/readCategoryDetails/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     Category.findOne({_id : id})
     .then((data)=>{
@@ -54,8 +54,8 @@ router.get("/readCategoryDetails/:id", (req, res)=>{
 })
 
 router.put("/readCategoryDetails/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log( req.body)
+    //console.log(req.params)
+    //console.log( req.body)
     let {sub_category, category, isCategory, lastmodified_by, lastmodifiedOn} = req.body;
 
     try{ 
@@ -65,7 +65,7 @@ router.put("/readCategoryDetails/:id", async (req, res)=>{
                 sub_category, category, isCategory, lastmodified_by, lastmodifiedOn  
             }
         })
-        console.log("Edited category: ", categoryDetail);          
+        //console.log("Edited category: ", categoryDetail);          
         res.send(categoryDetail)
     } catch (e){
         res.status(500).json({error:"Failed to edit data Check"});
@@ -73,12 +73,12 @@ router.put("/readCategoryDetails/:id", async (req, res)=>{
 })
 
 router.delete("/readCategoryDetails/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const categoryDetail = await Category.findOne({_id : id})
         const category = await Category.deleteOne({_id : id})
-        console.log("Category Details: ", category, categoryDetail);
+        //console.log("Category Details: ", category, categoryDetail);
         res.status(201).json({massage : "Data deleted succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to delete data"});

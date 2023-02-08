@@ -117,7 +117,7 @@ userDetailSchema.methods.generateAuthToken = async function(){
         this.tokens = this.tokens.concat({token: token});
         return token;
     } catch (err){
-        console.log(err);
+        console.log("err in userDetailSchema");
     }
 }
 

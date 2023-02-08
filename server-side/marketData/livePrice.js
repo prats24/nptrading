@@ -11,7 +11,6 @@ router.get("/getliveprice", async (req, res)=>{
 
   const apiKey = await Account.find();
   const accessToken = await RequestToken.find();
-  // console.log(accessToken);
   let getApiKey, getAccessToken;
   let date = new Date();
   let today = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
@@ -26,7 +25,6 @@ router.get("/getliveprice", async (req, res)=>{
 
 
 
-    console.log("in live price file", getAccessToken, getApiKey);
 
     const resp = await Instrument.find();
     let ans = resp.filter((elem) => {
@@ -41,7 +39,6 @@ router.get("/getliveprice", async (req, res)=>{
       }
     });
 
-  console.log(addUrl)
     let url = `https://api.kite.trade/quote?${addUrl}`;
     const api_key = getApiKey; 
     const access_token = getAccessToken;
@@ -65,7 +62,6 @@ router.get("/getliveprice", async (req, res)=>{
             obj.average_price = response.data.data[instrument].ohlc.close;
             obj.timestamp = response.data.data[instrument].timestamp
             arr.push(obj);
-            // console.log("ohcl",response.data.data[instrument].ohlc.close)
         }
         return res.status(201).send((arr));
   

@@ -5,23 +5,23 @@ const Permission = require("../../models/User/permissionSchema");
 
 router.post("/permission", (req, res)=>{
     const {modifiedOn, modifiedBy, userName, userId, isTradeEnable, isRealTradeEnable, algoName} = req.body;
-    console.log(req.body)
+    //console.log(req.body)
     if(!modifiedOn || !modifiedBy || !userName || !userId || !isTradeEnable || !isRealTradeEnable || !algoName){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "Please fill all the fields..."})
     }
 
     // Permission.findOne({_id})
     // .then((dateExist)=>{
     //     if(dateExist){
-    //         console.log("data already");
+    //         //console.log("data already");
     //         return res.status(422).json({error : "date already exist..."})
     //     }
         const permission = new Permission({modifiedOn, modifiedBy, userName, userId, isTradeEnable, isRealTradeEnable, algoName});
         permission.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    // }).catch(err => {console.log(err, "fail")});
+    // }).catch(err => {//console.log(err, "fail")});
 })
 
 router.get("/readpermission", (req, res)=>{
@@ -35,20 +35,33 @@ router.get("/readpermission", (req, res)=>{
 })
 
 router.get("/readpermission/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     Permission.findOne({_id : id})
     .then((data)=>{
         return res.status(200).send(data);
     })
     .catch((err)=>{
-        return res.status(422).json({error : "date not found"})
+        return res.status(422).json({error : "data not found"})
+    })
+})
+
+router.get("/readpermissionbyemail/:email", (req, res)=>{
+    //console.log(req.params)
+    const {email} = req.params
+    console.log(email)
+    Permission.findOne({userId : email})
+    .then((data)=>{
+        return res.status(200).send(data);
+    })
+    .catch((err)=>{
+        return res.status(422).json({error : "data not found"})
     })
 })
 
 router.put("/readpermission/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{
         const {id} = req.params
         const permission = await Permission.findOneAndUpdate({_id : id}, {
@@ -62,7 +75,7 @@ router.put("/readpermission/:id", async (req, res)=>{
                 isRealTradeEnable: req.body.isRealTradeEnable,
             }
         })
-        console.log("this is role", permission);
+        //console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -71,8 +84,8 @@ router.put("/readpermission/:id", async (req, res)=>{
 })
 
 router.patch("/readpermission/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const permission = await Permission.findOneAndUpdate({_id : id}, {
@@ -83,7 +96,7 @@ router.patch("/readpermission/:id", async (req, res)=>{
                 userId: req.body.userId,
             }
         })
-        console.log("this is role", permission);
+        //console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -92,9 +105,9 @@ router.patch("/readpermission/:id", async (req, res)=>{
 })
 
 router.patch("/readpermissionadduser/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
-    console.log("this is body", req.body, id);
+    //console.log("this is body", req.body, id);
     try{ 
         
 
@@ -106,7 +119,7 @@ router.patch("/readpermissionadduser/:id", async (req, res)=>{
                 isRealTradeEnable: req.body.isRealTradeEnable,
             }
         })
-        console.log("this is role", permission);
+        //console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -115,8 +128,8 @@ router.patch("/readpermissionadduser/:id", async (req, res)=>{
 })
 
 router.patch("/readpermissionalgo/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const permission = await Permission.findOneAndUpdate({_id : id}, {
@@ -124,7 +137,7 @@ router.patch("/readpermissionalgo/:id", async (req, res)=>{
                 algoName: req.body.algo_Name
             }
         })
-        console.log("this is role", permission);
+        //console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -133,11 +146,11 @@ router.patch("/readpermissionalgo/:id", async (req, res)=>{
 })
 
 router.delete("/readpermission/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const permission = await Permission.deleteOne({_id : id})
-        console.log("this is userdetail", permission);
+        //console.log("this is userdetail", permission);
         // res.send(userDetail)
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
@@ -146,9 +159,9 @@ router.delete("/readpermission/:id", async (req, res)=>{
 })
 
 router.patch("/updatetradeenable/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
-    console.log("this is body", req.body, id);
+    //console.log("this is body", req.body, id);
     try{ 
         
 
@@ -159,7 +172,7 @@ router.patch("/updatetradeenable/:id", async (req, res)=>{
                 isTradeEnable: req.body.isTradeEnable,
             }
         })
-        console.log("this is role", permission);
+        //console.log("this is role", permission);
         res.send(permission)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -168,9 +181,9 @@ router.patch("/updatetradeenable/:id", async (req, res)=>{
 })
 
 router.patch("/updaterealtradeenable/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
-    console.log("this is body", req.body, id);
+    //console.log("this is body", req.body, id);
     try{ 
         
         const permission = await Permission.findOneAndUpdate({userId : id}, {
@@ -187,6 +200,27 @@ router.patch("/updaterealtradeenable/:id", async (req, res)=>{
         res.status(500).json({error:"Failed to edit data"});
     }
 })
+
+// router.patch("/updaterealtradeenable/:email", async (req, res)=>{
+//     //console.log(req.params)
+//     const {email} = req.params
+//     //console.log("this is body", req.body, id);
+//     try{ 
+        
+//         const permission = await Permission.findOneAndUpdate({userId : email}, {
+//             $set:{ 
+//                 modifiedOn: req.body.modifiedOn,
+//                 modifiedBy: req.body.modifiedBy,
+//                 isRealTradeEnable: req.body.isRealTradeEnable,
+//             }
+//         })
+//         //console.log("this is role", permission);
+//         res.send(permission)
+//         // res.status(201).json({massage : "data edit succesfully"});
+//     } catch (e){
+//         res.status(500).json({error:"Failed to edit data"});
+//     }
+// })
 
 
 module.exports = router;

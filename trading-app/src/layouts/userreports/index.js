@@ -67,7 +67,7 @@ function UserReport() {
       overallPnl = 0;
   },[getDetails])
 
-  console.log(getDetails)
+  //console.log(getDetails)
 
   function startDate(e){
     e.preventDefault();
@@ -82,7 +82,7 @@ function UserReport() {
     totalTrade = 0;
     totalTradingDays = 0;
     overallPnl = 0;
-    console.log(e.target.value);
+    //console.log(e.target.value);
   }
   function endDate(e){
     e.preventDefault();
@@ -97,7 +97,7 @@ function UserReport() {
     totalTrade = 0;
     totalTradingDays = 0;
     overallPnl = 0;
-    console.log(e.target.value);
+    //console.log(e.target.value);
   }
 
   function pnlCalculation(firstDate, secondDate){
@@ -161,7 +161,7 @@ function UserReport() {
           }
       }
 
-      console.log(hash)
+      //console.log(hash)
       
       let pnlArr = []
       for (let value of hash.values()) {
@@ -170,7 +170,7 @@ function UserReport() {
 
       setOverallPnl(pnlArr)
 
-      console.log(overallPnl)
+      //console.log(overallPnl)
 
       pnlArr.map((elem, index) => {
 
@@ -180,7 +180,7 @@ function UserReport() {
         totalTradingDays += 1
       })
       setPnl(totalPnl); setCost(totalTransactionCost); setTrade(totalTrade); setTradingDay(totalTradingDays)
-      console.log(totalPnl, totalTransactionCost, totalTrade, totalTradingDays)
+      //console.log(totalPnl, totalTransactionCost, totalTrade, totalTradingDays)
 
 
     }).catch((err) => {
@@ -190,7 +190,7 @@ function UserReport() {
 
   const totalpnlcolor = -totalPnl >= 0 ? "success" : "error"
   const totalnpnlcolor = ((-totalPnl)-totalTransactionCost) >= 0 ? "success" : "error"
-  console.log(overallPnl)
+  //console.log(overallPnl)
 
   overallPnl.sort((a, b) => {
     if (a.date < b.date) {
@@ -270,7 +270,7 @@ function UserReport() {
     
   })
 
-  console.log(rows)
+  //console.log(rows)
 
   return (
     <DashboardLayout>

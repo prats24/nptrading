@@ -20,3 +20,4 @@ const DB = process.env.DATABASE;
 }).catch((err)=>{
     console.log("no connection");
 })
+

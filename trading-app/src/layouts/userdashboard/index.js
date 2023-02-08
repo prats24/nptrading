@@ -110,17 +110,17 @@ function UserDashboard() {
    
     useEffect(()=>{
 
-        console.log(socket);
+        //console.log(socket);
         socket.on("connect", ()=>{
-            console.log(socket.id);
+            //console.log(socket.id);
             socket.emit("hi",true)
         })
         socket.on("noToken", (data)=>{
-            console.log("no token");
+            //console.log("no token");
             window.alert(data);
         })
         socket.on("wrongToken", (data)=>{
-            console.log("wrong Token");
+            //console.log("wrong Token");
             window.alert(data);
         })
 
@@ -131,18 +131,18 @@ function UserDashboard() {
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisweek`)
     // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
     .then((res)=>{
-        console.log(res.data);
+        //console.log(res.data);
           if(res.data)
           {
           // setThisWeekPNLData(res.data) 
-          console.log(ThisWeekPNLData);
+          //console.log(ThisWeekPNLData);
           setThisWeekBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
+          //console.log((res.data[0]).brokerage)
           setThisWeekGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
+          //console.log(-(res.data[0]).amount)
           setThisWeekTrades((res.data[0]).trades)
           setThisWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisweeknpnl)
+          //console.log(thisweeknpnl)
           }
     }).catch((err)=>{
         window.alert("Server Down");
@@ -156,18 +156,18 @@ useEffect(()=>{
   axios.get(`${baseUrl}api/v1/getmocktradecompanydetailslastweek`)
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
-      console.log(res.data);
+      //console.log(res.data);
         if(res.data)
         {
         // setLastWeekPNLData(res.data) 
-        console.log(LastWeekPNLData);
+        //console.log(LastWeekPNLData);
         setLastWeekBrokerage((res.data[0]).brokerage)
-        console.log((res.data[0]).brokerage)
+        //console.log((res.data[0]).brokerage)
         setLastWeekGPNL((-(res.data[0]).amount))
-        console.log(-(res.data[0]).amount)
+        //console.log(-(res.data[0]).amount)
         setLastWeekTrades((res.data[0]).trades)
         setLastWeekNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-        console.log(lastweeknpnl)
+        //console.log(lastweeknpnl)
         }
   }).catch((err)=>{
       window.alert("Server Down");
@@ -186,17 +186,17 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthismonth`)
     // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
     .then((res)=>{
-        console.log(res.data);
+        //console.log(res.data);
           if(res.data){
           // setThisMonthPNLData(res.data) 
-          console.log(ThisMonthPNLData);
+          //console.log(ThisMonthPNLData);
           setThisMonthBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
+          //console.log((res.data[0]).brokerage)
           setThisMonthGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
+          //console.log(-(res.data[0]).amount)
           setThisMonthTrades((res.data[0]).trades)
           setThisMonthNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thismonthnpnl)
+          //console.log(thismonthnpnl)
           }
     })
 },[])
@@ -208,17 +208,17 @@ useEffect(()=>{
   axios.get(`${baseUrl}api/v1/readmocktradecompanyLastMonth`)
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
-      console.log(res.data);
+      //console.log(res.data);
         if(res.data){
         // setLastMonthPNLData(res.data) 
-        console.log(LastMonthPNLData);
+        //console.log(LastMonthPNLData);
         setLastMonthBrokerage((res.data[0]).brokerage)
-        console.log((res.data[0]).brokerage)
+        //console.log((res.data[0]).brokerage)
         setLastMonthGPNL((-(res.data[0]).amount))
-        console.log(-(res.data[0]).amount)
+        //console.log(-(res.data[0]).amount)
         setLastMonthTrades((res.data[0]).trades)
         setLastMonthNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-        console.log(lastmonthnpnl)
+        //console.log(lastmonthnpnl)
         }
   })
 },[])
@@ -235,18 +235,18 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsthisyear`)
     // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
     .then((res)=>{
-        console.log(res.data);
+        //console.log(res.data);
           if(res.data)
           {
           // setThisYearPNLData(res.data) 
-          console.log(ThisYearPNLData);
+          //console.log(ThisYearPNLData);
           setThisYearBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
+          //console.log((res.data[0]).brokerage)
           setThisYearGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
+          //console.log(-(res.data[0]).amount)
           setThisYearTrades((res.data[0]).trades)
           setThisYearNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisyearnpnl)
+          //console.log(thisyearnpnl)
           }
     })
 },[])
@@ -257,18 +257,18 @@ useEffect(()=>{
   axios.get(`${baseUrl}api/v1/getmocktradecompanydetailslastyear`)
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
-      console.log(res.data);
+      //console.log(res.data);
         if(res.data)
         {
         // setThisYearPNLData(res.data) 
-        console.log(LastYearPNLData);
+        //console.log(LastYearPNLData);
         setLastYearBrokerage((res.data[0]).brokerage)
-        console.log((res.data[0]).brokerage)
+        //console.log((res.data[0]).brokerage)
         setLastYearGPNL((-(res.data[0]).amount))
-        console.log(-(res.data[0]).amount)
+        //console.log(-(res.data[0]).amount)
         setLastYearTrades((res.data[0]).trades)
         setLastYearNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-        console.log(lastyearnpnl)
+        //console.log(lastyearnpnl)
         }
   })
 },[])
@@ -283,17 +283,17 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsyesterday`)
     // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
     .then((res)=>{
-        console.log(res.data);
+        //console.log(res.data);
           
           // setThisYesterdayPNLData(res.data) 
-          console.log(ThisYesterdayPNLData);
+          //console.log(ThisYesterdayPNLData);
           setThisYesterdayBrokerage((res.data[0]).brokerage)
-          console.log((res.data[0]).brokerage)
+          //console.log((res.data[0]).brokerage)
           setThisYesterdayGPNL((-(res.data[0]).amount))
-          console.log(-(res.data[0]).amount)
+          //console.log(-(res.data[0]).amount)
           setThisYesterdayTrades((res.data[0]).trades)
           setThisYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-          console.log(thisyesterdaynpnl)
+          //console.log(thisyesterdaynpnl)
           
     })
 },[])
@@ -304,17 +304,17 @@ useEffect(()=>{
   axios.get(`${baseUrl}api/v1/getmocktradecompanydetailsdaybeforeyesterday`)
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
-      console.log(res.data);
+      //console.log(res.data);
         
         // setThisDayBeforeYesterdayPNLData(res.data) 
-        console.log(ThisDayBeforeYesterdayPNLData);
+        //console.log(ThisDayBeforeYesterdayPNLData);
         setThisDayBeforeYesterdayBrokerage((res.data[0]).brokerage)
-        console.log((res.data[0]).brokerage)
+        //console.log((res.data[0]).brokerage)
         setThisDayBeforeYesterdayGPNL((-(res.data[0]).amount))
-        console.log(-(res.data[0]).amount)
+        //console.log(-(res.data[0]).amount)
         setThisDayBeforeYesterdayTrades((res.data[0]).trades)
         setThisDayBeforeYesterdayNPNL(((-(res.data[0]).amount)-(res.data[0]).brokerage))
-        console.log(thisDayBeforeyesterdaynpnl)
+        //console.log(thisDayBeforeyesterdaynpnl)
         
   })
 },[])
@@ -350,15 +350,15 @@ pnldate.map((elem)=>{
   const date = new Date(elem);
   const dayOfWeek = date.getDay();
   const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-  // console.log(weekday);  // Output: "Sunday"
+  // //console.log(weekday);  // Output: "Sunday"
   dayname.push(weekday.slice(0,3))
 })
 
 // setThisYesterdayBrokerage(thisyesterdaybrokerage);
 //chart data code ends
-    // console.log(reportsBarChartData.labels)
-    // console.log(reportsBarChartData.datasets.data())
-    // console.log(reportsBarChartData.datasets)
+    // //console.log(reportsBarChartData.labels)
+    // //console.log(reportsBarChartData.datasets.data())
+    // //console.log(reportsBarChartData.datasets)
 
   return (
     <DashboardLayout>

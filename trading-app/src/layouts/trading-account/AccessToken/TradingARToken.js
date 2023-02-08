@@ -46,20 +46,20 @@ const TradingARToken = () => {
                     return elem.status === "Active"
                 })
                 setActiveData(active);
-                console.log(active);
+                //console.log(active);
 
                 let inActive = data.filter((elem) => {
                     return elem.status === "Inactive"
                 })
                 setInactiveData(inActive);
-                console.log(inactiveData);
+                //console.log(inactiveData);
       }).catch((err)=>{
           window.alert("Server Down");
           return new Error(err);
       })
   },[reRender])
 
-  console.log(activeData);
+  //console.log(activeData);
   
   activeData.map((elem)=>{
     let activeparameter = {}
@@ -97,8 +97,8 @@ const TradingARToken = () => {
     );
    
     
-    console.log(typeof(activeparameter));
-    console.log(activeparameter)
+    //console.log(typeof(activeparameter));
+    //console.log(activeparameter)
     rows.push(activeparameter)
   })
 
@@ -140,8 +140,8 @@ const TradingARToken = () => {
     );
    
     
-    console.log(typeof(inactiveparameter));
-    console.log(inactiveparameter)
+    //console.log(typeof(inactiveparameter));
+    //console.log(inactiveparameter)
     pRows.push(inactiveparameter)
   })
 

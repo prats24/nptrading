@@ -7,26 +7,26 @@ router.post("/tradingalgo", (req, res)=>{
     const {algoName, transactionChange, instrumentChange, status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, uId, createdBy, createdOn, realTrade, marginDeduction} = req.body;
 
     if(!algoName || !transactionChange || !instrumentChange || !status || !exchangeChange || !lotMultipler || !productChange || !tradingAccount || !lastModified || !uId || !createdBy || !createdOn){
-        console.log(req.body);
-        console.log("data is not complete");
+        //console.log(req.body);
+        //console.log("data is not complete");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     TradingAlgo.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const tradingAlgo = new TradingAlgo({algoName, transactionChange, instrumentChange, 
             status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, 
             uId, createdBy, createdOn, isRealTrade:realTrade, marginDeduction});
 
-            console.log(tradingAlgo)
+            //console.log(tradingAlgo)
         tradingAlgo.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log("fail")});
 })
 
 router.get("/readtradingAlgo", (req, res)=>{
@@ -41,7 +41,7 @@ router.get("/readtradingAlgo", (req, res)=>{
 })
 
 router.get("/readtradingAlgo/:id", (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     const {id} = req.params
     TradingAlgo.findOne({_id : id})
     .then((data)=>{
@@ -53,8 +53,8 @@ router.get("/readtradingAlgo/:id", (req, res)=>{
 })
 
 router.put("/readtradingAlgo/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{
         const {id} = req.params
         const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
@@ -70,7 +70,7 @@ router.put("/readtradingAlgo/:id", async (req, res)=>{
                 lastModified: req.body.lastModified
             }
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data edit succesfully"});
     } catch (e){
@@ -79,12 +79,12 @@ router.put("/readtradingAlgo/:id", async (req, res)=>{
 })
 
 router.patch("/readtradingAlgo/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const {realTrade} = req.body;
-        console.log(realTrade);
+        //console.log(realTrade);
         const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
             $set:{ 
                 
@@ -92,7 +92,7 @@ router.patch("/readtradingAlgo/:id", async (req, res)=>{
             }
             
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
@@ -101,8 +101,8 @@ router.patch("/readtradingAlgo/:id", async (req, res)=>{
 })
 
 router.patch("/updatemargindeduction/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const {marginDeduction} = req.body;
@@ -113,7 +113,7 @@ router.patch("/updatemargindeduction/:id", async (req, res)=>{
             }
             
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
@@ -122,8 +122,8 @@ router.patch("/updatemargindeduction/:id", async (req, res)=>{
 })
 
 router.patch("/updatetransactionChange/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const {transactionChange} = req.body;
@@ -134,7 +134,7 @@ router.patch("/updatetransactionChange/:id", async (req, res)=>{
             }
             
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
@@ -143,8 +143,8 @@ router.patch("/updatetransactionChange/:id", async (req, res)=>{
 })
 
 router.patch("/updateinstrumentChange/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const {instrumentChange} = req.body;
@@ -155,7 +155,7 @@ router.patch("/updateinstrumentChange/:id", async (req, res)=>{
             }
             
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
@@ -164,8 +164,8 @@ router.patch("/updateinstrumentChange/:id", async (req, res)=>{
 })
 
 router.patch("/updateexchangeChange/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const {exchangeChange} = req.body;
@@ -176,7 +176,7 @@ router.patch("/updateexchangeChange/:id", async (req, res)=>{
             }
             
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
@@ -185,8 +185,8 @@ router.patch("/updateexchangeChange/:id", async (req, res)=>{
 })
 
 router.patch("/updateproductChange/:id", async (req, res)=>{
-    console.log(req.params)
-    console.log("this is body", req.body);
+    //console.log(req.params)
+    //console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const {productChange} = req.body;
@@ -197,7 +197,7 @@ router.patch("/updateproductChange/:id", async (req, res)=>{
             }
             
         })
-        console.log("this is role", tradingAlgo);
+        //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
@@ -206,11 +206,11 @@ router.patch("/updateproductChange/:id", async (req, res)=>{
 })
 
 router.delete("/readtradingAlgo/:id", async (req, res)=>{
-    console.log(req.params)
+    //console.log(req.params)
     try{
         const {id} = req.params
         const tradingAlgo = await TradingAlgo.deleteOne({_id : id})
-        console.log("this is userdetail", tradingAlgo);
+        //console.log("this is userdetail", tradingAlgo);
         // res.send(userDetail)
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){

@@ -11,14 +11,14 @@ router.post("/admin", (req, res)=>{
     const {date, ce, pe, contractDate, ceTicker, peTicker, enableTrade, quantity, uId, index, allowedLot, amount} = req.body;
 
     if(!date || !ce || !pe || !contractDate || !ceTicker || !peTicker || !enableTrade || !quantity || !uId || !index || !amount || !allowedLot){
-        console.log("data nhi h pura");
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
 
     Admin.findOne({date : date})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
         const admin = new Admin({date, ce, pe, contractDate, ceTicker, peTicker, enableTrade, quantity, uId, index, allowedLot, amount});
@@ -26,7 +26,7 @@ router.post("/admin", (req, res)=>{
         admin.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log( "fail")});
     
 })
 

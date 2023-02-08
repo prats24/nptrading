@@ -20,6 +20,7 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import PersonIcon from '@mui/icons-material/Person';
 import backgroundImage from "../../../assets/images/trading.jpg";
 import DailyPnlData from "../dailyPnl";
+import TraderDailyPnlData from "../traderDailyPnl";
 import DailyPnlMaxMinData from "../dailyPnlMaxMin";
 
 
@@ -89,20 +90,19 @@ function DailyPNLHeader({ children }) {
               {/* <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}> */}
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Mock Trades"
+                  label="Company P&L Chart (Mock)"
                   icon={
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
                 <Tab
-                  label="P&L Analysis"
+                  label="Company P&L Analysis (Mock)"
                   icon={
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                      }
                 />
-
                 <Tab
-                  label="Real Trades"
+                  label="Trader P&L Chart (Mock)"
                   icon={
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                      }
@@ -112,6 +112,7 @@ function DailyPNLHeader({ children }) {
             </AppBar>
             <TabPanel value={tabValue} index={0}><DailyPnlData/> </TabPanel>
             <TabPanel value={tabValue} index={1}><DailyPnlMaxMinData/> </TabPanel>
+            <TabPanel value={tabValue} index={2}><TraderDailyPnlData/> </TabPanel>
             {/* <TabPanel value={tabValue} index={1}><Roles/> </TabPanel> */}
             {/* <TabPaneltwo/> */}
           </Grid>

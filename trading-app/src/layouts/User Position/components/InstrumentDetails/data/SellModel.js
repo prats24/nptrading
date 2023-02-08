@@ -25,10 +25,10 @@ import FormLabel from '@mui/material/FormLabel';
 import MDBox from '../../../../../components/MDBox';
 import { Box, Typography } from '@mui/material';
 
-const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp}) => {
+const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render}) => {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  // const { reRender, setReRender } = Render;
+  const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -127,6 +127,17 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   };
 
   const handleClickOpen = () => {
+    axios.get(`${baseUrl}api/v1/readpermission`)
+    .then((res) => {
+    let perticularUser = (res.data).filter((elem) => {
+        ////console.log(elem.userId, userId);
+        return elem.userId === userId;
+    })
+    setUserPermission(perticularUser);
+    }).catch((err) => {
+        // window.alert("Server Down");
+        return new Error(err);
+    })
     setOpen(true);
 
   }; 
@@ -134,6 +145,9 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   const handleClose = (e) => {
     setOpen(false);
   };
+
+  console.log("in open", userPermission, tradingAlgoData, userId)
+
 
   const [appLive, setAppLive] = useState([]);
 
@@ -182,7 +196,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         axios.get(`${baseUrl}api/v1/readpermission`)
         .then((res) => {
         let perticularUser = (res.data).filter((elem) => {
-            ////console.log(elem.userId, userId);
+            //////console.log(elem.userId, userId);
             return elem.userId === userId;
         })
         setUserPermission(perticularUser);
@@ -204,7 +218,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
     setTradeData([...tradeData])
 
-    ////console.log(perticularInstrumentData);
+    //////console.log(perticularInstrumentData);
 }, [getDetails])
 
 useEffect(()=>{
@@ -216,7 +230,7 @@ useEffect(()=>{
   })
 },[otmDetailsForm])
 
-// //console.log(tradingAlgoData, userPermission);
+// ////console.log(tradingAlgoData, userPermission);
 
   const tradingAlgoArr = [];
   apiKeyDetails.map((elem) => {
@@ -242,7 +256,7 @@ useEffect(()=>{
 
   let tradeEnable ;
   userPermission.map((elem)=>{
-      //console.log(elem)
+      ////console.log(elem)
       if(elem.isTradeEnable){
           tradeEnable = true;
       }
@@ -251,7 +265,7 @@ useEffect(()=>{
   function tradingAlgo() {
     // if (userPermissionAlgo.length) {
     userPermissionAlgo.map((elem) => {
-        ////console.log(elem);
+        //////console.log(elem);
         // if(elem.isTradeEnable){
 
             if (elem.transactionChange === "TRUE") {
@@ -273,7 +287,7 @@ useEffect(()=>{
             setApiKey(apiKeyDetails);
             
             setCompanyTrade(companyTrade)
-            ////console.log("companyTrade", companyTrade);
+            //////console.log("companyTrade", companyTrade);
             if(elem.marginDeduction){
               let temp_otm_quantity = companyTrade.realQuantity
               if(elem.transactionChange === "TRUE"){
@@ -284,7 +298,7 @@ useEffect(()=>{
                 // now 1st wale ke 100 buy krta hu then this logic buy 50 + 50 otm
                 for( let subElem of otmData){
                   if(subElem.runningLots){
-                    console.log("temp_otm_quantity", temp_otm_quantity, Math.abs(subElem.runningLots))
+                    //console.log("temp_otm_quantity", temp_otm_quantity, Math.abs(subElem.runningLots))
                     if(temp_otm_quantity > (subElem.runningLots)){
                       otmDetailsForm.otm = subElem._id.otm;
                       otmDetailsForm.otm_quantity = -(Math.abs(subElem.runningLots));
@@ -320,12 +334,12 @@ useEffect(()=>{
 
             }
 
-            console.log("otmDetailsForm", otmDetailsForm)
+            //console.log("otmDetailsForm", otmDetailsForm)
 
-            console.log("userPermission", userPermission)
+            //console.log("userPermission", userPermission)
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
-                    if(subElem.isRealTradeEnable || elem.isRealTrade){
+                    if(subElem.isRealTradeEnable){
                         sendOrderReq(elem);
                     } else{
                         mockTradeCompany(elem);
@@ -346,7 +360,7 @@ useEffect(()=>{
       }
 
       if(!tradeEnable){
-        //console.log("tradeEnable", tradeEnable)
+        ////console.log("tradeEnable", tradeEnable)
         window.alert("Your trade is disable, please contact to authorise person");
         return;
     }
@@ -405,9 +419,9 @@ useEffect(()=>{
       } 
 
       // rerenderParentCallback();
-      // let id = setTimeout(()=>{
-      //     reRender ? setReRender(false) : setReRender(true)
-      // }, 1000);
+      let id = setTimeout(()=>{
+          reRender ? setReRender(false) : setReRender(true)
+      }, 1000);
       
   }
 
@@ -438,23 +452,23 @@ useEffect(()=>{
         })
     });
     const dataResp = await res.json();
-    //console.log("dataResp", dataResp)
+    ////console.log("dataResp", dataResp)
     if (dataResp.status === 422 || dataResp.error || !dataResp) {
-        //console.log(dataResp.error)
+        ////console.log(dataResp.error)
         window.alert(dataResp.error);
-        ////console.log("Failed to Trade");
+        //////console.log("Failed to Trade");
     } else {
         if(dataResp.massage === "COMPLETE"){
-            console.log(dataResp);
+            //console.log(dataResp);
             window.alert("Trade Succesfull Completed");
         } else if(dataResp.massage === "REJECTED"){
-            console.log(dataResp);
+            //console.log(dataResp);
             window.alert("Trade is Rejected due to Insufficient Fund");
         } else if(dataResp.massage === "AMO REQ RECEIVED"){
-            console.log(dataResp);
+            //console.log(dataResp);
             window.alert("AMO Request Recieved");
         } else{
-            console.log("this is dataResp", dataResp)
+            //console.log("this is dataResp", dataResp)
             window.alert("on order placing nothing happen");
         }
     }
@@ -502,7 +516,7 @@ async function mockTradeCompany(algoBox){
     const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
     const { realBuyOrSell, realQuantity } = companyTrade;
     const {otm, otm_quantity, otm_token} = otmDetailsForm;
-    console.log("otm, otm_quantity, otm_token", otm, otm_quantity, otm_token)
+    //console.log("otm, otm_quantity, otm_token", otm, otm_quantity, otm_token)
 
       const res = await fetch(`${baseUrl}api/v1/mockOtmtradecompany`, {
         method: "POST",

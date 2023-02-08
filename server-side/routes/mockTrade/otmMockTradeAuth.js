@@ -12,8 +12,8 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
           realBuyOrSell, realQuantity, otm, otm_quantity, otm_token} = req.body 
 
-        console.log("otm body",req.body);
-        // console.log("in the company auth");
+        //console.log("otm body",req.body);
+        // //console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
 
@@ -22,8 +22,8 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
 
 
     if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !algoName || !transactionChange || !instrumentChange || !exchangeChange || !lotMultipler || !productChange || !tradingAccount){
-        console.log(Boolean(exchange)); console.log(Boolean(symbol)); console.log(Boolean(buyOrSell)); console.log(Boolean(Quantity)); console.log(Boolean(Product)); console.log(Boolean(OrderType)); console.log(Boolean(validity)); console.log(Boolean(variety));  console.log(Boolean(algoName)); console.log(Boolean(transactionChange)); console.log(Boolean(instrumentChange)); console.log(Boolean(exchangeChange)); console.log(Boolean(lotMultipler)); console.log(Boolean(productChange)); console.log(Boolean(tradingAccount));
-        console.log("data nhi h pura");
+        //console.log(Boolean(exchange)); //console.log(Boolean(symbol)); //console.log(Boolean(buyOrSell)); //console.log(Boolean(Quantity)); //console.log(Boolean(Product)); //console.log(Boolean(OrderType)); //console.log(Boolean(validity)); //console.log(Boolean(variety));  //console.log(Boolean(algoName)); //console.log(Boolean(transactionChange)); //console.log(Boolean(instrumentChange)); //console.log(Boolean(exchangeChange)); //console.log(Boolean(lotMultipler)); //console.log(Boolean(productChange)); //console.log(Boolean(tradingAccount));
+        //console.log("data nhi h pura");
         return res.status(422).json({error : "please fill all the feilds..."})
     }
 
@@ -44,15 +44,15 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
         let liveData = await axios.get(`${baseUrl}api/v1/getliveprice`)
         
         for(let elem of liveData.data){
-            console.log(elem)
+            //console.log(elem)
             if(elem.instrument_token == instrumentToken){
                 newTimeStamp = elem.timestamp;
                 originalLastPrice = elem.last_price;
-                console.log("originalLastPrice ", originalLastPrice)
+                //console.log("originalLastPrice ", originalLastPrice)
             }
             if(elem.instrument_token == otm_token){
                 otmLastPrice = elem.last_price;
-                console.log("otmLastPrice ", otmLastPrice)
+                //console.log("otmLastPrice ", otmLastPrice)
             }
         }
 
@@ -66,18 +66,18 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
         return new Error(err);
     }
 
-    console.log("newTimeStamp", newTimeStamp);
+    //console.log("newTimeStamp", newTimeStamp);
 
 
     function buyBrokerage(totalAmount){
         let brokerage = Number(brokerageDetailBuy[0].brokerageCharge);
         // let totalAmount = Number(Details.last_price) * Number(quantity);
         let exchangeCharge = totalAmount * (Number(brokerageDetailBuy[0].exchangeCharge) / 100);
-        // console.log("exchangeCharge", exchangeCharge, totalAmount, (Number(brokerageDetailBuy[0].exchangeCharge)));
+        // //console.log("exchangeCharge", exchangeCharge, totalAmount, (Number(brokerageDetailBuy[0].exchangeCharge)));
         let gst = (brokerage + exchangeCharge) * (Number(brokerageDetailBuy[0].gst) / 100);
         let sebiCharges = totalAmount * (Number(brokerageDetailBuy[0].sebiCharge) / 100);
         let stampDuty = totalAmount * (Number(brokerageDetailBuy[0].stampDuty) / 100);
-        // console.log("stampDuty", stampDuty);
+        // //console.log("stampDuty", stampDuty);
         let sst = totalAmount * (Number(brokerageDetailBuy[0].sst) / 100);
         let finalCharge = brokerage + exchangeCharge + gst + sebiCharges + stampDuty + sst;
         return finalCharge;
@@ -115,7 +115,7 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
     OtmMock.findOne({uId : uId})
     .then((dateExist)=>{
         if(dateExist){
-            console.log("data already");
+            //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
 
@@ -129,12 +129,12 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
             
         });
 
-        console.log("otmMock comapny", otmMock);
+        //console.log("otmMock comapny", otmMock);
         otmMock.save().then(()=>{
             // res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
-    }).catch(err => {console.log(err, "fail")});
+    }).catch(err => {console.log( "fail")});
 
 })
 

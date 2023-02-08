@@ -1,38 +1,84 @@
+//import mongoose, { Schema } from "mongoose";
 const mongoose = require("mongoose");
+const Schema = require("mongoose");
 
 const categorySchema = new mongoose.Schema({
-    isCategory:{
-        type: Boolean,
+    categoryName:{
+        type: String,
         required: true
     },
-    category:{
+    categoryId:{
         type: String,
         required : true
     },
-    sub_category:{
+    status:{
         type: String,
-    },
-    created_by:{
-        type: String,
-        required : true
-    },
-    createdOn:{
-        type: String,
-        required : true
-    },
-    lastmodified_by:{
-        type: String,
-        required : true
-    },
-    lastmodifiedOn:{
-        type: String,
+        default: 'Active',
         required : true
     },
     uId:{
         type: String,
-        required : true
+        // required : true
     },
+    createdOn:{
+        type: Date,
+        default: Date.now(),
+        // required : true
+    },
+    createdBy:{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        // required : true
+    },
+    lastModifiedOn:{
+        type: Date,
+        // required : true
+    },
+    lastModifiedBy:{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        // required : true
+    },
+    isDeleted:{
+        type: Boolean,
+        default: false,
+        // required : true
+    },
+    subCategory:[{
+        subCategoryName : { 
+            type: String,
+            //required : false
+        },
+        uId:{
+            type: String,
+            // required : true
+        },
+        createdOn:{
+            type: Date,
+            default: Date.now(),
+            // required : true
+        },
+        createdBy:{
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            // required : true
+        },
+        lastModifiedOn:{
+            type: Date,
+            // required : true
+        },
+        lastModifiedBy:{
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            // required : true
+        },
+        isDeleted:{
+            type: Boolean,
+            default: false,
+            // required : true
+        },
+    }]
 })
 
-const categoryDetail = mongoose.model("category", categorySchema);
-module.exports = categoryDetail;
+const category = mongoose.model("category", categorySchema);
+module.exports = category;

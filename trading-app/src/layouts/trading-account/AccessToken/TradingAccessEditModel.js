@@ -67,7 +67,7 @@ const TradingARTokenEditModel = ({data, id, Render}) => {
       Status: ""
   });
 
-  console.log(formstate);
+  //console.log(formstate);
 
 
   async function formbtn() {
@@ -93,14 +93,14 @@ const TradingARTokenEditModel = ({data, id, Render}) => {
           })
       });
       const dataResp = await res.json();
-      console.log(dataResp);
+      //console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
-          console.log("Failed to Edit");
+          //console.log("Failed to Edit");
       } else {
-          console.log(dataResp);
+          //console.log(dataResp);
           window.alert("Edit succesfull");
-          console.log("Edit succesfull");
+          //console.log("Edit succesfull");
       }
        
       setOpen(false);
@@ -108,20 +108,20 @@ const TradingARTokenEditModel = ({data, id, Render}) => {
   }
 
   async function Ondelete() {
-      console.log(editData)
+      //console.log(editData)
       const res = await fetch(`${baseUrl}api/v1/readRequestToken/${id}`, {
           method: "DELETE",
       });
 
       const dataResp = await res.json();
-      console.log(dataResp);
+      //console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
-          console.log("Failed to Delete");
+          //console.log("Failed to Delete");
       } else {
-          console.log(dataResp);
+          //console.log(dataResp);
           window.alert("Delete succesfull");
-          console.log("Delete succesfull");
+          //console.log("Delete succesfull");
       }
 
       setOpen(false);

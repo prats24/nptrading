@@ -3,8 +3,6 @@ const jwt = require("jsonwebtoken");
 const {promisify} = require("util")
 
 exports.protect = async (req, res, next)=>{
-    // console.log("req.cookies", req.cookies)
-    // console.log(req.headers)
     let token;
     // if (
     //     req.headers.authorization &&

@@ -1,5 +1,5 @@
 function pnlcalucationnorunninglots(data){
-console.log(data[0]);
+// console.log(data[0]);
 let hash = new Map();
 let hashForTraderCount = new Map();
 let numberOfTrader = 0;
@@ -10,7 +10,7 @@ let lotUsed = 0;
 let name = '';
 //console.log(data)
 for(let i = data.length-1; i >= 0 ; i--){
-    console.log("Inside for loop");
+    // console.log("Inside for loop");
     numberOfTrade += 1;
     transactionCost += Number(data[i].brokerage);
 
@@ -87,11 +87,11 @@ for (let value of hash.values()){
 // })
 
 //console.log(hashForTraderCount)
-console.log(overallPnl);
+// console.log(overallPnl);
 
 let runningLots;
 overallPnl.map((elem, index)=>{
-    console.log("Inside Overall pnl loop");
+    // console.log("Inside Overall pnl loop");
      // name = elem.name;
     
     if(elem.totalBuyLot+elem.totalSellLot === 0){

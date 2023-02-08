@@ -82,7 +82,7 @@ function MismatchDetails({socket}) {
 
   OpenPositionData.map((elem)=>{
     let appPnlData = tradeData.filter((element)=>{
-      return element._id.symbol === elem.tradingsymbol;
+      return element._id.symbol === elem.tradingsymbol && elem.product === element._id.product;
     })
 
     let liveDetail = marketData.filter((element)=>{

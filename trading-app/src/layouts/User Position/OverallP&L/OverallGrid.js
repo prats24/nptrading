@@ -21,18 +21,19 @@ import MDButton from '../../../components/MDButton';
 import ExitPosition from './ExitPosition';
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket}) {
+function OverallGrid({socket, Render}) {
   const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
 
   const closeMenu = () => setMenu(null);
 
   const getDetails = useContext(userContext);
-
+  const { reRender, setReRender } = Render
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [liveDetail, setLiveDetail] = useState([]);
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [render, setRender] = useState(true);
 
   let liveDetailsArr = [];
   let totalTransactionCost = 0;
@@ -79,8 +80,8 @@ function OverallGrid({socket}) {
           return new Error(err);
       })
 
-
-    }, [marketData])
+      reRender ? setRender(false) : setRender(true);
+    }, [marketData, render])
 
 
     useEffect(() => {
@@ -244,28 +245,9 @@ function OverallGrid({socket}) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Overall Company P&L(Mock)
+            Overall P&L
           </MDTypography>
-          {/* <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
-              }}
-            >
-              done
-            </Icon>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime}
-            </MDTypography>
-          </MDBox> */}
         </MDBox>
-        {/* <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </MDBox> */}
         {renderMenu}
       </MDBox>
       <MDBox>

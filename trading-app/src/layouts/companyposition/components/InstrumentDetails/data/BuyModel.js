@@ -28,7 +28,7 @@ import { borderBottom } from '@mui/system';
 
 const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp}) => {
 
-  console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
+  // console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   // const { reRender, setReRender } = Render;
@@ -67,8 +67,6 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
       real_last_price: "",
   })
 
-  // let lotSize = lotSize;
-  // let maxLot = maxLot;
   let finalLot = maxLot/lotSize;
   let optionData = [];
   for(let i =1; i<= finalLot; i++){
@@ -121,11 +119,36 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   };
 
   const handleClickOpen = () => {
+
+    console.log("in open")
+    axios.get(`${baseUrl}api/v1/readpermission`)
+    .then((res) => {
+    let perticularUser = (res.data).filter((elem) => {
+        ////console.log(elem.userId, userId);
+        return elem.userId === userId;
+    })
+    setUserPermission(perticularUser);
+    }).catch((err) => {
+        // window.alert("Server Down");
+        return new Error(err);
+    })
+
+    axios.get(`${baseUrl}api/v1/readtradingAlgo`)
+    .then((res) => {
+        setTradingAlgoData(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
+
+    console.log("tradingAlgoData, userPermission", tradingAlgoData, userPermission);
+
+
     setOpen(true);
 
   }; 
 
   const handleClose = (e) => {
+    console.log("in close")
     setOpen(false);
   };
 
@@ -165,33 +188,11 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
         })
 
 
-        axios.get(`${baseUrl}api/v1/readpermission`)
-        .then((res) => {
-        let perticularUser = (res.data).filter((elem) => {
-            ////console.log(elem.userId, userId);
-            return elem.userId === userId;
-        })
-        setUserPermission(perticularUser);
-        }).catch((err) => {
-            // window.alert("Server Down");
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readtradingAlgo`)
-        .then((res) => {
-            setTradingAlgoData(res.data);
-        }).catch((err) => {
-            return new Error(err);
-        })
-
-
-
     setTradeData([...tradeData])
 
     ////console.log(perticularInstrumentData);
 }, [getDetails])
 
-// //console.log(tradingAlgoData, userPermission);
 
   const tradingAlgoArr = [];
   apiKeyDetails.map((elem) => {
@@ -249,7 +250,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
             
             setCompanyTrade(companyTrade)
             ////console.log("companyTrade", companyTrade);
-            console.log("userPermission", userPermission)
+            // console.log("userPermission", userPermission)
             userPermission.map((subElem)=>{
                 if(subElem.algoName === elem.algoName){
                     if(subElem.isRealTradeEnable || elem.isRealTrade){
@@ -383,19 +384,11 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   }
 
   async function mockTradeCompany(algoBox){
-    ////console.log(Details);
-    // let currentTime = `${date.getHours()}:${date.getMinutes()}`
-    // ////console.log("currentTime", currentTime);
-    // if(currentTime > "15:30" || currentTime < "9:15"){
-    //     ////console.log("current if")
-    //     // window.alert("Market is closed now");
-    //     return;
-    // }
+
     
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
-    // ////console.log("compny side", exchange, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety, algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, realBuyOrSell, realSymbol, realQuantity, real_last_price);
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = buyFormDetails;
     const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
     const { realBuyOrSell, realQuantity } = companyTrade;
@@ -475,7 +468,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
                     {/* <MenuItem value="100">100</MenuItem>
                     <MenuItem value="150">150</MenuItem> */}
                     {optionData.map((elem)=>{
-                      console.log("optionData", elem)
+                      // console.log("optionData", elem)
                         return(
                             <MenuItem value={elem.props.value}>
                             {elem.props.children}

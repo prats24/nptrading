@@ -54,20 +54,22 @@ function CompanyPosition() {
     const [allmockcount, setAllMockCount] = useState([]);
     const [todaylivecount, setTodayLiveCount] = useState([]);
     const [alllivecount, setAllLiveCount] = useState([]);
+
+    const [userPermission, setUserPermission] = useState([]);
    
     useEffect(()=>{
 
-        console.log(socket);
+        //console.log(socket);
         socket.on("connect", ()=>{
-            console.log(socket.id);
+            //console.log(socket.id);
             socket.emit("hi",true)
         })
         socket.on("noToken", (data)=>{
-            console.log("no token");
+            //console.log("no token");
             window.alert(data);
         })
         socket.on("wrongToken", (data)=>{
-            console.log("wrong Token");
+            //console.log("wrong Token");
             window.alert(data);
         })
 
@@ -111,13 +113,30 @@ function CompanyPosition() {
             window.alert("Server Down");
             return new Error(err);
         })
+
+        axios.get(`${baseUrl}api/v1/readpermission`)
+        .then((res)=>{
+          setUserPermission((res.data));            
+            //setOrderCountTodayCompany((res.data).length);
+        }).catch((err)=>{
+            window.alert("Server Down");
+            return new Error(err);
+        })
+
     }, []);
 
-    console.log("company position is re rendering")
-    console.log(todaymockcount)
-    console.log(allmockcount)
-    console.log(todaylivecount)
-    console.log(alllivecount)
+    const handleSwitchChange = id => {
+      setUserPermission(prevUsers =>
+        prevUsers.map(user => {
+          if (user.userId === id) {
+            return { ...user, isRealTradeEnable: !user.isRealTradeEnable };
+          }
+          return user;
+        })
+      );
+    };
+
+    console.log("re rendering index")
 
   return (
     <DashboardLayout>
@@ -154,19 +173,17 @@ function CompanyPosition() {
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <MockTraderwiseCompanyPNL socket={socket} />
+              <MockTraderwiseCompanyPNL users={userPermission} handleSwitchChange={handleSwitchChange} socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <LiveTraderwiseCompanyPNL socket={socket} />
+              <LiveTraderwiseCompanyPNL users={userPermission} handleSwitchChange={handleSwitchChange} socket={socket} />
             </Grid>
           </Grid>
         </MDBox>
-       
-        
       </MDBox>
       <Footer />
     </DashboardLayout>
@@ -175,3 +192,4 @@ function CompanyPosition() {
 
 export default CompanyPosition;
 
+// todo ---> mismatch

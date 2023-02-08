@@ -3,21 +3,17 @@ import {useState, useEffect} from "react"
 import axios from "axios";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+// import { DataGrid, GridToolbarContainer, GridToolbarExport } from '@mui/x-data-grid';
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
-import Header from "./Header";
 import TextField from '@mui/material/TextField';
 import { Typography } from "@mui/material";
 import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
 
 // Data
 import TraderMatrix from "./data/TraderMatrixData";
@@ -43,14 +39,14 @@ const TableThree = () => {
     let [totalPositivePnl, setTotalPositivePnl] = useState(0);
     let [totalNegativePnl, setNegativePnl] = useState(0);
     let [overallPnl, setOverallPnl] = useState([]);
-    console.log("Dates: "+firstDate,secondDate)
-    console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
+    //console.log("Dates: "+firstDate,secondDate)
+    //console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
    
     useEffect(()=>{
-        console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
+        //console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
         axios.get(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
         .then((res)=>{
-          console.log(res.data)
+          //console.log(res.data)
           setTraderPNLData(res.data);
         }).catch((err)=>{
             window.alert("Server Down");
@@ -67,7 +63,7 @@ const TableThree = () => {
           return;
         }
         setFirstDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
       function endDate(e){
         e.preventDefault();
@@ -76,7 +72,7 @@ const TableThree = () => {
           return;
         }
         setSecondDate(e.target.value)
-        console.log(e.target.value);
+        //console.log(e.target.value);
       }
     
     let tradername = [];
@@ -84,7 +80,7 @@ const TableThree = () => {
     let traderpnl = [];
     let tradermatrix = [];
     let createdBy = '';
-    console.log(traderpnldata);
+    //console.log(traderpnldata);
 
     //New code for hash map of traders
 
@@ -109,7 +105,7 @@ const TableThree = () => {
                 obj.Brokerage += traderpnldata[i].brokerage
                 obj.LifetimeGPnl += traderpnldata[i].gpnl
                 obj.LifetimeNPnl += Number(traderpnldata[i].npnl)
-                console.log("LTNPNL: "+obj.LifetimeNPnl,traderpnldata[i].npnl);
+                //console.log("LTNPNL: "+obj.LifetimeNPnl,traderpnldata[i].npnl);
           } else {
             hash.set(traderpnldata[i]._id.createdBy, {
               createdBy: traderpnldata[i]._id.createdBy,
@@ -125,14 +121,14 @@ const TableThree = () => {
           }
     }
 
-    console.log(hash)
+    //console.log(hash)
     
     let pnlmatrixArr = []
     for (let value of hash.values()) {
       pnlmatrixArr.push(value);
     }
 
-    console.log("PNL Matrix Array: "+pnlmatrixArr[0]);
+    //console.log("PNL Matrix Array: "+pnlmatrixArr[0]);
 
 
     //Code Ends
@@ -151,7 +147,7 @@ const TableThree = () => {
     tradermatrix.push(JSON.parse(JSON.stringify({totalPositivePnl,totalNegativePnl,createdBy})))
     })
     
-    console.log(tradermatrix);
+    //console.log(tradermatrix);
     
     //Sorting the array based on ratio
     pnlmatrixArr.sort((a, b) => {
@@ -178,12 +174,14 @@ const TableThree = () => {
     const npnlcolor = (elem.LifetimeNPnl) >= 0 ? "success" : "error"
     const gpnlcolor = (elem.LifetimeGPnl) >= 0 ? "success" : "error"
     const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][elem.dayOfWeek-1];
-    let probableavgpnl = ((elem.RedDays/elem.TradingDays)*elem.NegativePnl + (elem.GreenDays/elem.TradingDays)*elem.PositivePnl)
     let ratio = 0;
-    const probableavgpnlcolor = probableavgpnl >= 0 ? "success" : "error"
     let averagereddaysgpnl = elem.RedDays != 0 ? elem.NegativePnl/elem.RedDays : 0
+    let averagegreendaysgpnl = elem.GreenDays != 0 ? elem.PositivePnl/elem.GreenDays : 0
     const averagereddaysgpnlcolor = averagereddaysgpnl >= 0 ? "success" : "error"
-    
+    const averagegreendaysgpnlcolor = averagegreendaysgpnl >= 0 ? "success" : "error"
+    const probableavgpnl = ((elem.RedDays/elem.TradingDays)*averagereddaysgpnl + (elem.GreenDays/elem.TradingDays)*averagegreendaysgpnl)
+    const probableavgpnlcolor = probableavgpnl >= 0 ? "success" : "error"
+
     if(elem.GreenDays == 0){
       ratio = 0;
     }
@@ -254,15 +252,20 @@ const TableThree = () => {
         {elem.GreenDays}
       </MDTypography>
     );
+    tpnl.agreendaysgpnl = (
+      <MDTypography component="a" variant="caption" color={averagegreendaysgpnlcolor} fontWeight="medium">
+        {averagegreendaysgpnl >= 0 ? "+₹" + averagegreendaysgpnl.toFixed(0) : "-₹" + (-averagegreendaysgpnl).toFixed(0)}
+      </MDTypography>
+    );
     tpnl.areddaysgpnl = (
       <MDTypography component="a" variant="caption" color={averagereddaysgpnlcolor} fontWeight="medium">
         {averagereddaysgpnl >= 0 ? "+₹" + averagereddaysgpnl.toFixed(0) : "-₹" + (-averagereddaysgpnl).toFixed(0)}
       </MDTypography>
     );
-    console.log(typeof(tpnl));
-    console.log(tpnl)
+    //console.log(typeof(tpnl));
+    //console.log(tpnl)
     //companypnl.push(cpnl)
-    console.log(traderpnl)
+    //console.log(traderpnl)
     rows.push(tpnl)
 
     })
@@ -271,6 +274,7 @@ const TableThree = () => {
     let totalnpnlcolor = totalnPnl >= 0 ? "success" : "error"
     const firstDateFormat = `${String(new Date(firstDate).getDate()).padStart(2, '0')}-${String(new Date(firstDate).getMonth() + 1).padStart(2, '0')}-${(new Date(firstDate).getFullYear())}`
     const secondDateFormat = `${String(new Date(secondDate).getDate()).padStart(2, '0')}-${String(new Date(secondDate).getMonth() + 1).padStart(2, '0')}-${(new Date(secondDate).getFullYear())}`
+
 
     return (
 

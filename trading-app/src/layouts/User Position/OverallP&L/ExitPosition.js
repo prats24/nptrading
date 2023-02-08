@@ -40,7 +40,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
     } else if(quantity < 0){
         checkBuyOrSell = "SELL"
     }
-    console.log("data from props", exchange, symbol, instrumentToken, product)
+    //console.log("data from props", exchange, symbol, instrumentToken, product)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   
     const getDetails = React.useContext(userContext);
@@ -192,7 +192,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
           axios.get(`${baseUrl}api/v1/readpermission`)
           .then((res) => {
           let perticularUser = (res.data).filter((elem) => {
-              ////console.log(elem.userId, userId);
+              //////console.log(elem.userId, userId);
               return elem.userId === userId;
           })
           setUserPermission(perticularUser);
@@ -220,7 +220,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
       setTradeData([...tradeData])
   
-      ////console.log(perticularInstrumentData);
+      //////console.log(perticularInstrumentData);
     }, [])
 
   let lotSize = tradeData[0]?.lotSize;
@@ -233,7 +233,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
 
   
-  // //console.log(tradingAlgoData, userPermission);
+  // ////console.log(tradingAlgoData, userPermission);
   
     const tradingAlgoArr = [];
     apiKeyDetails.map((elem) => {
@@ -259,7 +259,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
     let tradeEnable ;
     userPermission.map((elem)=>{
-        //console.log(elem)
+        ////console.log(elem)
         if(elem.isTradeEnable){
             tradeEnable = true;
         }
@@ -297,8 +297,8 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
               setApiKey(apiKeyDetails);
               
               setCompanyTrade(companyTrade)
-              ////console.log("companyTrade", companyTrade);
-              console.log("userPermission", userPermission)
+              //////console.log("companyTrade", companyTrade);
+              //console.log("userPermission", userPermission)
   
 
   
@@ -319,7 +319,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         e.preventDefault()
         setOpen(false);
   
-        console.log("tradeData", tradeData)
+        //console.log("tradeData", tradeData)
   
         if(!appLive[0].isAppLive){
           window.alert("App is not Live right now. Please wait.");
@@ -327,7 +327,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         }
   
         if(!tradeEnable){
-          //console.log("tradeEnable", tradeEnable)
+          ////console.log("tradeEnable", tradeEnable)
           window.alert("Your trade is disable, please contact to authorise person");
           return;
         }
@@ -426,23 +426,23 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
             })
         });
         const dataResp = await res.json();
-        //console.log("dataResp", dataResp)
+        ////console.log("dataResp", dataResp)
         if (dataResp.status === 422 || dataResp.error || !dataResp) {
-            //console.log(dataResp.error)
+            ////console.log(dataResp.error)
             window.alert(dataResp.error);
-            ////console.log("Failed to Trade");
+            //////console.log("Failed to Trade");
         } else {
             if(dataResp.massage === "COMPLETE"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("Trade Succesfull Completed");
             } else if(dataResp.massage === "REJECTED"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("Trade is Rejected due to Insufficient Fund");
             } else if(dataResp.massage === "AMO REQ RECEIVED"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("AMO Request Recieved");
             } else{
-                console.log("this is dataResp", dataResp)
+                //console.log("this is dataResp", dataResp)
                 window.alert("on order placing nothing happen");
             }
         }
@@ -539,7 +539,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                     {/* <MenuItem value="100">100</MenuItem>
                     <MenuItem value="150">150</MenuItem> */}
                     {optionData.map((elem)=>{
-                      // console.log("optionData", elem, filledQuantity)
+                      // //console.log("optionData", elem, filledQuantity)
                         return(
                             <MenuItem value={elem.props.value}>
                             {elem.props.children}
@@ -549,21 +549,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                     }
                   </Select>
                 </FormControl>
-
-              {/* <TextField
-                disabled
-                id="outlined-basic" label="Quantity" variant="standard" value={Math.abs(quantity)}
-                sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} /> */}
-
-              {/* <TextField
-                disabled
-                id="outlined-basic" label="Price" variant="standard" onChange={(e) => { { exitPositionFormDetails.Price = (e.target.value) } }}
-                sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
-
-              <TextField
-                disabled
-                id="outlined-basic" label="Trigger Price" variant="standard" onChange={(e) => { { exitPositionFormDetails.TriggerPrice = (e.target.value) } }}
-                sx={{ margin: 1, padding: 1, width: "300px" }} /> */}
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
               <FormControl  >
@@ -580,19 +565,6 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                   {/* <FormControlLabel value="LIMIT" control={<Radio />} label="LIMIT" /> */}
                 </RadioGroup>
               </FormControl>
-              {/* <FormControl  >
-                <FormLabel id="demo-controlled-radio-buttons-group" ></FormLabel>
-                <RadioGroup
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  onChange={(e) => { { exitPositionFormDetails.stopLoss = (e.target.value) } }}
-                  sx={{ display: "flex", flexDirection: "row" }}
-                >
-                  <FormControlLabel value="SL" control={<Radio />} label="SL" />
-                  <FormControlLabel value="SLM" control={<Radio />} label="SL-M" />
-                </RadioGroup>
-              </FormControl> */}
-
             </Box>
 
             <Box>

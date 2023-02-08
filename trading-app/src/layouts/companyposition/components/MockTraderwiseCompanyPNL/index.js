@@ -5,6 +5,7 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import ViewOrders from '@mui/icons-material/ViewList';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -17,11 +18,16 @@ import DataTable from "../../../../examples/Tables/DataTable";
  
 // Data
 import data from "./data";
+import ViewTradeDetail from "./ViewTradeDetail";
+import ViewOrderDetail from "./MockTraderwiseOrders";
+// import MockRealSwitch from "../LiveTraderwiseCompanyPNL/MockRealSwitch"
+import MockRealSwitch from "../MockRealSwitch";
 
-function MockTraderwiseCompantPNL({socket}) {
+function MockTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
+  // const {render, setRender} = Render
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -47,6 +53,7 @@ function MockTraderwiseCompantPNL({socket}) {
   );
 
 
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [allTrade, setAllTrade] = useState([]);
@@ -63,15 +70,15 @@ function MockTraderwiseCompantPNL({socket}) {
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        console.log("live price data", res)
+        //console.log("live price data", res)
         setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
         return new Error(err);
     })
 
-    socket.on("tick", (data) => {
-      console.log("this is live market data", data);
+    props.socket.on("tick", (data) => {
+      //console.log("this is live market data", data);
       setMarketData(data);
       // setDetails.setMarketData(data);
     })
@@ -86,12 +93,12 @@ function MockTraderwiseCompantPNL({socket}) {
         return new Error(err);
     })
 
-  }, [marketData])
+  }, [marketData]) 
 
   useEffect(() => {
     return () => {
-        console.log('closing');
-        socket.close();
+        //console.log('closing');
+        props.socket.close();
     }
   }, [])
 
@@ -100,7 +107,7 @@ function MockTraderwiseCompantPNL({socket}) {
           axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
           // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
           .then((res)=>{
-              console.log(res.data);
+              //console.log(res.data);
               setLatestTradeTimearr(res.data);
               setLatestTradeTime(res.data.trade_time) ;
               setLatestTradeBy(res.data.createdBy) ;
@@ -108,53 +115,54 @@ function MockTraderwiseCompantPNL({socket}) {
               setLatestTradeQuantity(res.data.Quantity) ;
               setLatestTradeSymbol(res.data.symbol) ;
               setLatestTradeStatus(res.data.status);
-                console.log(lastestTradeTimearr);
+                //console.log(lastestTradeTimearr);
           }).catch((err) => {
             return new Error(err);
           })
   }, [marketData])
 
   let mapForParticularUser = new Map();
-    console.log("Length of All Trade Array:",allTrade.length);
+    //console.log("Length of All Trade Array:",allTrade.length);
     for(let i = 0; i < allTrade.length; i++){
-      // console.log(allTrade[i])
+      // //console.log(allTrade[i])
       if(mapForParticularUser.has(allTrade[i]._id.traderId)){
-        console.log(marketData, "marketData")
+        //console.log(marketData, "marketData")
         let marketDataInstrument = marketData.filter((elem)=>{
-          console.log("market Data Instrument",elem.instrument_token)
+          //console.log("market Data Instrument",elem.instrument_token)
           return elem.instrument_token == Number(allTrade[i]._id.symbol)
         })
 
         let obj = mapForParticularUser.get(allTrade[i]._id.traderId)
-        console.log(marketDataInstrument, "marketDataInstrument")
+        //console.log(marketDataInstrument, "marketDataInstrument")
         obj.totalPnl += ((allTrade[i].amount+((allTrade[i].lots)*marketDataInstrument[0]?.last_price)));
-        console.log("Total P&L: ",allTrade[i]._id.traderId, allTrade[i].amount,Number(allTrade[i]._id.symbol),marketDataInstrument[0]?.instrument_token,marketDataInstrument[0]?.last_price,allTrade[i].lots);
+        //console.log("Total P&L: ",allTrade[i]._id.traderId, allTrade[i].amount,Number(allTrade[i]._id.symbol),marketDataInstrument[0]?.instrument_token,marketDataInstrument[0]?.last_price,allTrade[i].lots);
         obj.lotUsed += Math.abs(allTrade[i].lotUsed)
         obj.runninglots += allTrade[i].lots;
         obj.brokerage += allTrade[i].brokerage;
         obj.noOfTrade += allTrade[i].trades
 
       } else{
-        console.log(marketData, "marketData")
-        console.log(Number(allTrade[i]._id.symbol) ,Number(allTrade[i]._id.symbol), "symbol")
+        //console.log(marketData, "marketData")
+        //console.log(Number(allTrade[i]._id.symbol) ,Number(allTrade[i]._id.symbol), "symbol")
         let marketDataInstrument = marketData.filter((elem)=>{
           return elem !== undefined && elem.instrument_token === Number(allTrade[i]._id.symbol)
         })
-        //console.log(marketDataInstrument)
-        console.log(marketDataInstrument, "marketDataInstrument")
+        ////console.log(marketDataInstrument)
+        //console.log(marketDataInstrument, "marketDataInstrument")
         mapForParticularUser.set(allTrade[i]._id.traderId, {
           name : allTrade[i]._id.traderName,
           totalPnl : ((allTrade[i].amount+((allTrade[i].lots)*marketDataInstrument[0]?.last_price))),
           lotUsed : Math.abs(allTrade[i].lotUsed),
           runninglots : allTrade[i].lots,
           brokerage: allTrade[i].brokerage,
-          noOfTrade: allTrade[i].trades
+          noOfTrade: allTrade[i].trades,
+          userId: allTrade[i]._id.traderId
         }) 
       }
 
     }
 
-    console.log("mapForParticularUser", mapForParticularUser)
+    //console.log("mapForParticularUser", mapForParticularUser)
 
     let finalTraderPnl = [];
     for (let value of mapForParticularUser.values()){
@@ -165,17 +173,22 @@ function MockTraderwiseCompantPNL({socket}) {
       return (b.totalPnl-b.brokerage)-(a.totalPnl-a.brokerage)
     });
 
-    console.log("finalTraderPnl", finalTraderPnl)
+    //console.log("finalTraderPnl", finalTraderPnl)
+
+
 
 let totalGrossPnl = 0;
 let totalTransactionCost = 0;
 let totalNoRunningLots = 0;
 let totalTrades = 0;
 let totalLotsUsed = 0;
+let totalTraders = 0;
 
 function viewTraderFullReport(){
   
 }
+
+console.log("re rendering index mock")
 
 finalTraderPnl.map((subelem, index)=>{
   let obj = {};
@@ -191,6 +204,13 @@ finalTraderPnl.map((subelem, index)=>{
   totalNoRunningLots += (subelem.runninglots);
   totalLotsUsed += (subelem.lotUsed);
   totalTrades += (subelem.noOfTrade);
+  totalTraders += 1;
+
+  obj.userId = (
+    <MDTypography component="a" variant="caption" fontWeight="medium">
+      {subelem.userId}
+    </MDTypography>
+  );
 
   obj.traderName = (
     <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor} padding="5px" borderRadius="5px">
@@ -234,7 +254,14 @@ finalTraderPnl.map((subelem, index)=>{
     </MDTypography>
   );
   obj.view = (
-    <MDButton variant="outlined" color="info" fontWeight="10px" onClick={()=>{viewTraderFullReport()}}>View</MDButton>
+    <ViewTradeDetail socket={props.socket} userId={subelem.userId}/>
+  );
+  obj.orders = (
+    <ViewOrderDetail userId={subelem.userId}/>
+  );
+
+  obj.realOrMock = (
+    <MockRealSwitch props={props} userId={subelem.userId} />
   );
 
   rows.push(obj);
@@ -245,9 +272,11 @@ let obj = {};
 const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
 const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
 
+
+
 obj.traderName = (
-  <MDTypography component="a" variant="caption" fontWeight="medium">
-    {}
+  <MDTypography component="a" variant="caption" padding="5px" borderRadius="5px" backgroundColor="#e0e1e5" fontWeight="medium">
+    Traders : {totalTraders}
   </MDTypography>
 );
 
@@ -289,6 +318,8 @@ obj.netPnl = (
 );
 
 rows.push(obj);
+
+//console.log("traderwise row", rows)
 
 
   return (

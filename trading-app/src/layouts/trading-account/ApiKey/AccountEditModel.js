@@ -54,7 +54,7 @@ const  AccountEditModel = ({ data, id, Render }) => {
   }, [reRender])
 
   useEffect(() => {
-      console.log("edit data", editData);
+      //console.log("edit data", editData);
 
       setbroker(editData[0].brokerName)
       setAccountId(editData[0].accountId);
@@ -98,34 +98,34 @@ const  AccountEditModel = ({ data, id, Render }) => {
           })
       });
       const dataResp = await res.json();
-      console.log(dataResp);
+      //console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
-          console.log("Failed to Edit");
+          //console.log("Failed to Edit");
       } else {
-          console.log(dataResp);
+          //console.log(dataResp);
           window.alert("Edit succesfull");
-          console.log("Edit succesfull");
+          //console.log("Edit succesfull");
       }
       setOpen(false);
       reRender ? setReRender(false) : setReRender(true)
   }
 
   async function Ondelete() {
-      console.log(editData)
+      //console.log(editData)
       const res = await fetch(`${baseUrl}api/v1/readAccountDetails/${id}`, {
           method: "DELETE",
       });
 
       const dataResp = await res.json();
-      console.log(dataResp);
+      //console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
-          console.log("Failed to Delete");
+          //console.log("Failed to Delete");
       } else {
-          console.log(dataResp);
+          //console.log(dataResp);
           window.alert("Delete succesfull");
-          console.log("Delete succesfull");
+          //console.log("Delete succesfull");
       }
       setOpen(false);
       reRender ? setReRender(false) : setReRender(true)

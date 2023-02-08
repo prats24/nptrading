@@ -3,8 +3,8 @@ import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
 import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
-import masterCardLogo from "../../../../assets/images/logos/mastercard.png";
-import visaLogo from "../../../../assets/images/logos/visa.png";
+import MDAlert from "../../../../components/MDAlert";
+import MDSnackbar from "../../../../components/MDSnackbar";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -21,6 +21,10 @@ import axios from "axios";
 import { userContext } from '../../../../AuthContext';
 
 function PlatformSettings() {
+
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = () => setSuccessSB(true);
+  const closeSuccessSB = () => setSuccessSB(false);
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const [reRender, setReRender] = useState(true);
@@ -62,7 +66,7 @@ function PlatformSettings() {
           body: JSON.stringify({
               isAppLive: appLive, modifiedBy, modifiedOn
           })
-      });
+      }); 
       const dataResp = await res.json();
       console.log(dataResp);
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
@@ -70,9 +74,11 @@ function PlatformSettings() {
           // console.log("Failed to Edit");
       } else {
           if(appLive){
-              window.alert("Trading Enabled");
+              //window.alert("Trading Enabled");
+              openSuccessSB();
           } else{
-              window.alert("Trading Disabled");
+              //window.alert("Trading Disabled");
+              openSuccessSB();
           }
       }
       reRender ? setReRender(false) : setReRender(true)
@@ -80,6 +86,26 @@ function PlatformSettings() {
 
 
   console.log(settingData)
+  let appstatus = settingData[0]?.isAppLive === true ? "Online" : "Offline"
+  let today = new Date();
+  //let timestamp = (today.getHours())+":"+(today.getMinutes())+":"+(today.getSeconds())
+  let timestamp = `${(today.getHours())}:${String(today.getMinutes()).padStart(2, '0')}:${String(today.getSeconds()).padStart(2, '0')}`
+  let title = "App " + appstatus
+  let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
+  let content = "Trading is " + enablestatus + " now"
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      title={title}
+      content={content}
+      dateTime={timestamp}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+    />
+  );
  
   return (
     <Card sx={{ boxShadow: "none" }}>
@@ -100,6 +126,7 @@ function PlatformSettings() {
             <MDTypography variant="button" fontWeight="regular" color="dark">
               {(settingData[0]?.isAppLive ? "Trading Enabled" : "Trading Disabled")}    
             </MDTypography>
+            {renderSuccessSB}
           </MDBox>
         </MDBox>
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
