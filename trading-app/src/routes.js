@@ -12,6 +12,7 @@ import Notifications from "./layouts/notifications";
 import Profile from "./layouts/profile";
 import Setting from "./layouts/settings/Setting";
 import Expense from "./layouts/expenses/";
+import AlgoPosition from "./layouts/algo position";
 import Shop2Icon from '@mui/icons-material/Shop2';
 
 // @mui icons
@@ -34,6 +35,7 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import InventoryIcon from '@mui/icons-material/Inventory'; 
 import SettingsIcon from '@mui/icons-material/Settings';
+import EngineeringIcon from '@mui/icons-material/Engineering';
 
 const routes = [
   {
@@ -51,6 +53,15 @@ const routes = [
     icon: <BusinessIcon/>,
     route: "/companyposition",
     component: <CompanyPosition />,
+  },
+
+  {
+    type: "collapse",
+    name: "Algo Position",
+    key: "algoposition",
+    icon: <EngineeringIcon/>,
+    route: "/algoPosition",
+    component: <AlgoPosition />,
   },
   
   {

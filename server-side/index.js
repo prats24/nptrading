@@ -47,7 +47,7 @@ var kc = new KiteConnect({
   api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("RrFRRZVEo7d16oHdlFczLlXEUqu8luja", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+kc.generateSession("tqYJMZM0ohSOFCqCqPN8on9v2jZVrhFq", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -69,10 +69,7 @@ function init() {
     });
 }
 
-
 */
-
-
 
 
 
@@ -158,7 +155,7 @@ require('./db/conn');
   }
 
 
-  /*
+/*
 
     // const destinationUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority";
     const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority";
@@ -215,6 +212,7 @@ require('./db/conn');
 
 
 */
+
 
 
 const PORT = process.env.PORT;

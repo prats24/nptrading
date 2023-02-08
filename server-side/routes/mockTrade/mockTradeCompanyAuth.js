@@ -67,7 +67,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
     filled_quantity, exchange_order_id } = req.body 
 
     const {algoName, transactionChange, instrumentChange
-        , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
+        , exchangeChange, lotMultipler, productChange, tradingAccount, _id} = algoBox
 
 
         const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
@@ -150,7 +150,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell: realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, _id}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy, isRealTrade: true, amount: (Number(realQuantity)*average_price), trade_time,
                         order_req_time: order_timestamp, order_save_time: order_timestamp, exchange_order_id
     
@@ -199,7 +199,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell:realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
                             algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy, isRealTrade: false, amount: (Number(realQuantity)*average_price), trade_time,
                         exchange_order_id
                         
@@ -255,7 +255,7 @@ router.post("/mocktradecompany", async (req, res)=>{
         console.log(req.body);
         //console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
-        , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
+        , exchangeChange, lotMultipler, productChange, tradingAccount, _id} = algoBox
 
         const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
         const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
@@ -355,7 +355,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             Product, buyOrSell:realBuyOrSell, order_timestamp: newTimeStamp,
             variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-            lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+            lotMultipler, productChange, tradingAccount, _id}, order_id, instrumentToken, brokerage: brokerageCompany,
             tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPrice), trade_time:trade_time,
             
         });
@@ -1362,6 +1362,8 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
  
 })
 
+
+
 router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -1759,6 +1761,59 @@ router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
     res.status(201).json(pnlDetails);
 })
 
+router.get("/getoverallpnlmocktradecompanytoday/algowisedata/:algoId", async(req, res)=>{
+    let date = new Date();
+    const {algoId} = req.params;
+    console.log( date, algoId)
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            "algoBox._id": algoId
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {$multiply : ["$amount",-1]},
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+
+        res.status(201).json(pnlDetails);
+
+})
+
 router.get("/getMockTradeDetailsAllUser", async(req, res)=>{
     const {email} = req.params
     let date = new Date();
@@ -1796,6 +1851,45 @@ router.get("/getMockTradeDetailsAllUser", async(req, res)=>{
         }
       ])
     res.status(201).json(pnlDetails);
+})
+
+
+router.get("/gettraderwisepnlmocktradecompanytoday/algowiseData/:id", async(req, res)=>{
+    let date = new Date();
+    const {id} = req.params;
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE",  "algoBox._id": id} },
+        
+        { $group: { _id: {
+                                "traderId": "$userId",
+                                "traderName": "$createdBy",
+                                "symbol": "$instrumentToken"
+                            },
+                    amount: {
+                        $sum: {$multiply : ["$amount", -1]}
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    lotUsed: {
+                        $sum: {$abs : {$toInt : "$Quantity"}}
+                    }
+                    }},
+            { $sort: {_id: -1}},
+        
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
 })
 
 module.exports = router;
