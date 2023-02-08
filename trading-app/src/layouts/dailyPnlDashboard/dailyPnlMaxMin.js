@@ -43,7 +43,7 @@ const PnlMaxMinData = () => {
                 console.log("First Date PNL Data: "+res.data)
                 setFDPNLData(JSON.parse(JSON.stringify(res.data)));
       }).catch((err)=>{
-          window.alert("Server Down");
+          //window.alert("Server Down");
           return new Error(err);
       })
     },[firstDate])

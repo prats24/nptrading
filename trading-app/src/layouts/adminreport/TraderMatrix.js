@@ -49,7 +49,7 @@ const TableThree = () => {
           //console.log(res.data)
           setTraderPNLData(res.data);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
     },[firstDate,secondDate])

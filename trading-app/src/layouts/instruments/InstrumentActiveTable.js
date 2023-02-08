@@ -38,7 +38,7 @@ const InstrumentActiveTable = () => {
                   setActiveData(active);
                   console.log(active);
           }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
     },[reRender])

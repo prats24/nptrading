@@ -26,7 +26,7 @@ export default function UserTodayTradeData() {
         //console.log(res.data)
           setData(res.data);
       }).catch((err)=>{
-          window.alert("Server Down");
+          //window.alert("Server Down");
           return new Error(err);
       })
   },[getDetails])

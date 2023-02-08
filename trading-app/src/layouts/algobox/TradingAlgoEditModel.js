@@ -62,7 +62,7 @@ const TradingAlgoModel = ({ data, id, Render }) => {
           })
           setMappedUser(mappedUserUpdate);
       }).catch((err)=>{
-          window.alert("Server Down");
+          //window.alert("Server Down");
           return new Error(err);
       })
   }, [])

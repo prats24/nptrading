@@ -17,8 +17,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require("xss-clean");
 const hpp = require("hpp")
 const limiter = rateLimit({
-	windowMs: 1 * 60 * 1000, // 15 minutes
-	max: 5000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	windowMs: 1 * 60 * 1000, // 1 minutes
+	max: 100000, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: "Too many request"
@@ -46,7 +46,7 @@ var kc = new KiteConnect({
   api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("00l8N7KoiW0zXs8kR71EDW9S1Dxqy2Cb", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+kc.generateSession("RsLGVc6J7qmax3j9beAb6zSVp1qilqMj", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();

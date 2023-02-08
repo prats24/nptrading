@@ -18,7 +18,7 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
             //console.log(res.data);
 
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -28,7 +28,7 @@ export default function UserList({addUser, setAddUser, setPermissionData, algoNa
             setPermissionData(res.data);
 
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 

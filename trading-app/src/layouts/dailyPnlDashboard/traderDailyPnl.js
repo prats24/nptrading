@@ -44,7 +44,7 @@ const TraderDailypnldata = () => {
                 //console.log("First Date PNL Data: "+res.data)
                 setFDPNLData(JSON.parse(JSON.stringify(res.data)));
       }).catch((err)=>{
-          window.alert("Server Down");
+          //window.alert("Server Down");
           return new Error(err);
       })
  
@@ -190,7 +190,7 @@ const TraderDailypnldata = () => {
             // Code Ends
 
         }).catch((err)=>{
-            // window.alert("Server Down");
+            // //window.alert("Server Down");
             return new Error(err);
         })
     }
