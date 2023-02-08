@@ -40,7 +40,7 @@ function LiveOverallCompantPNL({socket}) {
   const [lastestTradeType, setLatestTradeType] = useState([]);
   const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
   const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
-  const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
+  const [algoBox, setAlgoBox] = useState([]);
 
   var Total = 0;
   let avgPriceArr = [];

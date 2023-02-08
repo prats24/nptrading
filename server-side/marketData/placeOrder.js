@@ -18,11 +18,12 @@ router.post("/placeorder", (async (req, res)=>{
 
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
-         createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, accessToken, userId} = req.body
+         createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
+         accessToken, userId, checkingMultipleAlgoFlag} = req.body
 
 
     const {algoName, transactionChange, instrumentChange
-       , exchangeChange, lotMultipler, productChange, tradingAccount} = algoBox
+       , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
 
        const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
        const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
@@ -247,7 +248,7 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
@@ -259,39 +260,41 @@ router.post("/placeorder", (async (req, res)=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log( "fail company live data saving")});
     
-                UserTradeData.findOne({order_id : order_id})
-                .then((dateExist)=>{
-                    if(dateExist){
-                        console.log("data already in real user");
-                        return res.status(422).json({error : "data already exist..."})
-                    }
-                    const tempDate = new Date();
-                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                    function addMinutes(date, hours) {
-                      date.setMinutes(date.getMinutes() + hours);
-                      return date;
-                     }
-                    const date = new Date(temp_order_save_time);
-                    const newDate = addMinutes(date, 330);
-                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
-             
-                    const userTradeData = new UserTradeData({
-                        disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-                        status, uId, createdBy, average_price, Quantity: Quantity, 
-                        Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
-                        variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
-                        order_id, instrumentToken, brokerage: brokerageUser,
-                        tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
+                if(checkingMultipleAlgoFlag === 1){
+                    UserTradeData.findOne({order_id : order_id})
+                    .then((dateExist)=>{
+                        if(dateExist){
+                            console.log("data already in real user");
+                            return res.status(422).json({error : "data already exist..."})
+                        }
+                        const tempDate = new Date();
+                        let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                        function addMinutes(date, hours) {
+                        date.setMinutes(date.getMinutes() + hours);
+                        return date;
+                        }
+                        const date = new Date(temp_order_save_time);
+                        const newDate = addMinutes(date, 330);
+                        const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                
+                        const userTradeData = new UserTradeData({
+                            disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
+                            status, uId, createdBy, average_price, Quantity: Quantity, 
+                            Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
+                            variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
+                            order_id, instrumentToken, brokerage: brokerageUser,
+                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                            order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
+        
+        
+                        });
+                        // console.log("this is userTradeData", userTradeData);
+                        userTradeData.save().then(()=>{
+                        }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                    }).catch(err => {console.log("fail trader live data saving")});
+                }
     
-    
-                    });
-                    // console.log("this is userTradeData", userTradeData);
-                    userTradeData.save().then(()=>{
-                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                }).catch(err => {console.log("fail trader live data saving")});
-    
-                MockTradeCompany.findOne({uId : uId})
+                MockTradeCompany.findOne({order_id : order_id})
                 .then((dateExist)=>{
                     if(dateExist){
                         console.log("data already in mock company");
@@ -313,7 +316,7 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
@@ -325,45 +328,49 @@ router.post("/placeorder", (async (req, res)=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
                 }).catch(err => {console.log("fail company mock in placeorder")});
     
-                MockTradeUser.findOne({uId : uId})
-                .then((dateExist)=>{
-                    if(dateExist){
-                        console.log("data already in mock user");
-                        return res.status(422).json({error : "date already exist..."})
-                    }
-                    const tempDate = new Date();
-                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                    function addMinutes(date, hours) {
-                      date.setMinutes(date.getMinutes() + hours);
-                      return date;
-                     }
-                    const date = new Date(temp_order_save_time);
-                    const newDate = addMinutes(date, 330);
-                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
-             
-                    const mockTradeDetailsUser = new MockTradeUser({
-    
-                        status, uId, createdBy, average_price, Quantity: Quantity, 
-                        Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
-                        variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
-                        order_id, instrumentToken, brokerage: brokerageUser,
-                        tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
-    
-                    });
-            
-                    // console.log("mockTradeDetails", mockTradeDetailsUser);
-                    mockTradeDetailsUser.save().then(()=>{
-                        // res.status(201).json({massage : "data enter succesfully"});
-                    }).catch((err)=> {
-                        // res.status(500).json({error:"Failed to enter data"})
-                    });
-            
-                }).catch(err => {console.log("fail company mock in placeorder")});
+                if(checkingMultipleAlgoFlag === 1){
+                    MockTradeUser.findOne({order_id : order_id})
+                    .then((dateExist)=>{
+                        if(dateExist){
+                            console.log("data already in mock user");
+                            return res.status(422).json({error : "date already exist..."})
+                        }
+                        const tempDate = new Date();
+                        let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                        function addMinutes(date, hours) {
+                        date.setMinutes(date.getMinutes() + hours);
+                        return date;
+                        }
+                        const date = new Date(temp_order_save_time);
+                        const newDate = addMinutes(date, 330);
+                        const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                
+                        const mockTradeDetailsUser = new MockTradeUser({
+        
+                            status, uId, createdBy, average_price, Quantity: Quantity, 
+                            Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
+                            variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
+                            order_id, instrumentToken, brokerage: brokerageUser,
+                            tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                            order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
+        
+                        });
+                
+                        // console.log("mockTradeDetails", mockTradeDetailsUser);
+                        mockTradeDetailsUser.save().then(()=>{
+                            // res.status(201).json({massage : "data enter succesfully"});
+                        }).catch((err)=> {
+                            // res.status(500).json({error:"Failed to enter data"})
+                        });
+                
+                    }).catch(err => {console.log("fail company mock in placeorder")});
+                }
     
     
                 setTimeout(()=>{
-                    return res.status(201).json({massage : responseMsg, err: responseErr})
+                    if(checkingMultipleAlgoFlag === 1){
+                        return res.status(201).json({massage : responseMsg, err: responseErr})
+                    }
                 },0)
     
         

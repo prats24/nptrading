@@ -339,6 +339,7 @@ router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
               $regex: todayDate,
             },
             status: "COMPLETE",
+            "algoBox.isDefault": true
           },
         },
         {
@@ -383,7 +384,7 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let pnlDetails = await LiveCompanyTradeData.aggregate([
-        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE"} },
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE", isDefault: true} },
         
         { $group: { _id: {
                                 "traderId": "$userId",
@@ -703,6 +704,97 @@ router.get("/getLiveTradeDetailsAllUser", async(req, res)=>{
         }
       ])
     res.status(201).json(pnlDetails);
+})
+
+router.get("/getoverallpnllivetradecompanytoday/algowisedata/:id", async(req, res)=>{
+    let date = new Date();
+    const {id} = req.params;
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            "algoBox._id": id
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {$multiply : ["$amount",-1]},
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/gettraderwisepnllivetradecompanytoday/algowisedata/:id", async(req, res)=>{
+    let date = new Date();
+    const {id} = req.params;
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE",  "algoBox._id": id} },
+        
+        { $group: { _id: {
+                                "traderId": "$userId",
+                                "traderName": "$createdBy",
+                                "symbol": "$instrumentToken"
+                            },
+                    amount: {
+                        $sum: {$multiply : ["$amount", -1]}
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    lotUsed: {
+                        $sum: {$abs : {$toInt : "$Quantity"}}
+                    }
+                    }},
+            { $sort: {_id: -1}},
+        
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
 })
 
 

@@ -23,10 +23,11 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: "Too many request"
 })
+const { MongoClient } = require('mongodb');
 
 
 // Apply the rate limiting middleware to all requests
-app.use(limiter)
+// app.use(limiter)
 app.use(mongoSanitize());
 app.use(helmet());
 app.use(xssClean());
@@ -46,7 +47,7 @@ var kc = new KiteConnect({
   api_key: "nq0gipdzk0yexyko",
 });
 
-kc.generateSession("RsLGVc6J7qmax3j9beAb6zSVp1qilqMj", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
+kc.generateSession("tqYJMZM0ohSOFCqCqPN8on9v2jZVrhFq", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
   .then(function (response) {
     console.log("response of generate session", response)
     init();
@@ -68,10 +69,7 @@ function init() {
     });
 }
 
-
 */
-
-
 
 
 
@@ -104,9 +102,9 @@ let newCors = process.env.NODE_ENV === "production" ? "http://3.110.187.5/" : "h
 app.use(cors({
   credentials:true,
 
-  origin: "http://3.7.187.183/"  // staging
+  // origin: "http://3.7.187.183/"  // staging
   // origin: "http://3.108.76.71/"  // production
-  //  origin: "http://localhost:3000"
+   origin: "http://localhost:3000"
 
 }));
 
@@ -155,6 +153,67 @@ require('./db/conn');
     }
 
   }
+
+
+/*
+
+    // const destinationUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority";
+    const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority";
+    const destinationUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+    // const destinationUri = "mongodb+srv://forStagingPurpose:ninepointer@cluster0.snsb6wx.mongodb.net/?retryWrites=true&w=majority";
+    let client, destinationClient;
+    async function backup() {
+    try {
+        // Connect to the source cluster
+        client = await MongoClient.connect(sourceUri, { useNewUrlParser: true });
+        // console.log(client); 
+
+        // Get the list of collections in the source cluster
+        const collections = await client.db().collections();
+
+        // console.log(collections);
+        
+        // Create a new client for the destination cluster
+        destinationClient = await MongoClient.connect(destinationUri, { useNewUrlParser: true });
+        const destCollections = await destinationClient.db().collections();
+
+        destCollections.forEach(async collection => {
+            if(await client.db().listCollections({name: collection.s.namespace.collection}).hasNext()){
+                console.log('dropping' + collection.s.namespace.collection);
+                await destinationClient.db().collection(collection.s.namespace.collection).drop();
+            }
+        });
+        
+
+        // Iterate through the collections and copy the data
+        for (const collection of collections) {
+        // Get the data from the source collection
+        const cursor = await collection.find({});
+        //   console.log(cursor);
+        //   console.log('s is', collection.s.namespace.collection);
+        // Insert the data into the destination collection
+        if(await cursor.count() > 0){
+        await destinationClient.db().collection(collection.s.namespace.collection).insertMany(await cursor.toArray(),{ ordered: false });
+            }
+        }
+        console.log('Backup completed successfully');
+    } catch (err) {
+        console.log('to err is to err')
+        console.error(err);
+    } finally {
+        if(client) client.close();
+        if(destinationClient) destinationClient.close();
+    }
+    }
+
+    backup().then(()=>{
+        console.log('ok');
+    });
+
+
+*/
+
+
 
 const PORT = process.env.PORT;
 

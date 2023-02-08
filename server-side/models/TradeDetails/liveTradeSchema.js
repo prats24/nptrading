@@ -134,6 +134,10 @@ const liveTrade = new mongoose.Schema({
     },
 
     algoBox:{
+        _id:{
+            type: String,
+            required: true
+        },
         algoName:{
             type: String,
             required: true
