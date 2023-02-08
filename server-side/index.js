@@ -40,7 +40,7 @@ require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 // Kite connect auto generate seesion
 
-
+/*
 var KiteConnect = require("kiteconnect").KiteConnect;
 
 var kc = new KiteConnect({
@@ -69,10 +69,7 @@ function init() {
     });
 }
 
-
-
-
-
+*/
 
 
 

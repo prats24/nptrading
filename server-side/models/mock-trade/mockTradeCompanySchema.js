@@ -101,6 +101,10 @@ const mockTradeCompanySchema = new mongoose.Schema({
         type: String,
     },
     algoBox:{
+        _id:{
+            type: String,
+            required: true
+        },
         algoName:{
             type: String,
             required: true
