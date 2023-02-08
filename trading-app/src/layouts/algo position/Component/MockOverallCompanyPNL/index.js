@@ -17,7 +17,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
 // Data
 import data from "./data";
 
-function MockOverallCompantPNL({socket}) {
+function MockOverallCompantPNL({socket, algoId, algoName}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -72,7 +72,7 @@ function MockOverallCompantPNL({socket}) {
 
     useEffect(()=>{
 
-      axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday`)
+      axios.get(`${baseUrl}api/v1/getoverallpnlmocktradecompanytoday/algowisedata/${algoId}`)
       .then((res) => {
           setTradeData(res.data);
           res.data.map((elem)=>{

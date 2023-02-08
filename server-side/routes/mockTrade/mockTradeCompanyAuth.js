@@ -1361,6 +1361,8 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
  
 })
 
+
+
 router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
@@ -1758,6 +1760,59 @@ router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
     res.status(201).json(pnlDetails);
 })
 
+router.get("/getoverallpnlmocktradecompanytoday/algowisedata/:algoId", async(req, res)=>{
+    let date = new Date();
+    const {algoId} = req.params;
+    console.log( date, algoId)
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            "algoBox._id": algoId
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {$multiply : ["$amount",-1]},
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+
+        res.status(201).json(pnlDetails);
+
+})
+
 router.get("/getMockTradeDetailsAllUser", async(req, res)=>{
     const {email} = req.params
     let date = new Date();
@@ -1795,6 +1850,45 @@ router.get("/getMockTradeDetailsAllUser", async(req, res)=>{
         }
       ])
     res.status(201).json(pnlDetails);
+})
+
+
+router.get("/gettraderwisepnlmocktradecompanytoday/algowiseData/:id", async(req, res)=>{
+    let date = new Date();
+    const {id} = req.params;
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE",  "algoBox._id": id} },
+        
+        { $group: { _id: {
+                                "traderId": "$userId",
+                                "traderName": "$createdBy",
+                                "symbol": "$instrumentToken"
+                            },
+                    amount: {
+                        $sum: {$multiply : ["$amount", -1]}
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    lotUsed: {
+                        $sum: {$abs : {$toInt : "$Quantity"}}
+                    }
+                    }},
+            { $sort: {_id: -1}},
+        
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
 })
 
 module.exports = router;

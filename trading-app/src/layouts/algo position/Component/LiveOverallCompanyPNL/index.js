@@ -17,7 +17,7 @@ import DataTable from "../../../../examples/Tables/DataTable";
 import data from "./data";
 
 // function OverallCompantPNL({socket}) {
-function LiveOverallCompantPNL({socket}) {
+function LiveOverallCompantPNL({socket, algoId, algoName}) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
@@ -69,7 +69,7 @@ function LiveOverallCompantPNL({socket}) {
 
   useEffect(()=>{
 
-    axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday`)
+    axios.get(`${baseUrl}api/v1/getoverallpnllivetradecompanytoday/algowisedata/${algoId}`)
     .then((res) => {
         setTradeData(res.data);
         res.data.map((elem)=>{

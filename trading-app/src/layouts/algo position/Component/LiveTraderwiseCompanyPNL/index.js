@@ -85,7 +85,7 @@ function LiveTraderwiseCompantPNL(props) {
 
   useEffect(()=>{
 
-    axios.get(`${baseUrl}api/v1/gettraderwisepnllivetradecompanytoday`)
+    axios.get(`${baseUrl}api/v1/gettraderwisepnllivetradecompanytoday/algowisedata/${props.algoId}`)
     .then((res) => {
         setAllTrade(res.data);
     }).catch((err)=>{

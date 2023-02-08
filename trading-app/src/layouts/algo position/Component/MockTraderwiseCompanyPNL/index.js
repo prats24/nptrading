@@ -85,7 +85,7 @@ function MockTraderwiseCompantPNL(props) {
 
   useEffect(()=>{
 
-    axios.get(`${baseUrl}api/v1/gettraderwisepnlmocktradecompanytoday`)
+    axios.get(`${baseUrl}api/v1/gettraderwisepnlmocktradecompanytoday/algowiseData/${props.algoId}`)
     .then((res) => {
         setAllTrade(res.data);
     }).catch((err)=>{
