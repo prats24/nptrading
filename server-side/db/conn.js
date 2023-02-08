@@ -9,11 +9,11 @@ const DB = process.env.DATABASE;
     const stagingDB = process.env.STAGINGDB;
 mongoose.connect(devDB, {
     //    mongoose.connect(DB, {
-        // mongoose.connect(stagingDB, {
-    useNewUrlParser: true,
+    //     mongoose.connect(stagingDB, {
+    // useNewUrlParser: true,
     
     useUnifiedTopology: true,
-    // useFindAndModify: false
+    useFindAndModify: false
     
 }).then(()=>{
     console.log("connection secure");
