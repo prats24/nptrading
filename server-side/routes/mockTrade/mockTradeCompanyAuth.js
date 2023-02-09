@@ -252,7 +252,7 @@ router.post("/mocktradecompany", async (req, res)=>{
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
           realBuyOrSell, realQuantity, checkingMultipleAlgoFlag } = req.body 
 
-        console.log(req.body);
+        console.log("this is mock trade comny req", req.body);
         //console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
