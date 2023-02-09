@@ -8,25 +8,25 @@ import Switch from "@mui/material/Switch";
 
 
 // Material Dashboard 2 React components
-import MDBox from "../../components/MDBox";
-import MDButton from "../../components/MDBox";
+import MDBox from "../../../components/MDBox";
+import MDButton from "../../../components/MDBox";
 import Button from '@mui/material/Button';
-import MDTypography from "../../components/MDTypography";
+import MDTypography from "../../../components/MDTypography";
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
-import DataTable from "../../examples/Tables/DataTable";
+// import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
+// import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
+// import Footer from "../../../examples/Footer";
+import DataTable from "../../../examples/Tables/DataTable";
 
 // Data
 // import authorsTableData from "./data/authorsTableData";
-import projectsTableData from "./data/projectsTableData";
-import AlgoHeader from "./Header";
+import projectsTableData from "../data/projectsTableData";
+// import AlgoHeader from "./Header";
 import TradingAlgoModel from './TradingAlgoModel';
-import TradingAlgoData from './data/TradingAlgoData';
-import MapUser from "./MapUser/MapUser"
-import RealTrade from "./RealTrade/RealTrade"
+import TradingAlgoData from '../data/TradingAlgoData';
+import MapUser from "../MapUser/MapUser"
+import RealTrade from "../RealTrade/RealTrade"
 import TradingAlgoEditModel from "./TradingAlgoEditModel";
 
 const TradingAlgo = () => {

@@ -8,13 +8,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import MDButton from '../../components/MDButton';
+import MDButton from '../../../components/MDButton';
 import TextField from '@mui/material/TextField';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import { userContext } from '../../AuthContext';
+import { userContext } from '../../../AuthContext';
 import uniqid from "uniqid";
 // import axios from "axios"
 
@@ -40,7 +40,7 @@ const TradingAlgoModel = ({Render}) => {
   const getDetails = useContext(userContext);
   let uId = uniqid();
   let date = new Date();
-  let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+  let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
   let lastModified = createdOn;
   let createdBy = getDetails.userDetails.name
 

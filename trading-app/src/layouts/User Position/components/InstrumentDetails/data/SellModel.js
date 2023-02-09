@@ -45,6 +45,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   const [userPermission, setUserPermission] = useState([]);
   const [bsBtn, setBsBtn] = useState(true)
   const [modal, setModal] = useState(false);
+  const [instrumentMapping, setInstrumentMapping] = useState([]);
 
 
   const [selected, setSelected] = useState("NRML");
@@ -58,13 +59,14 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   const [otmData, setOtmData] = useState([]);
 
   const [companyTrade, setCompanyTrade] = useState({
-      realBuyOrSell: "",
-      realSymbol: "",
-      realQuantity: "",
-      realInstrument: "",
-      realBrokerage: "",
-      realAmount: "",
-      real_last_price: "",
+    realBuyOrSell: "",
+    realSymbol: "",
+    realQuantity: "",
+    realInstrument: "",
+    realBrokerage: "",
+    realAmount: "",
+    real_last_price: "",
+    real_instrument_token: ""
   })
 
   // let lotSize = lotsize;
@@ -216,7 +218,15 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
             return new Error(err);
         })
 
-
+        axios.get(`${baseUrl}api/v1/readInstrumentAlgo`)
+        .then((res) => {
+            let dataArr = (res.data).filter((elem) => {
+              return elem.Status === "Active"
+            })
+            setInstrumentMapping(dataArr);
+        }).catch((err) => {
+            return new Error(err);
+        })
 
 
 
@@ -259,12 +269,22 @@ useEffect(()=>{
 
 
   let tradeEnable = false ;
-  // userPermission.map((elem)=>{
-  //     ////console.log(elem)
-  //     if(elem.isTradeEnable){
-  //         tradeEnable = true;
-  //     }
-  // })
+
+  function instrumentMappingFunc(){
+    let flag = true;
+    for(let i = 0; i < instrumentMapping.length; i++){
+      if(instrumentMapping[i].InstrumentNameIncoming === sellFormDetails.symbol){
+        companyTrade.realSymbol = instrumentMapping[i].InstrumentNameOutgoing;
+        companyTrade.real_instrument_token = instrumentMapping[i].OutgoingInstrumentCode;
+        flag = false;
+        break;
+      }
+      if(flag){
+        companyTrade.realSymbol = sellFormDetails.symbol;
+        companyTrade.real_instrument_token = instrumentToken;
+      }
+    }
+  }
 
   function tradingAlgo() {
     // if (userPermissionAlgo.length) {
@@ -278,8 +298,12 @@ useEffect(()=>{
                 companyTrade.realBuyOrSell = "SELL"
             }
 
-            companyTrade.realSymbol = sellFormDetails.symbol
-
+            if(elem.instrumentChange === "TRUE"){
+              instrumentMappingFunc();
+            } else{
+              companyTrade.realSymbol = sellFormDetails.symbol;
+              companyTrade.real_instrument_token = instrumentToken;
+            }
             companyTrade.realQuantity = elem.lotMultipler * (sellFormDetails.Quantity);
             let accessTokenParticular = accessTokenDetails.filter((element) => {
                 return elem.tradingAccount === element.accountId
@@ -374,12 +398,6 @@ useEffect(()=>{
         return ;
       }
 
-      // if(!tradeEnable){
-      //   ////console.log("tradeEnable", tradeEnable)
-      //   window.alert("Your trade is disable, please contact to authorise person");
-      //   return;
-      // }
-
       sellFormDetails.buyOrSell = "SELL";
   
       if (regularSwitch === true) {
@@ -388,10 +406,6 @@ useEffect(()=>{
       else {
         sellFormDetails.variety = "amo"
       }
-  
-      // setsellFormDetails(sellFormDetails);
-
-
 
       sellFormDetails.exchange = exchange;
       sellFormDetails.symbol = symbol
@@ -400,10 +414,7 @@ useEffect(()=>{
       // Algo box applied here....
 
       if (userPermissionAlgo.length && !isCompany) {
-        setsellFormDetails(sellFormDetails)
-          // if(!isCompany){
-          //     mockTradeUser("no");
-          // }
+          setsellFormDetails(sellFormDetails)
           tradingAlgo();
       } else {
           companyTrade.realBuyOrSell = "SELL";
@@ -445,8 +456,8 @@ useEffect(()=>{
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount , _id, marginDeduction, isDefault} = algoBox;
-    const { realBuyOrSell, realQuantity } = companyTrade;
+    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
+    const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
 
     const { apiKey } = apiKeyParticular[0];
     const { accessToken } = accessTokenParticular[0];
@@ -462,7 +473,8 @@ useEffect(()=>{
             exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
             stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
             algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken, checkingMultipleAlgoFlag
+            productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken, real_instrument_token, 
+            checkingMultipleAlgoFlag, realSymbol
 
         })
     });
@@ -490,36 +502,36 @@ useEffect(()=>{
   }
 
   async function mockTradeCompany(algoBox, checkingMultipleAlgoFlag){
-    
-    let date = new Date();
-    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
+  
+  let date = new Date();
+  let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
-    const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
-    const { realBuyOrSell, realQuantity } = companyTrade;
-    const {otm, otm_quantity, otm_token} = otmDetailsForm;
+  const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
+  const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
+  const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
+  const {otm, otm_quantity, otm_token} = otmDetailsForm;
 
-      const res = await fetch(`${baseUrl}api/v1/mocktradecompany`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({
-            exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
-            stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
-            algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken,
-            otm, otm_quantity, otm_token, checkingMultipleAlgoFlag
-        })
-      });
-      const dataResp = await res.json();
-      if (dataResp.status === 422 || dataResp.error || !dataResp) {
-          window.alert(dataResp.error);
-      } else {
-          window.alert("Trade succesfull");
-      }
+    const res = await fetch(`${baseUrl}api/v1/mocktradecompany`, {
+      method: "POST",
+      headers: {
+          "content-type": "application/json"
+      },
+      body: JSON.stringify({
+          exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
+          stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
+          algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
+          productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken, real_instrument_token,
+           otm, otm_quantity, otm_token, checkingMultipleAlgoFlag, realSymbol
+      })
+    });
+    const dataResp = await res.json();
+    if (dataResp.status === 422 || dataResp.error || !dataResp) {
+        window.alert(dataResp.error);
+    } else {
+        window.alert("Trade succesfull");
+    }
 
-    
+  
   }
 
   async function mockOtmTradeCompany(algoBox){
@@ -529,9 +541,9 @@ useEffect(()=>{
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
     const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
-    const { realBuyOrSell, realQuantity } = companyTrade;
+    const { realBuyOrSell, realQuantity, real_instrument_token } = companyTrade;
     const {otm, otm_quantity, otm_token} = otmDetailsForm;
-    //console.log("otm, otm_quantity, otm_token", otm, otm_quantity, otm_token)
+    console.log("otm, otm_quantity, otm_token", otm, otm_quantity, otm_token)
 
       const res = await fetch(`${baseUrl}api/v1/mockOtmtradecompany`, {
         method: "POST",
@@ -542,7 +554,7 @@ useEffect(()=>{
             exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
             stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
             algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount}, order_id:dummyOrderId, instrumentToken, otm, otm_quantity, otm_token
+            productChange, tradingAccount}, order_id:dummyOrderId, instrumentToken, real_instrument_token, otm, otm_quantity, otm_token
         })
       });
       const dataResp = await res.json();

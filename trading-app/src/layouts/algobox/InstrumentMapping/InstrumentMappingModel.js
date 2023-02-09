@@ -7,19 +7,19 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-import MDButton from '../../components/MDButton';
+import MDButton from '../../../components/MDButton';
 import TextField from '@mui/material/TextField';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import { userContext } from '../../AuthContext';
+import { userContext } from '../../../AuthContext';
 import uniqid from "uniqid";
 import {useState, useContext} from "react"
 
 
 
-const InstrumentMappingModel = () => {
+const InstrumentMappingModel = ({Render}) => {
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
@@ -37,11 +37,11 @@ const InstrumentMappingModel = () => {
   const getDetails = useContext(userContext);
   let uId = uniqid();
   let date = new Date();
-  let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+  let createdOn =   `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
   let lastModified = createdOn;
   let createdBy = getDetails.userDetails.name
 
-  const [reRender, setReRender] = useState(true);
+  const {reRender, setReRender} = Render;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -51,40 +51,34 @@ const InstrumentMappingModel = () => {
     setOpen(false);
   };
 
-  // const formSubmit = async () => {
-    
-  //   setFormData(formData);
-  //   console.log(formData)
+  async function formSubmit(e) {
+    setFormData(formData);
+    console.log(formData)
+    const { incoming_instrument, incoming_instrument_code, outgoing_instrument, outgoing_instrument_code, status } = formData;
 
-  //   const {algoName, transaction, instrument, exchange, product, lotMultiplier, accountName, status} = formData;
+    const res = await fetch(`${baseUrl}api/v1/instrumentAlgo`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          InstrumentNameIncoming: incoming_instrument, IncomingInstrumentCode: incoming_instrument_code, InstrumentNameOutgoing: outgoing_instrument, OutgoingInstrumentCode: outgoing_instrument_code, Status: status, lastModified, uId, createdBy, createdOn
+        })
+    });
 
-  //   const res = await fetch(`${baseUrl}api/v1/tradingalgo`, {
-  //       method: "POST",
-  //       headers: {
-  //            Accept: "application/json",
-  //           "Content-Type": "application/json",
-  //           "Access-Control-Allow-Credentials": true
+    const data = await res.json();
+    console.log(data);
+    if (data.status === 422 || data.error || !data) {
+        window.alert(data.error);
+        console.log("invalid entry");
+    } else {
+        window.alert("entry succesfull");
+        console.log("entry succesfull");
+    }
+    reRender ? setReRender(false) : setReRender(true)
+    setOpen(false);
+}
 
-  //       },
-  //       body: JSON.stringify({
-  //         algoName: algoName, transactionChange: transaction, instrumentChange: instrument, status, exchangeChange: exchange, 
-  //         lotMultipler: lotMultiplier, productChange: product, tradingAccount: accountName, lastModified, uId, createdBy, 
-  //         createdOn, realTrade:false, marginDeduction: false
-  //       })
-  //   });
-    
-  //   const data = await res.json();
-  //   console.log(data);
-  //   if(data.status === 422 || data.error || !data){
-  //       window.alert(data.error);
-  //       console.log("invalid entry");
-  //   }else{
-  //       window.alert("entry succesfull");
-  //       console.log("entry succesfull");
-  //   }
-  //   reRender ? setReRender(false) : setReRender(true)
-
-  // };
 
   return (
     <div>
@@ -104,19 +98,19 @@ const InstrumentMappingModel = () => {
           <DialogContentText sx={{ display: "flex", flexDirection: "column" }}>
             <TextField
               id="outlined-basic" label="Instrument Name (Incoming)" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formData.incoming_instrument = e.target.value}} />
 
-            <TextField
+            {/* <TextField
               id="outlined-basic" label="Incoming Instrument Code" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formData.incoming_instrument_code = e.target.value}} /> */}
 
             <TextField
               id="outlined-basic" label="Instrument Name (Outgoing)e" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formData.outgoing_instrument = e.target.value}} />
 
-            <TextField
+            {/* <TextField
               id="outlined-basic" label="Outgoing Instrument Code" variant="standard"
-              sx={{ margin: 1, padding: 1, width: "300px" }} />
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formData.outgoing_instrument_code = e.target.value}} /> */}
 
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -125,17 +119,18 @@ const InstrumentMappingModel = () => {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Status"
-                sx={{ margin: 1, padding: 1, width: "300px" }}
+                sx={{ margin: 1, padding: 1, width: "300px" }} 
+                onChange={(e)=>{formData.status = e.target.value}}
               >
-                <MenuItem value="active">Active</MenuItem>
-                <MenuItem value="inactive">Inctive</MenuItem>
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Inactive">Inactive</MenuItem>
               </Select>
             </FormControl>
 
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+          <Button autoFocus onClick={formSubmit}>
             OK
           </Button>
           <Button onClick={handleClose} autoFocus>

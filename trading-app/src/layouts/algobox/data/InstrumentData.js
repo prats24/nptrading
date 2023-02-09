@@ -14,12 +14,12 @@ export default function InstrumentData() {
   return {
     columns: [
       { Header: "Edit", accessor: "edit", align: "center" },
-      { Header: "Created On", accessor: "Created On", align: "center" },
-      { Header: "Instrument Name (Incoming)", accessor: "Instrument Name (Incoming)", align: "center" },
-      { Header: "Incoming Instrument Code", accessor: "Incoming Instrument Code", align: "center" },
-      { Header: "Instrument Name (Outgoing)", accessor: "Instrument Name (Outgoing)", align: "center" },
-      { Header: "Outgoing Instrument Code", accessor: "Outgoing Instrument Code", align: "center" },
-      { Header: "Status", accessor: "Status", align: "center" },
+      { Header: "Created On", accessor: "createdOn", align: "center" },
+      { Header: "Instrument Name (Incoming)", accessor: "incomingInstrument", align: "center" },
+      { Header: "Incoming Instrument Code", accessor: "incomingInstrumentCode", align: "center" },
+      { Header: "Instrument Name (Outgoing)", accessor: "outgoingInstrument", align: "center" },
+      { Header: "Outgoing Instrument Code", accessor: "outgoingInstrumentCode", align: "center" },
+      { Header: "Status", accessor: "status", align: "center" },
     ],
 
     rows: [

@@ -5,6 +5,14 @@ const instrumentMappingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    incomingInstrumentExchange:{
+        type: String,
+        // required: true
+    },
+    outgoingInstrumentExchange:{
+        type: String,
+        // required: true
+    },
     IncomingInstrumentCode:{
         type: String,
         required : true
@@ -24,6 +32,10 @@ const instrumentMappingSchema = new mongoose.Schema({
     createdOn:{
         type: String,
         required : true
+    },
+    lastModifiedBy:{
+        type: String,
+        // required : true
     },
     lastModified:{
         type: String,

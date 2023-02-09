@@ -20,8 +20,8 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 
 // Images
 import backgroundImage from "../../../assets/images/trading.jpg";
-import TradingAlgo from "../TradingAlgo";
-import InstrumentMapping from "../InstrumentMapping";
+import TradingAlgo from "../TradingAlgo/TradingAlgo";
+import InstrumentMapping from "../InstrumentMapping/InstrumentMapping";
 import ExchangeMapping from "../ExchangeMapping";
 import ProductMapping from "../ProductMapping";
 
