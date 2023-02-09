@@ -1892,4 +1892,31 @@ router.get("/gettraderwisepnlmocktradecompanytoday/algowiseData/:id", async(req,
  
 })
 
+
+router.get("/updatealgoid", async(req, res)=>{
+    // let date = new Date();
+    // let id = data._id;
+    // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
+    // const {email} = req.params
+    // //console.log(todayDate)
+    let algoiddoc = await MockTradeDetails.find()
+    //console.log(datatoupdate);
+
+
+        for(let i = 0; i< algoiddoc.length; i++ ){
+            if(!algoiddoc[i].algoBox._id){
+            ////console.log(datatoupdate[i]);
+            await MockTradeDetails.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox._id' : '63987fca223c3fc074684edd'},
+                function (err, algoBox) {
+                    if (err){
+                        //console.log(err)
+                    }
+                    else{
+                        //console.log("Trade Time : ", amount);
+                    }
+        }).clone();
+        }
+    }
+})
+
 module.exports = router;
