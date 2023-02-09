@@ -24,8 +24,6 @@ const limiter = rateLimit({
   message: "Too many request"
 })
 const { MongoClient } = require('mongodb');
-
-
 // Apply the rate limiting middleware to all requests
 // app.use(limiter)
 app.use(mongoSanitize());
@@ -36,42 +34,6 @@ app.use(hpp());
 // issue fix --> if enviournment variable path is not work
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
-
-
-// Kite connect auto generate seesion
-
-/*
-var KiteConnect = require("kiteconnect").KiteConnect;
-
-var kc = new KiteConnect({
-  api_key: "nq0gipdzk0yexyko",
-});
-
-kc.generateSession("tqYJMZM0ohSOFCqCqPN8on9v2jZVrhFq", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
-  .then(function (response) {
-    console.log("response of generate session", response)
-    init();
-  })
-  .catch(function (err) {
-    console.log("generate session error", err);
-  });
-
-function init() {
-  // Fetch equity margins.
-  // You can have other api calls here.
-  kc.getMargins()
-    .then(function (response) {
-      // You got user's margin details.
-      console.log("response of margin", response)
-    })
-    .catch(function (err) {
-      console.log("error of margin", err)
-    });
-}
-
-*/
-
-
 
 getKiteCred.getAccess().then((data)=>{
   createNewTicker(data.getApiKey, data.getAccessToken);
@@ -144,7 +106,8 @@ app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 require('./db/conn');
 
 
-
+let date = new Date();
+let weekDay = date.getDay();
   if(process.env.PROD){
     let date = new Date();
     let weekDay = date.getDay();
@@ -153,6 +116,8 @@ require('./db/conn');
     }
 
   }
+
+
 
 
 /*

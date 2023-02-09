@@ -102,6 +102,12 @@ const Accounts = () => {
         {elem.createdOn}
       </MDTypography>
     );
+    activeaccounts.generateToken = (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {elem.createdOn}
+      </MDTypography>
+    );
+
 
     rows.push(activeaccounts)
   })

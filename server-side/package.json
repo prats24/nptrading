@@ -28,7 +28,9 @@
     "node-fetch": "^3.2.10",
     "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20",
+    "puppeteer": "^19.6.3",
     "socket.io": "^4.5.3",
+    "totp-generator": "^0.0.14",
     "websocket": "^1.0.34",
     "xss-clean": "^0.1.1",
     "zerodha-auto-login": "^1.0.6"

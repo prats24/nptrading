@@ -4,6 +4,11 @@ require("../../db/conn");
 const RequestToken = require("../../models/Trading Account/requestTokenSchema");
 const {disconnectTicker, createNewTicker}  = require('../../marketData/kiteTicker');
 const getKiteCred = require('../../marketData/getKiteCred');
+const puppeteer = require("puppeteer");
+const KiteConnect = require('kiteconnect').KiteConnect;
+const totp = require("totp-generator");
+const zerodhaLogin = require("../../utils/zerodhaAutoLogin");
+
 
 router.post("/requestToken", (req, res)=>{
     const {accountId, accessToken, requestToken, status, generatedOn, lastModified, createdBy, uId} = req.body;
@@ -32,6 +37,35 @@ router.post("/requestToken", (req, res)=>{
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
     }).catch(err => {console.log("fail in accesstoken auth")});
+    
+})
+
+router.post("/autologin", (req, res)=>{
+    const {accountId, apiKey, apiSecret, status, generatedOn, lastModified, createdBy, uId} = req.body;
+
+    if(!accountId || !apiKey || !apiSecret || !status || !generatedOn || !lastModified || !createdBy || !uId){
+        //console.log("data nhi h pura");
+        return res.status(422).json({error : "Please Fill all Fields."})
+    }
+
+    
+
+// Keys provided must be base32 strings, ie. only containing characters matching (A-Z, 2-7, =).
+const token = totp(process.env.KUSH_ACCOUNT_HASH_CODE);
+let password = accountId === process.env.KUSH_ACCOUNT_ID && process.env.KUSH_PASS
+
+const login = zerodhaLogin(
+  apiKey,
+  apiSecret,
+  accountId,
+  password,
+  `${token}`,
+  req.body,
+  res
+  )
+
+  // console.log("these is tokens: ", login)
+
     
 })
 
@@ -99,12 +133,12 @@ router.delete("/readRequestToken/:id", async (req, res)=>{
 
 })
 
-router.patch("/readRequestToken/:id", async (req, res)=>{
+router.patch("/inactiveRequestToken/:id", async (req, res)=>{
     //console.log(req.params)
     //console.log("this is body", req.body);
     try{ // Broker, AccountID, AccountName, APIKey, APISecret, Status, lastModified
         const {id} = req.params
-        const account = await Account.findOneAndUpdate({_id : id}, {
+        const account = await RequestToken.findOneAndUpdate({_id : id}, {
             $set:{
                 status: req.body.Status,
                 lastModified: req.body.lastModified
