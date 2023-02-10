@@ -19,7 +19,7 @@ router.post("/placeorder", (async (req, res)=>{
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-         accessToken, userId, checkingMultipleAlgoFlag} = req.body
+         accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body
 
 
     const {algoName, transactionChange, instrumentChange
@@ -49,7 +49,7 @@ router.post("/placeorder", (async (req, res)=>{
 
     if(variety === "amo"){
         orderData = new URLSearchParams({
-            "tradingsymbol":symbol,
+            "tradingsymbol":realSymbol,
             "exchange":exchange,
             "transaction_type":realBuyOrSell,
             "order_type":OrderType,
@@ -61,7 +61,7 @@ router.post("/placeorder", (async (req, res)=>{
         })
     } else if(variety === "regular"){
         orderData = new URLSearchParams({
-            "tradingsymbol":symbol,
+            "tradingsymbol":realSymbol,
             "exchange":exchange,
             "transaction_type":realBuyOrSell,
             "order_type":OrderType,
@@ -248,7 +248,8 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
+                        brokerage: brokerageCompany,
                         tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     

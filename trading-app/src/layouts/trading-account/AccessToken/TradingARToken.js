@@ -169,7 +169,6 @@ const TradingARToken = () => {
                                     <MDTypography variant="h6" color="white" py={2.5}>
                                         Active Access & Request Token
                                     </MDTypography>
-                                    <AutoLogin Render={{reRender, setReRender}} />
                                     <TradingARTokenModel Render={{reRender, setReRender}}/>
                                     
                                 </MDBox>

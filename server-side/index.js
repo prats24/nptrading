@@ -179,7 +179,43 @@ let weekDay = date.getDay();
 */
 
 
+// const { MongoClient } = require('mongodb');
+/*
+async function backupDatabase(sourceUri, targetUri) {
+  const sourceClient = await MongoClient.connect(sourceUri, { useUnifiedTopology: true });
+  const targetClient = await MongoClient.connect(targetUri, { useUnifiedTopology: true });
 
+  const sourceDb = sourceClient.db();
+  const targetDb = targetClient.db();
+
+  const collections = await sourceDb.collections();
+
+  for (const collection of collections) {
+    if (collection.collectionName.startsWith('system.')) {
+      continue;
+    }
+  
+    const documents = await collection.find({}).toArray();
+    for (const document of documents) {
+      console.log(documents);
+      await targetDb.collection(collection.collectionName).updateOne({ _id: document._id }, { $set: document }, { upsert: true });
+    }
+  }
+
+  sourceClient.close();
+  targetClient.close();
+}
+
+const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority";
+const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+
+// const sourceUri = 'mongodb://<user>:<password>@<host>:<port>/<database>';
+// const targetUri = 'mongodb://<user>:<password>@<host>:<port>/<database>';
+
+backupDatabase(sourceUri, targetUri);
+
+
+*/
 const PORT = process.env.PORT;
 
 const server = app.listen(PORT);

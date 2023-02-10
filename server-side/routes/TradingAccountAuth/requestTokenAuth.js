@@ -54,15 +54,22 @@ router.post("/autologin", (req, res)=>{
 const token = totp(process.env.KUSH_ACCOUNT_HASH_CODE);
 let password = accountId === process.env.KUSH_ACCOUNT_ID && process.env.KUSH_PASS
 
-const login = zerodhaLogin(
-  apiKey,
-  apiSecret,
-  accountId,
-  password,
-  `${token}`,
-  req.body,
-  res
-  )
+try{
+
+    const login = zerodhaLogin(
+        apiKey,
+        apiSecret,
+        accountId,
+        password,
+        `${token}`,
+        req.body,
+        res
+        )
+
+} catch(err){
+    return new Error(err);
+}
+
 
   // console.log("these is tokens: ", login)
 
@@ -140,7 +147,7 @@ router.patch("/inactiveRequestToken/:id", async (req, res)=>{
         const {id} = req.params
         const account = await RequestToken.findOneAndUpdate({_id : id}, {
             $set:{
-                status: req.body.Status,
+                status: req.body.status,
                 lastModified: req.body.lastModified
             }
         })

@@ -17,20 +17,21 @@ import {useState, useContext, useEffect} from "react";
 import { userContext } from '../../../AuthContext';
 import uniqid from "uniqid"
 import axios from "axios";
+import LoginIcon from '@mui/icons-material/Login';
 
-const AutoLogin = ({Render}) => {
-  const {reRender, setReRender} = Render
-  const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
+const AutoLogin = ({data}) => {
+  // const {reRender, setReRender} = Render
+  // const [open, setOpen] = React.useState(false);
+  // const theme = useTheme();
+  // const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  // const handleClickOpen = () => {
+  //   setOpen(true);
+  // };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
 
 
 
@@ -38,93 +39,94 @@ const AutoLogin = ({Render}) => {
   const getDetails = useContext(userContext);
   let uId = uniqid();
   let date = new Date();
-  let generatedOn = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
+  let generatedOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
   let lastModified = generatedOn;
   let createdBy = getDetails.userDetails.name
 
-  const [activeApiKey, setActiveApiKey] = useState([]);
-  const [formstate, setformstate] = useState({
-      AccountID: "",
-  });
+  // const [activeApiKey, setActiveApiKey] = useState([]);
+  // const [formstate, setformstate] = useState({
+  //     AccountID: "",
+  // });
+  const [accessAndRequest, setAccessAndRequest] = useState([])
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readAccountDetails`)
+    axios.get(`${baseUrl}api/v1/readRequestToken`)
     .then((res)=>{
-        let data = res.data;
-        let active = data.filter((elem) => {
-            return elem.status === "Active"
-        })
-        setActiveApiKey(active);
+      let data = res.data;
+      let active = data.filter((elem) => {
+          return elem.status === "Active" && elem.generatedOn !== generatedOn;
+      })
+      setAccessAndRequest(active);
+
     }).catch((err)=>{
         return new Error(err);
     })
   }, [])
 
-  let optionData = [];
-  for(let i =0; i< activeApiKey.length; i++){
-      optionData.push( <MenuItem value={activeApiKey[i].accountId}>{activeApiKey[i].accountId}</MenuItem>)      
-  }
+  // let optionData = [];
+  // for(let i =0; i< activeApiKey.length; i++){
+  //     optionData.push( <MenuItem value={activeApiKey[i].accountId}>{activeApiKey[i].accountId}</MenuItem>)      
+  // }
 
-  console.log("option data", optionData, activeApiKey)
+  // console.log("option data", optionData, activeApiKey)
 
   async function formbtn() {
-      setformstate(formstate);
-      setOpen(false);
 
-      const { AccountID } = formstate;
-      let particularAccount = activeApiKey.filter((elem)=>{
-        return elem.accountId === AccountID;
-      })
+      // const res = await fetch(`${baseUrl}api/v1/autologin`, {
+      //     method: "POST",
+      //     headers: {
+      //         "content-type": "application/json"
+      //     },
+      //     body: JSON.stringify({
+      //         accountId: data.accountId, apiKey: data.apiKey, apiSecret: data.apiSecret, status: "Active", uId, createdBy, generatedOn, lastModified
+      //     })
+      // });
 
-      const {apiKey, apiSecret, _id} = particularAccount[0];
-      const res = await fetch(`${baseUrl}api/v1/autologin`, {
-          method: "POST",
+      // const resp = await res.json();
+      // console.log(resp);
+      // if (resp.status === 422 || resp.error || !resp) {
+      //     window.alert(resp.error);
+      //     console.log("invalid entry");
+      // } else {
+      //     window.alert("entry succesfull");
+      //     console.log("entry succesfull");
+      // }
+
+      console.log("accessAndRequest", accessAndRequest)
+
+      accessAndRequest.map(async (elem)=>{
+
+        const res2 = await fetch(`${baseUrl}api/v1/inactiveRequestToken/${elem._id}`, {
+          method: "PATCH",
           headers: {
               "content-type": "application/json"
           },
           body: JSON.stringify({
-              accountId: AccountID, apiKey, apiSecret, status: "Active", uId, createdBy, generatedOn, lastModified
+              lastModified, status: "Inactive"
           })
-      });
+        });
+  
+        const data2 = await res2.json();
+        console.log(data2);
+        if (data2.status === 422 || data2.error || !data2) {
+            window.alert("Error in inactivating access token");
+            console.log("invalid entry");
+        } else {
+            // window.alert("Inactive succesfull");
+            console.log("entry succesfull");
+        }
 
-      const data = await res.json();
-      console.log(data);
-      if (data.status === 422 || data.error || !data) {
-          window.alert(data.error);
-          console.log("invalid entry");
-      } else {
-          window.alert("entry succesfull");
-          console.log("entry succesfull");
-      }
+      })
 
-      const res2 = await fetch(`${baseUrl}api/v1/inactiveRequestToken`, {
-        method: "PATCH",
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({
-            lastModified
-        })
-    });
-
-    const data2 = await res2.json();
-    console.log(data2);
-    if (data2.status === 422 || data2.error || !data2) {
-        window.alert(data2.error);
-        console.log("invalid entry");
-    } else {
-        window.alert("Inactive succesfull");
-        console.log("entry succesfull");
-    }
-      reRender ? setReRender(false) : setReRender(true)
+      // reRender ? setReRender(false) : setReRender(true)
   }
 
   return (
-    <div>
-      <MDButton variant="outlined" onClick={handleClickOpen}>
-        Auto Login
+    <>
+      <MDButton variant="" color="black"  onClick={formbtn}>
+        <LoginIcon />
       </MDButton>
-      <Dialog
+      {/* <Dialog
         fullScreen={fullScreen}
         open={open}
         onClose={handleClose}
@@ -149,7 +151,7 @@ const AutoLogin = ({Render}) => {
               </Select>
             </FormControl> */}
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120, }}>
+            {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120, }}>
                 <InputLabel id="demo-simple-select-standard-label">Select Account </InputLabel>
                 <Select
                 labelId="demo-simple-select-standard-label"
@@ -158,8 +160,8 @@ const AutoLogin = ({Render}) => {
                 onChange={(e) => { { formstate.AccountID = (e.target.value) } }}
                 sx={{ margin: 1, padding: 1, }}
                 >
-                {/* <MenuItem value="100">100</MenuItem>
-                <MenuItem value="150">150</MenuItem> */}
+                <MenuItem value="100">100</MenuItem>
+                <MenuItem value="150">150</MenuItem>
                 {optionData.map((elem)=>{
                     return(
                         <MenuItem value={elem.props.value}>
@@ -181,8 +183,8 @@ const AutoLogin = ({Render}) => {
             Close
           </Button>
         </DialogActions>
-      </Dialog>
-    </div>
+      </Dialog>  */}
+    </>
   );
 }
 

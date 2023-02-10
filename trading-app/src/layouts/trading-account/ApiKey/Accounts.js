@@ -24,6 +24,7 @@ import AccountsModel from './AccountsModel';
 import AccountsData from '../data/ApiKey/AccountsData';
 import AccountsDataInactive from '../data/ApiKey/AccountsDataInactive';
 import AccountEditModel from "./AccountEditModel"
+import AutoLogin from '../AccessToken/AutoLogin';
 
 const Accounts = () => {
   const { columns, rows } = AccountsData();
@@ -104,7 +105,7 @@ const Accounts = () => {
     );
     activeaccounts.generateToken = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {elem.createdOn}
+        <AutoLogin data={elem} />
       </MDTypography>
     );
 

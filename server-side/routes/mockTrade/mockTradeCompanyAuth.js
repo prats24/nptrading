@@ -348,8 +348,9 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
-        if(dateExist && checkingMultipleAlgoFlag === 1){
-            //console.log("data already");
+
+        if(dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
+            console.log("data already", checkingMultipleAlgoFlag);
             return res.status(422).json({error : "date already exist..."})
         }
 
