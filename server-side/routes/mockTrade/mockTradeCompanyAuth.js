@@ -18,11 +18,7 @@ const CompanyTradeData = require("../../models/TradeDetails/liveTradeSchema");
 const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema"); 
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
-const dbBackup = require("../../mongodbBackup");
 
-router.get("/dbBackup", async(req, res)=>{
-    await dbBackup();
-})
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     // if(dailyPnl.length === 0){
@@ -304,7 +300,7 @@ router.post("/mocktradecompany", async (req, res)=>{
         return new Error(err);
     }
 
-    //console.log("newTimeStamp", newTimeStamp);
+    console.log("newTimeStamp", newTimeStamp, originalLastPriceCompany, originalLastPriceUser);
 
 
     function buyBrokerage(totalAmount){
@@ -348,8 +344,8 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
-
-        if(dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
+        console.log("dateExist", dateExist)
+        if(dateExist && dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
             console.log("data already", checkingMultipleAlgoFlag);
             return res.status(422).json({error : "date already exist..."})
         }
@@ -369,7 +365,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
-    }).catch(err => {console.log("fail")});
+    }).catch(err => {console.log(err, "fail")});
 
     if(checkingMultipleAlgoFlag === 1){
         MockTradeDetailsUser.findOne({order_id : order_id})
@@ -1377,7 +1373,9 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
         { $group: { _id: {
                                 "traderId": "$userId",
                                 "traderName": "$createdBy",
-                                "symbol": "$instrumentToken"
+                                "symbol": "$instrumentToken",
+                                "algoId": "$algoBox._id",
+                                "algoName": "$algoBox.algoName"
                             },
                     amount: {
                         $sum: {$multiply : ["$amount", -1]}

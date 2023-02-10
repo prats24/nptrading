@@ -156,7 +156,8 @@ function MockTraderwiseCompantPNL(props) {
           runninglots : allTrade[i].lots,
           brokerage: allTrade[i].brokerage,
           noOfTrade: allTrade[i].trades,
-          userId: allTrade[i]._id.traderId
+          userId: allTrade[i]._id.traderId,
+          algoName: allTrade[i]._id.algoName
         }) 
       }
 
@@ -260,9 +261,9 @@ finalTraderPnl.map((subelem, index)=>{
     <ViewOrderDetail userId={subelem.userId}/>
   );
 
-  // obj.realOrMock = (
-  //   <MockRealSwitch props={props} userId={subelem.userId} />
-  // );
+  obj.realOrMock = (
+    <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName} />
+  );
 
   rows.push(obj);
 })

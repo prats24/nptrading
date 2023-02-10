@@ -46,7 +46,7 @@ const UserModel = () => {
   const getDetails = useContext(userContext);
   let uId = uniqid();
   let date = new Date();
-  let createdOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+  let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
   let lastModified = createdOn;
   let createdBy = getDetails.userDetails.name
 

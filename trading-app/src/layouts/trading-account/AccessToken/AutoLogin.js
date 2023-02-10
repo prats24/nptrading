@@ -72,25 +72,25 @@ const AutoLogin = ({data}) => {
 
   async function formbtn() {
 
-      // const res = await fetch(`${baseUrl}api/v1/autologin`, {
-      //     method: "POST",
-      //     headers: {
-      //         "content-type": "application/json"
-      //     },
-      //     body: JSON.stringify({
-      //         accountId: data.accountId, apiKey: data.apiKey, apiSecret: data.apiSecret, status: "Active", uId, createdBy, generatedOn, lastModified
-      //     })
-      // });
+      const res = await fetch(`${baseUrl}api/v1/autologin`, {
+          method: "POST",
+          headers: {
+              "content-type": "application/json"
+          },
+          body: JSON.stringify({
+              accountId: data.accountId, apiKey: data.apiKey, apiSecret: data.apiSecret, status: "Active", uId, createdBy, generatedOn, lastModified
+          })
+      });
 
-      // const resp = await res.json();
-      // console.log(resp);
-      // if (resp.status === 422 || resp.error || !resp) {
-      //     window.alert(resp.error);
-      //     console.log("invalid entry");
-      // } else {
-      //     window.alert("entry succesfull");
-      //     console.log("entry succesfull");
-      // }
+      const resp = await res.json();
+      console.log(resp);
+      if (resp.status === 422 || resp.error || !resp) {
+          window.alert(resp.error);
+          console.log("invalid entry");
+      } else {
+          window.alert("entry succesfull");
+          console.log("entry succesfull");
+      }
 
       console.log("accessAndRequest", accessAndRequest)
 

@@ -156,7 +156,8 @@ function LiveTraderwiseCompantPNL(props) {
           runninglots : allTrade[i].lots,
           brokerage: allTrade[i].brokerage,
           noOfTrade: allTrade[i].trades,
-          userId: allTrade[i]._id.traderId
+          userId: allTrade[i]._id.traderId,
+          algoName: allTrade[i]._id.algoName
         }) 
       }
 
@@ -253,9 +254,9 @@ function LiveTraderwiseCompantPNL(props) {
       obj.orders = (
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
-      // obj.realOrMock = (
-      //   <MockRealSwitch props={props} userId={subelem.userId} />
-      // );
+      obj.realOrMock = (
+        <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName}/>
+      );
    
        rows.push(obj);
      })

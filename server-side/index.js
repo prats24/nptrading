@@ -36,6 +36,7 @@ const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 getKiteCred.getAccess().then((data)=>{
+  console.log(data)
   createNewTicker(data.getApiKey, data.getAccessToken);
 });
 
@@ -118,104 +119,45 @@ let weekDay = date.getDay();
   }
 
 
+//------------------------------------------------------------------------------------------
+// async function backupDatabase(sourceUri, targetUri) {
+//   try {
+//     const sourceClient = await MongoClient.connect(sourceUri, { useUnifiedTopology: true });
+//     const targetClient = await MongoClient.connect(targetUri, { useUnifiedTopology: true });
+
+//     const sourceDb = sourceClient.db();
+//     const targetDb = targetClient.db();
+
+//     const collections = await sourceDb.collections();
+
+//     for (const collection of collections) {
+//       let i = 0;
+//       const documents = await collection.find({}).toArray();
+//       for (const document of documents) {
+//         console.log(`Backing up document ${i++} from collection ${collection.collectionName}`);
+//         await targetDb.collection(collection.collectionName).updateOne({ _id: document._id }, { $set: document }, { upsert: true });
+//       }
+//     }
+
+//     sourceClient.close();
+//     targetClient.close();
+//   } catch (error) {
+//     console.error(`Error while backing up the database: ${error.message}`);
+//   }
+// }
+
+// const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+// const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+
+// backupDatabase(sourceUri, targetUri);
 
 
-/*
-
-    // const destinationUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority";
-    const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority";
-    const destinationUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
-    // const destinationUri = "mongodb+srv://forStagingPurpose:ninepointer@cluster0.snsb6wx.mongodb.net/?retryWrites=true&w=majority";
-    let client, destinationClient;
-    async function backup() {
-    try {
-        // Connect to the source cluster
-        client = await MongoClient.connect(sourceUri, { useNewUrlParser: true });
-        // console.log(client); 
-
-        // Get the list of collections in the source cluster
-        const collections = await client.db().collections();
-
-        // console.log(collections);
-        
-        // Create a new client for the destination cluster
-        destinationClient = await MongoClient.connect(destinationUri, { useNewUrlParser: true });
-        const destCollections = await destinationClient.db().collections();
-
-        destCollections.forEach(async collection => {
-            if(await client.db().listCollections({name: collection.s.namespace.collection}).hasNext()){
-                console.log('dropping' + collection.s.namespace.collection);
-                await destinationClient.db().collection(collection.s.namespace.collection).drop();
-            }
-        });
-        
-
-        // Iterate through the collections and copy the data
-        for (const collection of collections) {
-        // Get the data from the source collection
-        const cursor = await collection.find({});
-        //   console.log(cursor);
-        //   console.log('s is', collection.s.namespace.collection);
-        // Insert the data into the destination collection
-        if(await cursor.count() > 0){
-        await destinationClient.db().collection(collection.s.namespace.collection).insertMany(await cursor.toArray(),{ ordered: false });
-            }
-        }
-        console.log('Backup completed successfully');
-    } catch (err) {
-        console.log('to err is to err')
-        console.error(err);
-    } finally {
-        if(client) client.close();
-        if(destinationClient) destinationClient.close();
-    }
-    }
-
-    backup().then(()=>{
-        console.log('ok');
-    });
 
 
-*/
 
 
-// const { MongoClient } = require('mongodb');
-/*
-async function backupDatabase(sourceUri, targetUri) {
-  const sourceClient = await MongoClient.connect(sourceUri, { useUnifiedTopology: true });
-  const targetClient = await MongoClient.connect(targetUri, { useUnifiedTopology: true });
-
-  const sourceDb = sourceClient.db();
-  const targetDb = targetClient.db();
-
-  const collections = await sourceDb.collections();
-
-  for (const collection of collections) {
-    if (collection.collectionName.startsWith('system.')) {
-      continue;
-    }
-  
-    const documents = await collection.find({}).toArray();
-    for (const document of documents) {
-      console.log(documents);
-      await targetDb.collection(collection.collectionName).updateOne({ _id: document._id }, { $set: document }, { upsert: true });
-    }
-  }
-
-  sourceClient.close();
-  targetClient.close();
-}
-
-const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority";
-const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
-
-// const sourceUri = 'mongodb://<user>:<password>@<host>:<port>/<database>';
-// const targetUri = 'mongodb://<user>:<password>@<host>:<port>/<database>';
-
-backupDatabase(sourceUri, targetUri);
 
 
-*/
 const PORT = process.env.PORT;
 
 const server = app.listen(PORT);

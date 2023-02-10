@@ -36,7 +36,7 @@ const MapUser = ({algoName}) => {
 
   let date = new Date();
   const getDetails = useContext(userContext);
-  let modifiedOn = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`
+  let modifiedOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
   let modifiedBy = getDetails.userDetails.name;
 
 

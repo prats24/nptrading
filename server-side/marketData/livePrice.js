@@ -14,7 +14,7 @@ router.get("/getliveprice", async (req, res)=>{
   const accessToken = await RequestToken.find();
   let getApiKey, getAccessToken;
   let date = new Date();
-  let today = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
+  let today = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`;
   for(let elem of accessToken){
       for(let subElem of apiKey){
           if(elem.accountId === subElem.accountId && elem.generatedOn === today && elem.status === "Active" && subElem.status === "Active"){
