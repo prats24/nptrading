@@ -132,7 +132,27 @@ exports.getTraderDailyPnlData = async(req,res,next) => {
        let x = await TraderDailyPnlData.aggregate(pipeline)
     
        res.status(201).json(x);
-    }
+}
+
+exports.deleteDuplicateData = async(req,res,next) => {
+      let cursor = await TraderDailyPnlData.aggregate([
+       {$group: {
+         _id: { timetsamp: "$timestamp", symbol: "$symbol" },
+         dups: { $addToSet: "$_id" },
+         count: { "$sum": 1 }
+       }},
+       { $match: { count: { "$gt": 1 } } }
+     ])
+     
+     let i = 0;
+     cursor.forEach(async (doc, index)=>{
+         // doc.dups[0].shift()
+          console.log(doc.dups[0], i++)
+        //  await TraderDailyPnlData.deleteMany({_id:{$in:doc.dups[0]}})
+         console.log("deleted")
+     })
+
+}
 
 
 

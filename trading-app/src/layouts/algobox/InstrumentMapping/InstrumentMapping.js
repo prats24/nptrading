@@ -44,7 +44,7 @@ const InstrumentMapping = () => {
 
     mappingData.map((subelem)=>{
         let obj = {};
-        let statuscolor = subelem.status == "Active" ? "success" : "error"
+        let statuscolor = subelem.Status == "Active" ? "success" : "error"
         obj.edit = (
             <Button variant="" color="black" fontWeight="small">
                 <InstrumentMappingEdit data={mappingData} id={subelem._id} Render={{setReRender, reRender}}/>

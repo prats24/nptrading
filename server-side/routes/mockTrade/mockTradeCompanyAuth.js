@@ -19,6 +19,11 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 
+router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+
+        await traderwiseDailyPnlController.deleteDuplicateData();
+    //   }
+})
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     // if(dailyPnl.length === 0){
@@ -41,15 +46,6 @@ const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyP
 //     })
     
 // })
-
-// "disclosed_quantity": "0",
-// "price": "0",
-// "filled_quantity": "50",
-// "pending_quantity": "0",
-// "cancelled_quantity":"0",
-// "market_protection":"0",
-// "guid": "57936X3XRhv2U0CSJsgg",
-
 
 
 
