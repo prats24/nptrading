@@ -109,6 +109,14 @@ const mockTradeCompanySchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        isDefault:{
+            type: Boolean,
+            required: true
+        },
+        marginDeduction:{
+            type: Boolean,
+            required: true
+        },
         transactionChange:{
             type: String,
             required : true

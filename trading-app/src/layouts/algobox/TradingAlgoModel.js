@@ -29,6 +29,7 @@ const TradingAlgoModel = ({Render}) => {
     instrument: "",
     exchange: "",
     product: "",
+    isDefault: "",
     lotMultiplier: "",
     accountName: "",
     status: ""
@@ -58,7 +59,7 @@ const TradingAlgoModel = ({Render}) => {
     setFormData(formData);
     //console.log(formData)
 
-    const {algoName, transaction, instrument, exchange, product, lotMultiplier, accountName, status} = formData;
+    const {algoName, transaction, instrument, exchange, product, lotMultiplier, accountName, status, isDefault} = formData;
 
     const res = await fetch(`${baseUrl}api/v1/tradingalgo`, {
         method: "POST",
@@ -70,7 +71,7 @@ const TradingAlgoModel = ({Render}) => {
         body: JSON.stringify({
           algoName: algoName, transactionChange: transaction, instrumentChange: instrument, status, exchangeChange: exchange, 
           lotMultipler: lotMultiplier, productChange: product, tradingAccount: accountName, lastModified, uId, createdBy, 
-          createdOn, realTrade:false, marginDeduction: false
+          createdOn, realTrade:false, marginDeduction: false, isDefault: false
         })
     });
     
@@ -168,6 +169,21 @@ const TradingAlgoModel = ({Render}) => {
                 <MenuItem value="FALSE">FALSE</MenuItem>
               </Select>
             </FormControl>
+
+            {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Default</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Default"
+                sx={{ margin: 1, padding: 1, width: "300px" }}
+                // value={formData.product}
+                onChange={(e)=>{formData.isDefault = e.target.value}}
+              >
+                <MenuItem value="true">TRUE</MenuItem>
+                <MenuItem value="false">FALSE</MenuItem>
+              </Select>
+            </FormControl> */}
 
             <TextField
               id="outlined-basic" label="Multipler" variant="standard" type="number"

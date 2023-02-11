@@ -45,7 +45,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
     
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -239,7 +239,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   
         const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy, userId } = detailObj;
-        const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
+        const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, marginDeduction, isDefault, _id } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
@@ -256,7 +256,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
                 exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 validity, variety, createdBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-                productChange, tradingAccount}, instrumentToken
+                productChange, tradingAccount, marginDeduction, isDefault, _id}, instrumentToken
   
             })
         });

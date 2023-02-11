@@ -82,7 +82,7 @@ function CompanyPosition() {
             setTodayMockCount((res.data));            
             //setOrderCountTodayCompany((res.data).length);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -91,7 +91,7 @@ function CompanyPosition() {
             setTodayLiveCount((res.data));            
             //setOrderCountTodayCompany((res.data).length);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -101,7 +101,7 @@ function CompanyPosition() {
             setAllMockCount((res.data));            
             //setOrderCountTodayCompany((res.data).length);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -110,7 +110,7 @@ function CompanyPosition() {
             setAllLiveCount((res.data));            
             //setOrderCountTodayCompany((res.data).length);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -119,7 +119,7 @@ function CompanyPosition() {
           setUserPermission((res.data));            
             //setOrderCountTodayCompany((res.data).length);
         }).catch((err)=>{
-            window.alert("Server Down");
+            //window.alert("Server Down");
             return new Error(err);
         })
 

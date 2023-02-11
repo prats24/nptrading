@@ -45,7 +45,7 @@ export default function TransactionCostData() {
         // setTCost(res.data);
         Tdata = res.data
     }).catch((err)=>{
-        window.alert("Server Down");
+        //window.alert("Server Down");
         return new Error(err);
     })
 },[])

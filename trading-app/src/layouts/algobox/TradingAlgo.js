@@ -79,6 +79,40 @@ const TradingAlgo = () => {
         reRender ? setReRender(false) : setReRender(true)
     }
 
+    async function defaultAlgo(id, isDefault, algoName){
+        if(isDefault){
+            isDefault = false;
+        } else{
+            isDefault = true;
+        }
+        console.log("isDefault", isDefault)
+        const res = await fetch(`${baseUrl}api/v1/updatedefaultalgo/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Accept": "application/json",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                isDefault
+            })
+        });
+        const dataResp = await res.json();
+        console.log("isDefault", dataResp)
+        console.log(dataResp);
+        if (dataResp.status === 422 || dataResp.error) {
+            window.alert(dataResp.error);
+            // console.log("Failed to Edit");
+        } else {
+            if(!isDefault){
+               
+                window.alert(`${algoName} is not a Default Algo now`);
+            } else{
+                window.alert(`${algoName} is now Default Algo`);
+            }
+        }
+        reRender ? setReRender(false) : setReRender(true)
+    }
+
     async function transactionChange(id, transactionChange){
         if(transactionChange === "TRUE"){
             transactionChange = "FALSE"
@@ -235,6 +269,11 @@ const TradingAlgo = () => {
         obj.marginDeduction = (
             <MDBox mt={0.5}>
                 <Switch checked={subelem.marginDeduction} onChange={() => {marginDeduction(subelem._id, subelem.marginDeduction)}} />
+            </MDBox>
+        );
+        obj.isDefault = (
+            <MDBox mt={0.5}>
+                <Switch checked={subelem.isDefault} onChange={() => {defaultAlgo(subelem._id, subelem.isDefault, subelem.algoName)}} />
             </MDBox>
         );
         obj.instrumentChange = (

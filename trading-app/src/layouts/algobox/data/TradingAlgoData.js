@@ -25,6 +25,7 @@ export default function TradingAlgoData() {
       { Header: "Exchange", accessor: "exchangeChange", align: "center" },
       { Header: "Product", accessor: "productChange", align: "center" },
       { Header: "Real Trade", accessor: "isRealTrade", align: "center" },
+      { Header: "Default", accessor: "isDefault", align: "center" },
       { Header: "Trading Account", accessor: "tradingAccount", align: "center" },
       { Header: "Status", accessor: "status", align: "center" },
       

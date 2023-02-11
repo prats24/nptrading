@@ -17,6 +17,8 @@ router.get("/traderdailypnldata/:selectDate/:traderName",traderDailyPnlDataContr
 
 router.get("/getstoplossstopprofitpnl/",traderDailyPnlDataController.getstoplossstopprofitpnl)
 
+router.get("/getstoplosspnl/:stoploss",traderDailyPnlDataController.getstoplosspnl)
+
 
 
 

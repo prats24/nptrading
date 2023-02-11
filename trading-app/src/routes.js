@@ -14,6 +14,7 @@ import Setting from "./layouts/settings/Setting";
 import Expense from "./layouts/expenses/";
 import AlgoPosition from "./layouts/algo position";
 import Shop2Icon from '@mui/icons-material/Shop2';
+import ReportIcon from '@mui/icons-material/Assessment';
 
 // @mui icons
 import PersonIcon from '@mui/icons-material/Person';
@@ -29,6 +30,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import UserOrders from "./layouts/userorders";
 import UserPosition from "./layouts/User Position";
 import UserReport from "./layouts/userreports";
+import TradersReport from "./layouts/tradersReport";
 import AdminReport from "./layouts/adminreport";
 import DailyPNLData from "./layouts/dailyPnlDashboard";
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
@@ -57,10 +59,10 @@ const routes = [
 
   {
     type: "collapse",
-    name: "Algo Position",
+    name: "Algo Position(s)",
     key: "algoposition",
     icon: <EngineeringIcon/>,
-    route: "/algoPosition",
+    route: "/algoposition",
     component: <AlgoPosition />,
   },
   
@@ -74,12 +76,20 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Trader Dashboard",
-    key: "traderdashboard",
-    icon: <DashboardIcon/>,
-    route: "/traderdashboard",
-    component: <TraderDashboard />,
+    name: "Trader Reports",
+    key: "tradersReport",
+    icon: <ReportIcon/>,
+    route: "/tradersReport",
+    component: <TradersReport/>,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Trader Dashboard",
+  //   key: "traderdashboard",
+  //   icon: <DashboardIcon/>,
+  //   route: "/traderdashboard",
+  //   component: <TraderDashboard />,
+  // },
   {
     type: "collapse",
     name: "All Orders",
@@ -98,7 +108,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Algo Box",
+    name: "Algo Box(s)",
     key: "algobox",
     icon: <ManageAccountsIcon/>,
     route: "/algobox",
@@ -114,7 +124,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Setting",
+    name: "App Settings",
     key: "setting",
     icon: <SettingsIcon/>,
     route: "/setting",
@@ -144,22 +154,22 @@ const routes = [
     route: "/users",
     component: <Users />,
   },
-  {
-    type: "collapse",
-    name: "Funds",
-    key: "funds",
-    icon: <MonetizationOnIcon/>,
-    route: "/funds",
-    component: <Funds />,
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <NotificationsActiveIcon/>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Funds",
+  //   key: "funds",
+  //   icon: <MonetizationOnIcon/>,
+  //   route: "/funds",
+  //   component: <Funds />,
+  // },
+  // {
+  //   type: "collapse",
+  //   name: "Notifications",
+  //   key: "notifications",
+  //   icon: <NotificationsActiveIcon/>,
+  //   route: "/notifications",
+  //   component: <Notifications />,
+  // },
   {
     type: "collapse",
     name: "Position",

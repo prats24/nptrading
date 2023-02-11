@@ -136,7 +136,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     })
     setUserPermission(perticularUser);
     }).catch((err) => {
-        // window.alert("Server Down");
+        // //window.alert("Server Down");
         return new Error(err);
     })
     setOpen(true);
@@ -202,7 +202,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         })
         setUserPermission(perticularUser);
         }).catch((err) => {
-            // window.alert("Server Down");
+            // //window.alert("Server Down");
             return new Error(err);
         })
 
@@ -445,7 +445,7 @@ useEffect(()=>{
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount , _id} = algoBox;
+    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount , _id, marginDeduction, isDefault} = algoBox;
     const { realBuyOrSell, realQuantity } = companyTrade;
 
     const { apiKey } = apiKeyParticular[0];
@@ -462,7 +462,7 @@ useEffect(()=>{
             exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
             stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
             algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount, _id}, order_id:dummyOrderId, instrumentToken, checkingMultipleAlgoFlag
+            productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken, checkingMultipleAlgoFlag
 
         })
     });
@@ -495,7 +495,7 @@ useEffect(()=>{
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id } = algoBox;
+    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
     const { realBuyOrSell, realQuantity } = companyTrade;
     const {otm, otm_quantity, otm_token} = otmDetailsForm;
 
@@ -508,7 +508,7 @@ useEffect(()=>{
             exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
             stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
             algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount, _id}, order_id:dummyOrderId, instrumentToken,
+            productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken,
             otm, otm_quantity, otm_token, checkingMultipleAlgoFlag
         })
       });

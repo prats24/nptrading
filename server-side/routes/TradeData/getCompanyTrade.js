@@ -339,6 +339,7 @@ router.get("/getoverallpnllivetradecompanytoday", async(req, res)=>{
               $regex: todayDate,
             },
             status: "COMPLETE",
+            "algoBox.isDefault": true
           },
         },
         {
@@ -383,7 +384,7 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let pnlDetails = await LiveCompanyTradeData.aggregate([
-        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE"} },
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE", "algoBox.isDefault": true} },
         
         { $group: { _id: {
                                 "traderId": "$userId",

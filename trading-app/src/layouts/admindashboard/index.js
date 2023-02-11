@@ -134,7 +134,7 @@ function AdminDashboard() {
             setThisWeekNPNL(0)
           }
     }).catch((err)=>{
-        window.alert("Server Down");
+        //window.alert("Server Down");
         return new Error(err);
     })
 },[])
@@ -159,7 +159,7 @@ useEffect(()=>{
         //console.log(lastweeknpnl)
         }
   }).catch((err)=>{
-      window.alert("Server Down");
+      //window.alert("Server Down");
       return new Error(err);
   })
 },[])

@@ -67,7 +67,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
     filled_quantity, exchange_order_id } = req.body 
 
     const {algoName, transactionChange, instrumentChange
-        , exchangeChange, lotMultipler, productChange, tradingAccount, _id} = algoBox
+        , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
 
 
         const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
@@ -150,7 +150,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell: realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, _id}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy, isRealTrade: true, amount: (Number(realQuantity)*average_price), trade_time,
                         order_req_time: order_timestamp, order_save_time: order_timestamp, exchange_order_id
     
@@ -199,7 +199,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell:realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
                             algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy, isRealTrade: false, amount: (Number(realQuantity)*average_price), trade_time,
                         exchange_order_id
                         
@@ -255,7 +255,7 @@ router.post("/mocktradecompany", async (req, res)=>{
         console.log(req.body);
         //console.log("in the company auth");
     const {algoName, transactionChange, instrumentChange
-        , exchangeChange, lotMultipler, productChange, tradingAccount, _id} = algoBox
+        , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
 
         const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
         const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
@@ -355,7 +355,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             Product, buyOrSell:realBuyOrSell, order_timestamp: newTimeStamp,
             variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-            lotMultipler, productChange, tradingAccount, _id}, order_id, instrumentToken, brokerage: brokerageCompany,
+            lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
             tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPrice), trade_time:trade_time,
             
         });
@@ -1322,6 +1322,7 @@ router.get("/getoverallpnlmocktradecompanytoday", async(req, res)=>{
               $regex: todayDate,
             },
             status: "COMPLETE",
+            "algoBox.isDefault": true
           },
         },
         {
@@ -1368,7 +1369,7 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     let pnlDetails = await MockTradeDetails.aggregate([
-        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE"} },
+        { $match: { trade_time : {$gte: `${todayDate} 00:00:00` , $lte: `${todayDate} 23:59:59`}, status: "COMPLETE", "algoBox.isDefault": true} },
         
         { $group: { _id: {
                                 "traderId": "$userId",
@@ -1901,22 +1902,22 @@ router.get("/updatealgoid", async(req, res)=>{
     // //console.log(todayDate)
     let algoiddoc = await MockTradeDetails.find()
     //console.log(datatoupdate);
-
-
+  
+  
         for(let i = 0; i< algoiddoc.length; i++ ){
-            if(!algoiddoc[i].algoBox._id){
-            ////console.log(datatoupdate[i]);
-            await MockTradeDetails.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox._id' : '63987fca223c3fc074684edd'},
+            if(!algoiddoc[i].algoBox.isDefault && !algoiddoc[i].algoBox.marginDeduction){
+            console.log(algoiddoc[i]._id);
+            await MockTradeDetails.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox.isDefault' : true,'algoBox.marginDeduction' : false},
                 function (err, algoBox) {
                     if (err){
-                        //console.log(err)
+                        console.log(err)
                     }
                     else{
-                        //console.log("Trade Time : ", amount);
+                        console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
                     }
         }).clone();
         }
     }
-})
+  })
 
 module.exports = router;

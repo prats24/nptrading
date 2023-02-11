@@ -4,7 +4,7 @@ require("../../db/conn");
 const TradingAlgo = require("../../models/AlgoBox/tradingAlgoSchema");
 
 router.post("/tradingalgo", (req, res)=>{
-    const {algoName, transactionChange, instrumentChange, status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, uId, createdBy, createdOn, realTrade, marginDeduction} = req.body;
+    const {algoName, transactionChange, instrumentChange, status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, uId, createdBy, createdOn, realTrade, marginDeduction, isDefault} = req.body;
 
     if(!algoName || !transactionChange || !instrumentChange || !status || !exchangeChange || !lotMultipler || !productChange || !tradingAccount || !lastModified || !uId || !createdBy || !createdOn){
         //console.log(req.body);
@@ -20,7 +20,7 @@ router.post("/tradingalgo", (req, res)=>{
         }
         const tradingAlgo = new TradingAlgo({algoName, transactionChange, instrumentChange, 
             status, exchangeChange, lotMultipler, productChange, tradingAccount, lastModified, 
-            uId, createdBy, createdOn, isRealTrade:realTrade, marginDeduction});
+            uId, createdBy, createdOn, isRealTrade:realTrade, marginDeduction, isDefault});
 
             //console.log(tradingAlgo)
         tradingAlgo.save().then(()=>{
@@ -115,6 +115,27 @@ router.patch("/updatemargindeduction/:id", async (req, res)=>{
         })
         //console.log("this is role", tradingAlgo);
         res.send(tradingAlgo)
+        // res.status(201).json({massage : "data patch succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
+
+router.patch("/updatedefaultalgo/:id", async (req, res)=>{
+    //console.log(req.params)
+    //console.log("this is body", req.body);
+    try{ 
+        const {id} = req.params
+        const {isDefault} = req.body;
+        const tradingAlgo = await TradingAlgo.findOneAndUpdate({_id : id}, {
+            $set:{ 
+                
+                isDefault: isDefault
+            }
+            
+        })
+        //console.log("this is role", tradingAlgo);
+        res.send(isDefault)
         // res.status(201).json({massage : "data patch succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});

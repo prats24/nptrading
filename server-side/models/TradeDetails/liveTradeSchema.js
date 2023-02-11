@@ -138,6 +138,14 @@ const liveTrade = new mongoose.Schema({
             type: String,
             required: true
         },
+        isDefault:{
+            type: Boolean,
+            required: true
+        },
+        marginDeduction:{
+            type: Boolean,
+            required: true
+        },
         algoName:{
             type: String,
             required: true
