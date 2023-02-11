@@ -123,11 +123,6 @@ overallPnl.map((elem)=>{
 })
 console.log(pnldata)
 
-
-// const xLabelsVisibility = new Array(pnldates.length)
-//   .fill(0)
-//   .map((_, i) => (i % 2 === 0 ? true : false));
-
 const xLabelsVisibility = pnldates;
 
 const yLabels = traderNameList
@@ -170,27 +165,27 @@ for (let i = 0; i < rows; i++) {
     <MDBox mt={2} mb={3} fontSize={13}>
         <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
               <MDBox >
-                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:2, p: 0.5, fontSize: 15}}>Trader Side HeatMap (Mock-Gross P&L)</Typography>
+                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:2, p: 1, fontSize: 15,fontWeight:600}}>Trader Side HeatMap (Mock-Gross P&L)</Typography>
               </MDBox>
               <MDBox >
-                <Typography sx={{ margin: 1, padding: 1, fontSize: 19 }}>Start Date</Typography>
+                <Typography sx={{ margin: 2, padding: 1, fontSize: 15,fontWeight:600,backgroundColor:"#f0f2f5", borderRadius:2 }}>Start Date</Typography>
                 </MDBox>
               <TextField
                 id="outlined-basic" variant="standard" type="date"
-                sx={{ margin: 1, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
+                sx={{ margin: 1.5, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
            
               <MDBox >
-                <Typography color="dark" sx={{ margin: 1, padding: 1, fontSize: 19 }}>End Date</Typography>
+                <Typography color="dark" sx={{ margin: 2, padding: 1, fontSize: 15,fontWeight:600,backgroundColor:"#f0f2f5", borderRadius:2 }}>End Date</Typography>
                 </MDBox>
               <TextField
                 id="outlined-basic" variant="standard" type="date"
-                sx={{ margin: 1, padding: 1 }} onChange={(e)=>{endDate(e)}} value={secondDate}/>
+                sx={{ margin: 1.5, padding: 1 }} onChange={(e)=>{endDate(e)}} value={secondDate}/>
               <MDBox >
               <MDButton variant="contained" color="info" sx={{margin: 1, marginLeft: 10, padding: 1 }} onClick="">Download PDF</MDButton>
               </MDBox>
             </Card>
-      <MDBox mt={2} mb={3} fontSize={13}>
-      
+      <MDBox mt={2} mb={3} fontSize={13} style={{ backgroundColor: '#FFF0AA' }}>
+      <MDBox fontSize={20} mb={2} display="flex" justifyContent="center" style={{ backgroundColor: 'lightblue' }}>Daywise Heat Map</MDBox>
       <HeatMap
         xLabels={xLabels}
         yLabels={yLabels}
@@ -206,7 +201,7 @@ for (let i = 0; i < rows; i++) {
         cellStyle={(background,value, min, max, data, x, y) => ({
           //background: `rgb(0, 255, 0, ${1 - (max - value) / (max - min)}`,
           background: `${value > 0 ? `rgb(0, 255, 0, ${1 - (max - value) / (max - min)})` : value == 0 ? "rgb(255, 255, 0)" :`rgb(255, 0, 0, ${1 - (max - (-value)) / (max - min)})`}`,
-          fontSize: "10px",
+          fontSize: "12px",
           color: "white",
         })}
         cellRender={value => value && <MDBox>{value > 0 ? "+₹"+value.toLocaleString() : value == 0 ? "₹0" : "-₹"+(-value).toLocaleString()}</MDBox>}

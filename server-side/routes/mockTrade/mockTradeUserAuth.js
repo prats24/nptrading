@@ -974,5 +974,94 @@ router.get("/getuniquedates/:firstDate/:secondDate", async(req, res)=>{
  
 })
 
+router.get("/getweeklytraderpnl/:firstWeek/:secondWeek", async(req, res)=>{
+    const {firstWeek, secondWeek} = req.params;
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $project: {
+            weekNumber: {
+              $week: {
+                $toDate: "$trade_time",
+              },
+            },
+            trader: "$createdBy",
+            amount: "$amount",
+            lots: "$Quantity",
+            date: "$trade_time",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              trader: "$trader",
+              weekNumber: "$weekNumber",
+            },
+            gpnl: {
+              $sum: {
+                $multiply: ["$amount", 1],
+              },
+            },
+          },
+        },
+        {
+          $match:
+            {
+              "_id.weekNumber": {
+                $gte: Number(firstWeek),
+                $lte: Number(secondWeek),
+              },
+            },
+        },
+      ])
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getuniqueweeks/:firstWeek/:secondWeek", async(req, res)=>{
+    const {firstWeek, secondWeek} = req.params;
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $project: {
+            weekNumber: {
+              $week: {
+                $toDate: "$trade_time",
+              },
+            },
+            year: {
+              $year: {$toDate : "$trade_time"},
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              weekNumber: "$weekNumber",
+              year: "$year"
+            },
+          },
+        },
+        {
+          $match: {
+            "_id.weekNumber": {
+              $gte: Number(firstWeek),
+              $lte: Number(secondWeek),
+            },
+          },
+        },
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.weekNumber": 1,
+          },
+        },
+      ])
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
 
 module.exports = router;
