@@ -19,10 +19,16 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+// router.get("/inserData", async(req, res)=>{
 
-//         await traderwiseDailyPnlController.deleteDuplicateData();
-//     //   }
+//     await traderwiseDailyPnlController.traderDailyPnlCalculationEveryDate("2023-02-10");
+
+// })
+
+// router.get("/deletedupdata", async(req, res)=>{
+
+//     await traderwiseDailyPnlController.deleteDuplicateData("2023-02-10");
+
 // })
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
@@ -46,9 +52,6 @@ const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyP
 //     })
     
 // })
-
-
-
 
 router.post("/livetradecompanytemp", async (req, res)=>{
 
@@ -233,9 +236,6 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
     
 
 })
-
-
-
 
 
 router.post("/mocktradecompany", async (req, res)=>{
