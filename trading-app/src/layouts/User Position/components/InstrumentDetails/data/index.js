@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
+import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 
 export default function Data() {
@@ -91,6 +93,11 @@ export default function Data() {
         {elem.instrumentToken}
       </MDTypography>
     );
+    instrumentDetailObj.chart = (
+      <MDTypography component="a" href="https://in.investing.com/indices/s-p-cnx-nifty-chart" target="_blank" variant="caption" color="text" fontWeight="medium">
+        <TrendingUpIcon fontSize="medium"/>
+      </MDTypography>
+    );
 
     //console.log(typeof(instrumentDetailObj));
     //console.log(instrumentDetailObj)
@@ -104,6 +111,7 @@ export default function Data() {
       { Header: "instrument", accessor: "instrument", width: "10%", align: "center" },
       { Header: "ltp", accessor: "last_price", width: "10%", align: "center" },
       { Header: "Change(%)", accessor: "change", width: "10%", align: "center" },
+      { Header: "Chart", accessor: "chart", width: "5%", align: "center" },
       { Header: "buy", accessor: "buy", width: "5%", align: "center" },
       { Header: "sell", accessor: "sell", width: "5%", align: "center" },
     ],

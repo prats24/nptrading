@@ -837,5 +837,31 @@ router.get("/gettraderwisepnllivetradecompanytoday/algowisedata/:id", async(req,
  
 })
 
+router.get("/updatealgoidlive", async(req, res)=>{
+  // let date = new Date();
+  // let id = data._id;
+  // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
+  // const {email} = req.params
+  // //console.log(todayDate)
+  let algoiddoc = await LiveCompanyTradeData.find()
+  //console.log(datatoupdate);
+
+
+      for(let i = 0; i< algoiddoc.length; i++ ){
+          if(!algoiddoc[i].algoBox.isDefault && !algoiddoc[i].algoBox.marginDeduction){
+          console.log(algoiddoc[i]._id);
+          await LiveCompanyTradeData.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox.isDefault' : true,'algoBox.marginDeduction' : false},
+              function (err, algoBox) {
+                  if (err){
+                      console.log(err)
+                  }
+                  else{
+                      console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
+                  }
+      }).clone();
+      }
+  }
+})
+
 
 module.exports = router;

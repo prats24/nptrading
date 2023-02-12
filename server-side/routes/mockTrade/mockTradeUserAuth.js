@@ -890,4 +890,178 @@ router.get("/datewisetraderpnl/:queryDate/:traderName", async(req, res)=>{
         
 })
 
+router.get("/getuserreportdatewisename/:name/:firstDate/:secondDate", async(req, res)=>{
+    const {name, firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, createdBy: name, status: "COMPLETE"} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
+                                "buyOrSell": "$buyOrSell",
+                                "trader" : "$createdBy"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    noOfTrade: {
+                        $count: {}
+                        // average_price: "$average_price"
+                    },
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getuserreport/:firstDate/:secondDate", async(req, res)=>{
+    const {firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, status: "COMPLETE"} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
+                                "trader" : "$createdBy"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    }
+
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getuniquedates/:firstDate/:secondDate", async(req, res)=>{
+    const {firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, status: "COMPLETE"} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
+                            },
+
+                    }},
+             { $sort: {_id: 1}},
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getweeklytraderpnl/:firstWeek/:secondWeek", async(req, res)=>{
+    const {firstWeek, secondWeek} = req.params;
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $project: {
+            weekNumber: {
+              $week: {
+                $toDate: "$trade_time",
+              },
+            },
+            trader: "$createdBy",
+            amount: "$amount",
+            lots: "$Quantity",
+            date: "$trade_time",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              trader: "$trader",
+              weekNumber: "$weekNumber",
+            },
+            gpnl: {
+              $sum: {
+                $multiply: ["$amount", 1],
+              },
+            },
+          },
+        },
+        {
+          $match:
+            {
+              "_id.weekNumber": {
+                $gte: Number(firstWeek),
+                $lte: Number(secondWeek),
+              },
+            },
+        },
+      ])
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getuniqueweeks/:firstWeek/:secondWeek", async(req, res)=>{
+    const {firstWeek, secondWeek} = req.params;
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $project: {
+            weekNumber: {
+              $week: {
+                $toDate: "$trade_time",
+              },
+            },
+            year: {
+              $year: {$toDate : "$trade_time"},
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              weekNumber: "$weekNumber",
+              year: "$year"
+            },
+          },
+        },
+        {
+          $match: {
+            "_id.weekNumber": {
+              $gte: Number(firstWeek),
+              $lte: Number(secondWeek),
+            },
+          },
+        },
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.weekNumber": 1,
+          },
+        },
+      ])
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+
 module.exports = router;

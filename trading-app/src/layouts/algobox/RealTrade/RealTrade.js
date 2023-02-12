@@ -229,6 +229,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         }
         reRender ? setReRender(false) : setReRender(true)
     }
+    //reRender ? setReRender(false) : setReRender(true)
 
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
   

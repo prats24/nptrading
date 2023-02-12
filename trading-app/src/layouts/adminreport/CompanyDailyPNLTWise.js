@@ -140,30 +140,30 @@ const TableTwo = () => {
 
     return (
 
-                <MDBox pt={6} pb={2}> 
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={12} lg={12} >
+                <MDBox pt={2} pb={1}> 
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} md={1} lg={12} >
                             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
                             <MDBox >
-                                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:4, padding: 1, fontSize: 19}}>Trader Wise Company P&L Report (Mock)</Typography>
+                                <Typography sx={{ margin: 2, marginRight:15, backgroundColor:"#f0f2f5", borderRadius:2, padding: 0.5, fontSize: 15}}>Trader Wise Company P&L Report (Mock)</Typography>
                             </MDBox>
                             <MDBox >
-                                <Typography sx={{ margin: 2, padding: 1, backgroundColor:"#f0f2f5", borderRadius:4, fontSize: 19 }}>Start Date</Typography>
+                                <Typography sx={{ margin: 2, padding: 0.5, backgroundColor:"#f0f2f5", borderRadius:2, fontSize: 15 }}>Start Date</Typography>
                                 </MDBox>
                             <TextField
                                 id="outlined-basic" variant="standard" type="date"
-                                sx={{ margin: 2, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
+                                sx={{ margin: 2, padding: 0.5}} onChange={(e)=>{startDate(e)}} value={firstDate}/>
                         
                             <MDBox >
-                                <Typography color="dark" sx={{ margin: 2, padding: 1, backgroundColor:"#f0f2f5", borderRadius:4, fontSize: 19 }}>End Date</Typography>
+                                <Typography color="dark" sx={{ margin: 2, padding: 0.5, backgroundColor:"#f0f2f5", borderRadius:2, fontSize: 15 }}>End Date</Typography>
                                 </MDBox>
                             <TextField
                                 id="outlined-basic" variant="standard" type="date"
-                                sx={{ margin: 2, padding: 1 }} onChange={(e)=>{endDate(e)}} value={secondDate}/>
+                                sx={{ margin: 2, padding: 0.5}} onChange={(e)=>{endDate(e)}} value={secondDate}/>
                             </Card>
                         </Grid>
 
-                        <Grid item xs={12} md={12} xl={12} >
+                        <Grid item xs={12} md={1} xl={12} >
                             <Card sx={{ display: "flex", flexDirection: "row", justifyContent: 'space-around', marginTop: 1 }}>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Gross P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
@@ -171,34 +171,34 @@ const TableTwo = () => {
                             </MDBox>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>Transaction Cost</MDTypography>
-                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>₹{totalTransactionCost.toFixed(2)}</MDTypography>
+                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="5px" py={1}>₹{totalTransactionCost.toFixed(2)}</MDTypography>
                             </MDBox>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>&nbsp;&nbsp;&nbsp;&nbsp;Net P&L&nbsp;&nbsp;&nbsp;&nbsp;</MDTypography>
-                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" color={totalnpnlcolor} py={1}>{(totalnPnl) >= 0 ? "+₹" + (totalnPnl).toFixed(0) : "-₹" + -(totalnPnl).toFixed(0)}</MDTypography>
+                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="5px" color={totalnpnlcolor} py={1}>{(totalnPnl) >= 0 ? "+₹" + (totalnPnl).toFixed(0) : "-₹" + -(totalnPnl).toFixed(0)}</MDTypography>
                             </MDBox>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>Total Trades</MDTypography>
-                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalTrade}</MDTypography>
+                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="5px" py={1}>{totalTrade}</MDTypography>
                             </MDBox>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>Trading Days</MDTypography>
-                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalTradingDays}</MDTypography>
+                                <MDTypography variant="h6" textAlign="center" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="5px" py={1}>{totalTradingDays}</MDTypography>
                             </MDBox>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>Green Traders (C)</MDTypography>
-                                <MDTypography variant="h6" textAlign="center" color="success" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalPositiveTrader}</MDTypography>
+                                <MDTypography variant="h6" textAlign="center" color="success" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="5px" py={1}>{totalPositiveTrader}</MDTypography>
                             </MDBox>
                             <MDBox >
                                 <MDTypography variant="h6" textAlign="center" py={1}>Red Traders (C)</MDTypography>
-                                <MDTypography variant="h6" textAlign="center" color="error" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="10px" py={1}>{totalNegativeTrader}</MDTypography>
+                                <MDTypography variant="h6" textAlign="center" color="error" backgroundColor="#e0e1e5" borderRadius="5px" marginBottom="5px" py={1}>{totalNegativeTrader}</MDTypography>
                             </MDBox>
                             </Card>
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={12} mt={7}>
-                      <MDBox mb={3}>
+                    <Grid item xs={12} md={6} lg={12} mt={5}>
+                      <MDBox mb={2}>
                         <ReportsBarChart
                           color="info"
                           colorheight={"25rem"}
@@ -219,8 +219,8 @@ const TableTwo = () => {
                         </MDBox>
                         </Grid> 
 
-                    <Grid container spacing={6} mt={1}>
-                        <Grid item xs={12} md={12} lg={12}>
+                    <Grid container spacing={2} mt={1}>
+                        <Grid item xs={12} md={1} lg={12}>
                             <Card>
                                 <MDBox
                                     mx={2}
@@ -236,7 +236,7 @@ const TableTwo = () => {
                                         Trader Wise P&L (Mock)
                                     </MDTypography>
                                 </MDBox>
-                                <MDBox pt={3}>
+                                <MDBox pt={2}>
                                     <DataTable
                                         table={{ columns, rows }}
                                         showTotalEntries={false}

@@ -33,7 +33,7 @@ router.get("/readuserdetails", (req, res)=>{
         }else{
             return res.status(200).send(data);
         }
-    }).sort({$natural:-1})
+    }).sort({joining_date:1})
 })
 
 router.get("/readuserdetails/:id", (req, res)=>{

@@ -242,7 +242,121 @@ exports.traderDailyPnlCalculationEveryDate = async(date) => {
         })
 
     })
-// }
+}
+exports.getstoplossstopprofitpnl = async(req,res,next) => {
+  //const {stoploss,stopprofit} = req.params;
+  //console.log("Stop Loss & Stop Profit: "+stoploss,stopprofit)
+  const pipeline = [
+    {
+      $match: {
+        timestamp: {
+          $regex: "2023-01-31",
+        },
+        traderName: "Praveen K",
+      },
+    },
+    {
+      $group: {
+        _id: {
+          traderName: "$traderName",
+          timestamp: "$timestamp",
+        },
+        gpnl: {
+          $sum: "$calculatedGpnl",
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        traderName: "$_id.traderName",
+        timestamp: "$_id.timestamp",
+        gpnl: "$gpnl",
+        absDiff: {
+          $min: [
+            { $abs: { $subtract: [ "$gpnl", -50000 ] } },
+            { $abs: { $subtract: [ "$gpnl", 100000 ] } }
+          ]
+        }
+      }
+    },
+    {
+      $sort: {
+        absDiff: 1,
+        timestamp: 1
+      }
+    },
+    {
+      $limit: 1
+    }
+  ]
+  
+      
+      let x = await TraderDailyPnlData.aggregate(pipeline)
+  
+      res.status(201).json(x);
+  }
+
+  exports.getstoplosspnl = async(req,res,next) => {
+    console.log("Inside stoploss trader pnl api")
+    let {stoploss} = req.params
+    
+    let pipeline = [
+        {
+          $match: {
+            //traderName: "Praveen K",
+            calculatedGpnl: {
+              $lte: -Number(`${stoploss}`),
+            },
+          },
+        },
+        {
+          $addFields: {
+            timestamp: {
+              $toDate: "$timestamp",
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              traderName: "$traderName",
+              day: {
+                $dateToString: {
+                  format: "%Y-%m-%d",
+                  date: "$timestamp",
+                },
+              },
+            },
+            stopLossTimestamp: {
+              $min: "$timestamp",
+            },
+            calculatedGpnl: {
+              $first: "$calculatedGpnl",
+            },
+          },
+        },
+        {
+          $sort: {
+            "_id.day": 1,
+            stopLossTimestamp: 1,
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            traderName: "$_id.traderName",
+            day: "$_id.day",
+            stopLossTimestamp: 1,
+            calculatedGpnl: 1,
+          },
+        },
+      ]
+
+    let x = await TraderDailyPnlData.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
 }
 
 
