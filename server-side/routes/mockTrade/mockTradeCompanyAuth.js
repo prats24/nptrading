@@ -19,11 +19,11 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 
-router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 
-        await traderwiseDailyPnlController.deleteDuplicateData();
-    //   }
-})
+//         await traderwiseDailyPnlController.deleteDuplicateData();
+//     //   }
+// })
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     // if(dailyPnl.length === 0){
