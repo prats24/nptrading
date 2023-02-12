@@ -12,6 +12,8 @@ import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
 import StoreIcon from '@mui/icons-material/Store';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import MapIcon from '@mui/icons-material/Map';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
@@ -21,16 +23,15 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 
 // Images
 import backgroundImage from "../../../assets/images/trading.jpg";
-import CompanyDailyPNLTWise from "../CompanyDailyPNLTWise";
-import MockCompanyPNL from "../MockCompanyPNL"
-import TraderPNL from "../TraderPNLTWise";
-import TraderMatrix from "../TraderMatrix";
-import TraderHeatMap from "../TraderHeatMap";
-import TraderHeatMapWeekly from "../TraderHeatMapWeekly";
+import TraderWiseReport from "../traderwisereport";
+import TraderSideHeatMapWeekly from "../TraderHeatMapWeekly";
+import TraderSideHeatMap from "../TraderHeatMap";
+import TraderSidePNL from "../MockTraderPNL";
 
 
 
-function AdminReportHeader({ children }) {
+
+function TraderReportHeader({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
 
@@ -94,32 +95,34 @@ function AdminReportHeader({ children }) {
             <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="Company Side P&L (Trader Wise)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      <StoreIcon/>
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Company Daily P&L"
-                  icon={
-                    <StoreIcon/>
-                  }
-                />
-                <Tab
                   label="Trader Side P&L (Trader Wise)"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      <LocalAtmIcon/>
+                    </Icon>
+                  }
+                />
+                <Tab
+                  label="Trader Side P&L (Mock)"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       <SupervisorAccountIcon/>
                     </Icon>
                   }
                 />
                 <Tab
-                  label="Trader Metrics"
+                  label="Trader Side HeatMap (Daily)"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      <SupervisorAccountIcon/>
+                      <MapIcon/>
+                    </Icon>
+                  }
+                />
+                <Tab
+                  label="Trader Side HeatMap (Weekly)"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      <MapIcon/>
                     </Icon>
                   }
                 />
@@ -142,10 +145,10 @@ function AdminReportHeader({ children }) {
 
               </Tabs>
             </AppBar>
-            <TabPanel value={tabValue} index={0}><CompanyDailyPNLTWise /> </TabPanel>
-            <TabPanel value={tabValue} index={1}><MockCompanyPNL /> </TabPanel>
-            <TabPanel value={tabValue} index={2}><TraderPNL /> </TabPanel>
-            <TabPanel value={tabValue} index={3}><TraderMatrix /> </TabPanel>
+            <TabPanel value={tabValue} index={0}><TraderWiseReport /> </TabPanel>
+            <TabPanel value={tabValue} index={1}><TraderSidePNL /> </TabPanel>
+            <TabPanel value={tabValue} index={2}><TraderSideHeatMap /> </TabPanel>
+            <TabPanel value={tabValue} index={3}><TraderSideHeatMapWeekly /> </TabPanel>
             {/* <TabPanel value={tabValue} index={4}><TraderHeatMap /> </TabPanel> */}
             {/* <TabPanel value={tabValue} index={5}><TraderHeatMapWeekly /> </TabPanel> */}
             {/* <TabPaneltwo/> */}
@@ -161,12 +164,12 @@ function AdminReportHeader({ children }) {
 }
 
 // Setting default props for the Header
-AdminReportHeader.defaultProps = {
+TraderReportHeader.defaultProps = {
   children: "",
 };
 
 // Typechecking props for the Header
-AdminReportHeader.propTypes = {
+TraderReportHeader.propTypes = {
   children: PropTypes.node,
 };
 
@@ -184,4 +187,4 @@ function TabPanel(props) {
   )
 }
 
-export default AdminReportHeader;
+export default TraderReportHeader;
