@@ -91,7 +91,7 @@ router.post("/placeorder", (async (req, res)=>{
 
 
     }).catch((err)=>{
-        console.log("order id not receive", err)
+        console.log("order id not receive---------------------")
         res.status(422).json({error : err.response.data.message})
     })
 
@@ -246,7 +246,7 @@ router.post("/placeorder", (async (req, res)=>{
                 CompanyTradeData.findOne({order_id : order_id})
                 .then((dataExist)=>{
                     if(dataExist && dataExist.order_timestamp !== new_order_timestamp && checkingMultipleAlgoFlag === 1){
-                        console.log("data already in real company");
+                        // console.log("data already in real company");
                         return res.status(422).json({error : "data already exist..."})
                     }
                     const tempDate = new Date();
@@ -272,8 +272,7 @@ router.post("/placeorder", (async (req, res)=>{
     
             
                     });
-                    console.log("this is REAL CompanyTradeData", companyTradeData);
-                    // console.log("companyTradeData", companyTradeData)
+                    // console.log("this is REAL CompanyTradeData", companyTradeData);
                     companyTradeData.save().then(()=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log( err,"fail company live data saving")});
@@ -282,7 +281,7 @@ router.post("/placeorder", (async (req, res)=>{
                     UserTradeData.findOne({order_id : order_id})
                     .then((dataExist)=>{
                         if(dataExist){
-                            console.log("data already in real user");
+                            // console.log("data already in real user");
                             return res.status(422).json({error : "data already exist..."})
                         }
                         const tempDate = new Date();
@@ -306,7 +305,7 @@ router.post("/placeorder", (async (req, res)=>{
         
         
                         });
-                        console.log("this is REALuserTradeData", userTradeData);
+                        // console.log("this is REALuserTradeData", userTradeData);
                         userTradeData.save().then(()=>{
                         }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                     }).catch(err => {console.log(err, "fail trader live data saving")});
@@ -315,7 +314,7 @@ router.post("/placeorder", (async (req, res)=>{
                 MockTradeCompany.findOne({order_id : order_id})
                 .then((dataExist)=>{
                     if(dataExist && dataExist.order_timestamp !== new_order_timestamp && checkingMultipleAlgoFlag === 1){
-                        console.log("data already in mock company");
+                        // console.log("data already in mock company");
                         return res.status(422).json({error : "date already exist..."})
                     }
                     const tempDate = new Date();
@@ -341,7 +340,7 @@ router.post("/placeorder", (async (req, res)=>{
     
                     });
             
-                    console.log("mockTradeDetails comapny", mockTradeDetails);
+                    // console.log("mockTradeDetails comapny", mockTradeDetails);
                     mockTradeDetails.save().then(()=>{
                         // res.status(201).json({massage : "data enter succesfully"});
                     }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
@@ -351,7 +350,7 @@ router.post("/placeorder", (async (req, res)=>{
                     MockTradeUser.findOne({order_id : order_id})
                     .then((dataExist)=>{
                         if(dataExist){
-                            console.log("data already in mock user");
+                            // console.log("data already in mock user");
                             return res.status(422).json({error : "date already exist..."})
                         }
                         const tempDate = new Date();
@@ -375,7 +374,7 @@ router.post("/placeorder", (async (req, res)=>{
         
                         });
                 
-                        console.log("mockTradeDetails USER", mockTradeDetailsUser);
+                        // console.log("mockTradeDetails USER", mockTradeDetailsUser);
                         mockTradeDetailsUser.save().then(()=>{
                             // res.status(201).json({massage : "data enter succesfully"});
                         }).catch((err)=> {
@@ -394,7 +393,7 @@ router.post("/placeorder", (async (req, res)=>{
     
         
             }).catch((err)=>{
-                console.log("err in retreiving data in placeorder", err);
+                console.log("err in retreiving data in placeorder---------------");
             })
     
         }, 500)

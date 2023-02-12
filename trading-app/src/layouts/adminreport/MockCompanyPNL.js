@@ -151,26 +151,26 @@ const TableOne = () => {
 
     return (
 
-                <MDBox pt={6} pb={2}> 
+                <MDBox pt={1} pb={2}> 
                     <Grid container spacing={2}>
-                        <Grid item xs={12} md={12} lg={12} >
+                        <Grid item xs={12} md={1} lg={12} >
                             <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
                             <MDBox >
-                                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:4, padding: 1, fontSize: 19}}>Company Day Wise P&L Report (Mock)</Typography>
+                                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:2, p: 0.5, fontSize: 15}}>Company Day Wise P&L Report (Mock)</Typography>
                             </MDBox>
                             <MDBox >
-                                <Typography sx={{ margin: 2, padding: 1, backgroundColor:"#f0f2f5", borderRadius:4, fontSize: 19 }}>Start Date</Typography>
+                                <Typography sx={{ margin: 2, p: 0.5, backgroundColor:"#f0f2f5", borderRadius:2, fontSize: 15 }}>Start Date</Typography>
                                 </MDBox>
                             <TextField
-                                id="outlined-basic" variant="standard" type="date"
-                                sx={{ margin: 2, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
+                                id="outlined" variant="standard" type="date"
+                                sx={{ margin: 2, padding: 0.5 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
                         
                             <MDBox >
-                                <Typography color="dark" sx={{ margin: 2, padding: 1, backgroundColor:"#f0f2f5", borderRadius:4, fontSize: 19 }}>End Date</Typography>
+                                <Typography color="dark" sx={{ margin: 2, p: 0.5, backgroundColor:"#f0f2f5", borderRadius:2, fontSize: 15 }}>End Date</Typography>
                                 </MDBox>
                             <TextField
-                                id="outlined-basic" variant="standard" type="date"
-                                sx={{ margin: 2, padding: 1 }} onChange={(e)=>{endDate(e)}} value={secondDate}/>
+                                id="outlined" variant="standard" type="date"
+                                sx={{ margin: 2, padding: 0.5 }} onChange={(e)=>{endDate(e)}} value={secondDate}/>
                             </Card>
                         </Grid>
 
@@ -216,8 +216,8 @@ const TableOne = () => {
                         </Grid>
                     </Grid>
 
-                     <Grid item xs={12} md={6} lg={12} mt={7}>
-                      <MDBox mb={3}>
+                     <Grid item xs={12} md={3} lg={12} mt={5}>
+                      <MDBox mb={1}>
                         <ReportsLineChart
                           color="success"
                           colorheight={"25rem"}
@@ -238,7 +238,7 @@ const TableOne = () => {
                       </MDBox>
                     </Grid> 
 
-                    <Grid container spacing={6} mt={1}>
+                    <Grid container spacing={3} mt={1}>
                         <Grid item xs={12} md={12} lg={12}>
                             <Card>
                                 <MDBox
@@ -255,7 +255,7 @@ const TableOne = () => {
                                         Company Day Wise P&L (Mock)
                                     </MDTypography>
                                 </MDBox>
-                                <MDBox pt={3}>
+                                <MDBox pt={2}>
                                     <DataTable
                                         table={{ columns, rows }}
                                         showTotalEntries={false}

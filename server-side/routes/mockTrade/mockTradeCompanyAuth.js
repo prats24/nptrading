@@ -244,8 +244,8 @@ router.post("/mocktradecompany", async (req, res)=>{
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
           realBuyOrSell, realQuantity, checkingMultipleAlgoFlag, real_instrument_token, realSymbol } = req.body 
 
-        console.log("this is mock trade comny req", req.body);
-        //console.log("in the company auth");
+        // console.log("this is mock trade comny req", req.body);
+
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
 
@@ -296,7 +296,6 @@ router.post("/mocktradecompany", async (req, res)=>{
         return new Error(err);
     }
 
-    console.log("newTimeStamp", newTimeStamp, originalLastPriceCompany, originalLastPriceUser);
 
 
     function buyBrokerage(totalAmount){
@@ -340,9 +339,8 @@ router.post("/mocktradecompany", async (req, res)=>{
 
     MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
-        console.log("dateExist", dateExist)
         if(dateExist && dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
-            console.log("data already", checkingMultipleAlgoFlag);
+            console.log("data already in mock company", checkingMultipleAlgoFlag);
             return res.status(422).json({error : "date already exist..."})
         }
 
@@ -356,7 +354,7 @@ router.post("/mocktradecompany", async (req, res)=>{
             
         });
 
-        console.log("mockTradeDetails comapny", mockTradeDetails);
+        // console.log("mockTradeDetails comapny", mockTradeDetails);
         mockTradeDetails.save().then(()=>{
             
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
@@ -575,6 +573,7 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
     let date = new Date();
     let month = date.getMonth();
     let year = date.getFullYear();
+    //console.log("Indian Date, UTC Date, Month & Year",indiaDate,date,month, year);
     if(month == 0)
     {
         month = '12'
@@ -590,7 +589,7 @@ router.get("/readmocktradecompanyLastMonth", async(req, res)=>{
         return new Date(year, month, 0).getDate();
     }
     let nodaysinmonth =  daysInMonth(month, year);
-    //console.log("No of days in previous month : "+nodaysinmonth)
+   // console.log("No of days in previous month : "+nodaysinmonth)
 
     let todayDate = `${(date.getFullYear()-1 == date.getFullYear() ? date.getFullYear() : date.getFullYear()-1)}-${String(date.getFullYear()-1 == date.getFullYear() ? date.getMonth() : '12').padStart(2, '0')}-${String('01').padStart(2, '0')}`
     const {email} = req.params
@@ -1889,5 +1888,32 @@ router.get("/gettraderwisepnlmocktradecompanytoday/algowiseData/:id", async(req,
         res.status(201).json(pnlDetails);
  
 })
+
+
+router.get("/updatealgoid", async(req, res)=>{
+    // let date = new Date();
+    // let id = data._id;
+    // let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
+    // const {email} = req.params
+    // //console.log(todayDate)
+    let algoiddoc = await MockTradeDetails.find()
+    //console.log(datatoupdate);
+  
+  
+        for(let i = 0; i< algoiddoc.length; i++ ){
+            if(!algoiddoc[i].algoBox.isDefault && !algoiddoc[i].algoBox.marginDeduction){
+            console.log(algoiddoc[i]._id);
+            await MockTradeDetails.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox.isDefault' : true,'algoBox.marginDeduction' : false},
+                function (err, algoBox) {
+                    if (err){
+                        console.log(err)
+                    }
+                    else{
+                        console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
+                    }
+        }).clone();
+        }
+    }
+  })
 
 module.exports = router;

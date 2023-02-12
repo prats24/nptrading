@@ -25,6 +25,8 @@ import CompanyDailyPNLTWise from "../CompanyDailyPNLTWise";
 import MockCompanyPNL from "../MockCompanyPNL"
 import TraderPNL from "../TraderPNLTWise";
 import TraderMatrix from "../TraderMatrix";
+import TraderHeatMap from "../TraderHeatMap";
+import TraderHeatMapWeekly from "../TraderHeatMapWeekly";
 
 
 
@@ -121,6 +123,22 @@ function AdminReportHeader({ children }) {
                     </Icon>
                   }
                 />
+                <Tab
+                  label="Trader Side HeatMap(Day)"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      <SupervisorAccountIcon/>
+                    </Icon>
+                  }
+                />
+                <Tab
+                  label="Trader Side HeatMap(Week)"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      <SupervisorAccountIcon/>
+                    </Icon>
+                  }
+                />
 
               </Tabs>
             </AppBar>
@@ -128,6 +146,8 @@ function AdminReportHeader({ children }) {
             <TabPanel value={tabValue} index={1}><MockCompanyPNL /> </TabPanel>
             <TabPanel value={tabValue} index={2}><TraderPNL /> </TabPanel>
             <TabPanel value={tabValue} index={3}><TraderMatrix /> </TabPanel>
+            <TabPanel value={tabValue} index={4}><TraderHeatMap /> </TabPanel>
+            <TabPanel value={tabValue} index={5}><TraderHeatMapWeekly /> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>

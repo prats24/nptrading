@@ -42,7 +42,7 @@ router.get("/getliveprice", async (req, res)=>{
     });
 
     resp2.forEach((elem, index) => {
-      console.log(addUrl)
+      // console.log(addUrl)
       addUrl += ('&i=' + elem.incomingInstrumentExchange + ':' + elem.InstrumentNameIncoming + '&i=' + elem.outgoingInstrumentExchange + ':' + elem.InstrumentNameOutgoing);
     });
 
