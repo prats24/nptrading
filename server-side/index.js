@@ -24,8 +24,6 @@ const limiter = rateLimit({
   message: "Too many request"
 })
 const { MongoClient } = require('mongodb');
-
-
 // Apply the rate limiting middleware to all requests
 // app.use(limiter)
 app.use(mongoSanitize());
@@ -37,43 +35,8 @@ app.use(hpp());
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
-
-// Kite connect auto generate seesion
-
-/*
-var KiteConnect = require("kiteconnect").KiteConnect;
-
-var kc = new KiteConnect({
-  api_key: "nq0gipdzk0yexyko",
-});
-
-kc.generateSession("tqYJMZM0ohSOFCqCqPN8on9v2jZVrhFq", "1v9mkp6uxu805ucjp4735ilsy61n8q6u")
-  .then(function (response) {
-    console.log("response of generate session", response)
-    init();
-  })
-  .catch(function (err) {
-    console.log("generate session error", err);
-  });
-
-function init() {
-  // Fetch equity margins.
-  // You can have other api calls here.
-  kc.getMargins()
-    .then(function (response) {
-      // You got user's margin details.
-      console.log("response of margin", response)
-    })
-    .catch(function (err) {
-      console.log("error of margin", err)
-    });
-}
-
-*/
-
-
-
 getKiteCred.getAccess().then((data)=>{
+  console.log(data)
   createNewTicker(data.getApiKey, data.getAccessToken);
 });
 
@@ -144,7 +107,8 @@ app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 require('./db/conn');
 
 
-
+let date = new Date();
+let weekDay = date.getDay();
   if(process.env.PROD){
     let date = new Date();
     let weekDay = date.getDay();
@@ -155,63 +119,42 @@ require('./db/conn');
   }
 
 
-/*
+//------------------------------------------------------------------------------------------
+// async function backupDatabase(sourceUri, targetUri) {
+//   try {
+//     const sourceClient = await MongoClient.connect(sourceUri, { useUnifiedTopology: true });
+//     const targetClient = await MongoClient.connect(targetUri, { useUnifiedTopology: true });
 
-    // const destinationUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority";
-    const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority";
-    const destinationUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
-    // const destinationUri = "mongodb+srv://forStagingPurpose:ninepointer@cluster0.snsb6wx.mongodb.net/?retryWrites=true&w=majority";
-    let client, destinationClient;
-    async function backup() {
-    try {
-        // Connect to the source cluster
-        client = await MongoClient.connect(sourceUri, { useNewUrlParser: true });
-        // console.log(client); 
+//     const sourceDb = sourceClient.db();
+//     const targetDb = targetClient.db();
 
-        // Get the list of collections in the source cluster
-        const collections = await client.db().collections();
+//     const collections = await sourceDb.collections();
 
-        // console.log(collections);
-        
-        // Create a new client for the destination cluster
-        destinationClient = await MongoClient.connect(destinationUri, { useNewUrlParser: true });
-        const destCollections = await destinationClient.db().collections();
+//     for (const collection of collections) {
+//       let i = 0;
+//       const documents = await collection.find({}).toArray();
+//       for (const document of documents) {
+//         console.log(`Backing up document ${i++} from collection ${collection.collectionName}`);
+//         await targetDb.collection(collection.collectionName).updateOne({ _id: document._id }, { $set: document }, { upsert: true });
+//       }
+//     }
 
-        destCollections.forEach(async collection => {
-            if(await client.db().listCollections({name: collection.s.namespace.collection}).hasNext()){
-                console.log('dropping' + collection.s.namespace.collection);
-                await destinationClient.db().collection(collection.s.namespace.collection).drop();
-            }
-        });
-        
+//     sourceClient.close();
+//     targetClient.close();
+//   } catch (error) {
+//     console.error(`Error while backing up the database: ${error.message}`);
+//   }
+// }
 
-        // Iterate through the collections and copy the data
-        for (const collection of collections) {
-        // Get the data from the source collection
-        const cursor = await collection.find({});
-        //   console.log(cursor);
-        //   console.log('s is', collection.s.namespace.collection);
-        // Insert the data into the destination collection
-        if(await cursor.count() > 0){
-        await destinationClient.db().collection(collection.s.namespace.collection).insertMany(await cursor.toArray(),{ ordered: false });
-            }
-        }
-        console.log('Backup completed successfully');
-    } catch (err) {
-        console.log('to err is to err')
-        console.error(err);
-    } finally {
-        if(client) client.close();
-        if(destinationClient) destinationClient.close();
-    }
-    }
+// const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+// const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
 
-    backup().then(()=>{
-        console.log('ok');
-    });
+// backupDatabase(sourceUri, targetUri);
 
 
-*/
+
+
+
 
 
 

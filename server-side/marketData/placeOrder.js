@@ -19,7 +19,7 @@ router.post("/placeorder", (async (req, res)=>{
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-         accessToken, userId, checkingMultipleAlgoFlag} = req.body
+         accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body
 
 
     const {algoName, transactionChange, instrumentChange
@@ -49,7 +49,7 @@ router.post("/placeorder", (async (req, res)=>{
 
     if(variety === "amo"){
         orderData = new URLSearchParams({
-            "tradingsymbol":symbol,
+            "tradingsymbol":realSymbol,
             "exchange":exchange,
             "transaction_type":realBuyOrSell,
             "order_type":OrderType,
@@ -61,7 +61,7 @@ router.post("/placeorder", (async (req, res)=>{
         })
     } else if(variety === "regular"){
         orderData = new URLSearchParams({
-            "tradingsymbol":symbol,
+            "tradingsymbol":realSymbol,
             "exchange":exchange,
             "transaction_type":realBuyOrSell,
             "order_type":OrderType,
@@ -91,7 +91,7 @@ router.post("/placeorder", (async (req, res)=>{
 
 
     }).catch((err)=>{
-        console.log("order id not receive", err)
+        console.log("order id not receive---------------------")
         res.status(422).json({error : err.response.data.message})
     })
 
@@ -177,6 +177,23 @@ router.post("/placeorder", (async (req, res)=>{
                 if(buyOrSell === "SELL"){
                     Quantity = -Quantity;
                 }
+
+                let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+                let originalLastPriceUser;
+                try{
+                    
+                    let liveData = await axios.get(`${baseUrl}api/v1/getliveprice`)
+                    //console.log(liveData)
+                    for(let elem of liveData.data){
+                        //console.log(elem)
+                        if(elem.instrument_token == instrumentToken){
+                            originalLastPriceUser = elem.last_price;
+                        }
+                    }
+                        
+                } catch(err){
+                    return new Error(err);
+                }
     
                 let trade_time = order_timestamp
                 let timestamp = order_timestamp.split(" ");
@@ -220,16 +237,16 @@ router.post("/placeorder", (async (req, res)=>{
                 }
     
                 if(buyOrSell === "BUY"){
-                    brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * average_price);
+                    brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
                 } else{
-                    brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * average_price);
+                    brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
                 }
             
     
                 CompanyTradeData.findOne({order_id : order_id})
-                .then((dateExist)=>{
-                    if(dateExist){
-                        console.log("data already in real company");
+                .then((dataExist)=>{
+                    if(dataExist && dataExist.order_timestamp !== new_order_timestamp && checkingMultipleAlgoFlag === 1){
+                        // console.log("data already in real company");
                         return res.status(422).json({error : "data already exist..."})
                     }
                     const tempDate = new Date();
@@ -248,23 +265,23 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
+                        brokerage: brokerageCompany,
                         tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
             
                     });
-                    // console.log("this is CompanyTradeData", companyTradeData);
-                    // console.log("companyTradeData", companyTradeData)
+                    // console.log("this is REAL CompanyTradeData", companyTradeData);
                     companyTradeData.save().then(()=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                }).catch(err => {console.log( "fail company live data saving")});
+                }).catch(err => {console.log( err,"fail company live data saving")});
     
                 if(checkingMultipleAlgoFlag === 1){
                     UserTradeData.findOne({order_id : order_id})
-                    .then((dateExist)=>{
-                        if(dateExist){
-                            console.log("data already in real user");
+                    .then((dataExist)=>{
+                        if(dataExist){
+                            // console.log("data already in real user");
                             return res.status(422).json({error : "data already exist..."})
                         }
                         const tempDate = new Date();
@@ -279,25 +296,25 @@ router.post("/placeorder", (async (req, res)=>{
                 
                         const userTradeData = new UserTradeData({
                             disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
-                            status, uId, createdBy, average_price, Quantity: Quantity, 
+                            status, uId, createdBy, average_price: originalLastPriceUser, Quantity: Quantity, 
                             Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                             variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                             order_id, instrumentToken, brokerage: brokerageUser,
-                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
         
         
                         });
-                        // console.log("this is userTradeData", userTradeData);
+                        // console.log("this is REALuserTradeData", userTradeData);
                         userTradeData.save().then(()=>{
                         }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
-                    }).catch(err => {console.log("fail trader live data saving")});
+                    }).catch(err => {console.log(err, "fail trader live data saving")});
                 }
     
                 MockTradeCompany.findOne({order_id : order_id})
-                .then((dateExist)=>{
-                    if(dateExist){
-                        console.log("data already in mock company");
+                .then((dataExist)=>{
+                    if(dataExist && dataExist.order_timestamp !== new_order_timestamp && checkingMultipleAlgoFlag === 1){
+                        // console.log("data already in mock company");
                         return res.status(422).json({error : "date already exist..."})
                     }
                     const tempDate = new Date();
@@ -316,7 +333,8 @@ router.post("/placeorder", (async (req, res)=>{
                         Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
                         variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
+                        brokerage: brokerageCompany,
                         tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
     
@@ -326,13 +344,13 @@ router.post("/placeorder", (async (req, res)=>{
                     mockTradeDetails.save().then(()=>{
                         // res.status(201).json({massage : "data enter succesfully"});
                     }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-                }).catch(err => {console.log("fail company mock in placeorder")});
+                }).catch(err => {console.log(err, "fail company mock in placeorder")});
     
                 if(checkingMultipleAlgoFlag === 1){
                     MockTradeUser.findOne({order_id : order_id})
-                    .then((dateExist)=>{
-                        if(dateExist){
-                            console.log("data already in mock user");
+                    .then((dataExist)=>{
+                        if(dataExist){
+                            // console.log("data already in mock user");
                             return res.status(422).json({error : "date already exist..."})
                         }
                         const tempDate = new Date();
@@ -347,23 +365,23 @@ router.post("/placeorder", (async (req, res)=>{
                 
                         const mockTradeDetailsUser = new MockTradeUser({
         
-                            status, uId, createdBy, average_price, Quantity: Quantity, 
+                            status, uId, createdBy, average_price: originalLastPriceUser, Quantity: Quantity, 
                             Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                             variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                             order_id, instrumentToken, brokerage: brokerageUser,
-                            tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*average_price), trade_time:trade_time,
+                            tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp
         
                         });
                 
-                        // console.log("mockTradeDetails", mockTradeDetailsUser);
+                        // console.log("mockTradeDetails USER", mockTradeDetailsUser);
                         mockTradeDetailsUser.save().then(()=>{
                             // res.status(201).json({massage : "data enter succesfully"});
                         }).catch((err)=> {
                             // res.status(500).json({error:"Failed to enter data"})
                         });
                 
-                    }).catch(err => {console.log("fail company mock in placeorder")});
+                    }).catch(err => {console.log(err, "fail company mock in placeorder")});
                 }
     
     
@@ -375,7 +393,7 @@ router.post("/placeorder", (async (req, res)=>{
     
         
             }).catch((err)=>{
-                console.log("err in retreiving data in placeorder", err);
+                console.log("err in retreiving data in placeorder---------------");
             })
     
         }, 500)

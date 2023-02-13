@@ -1,9 +1,3 @@
-// @mui material components
-import Tooltip from "@mui/material/Tooltip";
-import MDBox from "../../../../../components/MDBox";
-import MDTypography from "../../../../../components/MDTypography";
-import MDAvatar from "../../../../../components/MDAvatar";
-import MDProgress from "../../../../../components/MDProgress";
 
 export default function data() {
     

@@ -73,72 +73,67 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
 
     }, [])
 
+
     function takingTradeHelper(data, isSquaringOff){
-        data.map((elem)=>{
-            if(elem.lots && elem._id.algoBoxName === tradingAlgo.algoName){
-
-                let apiKeyArr = apiKeyDetails.filter((elem)=>{
-                    return elem.accountId == tradingAlgo?.tradingAccount
-                })
-    
-                let accessTokenArr = accessTokenDetails.filter((elem)=>{
-                    return elem.accountId == tradingAlgo?.tradingAccount
-                })
-    
-                let transaction_type = elem.lots > 0 ? "BUY" : "SELL";
-                let quantity = Math.abs(elem.lots);
-                let detailObj = {
-                    symbol: elem._id.symbol,
-                    Product: elem._id.product,
-                    instrumentToken: elem._id.instrumentToken,
-                    exchange: elem._id.exchange,
-                    validity: elem._id.validity,
-                    OrderType: elem._id.order_type,
-                    variety: elem._id.variety,
-                    buyOrSell: transaction_type,
-                    // Quantity: quantity,
-                    tradeBy: elem._id.name,
-                    userId: elem._id.userId
+        data.map((elem) => {
+          if(elem.lots && elem._id.algoBoxName === tradingAlgo.algoName){
+      
+            let apiKeyArr = apiKeyDetails.filter((elem) => {
+              return elem.accountId == tradingAlgo?.tradingAccount
+            });
+        
+            let accessTokenArr = accessTokenDetails.filter((elem) => {
+              return elem.accountId == tradingAlgo?.tradingAccount
+            });
+        
+            let transaction_type = elem.lots > 0 ? "BUY" : "SELL";
+            let quantity = Math.abs(elem.lots);
+            let detailObj = {
+              symbol: elem._id.symbol,
+              Product: elem._id.product,
+              instrumentToken: elem._id.instrumentToken,
+              exchange: elem._id.exchange,
+              validity: elem._id.validity,
+              OrderType: elem._id.order_type,
+              variety: elem._id.variety,
+              buyOrSell: transaction_type,
+              // Quantity: quantity,
+              tradeBy: elem._id.name,
+              userId: elem._id.userId
+            };
+      
+            if(isSquaringOff){
+              let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
+              
+              let interval = setInterval(() => {
+                if (quantity > 1800) {
+                    // console.log("quantity", 1800, (new Date()).getMilliseconds())
+                  placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
+                  quantity = quantity - 1800;
+                } else {
+                    // console.log("quantity", quantity, (new Date()).getMilliseconds())
+                  placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
+                  clearInterval(interval);
                 }
-
-                if(isSquaringOff){
-                    let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                    let timeDelay = 250;
-                    while(quantity > 1800){
-                        setTimeout(()=>{
-                            placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800)
-                        }, timeDelay)
-                        timeDelay += 250;
-                        quantity = quantity - 1800;
-                    }
-
-                    timeDelay += 250
-                    setTimeout(()=>{
-                        placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity)
-                    }, 250)
-
-                } else{
-                    let timeDelay = 250;
-                    while(quantity > 1800){
-                        setTimeout(()=>{
-                            placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800)
-                        }, timeDelay)
-                        timeDelay += 250;
-                        quantity = quantity - 1800;
-                    }
-
-                    timeDelay += 250
-                    setTimeout(()=>{
-                        placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)
-                    }, 250)
-
-
+              }, 300);
+              
+            } else{
+              let interval = setInterval(() => {
+                if (quantity > 1800) {
+                    // console.log("quantity", 1800, (new Date()).getMilliseconds())
+                  placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
+                  quantity = quantity - 1800;
+                } else {
+                    // console.log("quantity", quantity, (new Date()).getMilliseconds())
+                  placeLiveOrder(tradingAlgo, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
+                  clearInterval(interval);
                 }
-
+              }, 300);
             }
-        })
-
-    }
+      
+          }
+        });
+      }
       
       
     function changeAllUserRealTrade(realTrade){

@@ -23,7 +23,7 @@ export default function Data() {
   const [marketData, setMarketData] = useState([]);
   const [livedata, setLiveData] = useState([]);
   let date = new Date();
-  let todayDate = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`
+  let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
 
 
   const Company = ({ image, name }) => (

@@ -26,6 +26,7 @@ import TradingARTokenData from '../data/AccessTokenData/TradingARTokenData';
 import TradingARTokenDataExpired from '../data/AccessTokenData/TradingARTokenDataExpired';
 import TradingARTokenModel from './TradingARTokenModel';
 import TradingAccessEditModel from "./TradingAccessEditModel";
+import AutoLogin from './AutoLogin';
 
 const TradingARToken = () => {
   const { columns, rows } = TradingARTokenData();

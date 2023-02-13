@@ -15,7 +15,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     let { apiKey, accessToken, userId, tradeBy, exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Product, OrderType, 
         validity, variety, createdBy, createdOn, uId, instrumentToken, algoBox, checkingMultipleAlgoFlag} = req.body
 
-       // console.log("switching", req.body)
+       // //console.log("switching", req.body)
 
     const {algoName, transactionChange, instrumentChange
        , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox
@@ -62,7 +62,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     .then(async (resp)=>{
 
         const order_Id = resp.data.data.order_id
-        console.log("order_id", resp.data.data.order_id);
+        //console.log("order_id", resp.data.data.order_id);
 
         const url2 = `https://api.kite.trade/orders/${order_Id}`;
       
@@ -78,7 +78,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
 
 
     }).catch((err)=>{
-        console.log("order id not receive", err)
+        //console.log("order id not receive", err)
         res.status(422).json({error : err.response.data.message})
     })
 
@@ -87,7 +87,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
             axios.get(url2, authOptions)
             .then(async (response)=>{
                 const allOrderData = (response.data).data;
-                console.log("allOrderData", allOrderData.length);
+                //console.log("allOrderData", allOrderData.length);
                 let len = allOrderData.length;
                 let orderData;
     
@@ -115,13 +115,13 @@ router.post("/switchToRealTrade", (async (req, res)=>{
                         pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,
                         status_message, status_message_raw, exchange_order_id, exchange_timestamp}))
                   
-                        //console.log("this is trade data", tradeData, typeof(tradeData));
+                        ////console.log("this is trade data", tradeData, typeof(tradeData));
                         tradeData.save()
                         .then(()=>{
-                            //console.log("data enter succesfully")
+                            ////console.log("data enter succesfully")
                         }).catch((err)=> {
                           res.status(500).json({error:"Failed to Enter trade data"});
-                          //console.log("failed to enter data of order");
+                          ////console.log("failed to enter data of order");
                         })
                 }
     
@@ -132,7 +132,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
                 }
     
                 if(!orderData){
-                    console.log("retreiveOrderAndSave function calling again")
+                    //console.log("retreiveOrderAndSave function calling again")
                     await retreiveOrderAndSave(url2, authOptions);
                     return
                 }
@@ -211,7 +211,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
                 CompanyTradeData.findOne({order_id : order_id})
                 .then((dateExist)=>{
                     if(dateExist){
-                        console.log("data already in real company");
+                        //console.log("data already in real company");
                         return res.status(422).json({error : "data already exist..."})
                     }
                     const tempDate = new Date();
@@ -236,8 +236,8 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     
             
                     });
-                    // console.log("this is CompanyTradeData", companyTradeData);
-                    // console.log("companyTradeData", companyTradeData)
+                    // //console.log("this is CompanyTradeData", companyTradeData);
+                    // //console.log("companyTradeData", companyTradeData)
                     companyTradeData.save().then(()=>{
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log( "fail company live data saving")});
@@ -246,7 +246,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
                     UserTradeData.findOne({order_id : order_id})
                     .then((dateExist)=>{
                         if(dateExist){
-                            console.log("data already in real user");
+                            //console.log("data already in real user");
                             return res.status(422).json({error : "data already exist..."})
                         }
                         const tempDate = new Date();
@@ -270,7 +270,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
         
         
                         });
-                        // console.log("this is userTradeData", userTradeData);
+                        // //console.log("this is userTradeData", userTradeData);
                         userTradeData.save().then(()=>{
                         }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                     }).catch(err => {console.log("fail trader live data saving")});
@@ -286,7 +286,7 @@ router.post("/switchToRealTrade", (async (req, res)=>{
     
         
             }).catch((err)=>{
-                console.log("err in retreiving data in placeorder");
+                //console.log("err in retreiving data in placeorder");
             })
     
         }, 500)

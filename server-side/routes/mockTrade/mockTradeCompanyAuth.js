@@ -18,11 +18,12 @@ const CompanyTradeData = require("../../models/TradeDetails/liveTradeSchema");
 const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema"); 
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
-const dbBackup = require("../../mongodbBackup");
 
-router.get("/dbBackup", async(req, res)=>{
-    await dbBackup();
-})
+// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+
+//         await traderwiseDailyPnlController.deleteDuplicateData();
+//     //   }
+// })
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     // if(dailyPnl.length === 0){
@@ -45,18 +46,6 @@ router.get("/dbBackup", async(req, res)=>{
 //     })
     
 // })
-
-// "disclosed_quantity": "0",
-// "price": "0",
-// "filled_quantity": "50",
-// "pending_quantity": "0",
-// "cancelled_quantity":"0",
-// "market_protection":"0",
-// "guid": "57936X3XRhv2U0CSJsgg",
-
-
-
-
 
 router.post("/livetradecompanytemp", async (req, res)=>{
 
@@ -150,7 +139,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell: realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by, userId,
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id: "63987fca223c3fc074684edd", marginDeduction: false, isDefault: true}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy, isRealTrade: true, amount: (Number(realQuantity)*average_price), trade_time,
                         order_req_time: order_timestamp, order_save_time: order_timestamp, exchange_order_id
     
@@ -159,7 +148,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                     // //console.log("this is CompanyTradeData", companyTradeData);
                     //console.log("companyTradeData", companyTradeData)
                     companyTradeData.save().then(()=>{
-                        res.status(200).json("susscess")
+                        res.status(200).json("success")
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log(err, "fail")});
     
@@ -199,7 +188,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
                         Product, buyOrSell:realBuyOrSell, order_timestamp,
                         variety, validity, exchange, order_type, symbol, placed_by: "ninepointer", userId,
                             algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
+                        lotMultipler, productChange, tradingAccount, _id: "63987fca223c3fc074684edd", marginDeduction: false, isDefault: true}, order_id, instrumentToken, brokerage: brokerageCompany,
                         tradeBy, isRealTrade: false, amount: (Number(realQuantity)*average_price), trade_time,
                         exchange_order_id
                         
@@ -243,17 +232,14 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
 })
 
 
-
-
-
 router.post("/mocktradecompany", async (req, res)=>{
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-          realBuyOrSell, realQuantity, checkingMultipleAlgoFlag } = req.body 
+          realBuyOrSell, realQuantity, checkingMultipleAlgoFlag, real_instrument_token, realSymbol } = req.body 
 
-        console.log(req.body);
-        //console.log("in the company auth");
+        // console.log("this is mock trade comny req", req.body);
+
     const {algoName, transactionChange, instrumentChange
         , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
 
@@ -275,7 +261,8 @@ router.post("/mocktradecompany", async (req, res)=>{
     }
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    let originalLastPrice;
+    let originalLastPriceUser;
+    let originalLastPriceCompany;
     let newTimeStamp = "";
     let trade_time = "";
     try{
@@ -286,8 +273,10 @@ router.post("/mocktradecompany", async (req, res)=>{
             //console.log(elem)
             if(elem.instrument_token == instrumentToken){
                 newTimeStamp = elem.timestamp;
-                originalLastPrice = elem.last_price;
-                //console.log("originalLastPrice ", originalLastPrice)
+                originalLastPriceUser = elem.last_price;
+            }
+            if(elem.instrument_token == real_instrument_token){
+                originalLastPriceCompany = elem.last_price;
             }
         }
 
@@ -301,7 +290,6 @@ router.post("/mocktradecompany", async (req, res)=>{
         return new Error(err);
     }
 
-    //console.log("newTimeStamp", newTimeStamp);
 
 
     function buyBrokerage(totalAmount){
@@ -331,41 +319,41 @@ router.post("/mocktradecompany", async (req, res)=>{
     let brokerageCompany;
 
     if(realBuyOrSell === "BUY"){
-        brokerageCompany = buyBrokerage(Math.abs(Number(realQuantity)) * originalLastPrice);
+        brokerageCompany = buyBrokerage(Math.abs(Number(realQuantity)) * originalLastPriceCompany);
     } else{
-        brokerageCompany = sellBrokerage(Math.abs(Number(realQuantity)) * originalLastPrice);
+        brokerageCompany = sellBrokerage(Math.abs(Number(realQuantity)) * originalLastPriceCompany);
     }
 
     if(buyOrSell === "BUY"){
-        brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * originalLastPrice);
+        brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
     } else{
-        brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPrice);
+        brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
     }
  
 
     MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
-        if(dateExist && checkingMultipleAlgoFlag === 1){
-            //console.log("data already");
+        if(dateExist && dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
+            console.log("data already in mock company", checkingMultipleAlgoFlag);
             return res.status(422).json({error : "date already exist..."})
         }
 
         const mockTradeDetails = new MockTradeDetails({
-            status:"COMPLETE", uId, createdBy, average_price: originalLastPrice, Quantity: realQuantity, 
+            status:"COMPLETE", uId, createdBy, average_price: originalLastPriceCompany, Quantity: realQuantity, 
             Product, buyOrSell:realBuyOrSell, order_timestamp: newTimeStamp,
-            variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
+            variety, validity, exchange, order_type: OrderType, symbol: realSymbol, placed_by: "ninepointer", userId,
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-            lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken, brokerage: brokerageCompany,
-            tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPrice), trade_time:trade_time,
+            lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, brokerage: brokerageCompany,
+            tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPriceCompany), trade_time:trade_time,
             
         });
 
-        //console.log("mockTradeDetails comapny", mockTradeDetails);
+        // console.log("mockTradeDetails comapny", mockTradeDetails);
         mockTradeDetails.save().then(()=>{
             
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         
-    }).catch(err => {console.log("fail")});
+    }).catch(err => {console.log(err, "fail")});
 
     if(checkingMultipleAlgoFlag === 1){
         MockTradeDetailsUser.findOne({order_id : order_id})
@@ -376,10 +364,10 @@ router.post("/mocktradecompany", async (req, res)=>{
             }
 
             const mockTradeDetailsUser = new MockTradeDetailsUser({
-                status:"COMPLETE", uId, createdBy, average_price: originalLastPrice, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
+                status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
                 variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
                 isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
-                tradeBy: createdBy, amount: (Number(Quantity)*originalLastPrice), trade_time:trade_time,
+                tradeBy: createdBy, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                 
             });
 
@@ -1374,7 +1362,9 @@ router.get("/gettraderwisepnlmocktradecompanytoday", async(req, res)=>{
         { $group: { _id: {
                                 "traderId": "$userId",
                                 "traderName": "$createdBy",
-                                "symbol": "$instrumentToken"
+                                "symbol": "$instrumentToken",
+                                "algoId": "$algoBox._id",
+                                "algoName": "$algoBox.algoName"
                             },
                     amount: {
                         $sum: {$multiply : ["$amount", -1]}

@@ -5,6 +5,7 @@ require("../db/conn");
 const Account =  require('../models/Trading Account/accountSchema');
 const RequestToken = require("../models/Trading Account/requestTokenSchema");
 const Instrument = require("../models/Instruments/instrumentSchema");
+const InstrumentMapping = require("../models/AlgoBox/instrumentMappingSchema");
 
 
 router.get("/getliveprice", async (req, res)=>{
@@ -13,7 +14,7 @@ router.get("/getliveprice", async (req, res)=>{
   const accessToken = await RequestToken.find();
   let getApiKey, getAccessToken;
   let date = new Date();
-  let today = `${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
+  let today = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`;
   for(let elem of accessToken){
       for(let subElem of apiKey){
           if(elem.accountId === subElem.accountId && elem.generatedOn === today && elem.status === "Active" && subElem.status === "Active"){
@@ -27,6 +28,7 @@ router.get("/getliveprice", async (req, res)=>{
 
 
     const resp = await Instrument.find();
+    const resp2 = await InstrumentMapping.find({Status: "Active"})
     let ans = resp.filter((elem) => {
       return elem.status === 'Active'
     });
@@ -37,6 +39,11 @@ router.get("/getliveprice", async (req, res)=>{
       } else {
         addUrl += ('&i=' + elem.exchange + ':' + elem.symbol + '&i=' + elem.exchange + ':' + elem.otm);
       }
+    });
+
+    resp2.forEach((elem, index) => {
+      // console.log(addUrl)
+      addUrl += ('&i=' + elem.incomingInstrumentExchange + ':' + elem.InstrumentNameIncoming + '&i=' + elem.outgoingInstrumentExchange + ':' + elem.InstrumentNameOutgoing);
     });
 
     let url = `https://api.kite.trade/quote?${addUrl}`;

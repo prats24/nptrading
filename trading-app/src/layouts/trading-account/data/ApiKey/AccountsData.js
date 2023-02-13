@@ -12,6 +12,7 @@ export default function AllActiveAccounts() {
       { Header: "API Secret", accessor: "apisecret", align: "center" },
       { Header: "Status", accessor: "status", align: "center" },
       { Header: "Created On", accessor: "createdon", align: "center" },
+      { Header: "Today Token", accessor: "generateToken", align: "center" },
     ],
 
     rows: [],

@@ -8,7 +8,7 @@ import Switch from "@mui/material/Switch";
 
 
 
-export default function MockRealSwitch({userId, props}) {
+export default function MockRealSwitch({userId, props, algoName}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});
@@ -139,25 +139,13 @@ export default function MockRealSwitch({userId, props}) {
 
                 while(quantity > 1800){
                     console.log("quantity", quantity)
-                    //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
+                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
                     quantity = quantity - 1800;
                 }
                 console.log("quantity", quantity)
-                //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
 
-    
-                // if(checkRealTrade){
-                //     let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                //     while(quantity > 1800){
-                //         console.log("quantity", quantity)
-                //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
-                //         quantity = quantity - 1800;
-                //     }
-                //     console.log("quantity", quantity)
-                //     //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
-                // } else{
 
-                // }
             }
         } else{
             for(let i = 0; i < liveTradeDetail.length; i++){
@@ -194,78 +182,15 @@ export default function MockRealSwitch({userId, props}) {
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
                 while(quantity > 1800){
                     console.log("quantity", quantity)
-                    //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
+                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
                     quantity = quantity - 1800;
                 }
                 console.log("quantity", quantity)
-                //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
+                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
 
-    
-                // if(checkRealTrade){
-                // } else{
-                //     while(quantity > 1800){
-                //         console.log("quantity", quantity)
-                //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
-                //         quantity = quantity - 1800;
-                //     }
-                //     console.log("quantity", quantity)
-                //     //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-    
-                // }
             }
         }
 
-        // for(let i = 0; i < tradeDetail.length; i++){
-        //     let usedAlgoBox = algoUsed.filter((elem)=>{
-        //         return elem.algoName === tradeDetail[i]._id.algoBoxName;
-        //     })
-
-        //     let apiKeyArr = apiKeyDetails.filter((elem)=>{
-        //         return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                
-        //     })
-
-        //     let accessTokenArr = accessTokenDetails.filter((elem)=>{
-        //         return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                
-        //     })
-
-        //     let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
-        //     let quantity = Math.abs(tradeDetail[i].lots);
-
-        //     let detailObj = {
-        //         symbol: tradeDetail[i]._id.symbol,
-        //         Product: tradeDetail[i]._id.product,
-        //         instrumentToken: tradeDetail[i]._id.instrumentToken,
-        //         exchange: tradeDetail[i]._id.exchange,
-        //         validity: tradeDetail[i]._id.validity,
-        //         OrderType: tradeDetail[i]._id.order_type,
-        //         variety: tradeDetail[i]._id.variety,
-        //         buyOrSell: transaction_type,
-        //         // Quantity: quantity,
-        //         tradeBy: tradeDetail[i]._id.name
-        //     }
-
-        //     if(checkRealTrade){
-        //         let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-        //         while(quantity > 1800){
-        //             console.log("quantity", quantity)
-        //             //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
-        //             quantity = quantity - 1800;
-        //         }
-        //         console.log("quantity", quantity)
-        //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
-        //     } else{
-        //         while(quantity > 1800){
-        //             console.log("quantity", quantity)
-        //             //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
-        //             quantity = quantity - 1800;
-        //         }
-        //         console.log("quantity", quantity)
-        //         //placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-
-        //     }
-        // }
 
         console.log("checkRealTrade", checkRealTrade)
         if(checkRealTrade){
@@ -365,7 +290,7 @@ export default function MockRealSwitch({userId, props}) {
     props.users.map((elem)=>{
         console.log("elem.userId === userId", elem.userId, userId)
 
-        if(elem.userId === userId){
+        if(elem.userId === userId && elem.algoName === algoName){
             // real = (elem.isRealTradeEnable);
             return(
             <MDBox mt={0.5}>

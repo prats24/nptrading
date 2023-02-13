@@ -132,8 +132,117 @@ exports.getTraderDailyPnlData = async(req,res,next) => {
        let x = await TraderDailyPnlData.aggregate(pipeline)
     
        res.status(201).json(x);
-    }
+}
 
+exports.deleteDuplicateData = async(date) => {
+  console.log("in dup data")
+      let cursor = await TraderDailyPnlData.aggregate([
+       {$group: {
+         _id: { timetsamp: "$timestamp", symbol: "$symbol", userId: "$userId" },
+         dups: { $addToSet: "$_id" },
+         count: { "$sum": 1 }
+       }},
+       { $match: { 
+        count: { "$gt": 1 },
+        "_id.timetsamp" : {$regex: date}
+        } }
+     ])
+     console.log("cursur", cursor)
+     let i = 0;
+     cursor.forEach(async (doc, index)=>{
+         // doc.dups[0].shift()
+          console.log(doc.dups[0], i++)
+         await TraderDailyPnlData.deleteMany({_id:{$in:doc.dups[0]}}) , 
+         console.log("deleted")
+     })
+
+}
+
+exports.traderDailyPnlCalculationEveryDate = async(date) => {
+  //Extracting timestamp from the instrument history data
+  //let date = '2023-01-09';
+
+  // for(let i = 9; i <= 31; i++){
+  //   let data = `2023-01-`
+  // }
+  console.log("date is", date)
+
+  const traderdailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:date}})
+  console.log("Trader Daily PNL Table Records for Today: "+traderdailyPnl.length);
+  const traderDetails = await TraderDetails.find({status:'Active'}).select("name email status");
+  console.log("Trader Details Table Length: "+traderDetails.length)
+
+  // if(traderdailyPnl.length === 0){
+
+    const instrumentData = await HistoryInstrumentData.find({timestamp : {$gte: `${date}T00:00:00+0530`,$lte:`${date}T23:59:59+0530`}}).select("timestamp symbol open").sort({timestamp: 1})
+    console.log("History Instrument Data: "+instrumentData);
+
+    //Extracting mock trade data for the particular date
+    const mockTradeData = await MockTradeData.find({trade_time : {$gte: `${date} 00:00:00`,$lte:`${date} 23:59:59`}}).select("trade_time symbol amount userId Quantity buyOrSell algoBox brokerage createdBy status").sort({trade_time : 1})
+
+    console.log("Mock Trade Data Length: "+mockTradeData.length);
+
+   // const traderDetails = await MockTradeData.find({trade_time : {$gte: `${date} 00:00:00`,$lte:`${date} 23:59:59`}}).select("trade_time symbol amount userId Quantity buyOrSell algoBox brokerage createdBy status").sort({trade_time : 1})
+    
+    traderDetails.map(async(td)=>{
+        console.log("Trader: "+td.name)
+        instrumentData.map(async(elem)=>{
+            //Converting the date time format
+            let filteringTimestamp = elem.timestamp.split("T")[0] + " " + elem.timestamp.split("T")[1].split("+")[0]
+            //console.log("Filtering Date: "+filteringTimestamp);
+            
+            let pnlTimeTradeData = mockTradeData.filter((e)=> {
+                //console.log("Compare Time: ",Date(filteringTimestamp),Date(e.trade_time))
+                //console.log(elem.open,e.Quantity,elem.symbol,e.symbol,e.status,e.userId,td.email);
+                return filteringTimestamp >= e.trade_time && elem.symbol == e.symbol && e.status == "COMPLETE" && e.userId == td.email
+                
+            })
+            //console.log("PNL Trade Data Length: "+pnlTimeTradeData.length)
+            //console.log("PNL Time Trade Data Length: "+pnlTimeTradeData.length);
+            if(pnlTimeTradeData.length !== 0){
+
+                let totalAmount = 0;
+                let totalRunningLots = 0;
+                let totalTrades = pnlTimeTradeData.length;
+                
+          
+                pnlTimeTradeData.map((element)=>{
+                    totalAmount += element.amount
+                    //console.log("Amount: "+element.amount)
+                    totalRunningLots += Number(-element.Quantity)
+                    //console.log("Quantity: "+element.Quantity)
+                })
+                
+                //console.log("Total Running Lots: "+totalRunningLots)
+          
+                let finalPnlTimeData = totalAmount + (totalRunningLots*elem.open)
+                //console.log("Final PNL Amount: "+finalPnlTimeData);
+                let traderName = td.name
+                let userId = td.email
+                //console.log("Data: "+filteringTimestamp,elem.symbol,finalPnlTimeData,totalAmount,totalRunningLots)
+                //console.log(finalPnlTimeData,elem.open,totalAmount,totalRunningLots)
+                let updateData = await TraderDailyPnlData.find({symbol:elem.symbol,timestamp:filteringTimestamp,calculatedGpnl:-finalPnlTimeData,noOfTrades:totalTrades,traderName:traderName,userId:userId})
+
+                if(updateData.length === 0){
+                  let x = await TraderDailyPnlData.create({symbol:elem.symbol,timestamp:filteringTimestamp,calculatedGpnl:-finalPnlTimeData,noOfTrades:totalTrades,traderName:traderName,userId:userId}, function (err, TraderDailyPnlData){
+                    if (err) return console.log(err);
+                     console.log("Data Saved for :"+td.name, date)
+                  });
+                }
+
+              
+          
+                //console.log(x);
+          
+          
+               //console.log("PNL Time Trade Data: "+pnlTimeTradeData)
+
+            }
+         
+        })
+
+    })
+}
 exports.getstoplossstopprofitpnl = async(req,res,next) => {
   //const {stoploss,stopprofit} = req.params;
   //console.log("Stop Loss & Stop Profit: "+stoploss,stopprofit)
