@@ -113,9 +113,9 @@ yLabelsTemp = ([...yLabelsTemp]) // prints an array of unique Batch numbers
 
 let xLabelsTemp = new Set(batchData.map((obj) => {
   if(String(obj._id.WeekNumber).length === 1){
-    return `Week#${String(obj._id.Year)+"-"+String("0"+obj._id.WeekNumber)}`
+    return `Week#${String("0"+obj._id.WeekNumber)+"-"+String(obj._id.Year)}`
   } else{
-    return `Week#${String(obj._id.Year)+"-"+String(obj._id.WeekNumber)}`
+    return `Week#${String(obj._id.WeekNumber)+"-"+String(obj._id.Year)}`
   }
 }))
 // console.log("uniqueBatches", uniqueBatches)
@@ -192,12 +192,12 @@ console.log("data, xLabels", data, xLabels)
         yLabels={yLabelsTemp}
         xLabelsLocation={"top"}
         xLabelsVisibility={xLabelsVisibility}
-        xLabelWidth={100}
+        xLabelWidth={150}
         yLabelWidth={100}
         data={data}
         rectangles
         height={40}
-        width={50}
+        width={100}
         onClick={(x, y) => alert("P&L is : " + `${data[y][x] > 0 ? "+₹" +data[y][x] : data[y][x] == 0 ? "₹"+0 : "-₹"+(-data[y][x])}`)}
         cellStyle={(background,value, min, max, data, x, y) => ({
           //background: `rgb(0, 255, 0, ${1 - (max - value) / (max - min)}`,
