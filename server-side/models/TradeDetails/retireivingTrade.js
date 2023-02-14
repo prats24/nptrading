@@ -105,7 +105,7 @@ const retireivSchema = new mongoose.Schema({
     }
 })
 
-const retireivDetail = mongoose.model("retreive-trade-data", retireivSchema);
+const retireivDetail = mongoose.model("retreive-trade", retireivSchema);
 module.exports = retireivDetail;
 
 

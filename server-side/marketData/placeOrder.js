@@ -88,12 +88,12 @@ router.post("/placeorder", (async (req, res)=>{
         };
 
 
-        await retreiveOrderAndSave(url2, authOptions);
+        await retreiveOrderAndSave(url2, authOptions, false);
 
 
     }).catch(async (err)=>{
-        await ifOrderIdNotFound(false, realBuyOrSell);
         console.log("order id not receive---------------------")
+        await ifOrderIdNotFound(false, realBuyOrSell);
         res.status(422).json({error : err.response.data.message})
     })
 
@@ -402,7 +402,7 @@ router.post("/placeorder", (async (req, res)=>{
     
     
                 setTimeout(()=>{
-                    if(checkingMultipleAlgoFlag === 1){
+                    if(!isMissed && checkingMultipleAlgoFlag === 1){
                         return res.status(201).json({massage : responseMsg, err: responseErr})
                     }
                 },0)
@@ -418,9 +418,10 @@ router.post("/placeorder", (async (req, res)=>{
 
     async function ifOrderIdNotFound(isMissed, transactionType){
         let breakingLoop = false;
+        let date = new Date(Date.now() - 10000).toISOString().split('.')[0].replace('T', ' ')
+
         for(let i = 0; i < 10; i++){
             setTimeout(async ()=>{
-                let date = new Date(Date.now() - 10000).toISOString().split('.')[0].replace('T', ' ')
     
                 const missedOrderId = await RetreiveOrder.aggregate([
                     { 
@@ -481,6 +482,7 @@ router.post("/placeorder", (async (req, res)=>{
             }
 
             if(i >= 5){
+                res.status(400).json({massage : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
                 await reverseTrade(missedOrderId[0].transaction_type, true)
             }
         }
@@ -818,8 +820,6 @@ router.post("/placeorder", (async (req, res)=>{
         })
     
     }
-
-
 }))
 
 
