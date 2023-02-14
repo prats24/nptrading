@@ -36,7 +36,7 @@ const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
 getKiteCred.getAccess().then((data)=>{
-  console.log(data)
+  // console.log(data)
   createNewTicker(data.getApiKey, data.getAccessToken);
 });
 
@@ -106,6 +106,8 @@ app.use('/api/v1', require("./routes/mockTrade/mockTradeUserAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
 app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));
+app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
+
 require('./db/conn');
 
 

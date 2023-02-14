@@ -1203,5 +1203,137 @@ router.get("/getoverallpnlmocktradeparticularusertodaytraderside/:email", async(
  
 })
 
+router.get("/batchwisepnl", async(req, res)=>{
+  let batchwisepnl = await MockTradeDetails.aggregate([
+    {
+      $lookup: {
+        from: "user-personal-details",
+        localField: "userId",
+        foreignField: "email",
+        as: "zyx",
+      },
+    },
+    {
+      $project: {
+        designation: {
+          $arrayElemAt: ["$zyx.designation", 0],
+        },
+        dojWeekNumber: {
+          $week: {
+            $toDate: {
+              $arrayElemAt: [
+                "$zyx.joining_date",
+                0,
+              ],
+            },
+          },
+        },
+        BatchYear: {
+          $year: {
+            $toDate: {
+              $arrayElemAt: [
+                "$zyx.joining_date",
+                0,
+              ],
+            },
+          },
+        },
+        weekNumber: {
+          $week: {
+            $toDate: "$trade_time",
+          },
+        },
+        Year: {
+          $year: {
+            $toDate: "$trade_time",
+          },
+        },
+        doj: {
+          $arrayElemAt: ["$zyx.joining_date", 0],
+        },
+        trader: "$createdBy",
+        amount: "$amount",
+        lots: "$Quantity",
+        date: "$trade_time",
+        status: "$status",
+        userId: "$userId",
+        email: {
+          $arrayElemAt: ["$zyx.email", 0],
+        },
+      },
+    },
+    {
+      $match: {
+        status: "COMPLETE",
+        designation: "Equity Trader",
+      },
+    },
+    {
+      $group: {
+        _id: {
+          BatchWeek: "$dojWeekNumber",
+          BatchYear: "$BatchYear",
+          WeekNumber: "$weekNumber",
+          Year: "$Year",
+        },
+        gpnl: {
+          $sum: {
+            $multiply: ["$amount", -1],
+          },
+        },
+        count: {
+          $push: "$userId",
+        },
+      },
+    },
+    {
+      $group: {
+        _id: {
+          BatchWeek: "$_id.BatchWeek",
+          BatchYear: "$_id.BatchYear",
+          WeekNumber: "$_id.WeekNumber",
+          Year: "$_id.Year",
+          gpnl: "$gpnl",
+        },
+        noOfTraders: {
+          $sum: {
+            $size: {
+              $setUnion: "$count",
+            },
+          },
+        },
+      },
+    },
+    {
+      $sort: {
+        "_id.Year": 1,
+        "_id.WeekNumber": 1,
+        "_id.BatchYear": 1,
+        "_id.Batch": 1,
+      },
+    },
+    {
+      $addFields:
+        /**
+         * newField: The new field name.
+         * expression: The new field expression.
+         */
+        {
+          Batch: {
+            $add: [
+              {
+                $toInt: "$_id.BatchWeek",
+              },
+              {
+                $toInt: "$_id.BatchYear",
+              },
+            ],
+          },
+        },
+    },
+  ])
+  res.status(201).json(batchwisepnl);
+})
+
 
 module.exports = router;

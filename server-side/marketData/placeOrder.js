@@ -436,20 +436,50 @@ router.post("/placeorder", (async (req, res)=>{
                     },
                     {
                         $lookup: {
-                            from: "live-trade-companies",
-                            localField: "order_id",
-                            foreignField: "order_id",
-                            as: "completed_trade"
+                          from: "live-trade-companies",
+                          localField: "order_id",
+                          foreignField: "order_id",
+                          as: "completed_trade"
                         }
-                    },
-                    {
+                      },
+                      {
                         $match: {
-                            completed_trade: {
-                                $size: 0
-                            }
+                          completed_trade: {
+                            $size: 0
+                          },
+                        },
+                      },
+                      {
+                        $group: {
+                          _id: "$_id",
+                          order_id: {$first: "$order_id"},
+                          status: {$first: "$status"},    
+                          average_price: {$first: "$average_price"},
+                          quantity: {$first: "$quantity"} ,
+                          product: {$first: "$product"},
+                          transaction_type: {$first: "$transaction_type"},
+                          exchange_order_id: {$first: "$exchange_order_id"},
+                          order_timestamp: {$first: "$order_timestamp"},
+                          variety: {$first: "$variety"},
+                          validity: {$first: "$validity"},
+                          exchange: {$first: "$exchange"},
+                          exchange_timestamp: {$first: "$exchange_timestamp"},
+                          order_type: {$first: "$order_type"},
+                          price: {$first: "$price"},
+                          filled_quantity: {$first: "$filled_quantity"},
+                          pending_quantity: {$first: "$pending_quantity"},
+                          cancelled_quantity: {$first: "$cancelled_quantity"},
+                          guid: {$first: "$guid"},
+                          market_protection: {$first: "$market_protection"},
+                          disclosed_quantity: {$first: "$disclosed_quantity"},
+                          tradingsymbol: {$first: "$tradingsymbol"},
+                          placed_by: {$first: "$placed_by"},
+                          status_message: {$first: "$status_message"},
+                          status_message_raw: {$first: "$status_message_raw"},
+              
                         }
-                    },
-                ])
+                      }
+                    ]);
     
                 if(!isMissed && missedOrderId.length > 0 && i < 5){
                     let missedTrade = missedOrderId.filter((elem)=>{
@@ -459,7 +489,6 @@ router.post("/placeorder", (async (req, res)=>{
                         if(!await CompanyTradeData.findOne({order_id: elem.order_id})){
                             await savingDataInDB(elem, true, isMissed)
                         }
-                       
                     }
                     
                     breakingLoop = true;

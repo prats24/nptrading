@@ -91,7 +91,7 @@ const retireivSchema = new mongoose.Schema({
     },
     account_id:{
         type: String,
-        required: true
+        // required: true
     },
     status_message:{
         type: String,

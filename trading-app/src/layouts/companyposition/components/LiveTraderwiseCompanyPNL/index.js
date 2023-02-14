@@ -262,7 +262,7 @@ function LiveTraderwiseCompantPNL(props) {
      })
    
 
-
+     console.log("this is rows", finalTraderPnl)
      let obj = {};
 
      const totalGrossPnlcolor = totalGrossPnlGrid >= 0 ? "success" : "error"

@@ -391,7 +391,8 @@ router.get("/gettraderwisepnllivetradecompanytoday", async(req, res)=>{
                                 "traderName": "$createdBy",
                                 // "buyOrSell": "$buyOrSell",
                                 // "traderName": "$createdBy",
-                                "symbol": "$instrumentToken"
+                                "symbol": "$instrumentToken",
+                                "algoName": "$algoBox.algoName"
                             },
                     amount: {
                         $sum: {$multiply : ["$amount", -1]}
@@ -862,6 +863,8 @@ router.get("/updatealgoidlive", async(req, res)=>{
       }
   }
 })
+
+
 
 
 module.exports = router;

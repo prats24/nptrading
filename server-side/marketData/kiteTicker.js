@@ -91,7 +91,7 @@ const onOrderUpdate = ()=>{
               placed_by, status_message, status_message_raw, 
               instrument_token, exchange_update_timestamp, account_id});
               
-          console.log("retreiveOrder", retreiveOrder._id, retreiveOrder.status, retreiveOrder.order_id)
+          // console.log("retreiveOrder", retreiveOrder._id, retreiveOrder.status, retreiveOrder.order_id)
           retreiveOrder.save().then(async ()=>{
               // await subscribeTokens();
               // res.status(201).json({massage : "data enter succesfully"});

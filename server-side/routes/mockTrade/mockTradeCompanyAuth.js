@@ -1765,7 +1765,7 @@ router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
 router.get("/getoverallpnlmocktradecompanytoday/algowisedata/:algoId", async(req, res)=>{
     let date = new Date();
     const {algoId} = req.params;
-    console.log( date, algoId)
+    // console.log( date, algoId)
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
@@ -1906,14 +1906,14 @@ router.get("/updatealgoid", async(req, res)=>{
   
         for(let i = 0; i< algoiddoc.length; i++ ){
             if(!algoiddoc[i].algoBox.isDefault && !algoiddoc[i].algoBox.marginDeduction){
-            console.log(algoiddoc[i]._id);
+            // console.log(algoiddoc[i]._id);
             await MockTradeDetails.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox.isDefault' : true,'algoBox.marginDeduction' : false},
                 function (err, algoBox) {
                     if (err){
                         console.log(err)
                     }
                     else{
-                        console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
+                        // console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
                     }
         }).clone();
         }

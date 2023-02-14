@@ -1,6 +1,6 @@
 const getKiteCred = require('../marketData/getKiteCred'); 
 const axios = require("axios")
-const RetreiveTrade = require("../models/TradeDetails/retireivingTrade");
+const RetreiveOrder = require("../models/TradeDetails/retreiveOrder");
 
 
 exports.retreiveOrder = async () => {
@@ -24,7 +24,7 @@ exports.retreiveOrder = async () => {
     
             const response = await axios.get(url, authOptions);
             for (let tradeData of response.data.data) {
-                console.log("tradeData", tradeData)
+               // console.log("tradeData", tradeData)
             let {order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
                 validity, exchange, exchange_timestamp, order_type, price, 
                 filled_quantity, pending_quantity, cancelled_quantity, 
@@ -48,14 +48,14 @@ exports.retreiveOrder = async () => {
                     exchange_update_timestamp = "null"
                 }
     
-                const tradeDetails = new RetreiveTrade({order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
+                const tradeDetails = new RetreiveOrder({order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
                     validity, exchange, exchange_timestamp, order_type, price, 
                     filled_quantity, pending_quantity, cancelled_quantity, 
                     guid, market_protection, disclosed_quantity, tradingsymbol, 
                     placed_by, status_message, status_message_raw, 
                     instrument_token, exchange_update_timestamp});
         
-                console.log("tradeDetails", tradeDetails)
+              //  console.log("tradeDetails", tradeDetails)
                 tradeDetails.save().then(async ()=>{
                     // await subscribeTokens();
                     // res.status(201).json({massage : "data enter succesfully"});
@@ -64,7 +64,7 @@ exports.retreiveOrder = async () => {
             }
       
           } catch (err){
-            console.log(err)
+           // console.log(err)
             // return res.status(422).json({error : "Failed to retreive data from api"});
         } 
 

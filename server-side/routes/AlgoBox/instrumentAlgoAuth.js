@@ -20,18 +20,18 @@ router.post("/instrumentAlgo", async (req, res)=>{
         let incomingInstrumentToken;
         let outgoingInstrumentToken;
         if(instrumentDetail.length !== 0){
-            console.log("instrumentDetail", instrumentDetail)
+            // console.log("instrumentDetail", instrumentDetail)
             incomingInstrumentToken = await fetchToken(instrumentDetail[0].exchange, InstrumentNameIncoming);
             outgoingInstrumentToken = await fetchToken(instrumentDetail[0].exchange, InstrumentNameOutgoing);
         } else{
             instrumentDetail = await Instrument.find({status: "Active"});
-            console.log("instrumentDetail in else", instrumentDetail)
+            // console.log("instrumentDetail in else", instrumentDetail)
             incomingInstrumentToken = await fetchToken(instrumentDetail[0].exchange, InstrumentNameIncoming);
             outgoingInstrumentToken = await fetchToken(instrumentDetail[0].exchange, InstrumentNameOutgoing);
 
         }
 
-        console.log(outgoingInstrumentToken, incomingInstrumentToken)
+        // console.log(outgoingInstrumentToken, incomingInstrumentToken)
 
         if(!InstrumentNameIncoming || !InstrumentNameOutgoing || !Status || !lastModified || !uId || !createdBy || !createdOn){
             //console.log(req.body);
