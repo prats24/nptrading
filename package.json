@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "puppeteer": "^19.6.3",
+    "totp-generator": "^0.0.14"
+  }
+}

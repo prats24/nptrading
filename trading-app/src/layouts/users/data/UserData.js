@@ -17,6 +17,7 @@ export default function AllActiveUsers() {
       // { Header: "Trading Exp.", accessor: "tradingexp",align: "center" },
       { Header: "Location", accessor: "location",align: "center" },
       { Header: "Date of Joining", accessor: "doj", align: "center"},
+      { Header: "DOJ Week", accessor: "dojweek", align: "center"},
       { Header: "Role", accessor: "role", align: "center"},
       // { Header: "User Password", accessor: "userPass", align: "center"},
       { Header: "Status", accessor: "status", align: "center"},

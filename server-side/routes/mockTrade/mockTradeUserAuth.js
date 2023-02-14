@@ -979,6 +979,12 @@ router.get("/getweeklytraderpnl/:firstWeek/:secondWeek", async(req, res)=>{
     
     let pnlDetails = await MockTradeDetails.aggregate([
         {
+          $match:
+            {
+              status: "COMPLETE",
+            },
+        },
+        {
           $project: {
             weekNumber: {
               $week: {
@@ -989,6 +995,7 @@ router.get("/getweeklytraderpnl/:firstWeek/:secondWeek", async(req, res)=>{
             amount: "$amount",
             lots: "$Quantity",
             date: "$trade_time",
+            status: "$status",
           },
         },
         {
@@ -1005,13 +1012,12 @@ router.get("/getweeklytraderpnl/:firstWeek/:secondWeek", async(req, res)=>{
           },
         },
         {
-          $match:
-            {
-              "_id.weekNumber": {
-                $gte: Number(firstWeek),
-                $lte: Number(secondWeek),
-              },
+          $match: {
+            "_id.weekNumber": {
+              $gte: Number(firstWeek),
+              $lte: Number(secondWeek),
             },
+          },
         },
       ])
 
@@ -1062,7 +1068,7 @@ router.get("/getuniqueweeks/:firstWeek/:secondWeek", async(req, res)=>{
         res.status(201).json(pnlDetails);
  
 })
-
+ 
 router.get("/traderpnlreport/:startDate/:endDate", async(req, res)=>{
     //console.log("Inside Aggregate API - Date wise company pnl based on date entered")
     let {startDate,endDate} = req.params
