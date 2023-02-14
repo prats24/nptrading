@@ -417,6 +417,7 @@ router.post("/placeorder", (async (req, res)=>{
     }
 
     async function ifOrderIdNotFound(isMissed, transactionType){
+        console.log("in order if func")
         let breakingLoop = false;
         let date = new Date(Date.now() - 10000).toISOString().split('.')[0].replace('T', ' ')
 
@@ -489,7 +490,7 @@ router.post("/placeorder", (async (req, res)=>{
     }
 
     async function savingDataInDB(orderData, isMissed, checkingIsMissed){
-
+        console.log("in savingDataInDB func")
         let {order_id, status, average_price, quantity, product, transaction_type, exchange_order_id,
                order_timestamp, variety, validity, exchange, exchange_timestamp, order_type, price, filled_quantity, 
                pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,     
@@ -751,6 +752,7 @@ router.post("/placeorder", (async (req, res)=>{
     }
 
     async function reverseTrade(realBuyOrSell, isMissed){
+        console.log("in reverseTrade func")
         let transactionType ;
         if(realBuyOrSell === "BUY"){
             transactionType = "SELL";
