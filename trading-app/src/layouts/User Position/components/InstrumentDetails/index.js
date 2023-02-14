@@ -57,7 +57,7 @@ function InstrumentDetails({socket, Render}) {
       });
   }, []);
 
-  //console.log("marketData", marketData)
+  console.log("marketData in userPosition", marketData)
   let ltpArr = [];
   
   rows.map((elem)=>{

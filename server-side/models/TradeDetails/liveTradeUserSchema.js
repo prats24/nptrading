@@ -130,7 +130,11 @@ const liveTradeUser = new mongoose.Schema({
     },
     otm_token:{
         type: String,
-    }
+    },
+    isMissed:{
+        type: Boolean,
+        default: false
+    },
 })
 
 const liveTradeUserDetails = mongoose.model("live-trade-user", liveTradeUser);

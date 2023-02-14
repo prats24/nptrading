@@ -4,6 +4,8 @@ require("../../db/conn");
 const InstrumentAlgo = require("../../models/AlgoBox/instrumentMappingSchema");
 const fetchToken = require("../../marketData/generateSingleToken");
 const Instrument = require("../../models/Instruments/instrumentSchema");
+const {subscribeTokens, unSubscribeTokens} = require('../../marketData/kiteTicker');
+
 
 
 router.post("/instrumentAlgo", async (req, res)=>{
@@ -46,7 +48,8 @@ router.post("/instrumentAlgo", async (req, res)=>{
             const instrumentAlgo = new InstrumentAlgo({InstrumentNameIncoming, IncomingInstrumentCode: incomingInstrumentToken, InstrumentNameOutgoing, OutgoingInstrumentCode: outgoingInstrumentToken, Status, lastModified, uId, createdBy, createdOn, incomingInstrumentExchange: instrumentDetail[0].exchange, outgoingInstrumentExchange: instrumentDetail[0].exchange});
     
             console.log("instrumentAlgo", instrumentAlgo)
-            instrumentAlgo.save().then(()=>{
+            instrumentAlgo.save().then(async ()=>{
+                await subscribeTokens();
                 res.status(201).json({massage : "data enter succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         }).catch(err => {console.log("fail")});
@@ -117,6 +120,10 @@ router.put("/readInstrumentAlgo/:id", async (req, res)=>{
             }
         })
         //console.log("this is role", instrumentAlgo);
+        if((req.body.outgoing_instrument !== instrumentAlgo.InstrumentNameOutgoing) || (req.body).Status === "Inactive"){
+            unSubscribeTokens(instrumentAlgo.InstrumentNameOutgoing).then(()=>{});
+        }
+        subscribeTokens().then(()=>{});   
         res.send(instrumentAlgo)
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});
@@ -127,8 +134,11 @@ router.delete("/readInstrumentAlgo/:id", async (req, res)=>{
     //console.log(req.params)
     try{
         const {id} = req.params
+
+        const instrumentMappingDetail = await InstrumentAlgo.findOne({_id : id})
         const instrumentAlgo = await InstrumentAlgo.deleteOne({_id : id})
-        //console.log("this is userdetail", instrumentAlgo);
+        unSubscribeTokens(instrumentMappingDetail.OutgoingInstrumentCode).then(()=>{});
+
         res.status(201).json({massage : "data delete succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to delete data"});

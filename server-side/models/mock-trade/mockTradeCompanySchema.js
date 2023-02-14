@@ -100,6 +100,10 @@ const mockTradeCompanySchema = new mongoose.Schema({
     otm_token:{
         type: String,
     },
+    isMissed:{
+        type: Boolean,
+        default: false
+    },
     algoBox:{
         _id:{
             type: String,

@@ -19,10 +19,20 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 
-//         await traderwiseDailyPnlController.deleteDuplicateData();
-//     //   }
+
+// router.get("/deleteTodaysMockData", async(req, res)=>{
+//     let cursor = await CompanyTradeData.aggregate([
+//         { $match: { trade_time: { $regex: "2023-02-13" } } }
+//       ])
+      
+//       let i = 0;
+//       cursor.forEach(async (doc, index)=>{
+//           // doc.dups[0].shift()
+//            console.log(doc, i++)
+//           await CompanyTradeData.deleteMany({_id:{$in:doc}})
+//           console.log("deleted")
+//       })
 // })
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
