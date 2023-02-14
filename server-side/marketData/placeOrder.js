@@ -431,6 +431,7 @@ router.post("/placeorder", (async (req, res)=>{
                                 quantity: realQuantity,
                                 // transaction_type: transactionType,
                                 tradingsymbol: realSymbol,
+                                status: "COMPLETE"
                         }
                     },
                     {
@@ -446,12 +447,6 @@ router.post("/placeorder", (async (req, res)=>{
                             completed_trade: {
                                 $size: 0
                             }
-                        }
-                    },
-                    {
-                        $project: {
-                            _id: 0,
-                            order_id: 1
                         }
                     },
                 ])

@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const retireivSchema = new mongoose.Schema({
     order_id:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     status:{
         type: String,
@@ -69,7 +70,8 @@ const retireivSchema = new mongoose.Schema({
     },
     guid:{
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     market_protection:{
         type: Number,

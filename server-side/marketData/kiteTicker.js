@@ -5,13 +5,6 @@ const RetreiveOrder = require("../models/TradeDetails/retreiveOrder")
 const RetreiveTrade = require("../models/TradeDetails/retireivingTrade")
 
 
-
-
-
-
-
-
-
 let ticker;
 const createNewTicker = (api_key, access_token) => {
     ticker = new kiteTicker({
@@ -61,7 +54,6 @@ const onError = ()=>{
 const onOrderUpdate = ()=>{
   // ticker.on("order_update", onTrade)
   ticker.on('order_update', (orderUpdate)=>{
-    // console.log("orderUpdate", orderUpdate);
     let {order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
       validity, exchange, exchange_timestamp, order_type, price, 
       filled_quantity, pending_quantity, cancelled_quantity, 
@@ -85,39 +77,29 @@ const onOrderUpdate = ()=>{
           exchange_update_timestamp = "null"
       }
 
-      RetreiveTrade.findOne({order_id : order_id})
-      .then((dataExist)=>{
-          // if(dataExist ){
-          //   console.log("data already in retreiveorder")
-          //     return;
-          // }
-   
-          const retreiveTrade = new RetreiveTrade({
-            order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
-            validity, exchange, exchange_timestamp, order_type, price, 
-            filled_quantity, pending_quantity, cancelled_quantity, 
-            guid, market_protection, disclosed_quantity, tradingsymbol, 
-            placed_by, status_message, status_message_raw, 
-            instrument_token, exchange_update_timestamp, account_id
-          });
-          // console.log("this is REAL CompanyTradeData", companyTradeData);
-          retreiveTrade.save().then(()=>{
-          }).catch((err)=> console.log(err, "failed to enter data"));
-      }).catch(err => {console.log( err,"fail company live data saving")});
-
       if(status === "COMPLETE" || status === "REJECTED"){
-        const retreiveOrder = new RetreiveOrder({order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
-            validity, exchange, exchange_timestamp, order_type, price, 
-            filled_quantity, pending_quantity, cancelled_quantity, 
-            guid, market_protection, disclosed_quantity, tradingsymbol, 
-            placed_by, status_message, status_message_raw, 
-            instrument_token, exchange_update_timestamp, account_id});
-            
-        console.log("retreiveOrder", retreiveOrder)
-        retreiveOrder.save().then(async ()=>{
-            // await subscribeTokens();
-            // res.status(201).json({massage : "data enter succesfully"});
-        }).catch((err)=> console.log(err, "failed to enter data"));
+        RetreiveOrder.findOne({order_id : order_id, guid: guid})
+        .then((dataExist)=>{
+          if(dataExist ){
+              return;
+          }
+
+          const retreiveOrder = new RetreiveOrder({order_id, status, average_price, quantity, product, transaction_type, exchange_order_id, order_timestamp, variety, 
+              validity, exchange, exchange_timestamp, order_type, price, 
+              filled_quantity, pending_quantity, cancelled_quantity, 
+              guid, market_protection, disclosed_quantity, tradingsymbol, 
+              placed_by, status_message, status_message_raw, 
+              instrument_token, exchange_update_timestamp, account_id});
+              
+          console.log("retreiveOrder", retreiveOrder._id, retreiveOrder.status, retreiveOrder.order_id)
+          retreiveOrder.save().then(async ()=>{
+              // await subscribeTokens();
+              // res.status(201).json({massage : "data enter succesfully"});
+          }).catch((err)=> console.log(err, "failed to enter data"));
+          
+    
+
+        }).catch(err => {console.log( err,"fail company live data saving")});
       }
 
   });
@@ -130,4 +112,7 @@ const onOrderUpdate = ()=>{
 
 const getTicker = () => ticker;
 module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens, onOrderUpdate };
+
+
+
 
