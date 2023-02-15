@@ -118,6 +118,17 @@ let xLabelsTemp = new Set(batchData.map((obj) => {
     return `Week#${String(obj._id.Year)+"-"+String(obj._id.WeekNumber)}`
   }
 }))
+
+let yLabelsTempArray = []
+console.log("yLabelTemp Length",yLabelsTemp.length)
+if(yLabelsTemp.length != 0){
+for (let i = 0; i < yLabelsTemp.length; i++)
+{
+  console.log("Inside YLabelTempArray:",i+1);
+  yLabelsTempArray.push("Batch# " + ""+(i+1));
+}
+}
+console.log(yLabelsTempArray);
 // console.log("uniqueBatches", uniqueBatches)
 xLabelsTemp = ([...xLabelsTemp])
 const xLabelsVisibility = xLabelsTemp;
@@ -186,14 +197,14 @@ console.log("data, xLabels", data, xLabels)
               </MDBox>
             </Card> */}
       <MDBox mt={2} mb={3} fontSize={13} style={{ backgroundColor: '#FFF0AA' }}>
-      <MDBox fontSize={20} mb={2} display="flex" justifyContent="center" style={{ backgroundColor: 'lightblue' }}>Batch Wise Heat Map</MDBox>
+      <MDBox fontSize={20} mb={2} display="flex" justifyContent="center" style={{ backgroundColor: 'lightblue' }}>Batch Wise P&L Heat Map</MDBox>
       <HeatMap
         xLabels={xLabelsTemp}
-        yLabels={yLabelsTemp}
+        yLabels={yLabelsTempArray}
         xLabelsLocation={"top"}
         xLabelsVisibility={xLabelsVisibility}
         xLabelWidth={100}
-        yLabelWidth={100}
+        yLabelWidth={70}
         data={data}
         rectangles
         height={40}

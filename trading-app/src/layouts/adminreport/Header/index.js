@@ -142,7 +142,7 @@ function AdminReportHeader({ children }) {
                 /> */}
 
 <               Tab
-                  label="Batch Wise"
+                  label="Batch Wise P&L HeatMap"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       <SupervisorAccountIcon/>
