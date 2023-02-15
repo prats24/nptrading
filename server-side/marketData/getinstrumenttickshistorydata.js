@@ -11,6 +11,8 @@ const traderwiseDailyPnlController = require("../controllers/traderwiseDailyPnlC
 const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSchema")
 const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
 const dbBackup = require("../Backup/mongoDbBackUp")
+const RetreiveOrder = require("../controllers/retreiveOrder")
+
 
 
 
@@ -88,6 +90,8 @@ const getInstrumentTicksHistoryData = async () => {
             const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
 
             await dbBackup.backupDatabase(sourceUri, targetUri);
+            await RetreiveOrder.retreiveOrder()
+
 
           },20000)
 

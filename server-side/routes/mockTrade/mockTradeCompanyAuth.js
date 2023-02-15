@@ -19,10 +19,20 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 
-//         await traderwiseDailyPnlController.deleteDuplicateData();
-//     //   }
+
+// router.get("/deleteTodaysMockData", async(req, res)=>{
+//     let cursor = await CompanyTradeData.aggregate([
+//         { $match: { trade_time: { $regex: "2023-02-13" } } }
+//       ])
+      
+//       let i = 0;
+//       cursor.forEach(async (doc, index)=>{
+//           // doc.dups[0].shift()
+//            console.log(doc, i++)
+//           await CompanyTradeData.deleteMany({_id:{$in:doc}})
+//           console.log("deleted")
+//       })
 // })
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
@@ -1755,7 +1765,7 @@ router.get("/getMockTradeDetailsUser/:email", async(req, res)=>{
 router.get("/getoverallpnlmocktradecompanytoday/algowisedata/:algoId", async(req, res)=>{
     let date = new Date();
     const {algoId} = req.params;
-    console.log( date, algoId)
+    // console.log( date, algoId)
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
@@ -1896,14 +1906,14 @@ router.get("/updatealgoid", async(req, res)=>{
   
         for(let i = 0; i< algoiddoc.length; i++ ){
             if(!algoiddoc[i].algoBox.isDefault && !algoiddoc[i].algoBox.marginDeduction){
-            console.log(algoiddoc[i]._id);
+            // console.log(algoiddoc[i]._id);
             await MockTradeDetails.findByIdAndUpdate(algoiddoc[i]._id, {'algoBox.isDefault' : true,'algoBox.marginDeduction' : false},
                 function (err, algoBox) {
                     if (err){
                         console.log(err)
                     }
                     else{
-                        console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
+                        // console.log("Is Default : ", algoiddoc[i].algoBox.isDefault,algoBox);
                     }
         }).clone();
         }

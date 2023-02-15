@@ -37,13 +37,13 @@ router.get("/readtradingAlgo", (req, res)=>{
         }else{
             return res.status(200).send(data);
         }
-    }).sort({$natural:-1})
+    }).sort({createdOn:-1})
 })
 
 router.get("/readtradingAlgo/:id", (req, res)=>{
     //console.log(req.params)
     const {id} = req.params
-    TradingAlgo.findOne({_id : id})
+    TradingAlgo.findOne({_id : id}).sort({createdOn:-1})
     .then((data)=>{
         return res.status(200).send(data);
     })

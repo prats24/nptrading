@@ -27,6 +27,7 @@ import TraderPNL from "../TraderPNLTWise";
 import TraderMatrix from "../TraderMatrix";
 import TraderHeatMap from "../TraderHeatMap";
 import TraderHeatMapWeekly from "../TraderHeatMapWeekly";
+import BatchWiseTradersHeatMap from "../BatchWiseTraderHeatMap";
 
 
 
@@ -140,6 +141,15 @@ function AdminReportHeader({ children }) {
                   }
                 /> */}
 
+<               Tab
+                  label="Batch Wise"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      <SupervisorAccountIcon/>
+                    </Icon>
+                  }
+                />
+
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><CompanyDailyPNLTWise /> </TabPanel>
@@ -148,6 +158,7 @@ function AdminReportHeader({ children }) {
             <TabPanel value={tabValue} index={3}><TraderMatrix /> </TabPanel>
             {/* <TabPanel value={tabValue} index={4}><TraderHeatMap /> </TabPanel> */}
             {/* <TabPanel value={tabValue} index={5}><TraderHeatMapWeekly /> </TabPanel> */}
+            <TabPanel value={tabValue} index={4}><BatchWiseTradersHeatMap /> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>

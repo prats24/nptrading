@@ -96,7 +96,11 @@ const mockTradeSchema = new mongoose.Schema({
     },
     otm_token:{
         type: String,
-    }
+    },
+    isMissed:{
+        type: Boolean,
+        default: false
+    },
 })
 
 const MockTradeDetails = mongoose.model("mock-trade-user", mockTradeSchema);

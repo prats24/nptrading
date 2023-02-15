@@ -13,10 +13,23 @@ import Profile from "./layouts/profile";
 import Setting from "./layouts/settings/Setting";
 import Expense from "./layouts/expenses/";
 import AlgoPosition from "./layouts/algo position";
-import Shop2Icon from '@mui/icons-material/Shop2';
-import ReportIcon from '@mui/icons-material/Assessment';
+import UserOrders from "./layouts/userorders";
+import UserPosition from "./layouts/User Position";
+import UserReport from "./layouts/userreports";
+import TradersReport from "./layouts/tradersReport";
+import AdminReport from "./layouts/adminreport";
+import DailyPNLData from "./layouts/dailyPnlDashboard";
+import TraderPosition from "./layouts/traderPosition"
+
 
 // @mui icons
+import Shop2Icon from '@mui/icons-material/Shop2';
+import ReportIcon from '@mui/icons-material/Assessment';
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import SummarizeIcon from '@mui/icons-material/Summarize';
+import InventoryIcon from '@mui/icons-material/Inventory'; 
+import SettingsIcon from '@mui/icons-material/Settings';
+import EngineeringIcon from '@mui/icons-material/Engineering';
 import PersonIcon from '@mui/icons-material/Person';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -27,17 +40,7 @@ import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import UserOrders from "./layouts/userorders";
-import UserPosition from "./layouts/User Position";
-import UserReport from "./layouts/userreports";
-import TradersReport from "./layouts/tradersReport";
-import AdminReport from "./layouts/adminreport";
-import DailyPNLData from "./layouts/dailyPnlDashboard";
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
-import SummarizeIcon from '@mui/icons-material/Summarize';
-import InventoryIcon from '@mui/icons-material/Inventory'; 
-import SettingsIcon from '@mui/icons-material/Settings';
-import EngineeringIcon from '@mui/icons-material/Engineering';
+
 
 const routes = [
   {
@@ -55,6 +58,15 @@ const routes = [
     icon: <BusinessIcon/>,
     route: "/companyposition",
     component: <CompanyPosition />,
+  },
+
+  {
+    type: "collapse",
+    name: "Trader Position",
+    key: "traderposition",
+    icon: <BusinessIcon/>,
+    route: "/traderposition",
+    component: <TraderPosition />,
   },
 
   {

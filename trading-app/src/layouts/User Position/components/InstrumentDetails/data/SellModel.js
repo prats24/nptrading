@@ -496,7 +496,7 @@ useEffect(()=>{
             window.alert("AMO Request Recieved");
         } else{
             console.log("this is dataResp", dataResp)
-            window.alert("on order placing nothing happen");
+            window.alert(dataResp.massage);
         }
     }
   }
