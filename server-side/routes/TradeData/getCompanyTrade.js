@@ -864,6 +864,93 @@ router.get("/updatealgoidlive", async(req, res)=>{
   }
 })
 
+router.get("/traderwisecompanypnlLivereport/:startDate/:endDate", async(req, res)=>{
+  //console.log("Inside Aggregate API - Trader wise company pnl based on date entered")
+  let {startDate,endDate} = req.params
+  let date = new Date();
+  const days = date.getDay();
+  let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+  //console.log("Today "+todayDate)
+  
+  let pipeline = [ {$match: {
+                      trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                      status : "COMPLETE" 
+                  }
+                      // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                  },
+                  { $group :
+                          { _id: "$createdBy",
+                          gpnl: {
+                            $sum: {$multiply : ["$amount",-1]}
+                          },
+                          brokerage : {
+                            $sum: {$toDouble : "$brokerage"}
+                          },
+                          trades : {
+                            $count : {}
+                          },
+                  }
+              },
+              { $addFields: 
+                  {
+                      npnl: {$subtract : ["$gpnl" , "$brokerage"]}
+                  }
+                  },
+              { $sort :
+                  { npnl: -1 }
+              }
+              ]
 
+  let x = await LiveCompanyTradeData.aggregate(pipeline)
+
+      res.status(201).json(x);
+      
+})
+
+router.get("/companypnlreportLive/:startDate/:endDate", async(req, res)=>{
+  //console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+  let {startDate,endDate} = req.params
+  let date = new Date();
+  const days = date.getDay();
+  let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+  //console.log("Today "+todayDate)
+  
+  let pipeline = [ {$match: {
+                      trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                      status : "COMPLETE" 
+                  }
+                      // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                  },
+                  { $group :
+                          { _id: {
+                              "date": {$substr: [ "$trade_time", 0, 10 ]},
+                          },
+                  gpnl: {
+                      $sum: {$multiply : ["$amount",-1]}
+                  },
+                  brokerage: {
+                      $sum: {$toDouble : "$brokerage"}
+                  },
+                  trades: {
+                      $count: {}
+                  },
+                  }
+              },
+              { $addFields: 
+                  {
+                  npnl : { $subtract : ["$gpnl","$brokerage"]},
+                  dayOfWeek : {$dayOfWeek : { $toDate : "$_id.date"}}
+                  }
+                  },
+              { $sort :
+                  { _id : 1 }
+              }
+              ]
+
+  let x = await LiveCompanyTradeData.aggregate(pipeline)
+
+      res.status(201).json(x);
+      
+})
 
 module.exports = router;
