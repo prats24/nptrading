@@ -201,26 +201,26 @@ router.patch("/updaterealtradeenable/:id", async (req, res)=>{
     }
 })
 
-// router.patch("/updaterealtradeenable/:email", async (req, res)=>{
-//     //console.log(req.params)
-//     const {email} = req.params
-//     //console.log("this is body", req.body, id);
-//     try{ 
+router.patch("/updaterealtradeenable/email/:email", async (req, res)=>{
+    //console.log(req.params)
+    const {email} = req.params
+    //console.log("this is body", req.body, id);
+    try{ 
         
-//         const permission = await Permission.findOneAndUpdate({userId : email}, {
-//             $set:{ 
-//                 modifiedOn: req.body.modifiedOn,
-//                 modifiedBy: req.body.modifiedBy,
-//                 isRealTradeEnable: req.body.isRealTradeEnable,
-//             }
-//         })
-//         //console.log("this is role", permission);
-//         res.send(permission)
-//         // res.status(201).json({massage : "data edit succesfully"});
-//     } catch (e){
-//         res.status(500).json({error:"Failed to edit data"});
-//     }
-// })
+        const permission = await Permission.findOneAndUpdate({userId : email}, {
+            $set:{ 
+                modifiedOn: req.body.modifiedOn,
+                modifiedBy: req.body.modifiedBy,
+                isRealTradeEnable: req.body.isRealTradeEnable,
+            }
+        })
+        //console.log("this is role", permission);
+        res.send(permission)
+        // res.status(201).json({massage : "data edit succesfully"});
+    } catch (e){
+        res.status(500).json({error:"Failed to edit data"});
+    }
+})
 
 
 module.exports = router;

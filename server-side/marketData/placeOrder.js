@@ -517,7 +517,10 @@ router.post("/placeorder", (async (req, res)=>{
     
                 if(!breakingLoop && i >= 5){
                     console.log("in the fifth if conditionfor reverse trade")
-                    // res.status(400).json({massage : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
+                    if(i === 5){
+                        res.status(400).json({massage : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
+                    }
+                
                     if(missedOrderId.length > 0){
                         await reverseTrade(missedOrderId[0].transaction_type, true)
                     }

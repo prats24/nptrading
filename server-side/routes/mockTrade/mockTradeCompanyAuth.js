@@ -346,8 +346,8 @@ router.post("/mocktradecompany", async (req, res)=>{
     } else{
         brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
     }
- 
-
+ // MockTradeDetails
+    
     MockTradeDetails.findOne({order_id : order_id})
     .then((dateExist)=>{
         if(dateExist && dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){

@@ -104,7 +104,8 @@ export default function MockRealSwitch({userId, props, algoName}) {
     const switchButtonFunc = (checkRealTrade)=>{
         console.log("checkRealTrade", checkRealTrade)
 
-        if(checkRealTrade){
+        if(!checkRealTrade){
+            console.log("squaring off not")
             for(let i = 0; i < tradeDetail.length; i++){
                 let usedAlgoBox = algoUsed.filter((elem)=>{
                     return elem.algoName === tradeDetail[i]._id.algoBoxName;
@@ -148,8 +149,12 @@ export default function MockRealSwitch({userId, props, algoName}) {
                     }
                   }, 300);
 
+                //   changeIsRealTrade(true)
+
             }
         } else{
+
+            console.log("squaring off")
             for(let i = 0; i < liveTradeDetail.length; i++){
                 let usedAlgoBox = algoUsed.filter((elem)=>{
                     return elem.algoName === liveTradeDetail[i]._id.algoBoxName;
@@ -195,6 +200,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
                     }
                   }, 300);
 
+                //   changeIsRealTrade(false)
             }
         }
 
@@ -259,7 +265,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
     }
 
     const changeIsRealTrade = async (realTrade)=>{
-        const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/${userId}`, {
+        const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/email/${userId}`, {
             method: "PATCH",
             headers: {
                 Accept: "application/json",
