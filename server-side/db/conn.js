@@ -21,6 +21,3 @@ const DB = process.env.DATABASE;
     console.log("no connection");
 })
 
-
-
-

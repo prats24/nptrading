@@ -136,15 +136,17 @@ export default function MockRealSwitch({userId, props, algoName}) {
                     tradeBy: tradeDetail[i]._id.name
                 }
 
-
-                while(quantity > 1800){
-                    console.log("quantity", quantity)
-                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
-                    quantity = quantity - 1800;
-                }
-                console.log("quantity", quantity)
-                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-
+                let interval = setInterval(() => {
+                    if (quantity > 1800) {
+                        // console.log("quantity", 1800, (new Date()).getMilliseconds())
+                      placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
+                      quantity = quantity - 1800;
+                    } else {
+                        // console.log("quantity", quantity, (new Date()).getMilliseconds())
+                      placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
+                      clearInterval(interval);
+                    }
+                  }, 300);
 
             }
         } else{
@@ -180,13 +182,18 @@ export default function MockRealSwitch({userId, props, algoName}) {
                 }
 
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-                while(quantity > 1800){
-                    console.log("quantity", quantity)
-                    placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
-                    quantity = quantity - 1800;
-                }
-                console.log("quantity", quantity)
-                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
+
+                let interval = setInterval(() => {
+                    if (quantity > 1800) {
+                        // console.log("quantity", 1800, (new Date()).getMilliseconds())
+                      placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
+                      quantity = quantity - 1800;
+                    } else {
+                        // console.log("quantity", quantity, (new Date()).getMilliseconds())
+                      placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
+                      clearInterval(interval);
+                    }
+                  }, 300);
 
             }
         }

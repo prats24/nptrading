@@ -93,8 +93,11 @@ router.post("/placeorder", (async (req, res)=>{
 
     }).catch(async (err)=>{
         console.log("order id not receive---------------------")
-        await ifOrderIdNotFound(false, realBuyOrSell);
-        res.status(422).json({error : err.response.data.message})
+        if(err.response.data.message === "Order request timed out. Please check the order book and confirm before placing again."){
+            await ifOrderIdNotFound(false, realBuyOrSell);
+        } else{
+            res.status(422).json({error : err.response.data.message})
+        }
     })
 
     function retreiveOrderAndSave(url2, authOptions, isMissed){
@@ -415,11 +418,11 @@ router.post("/placeorder", (async (req, res)=>{
     
         }, 500)
     }
-
+    
     async function ifOrderIdNotFound(isMissed, transactionType){
         console.log("in order if func")
         let breakingLoop = false;
-        let date = new Date(Date.now() - 10000).toISOString().split('.')[0].replace('T', ' ')
+        let date = new Date(Date.now()-10000).toISOString().split('.')[0].replace('T', ' ')
 
         for(let i = 0; i < 10; i++){
             setTimeout(async ()=>{
@@ -480,24 +483,44 @@ router.post("/placeorder", (async (req, res)=>{
                         }
                       }
                     ]);
+
+                    // console.log("missedOrderId",missedOrderId)
     
-                if(!isMissed && missedOrderId.length > 0 && i < 5){
+                if(!breakingLoop && !isMissed && missedOrderId.length > 0 && i < 5){
+                    console.log("in the first if condition")
                     let missedTrade = missedOrderId.filter((elem)=>{
                         return elem.transaction_type === realBuyOrSell;
                     })
+
+                    // console.log("missedTrade", missedTrade)
                     for(let elem of missedTrade){
-                        if(!await CompanyTradeData.findOne({order_id: elem.order_id})){
+                        // console.log("elem", elem)
+                        // const checkData = await CompanyTradeData.findOne({order_id: elem.order_id})
+                        // console.log("checkData", checkData)
+                        // if(checkData.length === 0){
+                            console.log("in the second if condition for saving data")
                             await savingDataInDB(elem, true, isMissed)
-                        }
+                        // }
                     }
                     
                     breakingLoop = true;
                 }
                 if(isMissed){
                     for(let elem of missedOrderId){
+                        console.log("in the third if condition for system saving")
                         await savingDataInDB(elem, true, isMissed)
                     }
                     
+                }
+
+
+    
+                if(!breakingLoop && i >= 5){
+                    console.log("in the fifth if conditionfor reverse trade")
+                    // res.status(400).json({massage : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
+                    if(missedOrderId.length > 0){
+                        await reverseTrade(missedOrderId[0].transaction_type, true)
+                    }
                 }
  
             }, 1000)
@@ -506,10 +529,6 @@ router.post("/placeorder", (async (req, res)=>{
                 break;
             }
 
-            if(i >= 5){
-                res.status(400).json({massage : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
-                await reverseTrade(missedOrderId[0].transaction_type, true)
-            }
         }
     }
 
@@ -520,6 +539,7 @@ router.post("/placeorder", (async (req, res)=>{
                pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,     
                status_message, status_message_raw} = orderData
      
+            //    console.log("orderData in savingDataInDB", orderData)
         if(!status_message){
             status_message = "null"
         }
@@ -620,6 +640,7 @@ router.post("/placeorder", (async (req, res)=>{
             brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
         }
     
+        console.log("outside saving")
 
         CompanyTradeData.findOne({order_id : order_id})
         .then((dataExist)=>{
@@ -637,7 +658,7 @@ router.post("/placeorder", (async (req, res)=>{
             const date = new Date(temp_order_save_time);
             const newDate = addMinutes(date, 330);
             const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
-     
+             console.log("before saving")
             const companyTradeData = new CompanyTradeData({
                 disclosed_quantity, price, filled_quantity, pending_quantity, cancelled_quantity, market_protection, guid,
                 status, uId, createdBy, average_price, Quantity: quantity, 
@@ -653,7 +674,7 @@ router.post("/placeorder", (async (req, res)=>{
             });
             // console.log("this is REAL CompanyTradeData", companyTradeData);
             companyTradeData.save().then(()=>{
-            }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+            }).catch((err)=> {console.log( err,"fail company live data saving company")});
         }).catch(err => {console.log( err,"fail company live data saving")});
 
         if(checkingMultipleAlgoFlag === 1){
@@ -769,6 +790,7 @@ router.post("/placeorder", (async (req, res)=>{
 
         setTimeout(()=>{
             if(!checkingIsMissed && checkingMultipleAlgoFlag === 1){
+                console.log("sending resp to user")
                 return res.status(201).json({massage : responseMsg, err: responseErr})
             }
         },0)
@@ -840,18 +862,15 @@ router.post("/placeorder", (async (req, res)=>{
     
         }).catch(async (err)=>{
 
-            await ifOrderIdNotFound(isMissed, transactionType);
-            console.log("order id not receive---------------------")
-            res.status(422).json({error : err.response.data.message})
+            if(err.response.data.message === "Order request timed out. Please check the order book and confirm before placing again."){
+                await ifOrderIdNotFound(isMissed, transactionType);
+            } else{
+                res.status(422).json({error : err.response.data.message})
+            }
+            console.log("order id not receive again---------------------")
         })
     
     }
 }))
 
-
-
-
-
-
 module.exports = router;
-
