@@ -18,6 +18,7 @@ const CompanyTradeData = require("../../models/TradeDetails/liveTradeSchema");
 const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema"); 
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
+const MissedHistoryData = require("../../marketData/getinstrumenttickshistorydata")
 
 
 
@@ -34,6 +35,12 @@ const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyP
 //           console.log("deleted")
 //       })
 // })
+
+router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+        await MissedHistoryData();
+    //   }
+    //   }
+})
 
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
 //     // if(dailyPnl.length === 0){

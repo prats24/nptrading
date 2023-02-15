@@ -16,10 +16,12 @@ import AlgoPosition from "./layouts/algo position";
 import UserOrders from "./layouts/userorders";
 import UserPosition from "./layouts/User Position";
 import UserReport from "./layouts/userreports";
-import TradersReport from "./layouts/tradersReport";
-import AdminReport from "./layouts/adminreport";
+import TradersReport from "./layouts/tradersReportMock";
+import AdminReport from "./layouts/adminreportMock";
 import DailyPNLData from "./layouts/dailyPnlDashboard";
 import TraderPosition from "./layouts/traderPosition"
+import AdminReportLive from "./layouts/adminreportLive"
+import TradersReportLive from "./layouts/tradersReportLive"
 
 
 // @mui icons
@@ -80,7 +82,7 @@ const routes = [
   
   {
     type: "collapse",
-    name: "Admin Reports",
+    name: "Admin Reports(M)",
     key: "adminreport",
     icon: <SummarizeIcon/>,
     route: "/adminreport",
@@ -88,20 +90,28 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Trader Reports",
+    name: "Admin Reports(L)",
+    key: "adminreportlive",
+    icon: <SummarizeIcon/>,
+    route: "/adminreportlive",
+    component: <AdminReportLive/>,
+  },
+  {
+    type: "collapse",
+    name: "Trader Reports(M)",
     key: "tradersReport",
     icon: <ReportIcon/>,
     route: "/tradersReport",
     component: <TradersReport/>,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Trader Dashboard",
-  //   key: "traderdashboard",
-  //   icon: <DashboardIcon/>,
-  //   route: "/traderdashboard",
-  //   component: <TraderDashboard />,
-  // },
+  {
+    type: "collapse",
+    name: "Trader Reports(L)",
+    key: "tradersReportlive",
+    icon: <ReportIcon/>,
+    route: "/tradersReportLive",
+    component: <TradersReportLive/>,
+  },
   {
     type: "collapse",
     name: "All Orders",

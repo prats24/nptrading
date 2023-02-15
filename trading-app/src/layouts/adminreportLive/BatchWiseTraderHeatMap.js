@@ -27,7 +27,7 @@ let [overallPnl, setOverallPnl] = useState([]);
 
 useEffect(()=>{
 
-      axios.get(`${baseUrl}api/v1/batchwisepnl`)
+      axios.get(`${baseUrl}api/v1/batchwisepnlLive`)
         .then((res)=>{
           let data = res.data;
 
@@ -72,14 +72,9 @@ useEffect(()=>{
     return 0;
   });
 
-  console.log("uniqueBatches", uniqueWeeks)
 
 
 
-// let uniqueBatches = []
-// batchData.map((elem)=>{
-//     uniqueBatches.push(elem.name)
-// })
 
 let pnldates = []
 udates.map((elem)=>{
@@ -111,41 +106,23 @@ let yLabelsTemp = new Set(batchData.map((obj) =>{
 }))
 yLabelsTemp = ([...yLabelsTemp]) // prints an array of unique Batch numbers
 
+let yLabelTempArray = []
+for(let i = 0; i < yLabelsTemp.length; i++)
+{
+  yLabelTempArray.push("Batch# " + "" + (i+1));
+}
+
 let xLabelsTemp = new Set(batchData.map((obj) => {
   if(String(obj._id.WeekNumber).length === 1){
-    return `Week#${String(obj._id.Year)+"-"+String("0"+obj._id.WeekNumber)}`
+    return `Week#${String("0"+obj._id.WeekNumber)+"-"+String(obj._id.Year)}`
   } else{
-    return `Week#${String(obj._id.Year)+"-"+String(obj._id.WeekNumber)}`
+    return `Week#${String(obj._id.WeekNumber)+"-"+String(obj._id.Year)}`
   }
 }))
-
-let yLabelsTempArray = []
-console.log("yLabelTemp Length",yLabelsTemp.length)
-if(yLabelsTemp.length != 0){
-for (let i = 0; i < yLabelsTemp.length; i++)
-{
-  console.log("Inside YLabelTempArray:",i+1);
-  yLabelsTempArray.push("Batch# " + ""+(i+1));
-}
-}
-console.log(yLabelsTempArray);
-// console.log("uniqueBatches", uniqueBatches)
 xLabelsTemp = ([...xLabelsTemp])
 const xLabelsVisibility = xLabelsTemp;
 
-// yLabels = yLabels.map((elem)=>{
-//   return `Batch#(${elem})`
-// })
-// for (let i = 0; i < pnldates.length; i++) {
-//     console.log(pnldates[i][1]);
-//     xLabels.push(pnldates[i][1])
-// }
 
-// const pnldates1 = [];
-// for (let i = 0; i < pnldates.length; i++) {
-//     console.log(pnldates[i][0]);
-//     pnldates1.push(pnldates[i][0])
-// }
 
 let rows = uniqueBatches.length;
 let cols = uniqueWeeks.length;
@@ -166,41 +143,15 @@ for (let i = 0; i < rows; i++) {
     }
 }
 
-console.log("data, xLabels", data, xLabels)
-  // 
-
-
-
-//export default function() {
   return (
     
     <MDBox mt={2} mb={3} fontSize={13}>
-        {/* <Card sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
-              <MDBox >
-                <Typography sx={{ margin: 2, marginRight:10, backgroundColor:"#f0f2f5", borderRadius:2, p: 1, fontSize: 15,fontWeight:600}}>Trader Side HeatMap (Mock-Gross P&L)</Typography>
-              </MDBox>
-              <MDBox >
-                <Typography sx={{ margin: 2, padding: 1, fontSize: 15,fontWeight:600,backgroundColor:"#f0f2f5", borderRadius:2 }}>Start Date</Typography>
-                </MDBox>
-              <TextField
-                id="outlined-basic" variant="standard" type="date"
-                sx={{ margin: 1.5, padding: 1 }} onChange={(e)=>{startDate(e)}} value={firstDate}/>
-           
-              <MDBox >
-                <Typography color="dark" sx={{ margin: 2, padding: 1, fontSize: 15,fontWeight:600,backgroundColor:"#f0f2f5", borderRadius:2 }}>End Date</Typography>
-                </MDBox>
-              <TextField
-                id="outlined-basic" variant="standard" type="date"
-                sx={{ margin: 1.5, padding: 1 }} onChange={(e)=>{endDate(e)}} value={secondDate}/>
-              <MDBox >
-              <MDButton variant="contained" color="info" sx={{margin: 1, marginLeft: 10, padding: 1 }} onClick="">Download PDF</MDButton>
-              </MDBox>
-            </Card> */}
+
       <MDBox mt={2} mb={3} fontSize={13} style={{ backgroundColor: '#FFF0AA' }}>
-      <MDBox fontSize={20} mb={2} display="flex" justifyContent="center" style={{ backgroundColor: 'lightblue' }}>Batch Wise P&L Heat Map</MDBox>
+      <MDBox fontSize={20} mb={2} display="flex" justifyContent="center" style={{ backgroundColor: 'lightblue' }}>Batch Wise Heat Map</MDBox>
       <HeatMap
         xLabels={xLabelsTemp}
-        yLabels={yLabelsTempArray}
+        yLabels={yLabelTempArray}
         xLabelsLocation={"top"}
         xLabelsVisibility={xLabelsVisibility}
         xLabelWidth={100}
@@ -208,7 +159,7 @@ console.log("data, xLabels", data, xLabels)
         data={data}
         rectangles
         height={40}
-        width={50}
+        width={100}
         onClick={(x, y) => alert("P&L is : " + `${data[y][x] > 0 ? "+₹" +data[y][x] : data[y][x] == 0 ? "₹"+0 : "-₹"+(-data[y][x])}`)}
         cellStyle={(background,value, min, max, data, x, y) => ({
           //background: `rgb(0, 255, 0, ${1 - (max - value) / (max - min)}`,

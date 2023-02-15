@@ -322,4 +322,446 @@ router.get("/getusertrades/:userId", async(req, res)=>{
  
 })
 
+router.get("/batchwisepnlLive", async(req, res)=>{
+    let batchwisepnl = await UserTradeData.aggregate([
+      {
+        $lookup: {
+          from: "user-personal-details",
+          localField: "userId",
+          foreignField: "email",
+          as: "zyx",
+        },
+      },
+      {
+        $project: {
+          designation: {
+            $arrayElemAt: ["$zyx.designation", 0],
+          },
+          dojWeekNumber: {
+            $week: {
+              $toDate: {
+                $arrayElemAt: [
+                  "$zyx.joining_date",
+                  0,
+                ],
+              },
+            },
+          },
+          BatchYear: {
+            $year: {
+              $toDate: {
+                $arrayElemAt: [
+                  "$zyx.joining_date",
+                  0,
+                ],
+              },
+            },
+          },
+          weekNumber: {
+            $week: {
+              $toDate: "$trade_time",
+            },
+          },
+          Year: {
+            $year: {
+              $toDate: "$trade_time",
+            },
+          },
+          doj: {
+            $arrayElemAt: ["$zyx.joining_date", 0],
+          },
+          trader: "$createdBy",
+          amount: "$amount",
+          lots: "$Quantity",
+          date: "$trade_time",
+          status: "$status",
+          userId: "$userId",
+          email: {
+            $arrayElemAt: ["$zyx.email", 0],
+          },
+        },
+      },
+      {
+        $match: {
+          status: "COMPLETE",
+          designation: "Equity Trader",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            BatchWeek: "$dojWeekNumber",
+            BatchYear: "$BatchYear",
+            WeekNumber: "$weekNumber",
+            Year: "$Year",
+          },
+          gpnl: {
+            $sum: {
+              $multiply: ["$amount", -1],
+            },
+          },
+          count: {
+            $push: "$userId",
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            BatchWeek: "$_id.BatchWeek",
+            BatchYear: "$_id.BatchYear",
+            WeekNumber: "$_id.WeekNumber",
+            Year: "$_id.Year",
+            gpnl: "$gpnl",
+          },
+          noOfTraders: {
+            $sum: {
+              $size: {
+                $setUnion: "$count",
+              },
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          "_id.Year": 1,
+          "_id.WeekNumber": 1,
+          "_id.BatchYear": 1,
+          "_id.Batch": 1,
+        },
+      },
+      {
+        $addFields:
+          /**
+           * newField: The new field name.
+           * expression: The new field expression.
+           */
+          {
+            Batch: {
+              $add: [
+                {
+                  $toInt: "$_id.BatchWeek",
+                },
+                {
+                  $toInt: "$_id.BatchYear",
+                },
+              ],
+            },
+          },
+      },
+    ])
+    res.status(201).json(batchwisepnl);
+  })
+
+  router.get("/getuserreportLive/:firstDate/:secondDate", async(req, res)=>{
+    const {firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await UserTradeData.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, status: "COMPLETE"} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
+                                "trader" : "$createdBy"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    }
+
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+router.get("/getuniquedatesLive/:firstDate/:secondDate", async(req, res)=>{
+    const {firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await UserTradeData.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, status: "COMPLETE"} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
+                            },
+
+                    }},
+             { $sort: {_id: 1}},
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+router.get("/tradermatrixpnlreportLive/:startDate/:endDate", async(req, res)=>{
+    //console.log("Inside Aggregate API - Trader wise company pnl based on date entered")
+    let {startDate,endDate} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    //console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                        status : "COMPLETE" 
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: { createdBy : "$createdBy", trade_time : {$substr : ["$trade_time",0,10]}},
+
+                            gpnl: {
+                              $sum: {$multiply : ["$amount",-1]}
+                            },
+                            brokerage : {
+                              $sum: {$toDouble : "$brokerage"}
+                            },
+                            trades : {
+                              $count : {}
+                            },
+                    }
+                },
+                { $addFields: 
+                    {
+                        npnl: {$subtract : ["$gpnl" , "$brokerage"]}
+                    }
+                    },
+                { $sort :
+                    { gpnl: -1 }
+                }
+                ]
+
+    let x = await UserTradeData.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/traderwisetraderpnlreportLive/:startDate/:endDate", async(req, res)=>{
+    //console.log("Inside Aggregate API - Trader wise trader pnl based on date entered")
+    let {startDate,endDate} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    //console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                        status : "COMPLETE" 
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: "$createdBy",
+                            gpnl: {
+                              $sum: {$multiply : ["$amount",-1]}
+                            },
+                            brokerage : {
+                              $sum: {$toDouble : "$brokerage"}
+                            },
+                            trades : {
+                              $count : {}
+                            },
+                    }
+                },
+                { $addFields: 
+                    {
+                        npnl: {$subtract : ["$gpnl" , "$brokerage"]}
+                    }
+                    },
+                { $sort :
+                    { npnl: -1 }
+                }
+                ]
+
+    let x = await UserTradeData.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/traderpnlreportlive/:startDate/:endDate", async(req, res)=>{
+    //console.log("Inside Aggregate API - Date wise company pnl based on date entered")
+    let {startDate,endDate} = req.params
+    let date = new Date();
+    const days = date.getDay();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    //console.log("Today "+todayDate)
+    
+    let pipeline = [ {$match: {
+                        trade_time : {$gte : `${startDate} 00:00:00`, $lte : `${endDate} 23:59:59`},
+                        status : "COMPLETE" 
+                    }
+                        // trade_time : {$gte : '2023-01-13 00:00:00', $lte : '2023-01-13 23:59:59'}
+                    },
+                    { $group :
+                            { _id: {
+                                "date": {$substr: [ "$trade_time", 0, 10 ]},
+                            },
+                    gpnl: {
+                        $sum: {$multiply : ["$amount",-1]}
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    trades: {
+                        $count: {}
+                    },
+                    }
+                },
+                { $addFields: 
+                    {
+                    npnl : { $subtract : ["$gpnl","$brokerage"]},
+                    dayOfWeek : {$dayOfWeek : { $toDate : "$_id.date"}}
+                    }
+                    },
+                { $sort :
+                    { _id : 1 }
+                }
+                ]
+
+    let x = await UserTradeData.aggregate(pipeline)
+
+        res.status(201).json(x);
+        
+})
+
+router.get("/getweeklytraderpnlLive/:firstWeek/:secondWeek", async(req, res)=>{
+    const {firstWeek, secondWeek} = req.params;
+    
+    let pnlDetails = await UserTradeData.aggregate([
+        {
+          $match:
+            {
+              status: "COMPLETE",
+            },
+        },
+        {
+          $project: {
+            weekNumber: {
+              $week: {
+                $toDate: "$trade_time",
+              },
+            },
+            trader: "$createdBy",
+            amount: "$amount",
+            lots: "$Quantity",
+            date: "$trade_time",
+            status: "$status",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              trader: "$trader",
+              weekNumber: "$weekNumber",
+            },
+            gpnl: {
+              $sum: {
+                $multiply: ["$amount", 1],
+              },
+            },
+          },
+        },
+        {
+          $match: {
+            "_id.weekNumber": {
+              $gte: Number(firstWeek),
+              $lte: Number(secondWeek),
+            },
+          },
+        },
+      ])
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getuniqueweeksLive/:firstWeek/:secondWeek", async(req, res)=>{
+    const {firstWeek, secondWeek} = req.params;
+    
+    let pnlDetails = await UserTradeData.aggregate([
+        {
+          $project: {
+            weekNumber: {
+              $week: {
+                $toDate: "$trade_time",
+              },
+            },
+            year: {
+              $year: {$toDate : "$trade_time"},
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              weekNumber: "$weekNumber",
+              year: "$year"
+            },
+          },
+        },
+        {
+          $match: {
+            "_id.weekNumber": {
+              $gte: Number(firstWeek),
+              $lte: Number(secondWeek),
+            },
+          },
+        },
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.weekNumber": 1,
+          },
+        },
+      ])
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getuserreportdatewisenameLive/:name/:firstDate/:secondDate", async(req, res)=>{
+    const {name, firstDate, secondDate} = req.params;
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await UserTradeData.aggregate([
+        { $match: { trade_time: {$gte : `${firstDate} 00:00:00`, $lte : `${secondDate} 23:59:59`}, createdBy: name, status: "COMPLETE"} },
+        
+        { $group: { _id: {
+                             "date": {$substr: [ "$trade_time", 0, 10 ]},
+                                "buyOrSell": "$buyOrSell",
+                                "trader" : "$createdBy"
+                            },
+                    amount: {
+                        $sum: "$amount"
+                    },
+                    brokerage: {
+                        $sum: {$toDouble : "$brokerage"}
+                    },
+                    lots: {
+                        $sum: {$toInt : "$Quantity"}
+                    },
+                    noOfTrade: {
+                        $count: {}
+                        // average_price: "$average_price"
+                    },
+                    }},
+             { $sort: {_id: -1}},
+            ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
 module.exports = router;
