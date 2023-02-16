@@ -36,32 +36,31 @@ const MissedHistoryData = require("../../marketData/getinstrumenttickshistorydat
 //       })
 // })
 
-router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-        await MissedHistoryData();
-    //   }
-    //   }
-})
-
 // router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-//     // if(dailyPnl.length === 0){
-//         console.log("dailyPnlCalculation running")
-//         await dailyPnlDataController.dailyPnlCalculation("2023-02-02");
-//     //   }
-
-//     //   if(traderDailyPnl.length === 0){
-//         console.log("traderDailyPnlCalculation running")
-//         await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-02");
-//     //   }
+//     await MissedHistoryData();
 // })
 
+router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
+    // if(dailyPnl.length === 0){
+        console.log("dailyPnlCalculation running")
+        await dailyPnlDataController.dailyPnlCalculation("2023-02-14");
+    //   }
+
+    //   if(traderDailyPnl.length === 0){
+        console.log("traderDailyPnlCalculation running")
+        await traderwiseDailyPnlController.traderDailyPnlCalculation("2023-02-14");
+    //   }
+}) 
+
+//TraderPNLData
+
 // router.get("/deleteinhistory", async(req, res)=>{
-//     TraderPNLData.deleteMany({timestamp: {$regex: "2023-02-02"}})
+//     TraderPNLData.deleteMany({timestamp: {$regex: "2023-02-14"}})
 //     .then(()=>{
 //         console.log("deleted")
 //     }).catch(()=>{
 //         //console.log("err")
 //     })
-    
 // })
 
 router.post("/livetradecompanytemp", async (req, res)=>{

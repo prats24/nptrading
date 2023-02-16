@@ -95,11 +95,11 @@ const onOrderUpdate = ()=>{
           retreiveOrder.save().then(async ()=>{
               // await subscribeTokens();
               // res.status(201).json({massage : "data enter succesfully"});
-          }).catch((err)=> console.log(err, "failed to enter data"));
+          }).catch((err)=> console.log( "failed to enter data"));
           
     
 
-        }).catch(err => {console.log( err,"fail company live data saving")});
+        }).catch(err => {console.log("fail company live data saving")});
       }
 
   });
