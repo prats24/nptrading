@@ -5,6 +5,8 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import TextField from '@mui/material/TextField';
+
 
 
 // Material Dashboard 2 React components
@@ -21,6 +23,7 @@ import MockRealSwitch from "../MockRealSwitch";
 
 // Data
 import data from "./data";
+import TradeSwitchButton from "../TradeSwitchButton";
 
 function LiveTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
@@ -254,9 +257,9 @@ function LiveTraderwiseCompantPNL(props) {
       obj.orders = (
         <LiveTraderwiseOrders userId={subelem.userId}/>
       );
-      obj.realOrMock = (
-        <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName}/>
-      );
+      // obj.realOrMock = (
+      //   <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName}/>
+      // );
    
        rows.push(obj);
      })
@@ -316,6 +319,92 @@ function LiveTraderwiseCompantPNL(props) {
      rows.push(obj);
 
   // }, [marketData])
+  // function search(e){
+  //   console.log("value", e.target.value)
+  //   let obj = {};
+  //   rows =[];
+  //   finalTraderPnl.map((subelem)=>{
+  //     console.log("value",subelem.name.toLowerCase().includes(e.target.value))
+  //     if(subelem.name.toLowerCase().includes(e.target.value)){
+  //       console.log("value in  if", subelem)
+
+  //       let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
+  //       let tradercolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
+  //       let gpnlcolor = (subelem.totalPnl) >= 0 ? "success" : "error"
+  //       let runninglotscolor = subelem.runninglots > 0 ? "info" : (subelem.runninglots < 0 ? "error" : "dark")
+  //       let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
+  //       let runninglotsbgcolor = subelem.runninglots > 0 ? "#ffff00" : ""
+  
+  //        totalGrossPnlGrid += (subelem.totalPnl);
+  //        //console.log("Gross P&L: ",subelem.name,subelem.totalPnl );
+  //        totalTransactionCost += (subelem.brokerage);
+  //        totalNoRunningLots += (subelem.runninglots);
+  //        totalLotsUsed += (subelem.lotUsed);
+  //        totalTrades += (subelem.noOfTrade);
+  //        totalTraders += 1;
+  
+  //        obj.userId = (
+  //         <MDTypography component="a" variant="caption" fontWeight="medium">
+  //           {subelem.userId}
+  //         </MDTypography>
+  //       );
+  
+  //        obj.traderName = (
+  //          <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor} padding="5px" borderRadius="5px">
+  //            {(subelem.name)}
+  //          </MDTypography>
+  //        );
+     
+  //        obj.grossPnl = (
+  //          <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+  //            {(subelem.totalPnl) > 0.00 ? "+₹" + ((subelem.totalPnl).toFixed(2)): "-₹" + (-subelem.totalPnl).toFixed(2)}
+  //          </MDTypography>
+  //        );
+     
+  //        obj.noOfTrade = (
+  //          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+  //            {subelem.noOfTrade}
+  //          </MDTypography>
+  //        );
+     
+  //        obj.runningLots = (
+  //          <MDTypography component="a" variant="caption" color={runninglotscolor} backgroundColor={runninglotsbgcolor} fontWeight="medium">
+  //            {subelem.runninglots}
+  //          </MDTypography>
+  //        );
+     
+  //        obj.lotUsed = (
+  //          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+  //            {subelem.lotUsed}
+  //          </MDTypography>
+  //        );
+     
+  //        obj.brokerage = (
+  //          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+  //            {"₹"+(subelem.brokerage).toFixed(2)}
+  //          </MDTypography>
+  //        );
+     
+  //        obj.netPnl = (
+  //          <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
+  //            {((subelem.totalPnl)-(subelem.brokerage)) > 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
+  //          </MDTypography>
+  //        );
+  //        obj.view = (
+  //         <LiveViewTradeDetail socket={props.socket} userId={subelem.userId}/>
+  //       );
+  //       obj.orders = (
+  //         <LiveTraderwiseOrders userId={subelem.userId}/>
+  //       );
+  //       obj.realOrMock = (
+  //         <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName}/>
+  //       );
+     
+  //        rows.push(obj);
+
+  //     }
+  //   })
+  // }
 
      
 
@@ -342,9 +431,16 @@ function LiveTraderwiseCompantPNL(props) {
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
+          <MDButton > <TradeSwitchButton tradeData={finalTraderPnl} props={props} /> </MDButton>
+          {/* <TextField
+              id="outlined-basic" label="" variant="standard" onChange={(e)=>{search(e)}}
+              sx={{ margin: 1, padding: 1, width: "300px" }} /> */}
+
           <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
             more_vert
           </Icon>
+          
+
         </MDBox>
         {renderMenu}
       </MDBox>
@@ -358,5 +454,5 @@ function LiveTraderwiseCompantPNL(props) {
       </MDBox>
     </Card>
   );
-            }
+}
 export default LiveTraderwiseCompantPNL;

@@ -218,14 +218,14 @@ export default function MockRealSwitch({userId, props, algoName}) {
     }
 // onChange={() => props.handleSwitchChange(user.id)}
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
-  
+        
         const { exchange, symbol, buyOrSell, Product, OrderType, validity, variety, instrumentToken, tradeBy } = detailObj;
         const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
   
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
   
-        console.log("detailObj", detailObj, apiKey, accessToken, algoBox)
+        console.log("squaring off detailObj", detailObj, apiKey, accessToken, algoBox)
         const res = await fetch(`${baseUrl}api/v1/switchToRealTrade`, {
             method: "POST",
             headers: {
