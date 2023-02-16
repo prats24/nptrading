@@ -24,6 +24,7 @@ const marginSchema = new mongoose.Schema({
     },
     lastModifiedOn:{
         type: Date,
+        default: Date.now(),
         // required : true
     },
     lastModifiedBy:{
