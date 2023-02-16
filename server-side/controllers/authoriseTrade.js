@@ -2,6 +2,7 @@ const HistoryInstrumentData = require("../models/InstrumentHistoricalData/Instru
 const DailyPnlData = require("../models/InstrumentHistoricalData/DailyPnlDataSchema");
 const MockTradeData = require("../models/mock-trade/mockTradeCompanySchema");
 const UserDetail = require("../models/User/userDetailSchema");
+const MarginAllocation = require('../models/marginAllocation/marginAllocationSchema');
 
 exports.fundCheck = async(req, res, next) => {
 
@@ -29,8 +30,17 @@ exports.fundCheck = async(req, res, next) => {
         "trigger_price": 0
     }
 
-    const user = await UserDetail({email: userId})
+    const user = await UserDetail.find({email: userId});
+
+    const userFunds = user.fund;
+
 
     const marginData = await axios.post(`https://api.kite.trade/margins/basket?consider_positions=true`, {headers : headers}, orderData)
 
+    if(userFunds - marginData  < 0){
+        return res.status(401).json({status: 'Failed', message: 'Can\'t take trade. Reduce lots size or request funds.'});
+    }       
+    
+    next();
+   
 }

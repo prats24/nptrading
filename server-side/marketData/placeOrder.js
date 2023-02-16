@@ -10,9 +10,10 @@ const MockTradeCompany = require("../models/mock-trade/mockTradeCompanySchema")
 const MockTradeUser = require("../models/mock-trade/mockTradeUserSchema");
 const RetreiveOrder = require("../models/TradeDetails/retreiveOrder");
 const { response } = require("express");
+const authoizeTrade = require('../controllers/authoriseTrade');
 
 
-router.post("/placeorder", (async (req, res)=>{
+router.post("/placeorder", authoizeTrade, (async (req, res)=>{
     let responseMsg;
     let responseErr;
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
