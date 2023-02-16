@@ -136,7 +136,7 @@ function Header({ children, setShowSetting, showSetting }) {
                   }
                 />
                 <Tab
-                  label="Settings"
+                  label="Trader Setting"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
                       settings
