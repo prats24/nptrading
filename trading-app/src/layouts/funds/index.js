@@ -40,7 +40,7 @@ function Billing() {
                     icon=<AvailableIcon/>
                     title="total credit"
                     //description="Belong Interactive"
-                    value="+$2000"
+                    value="+₹2000"
                   />
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
@@ -48,7 +48,7 @@ function Billing() {
                     icon=<AvailableIcon/>
                     title="available margin"
                     //description="Belong Interactive"
-                    value="+$2000"
+                    value="+₹2000"
                   />
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
@@ -56,7 +56,7 @@ function Billing() {
                     icon=<ShoppingCartIcon/>
                     title="used margin"
                     //description="Belong Interactive"
-                    value="+$2000"
+                    value="+₹2000"
                   />
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
@@ -64,7 +64,7 @@ function Billing() {
                     icon=<PaymentsIcon/>
                     title="available cash"
                     //description="Freelance Payment"
-                    value="$455.00"
+                    value="₹455.00"
                   />
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
@@ -72,7 +72,7 @@ function Billing() {
                     icon=<AccountBalanceWalletIcon/>
                     title="opening balance"
                     //description="Freelance Payment"
-                    value="$455.00"
+                    value="₹455.00"
                   />
                 </Grid>
               </Grid>
@@ -80,14 +80,11 @@ function Billing() {
             
           </Grid>
         </MDBox>
-        <Grid item xs={12} lg={4}>
-              <Invoices />
-            </Grid>
         <MDBox mt={3} mb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={7}>
+            {/* <Grid item xs={12} md={7}>
               <BillingInformation />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} md={5}>
               <Transactions />
             </Grid>

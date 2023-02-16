@@ -1,3 +1,18 @@
+/**
+=========================================================
+* Material Dashboard 2 React - v2.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-dashboard-react
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+
+Coded by www.creative-tim.com
+
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+
 // @mui material components
 import Card from "@mui/material/Card";
 // import Divider from "@mui/material/Divider";
@@ -6,7 +21,6 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 // import MDButton from "components/MDButton";
 
 // Billing page components
@@ -17,7 +31,7 @@ function Transactions() {
     <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-          Credit&apos;s
+          Your Transaction&apos;s
         </MDTypography>
         <MDBox display="flex" alignItems="flex-start">
           <MDBox color="text" mr={0.5} lineHeight={0}>
@@ -26,14 +40,14 @@ function Transactions() {
             </Icon>
           </MDBox>
           <MDTypography variant="button" color="text" fontWeight="regular">
-            Recent Credits
+            23 - 30 March 2020
           </MDTypography>
         </MDBox>
       </MDBox>
       <MDBox pt={3} pb={2} px={2}>
         <MDBox mb={2}>
           <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
-            latest
+            newest
           </MDTypography>
         </MDBox>
         <MDBox
@@ -46,22 +60,22 @@ function Transactions() {
         >
           <Transaction
             color="error"
-            icon=<CurrencyRupeeIcon/>
-            name="ninepointer"
+            icon="expand_more"
+            name="Netflix"
             description="27 March 2020, at 12:30 PM"
-            value="- ₹ 2,500"
+            value="- $ 2,500"
           />
           <Transaction
             color="success"
-            icon=<CurrencyRupeeIcon/>
-            name="ninepointer"
+            icon="expand_less"
+            name="Apple"
             description="27 March 2020, at 04:30 AM"
-            value="+ ₹ 2,000"
+            value="+ $ 2,000"
           />
         </MDBox>
         <MDBox mt={1} mb={2}>
           <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
-            all
+            yesterday
           </MDTypography>
         </MDBox>
         <MDBox
@@ -74,31 +88,31 @@ function Transactions() {
         >
           <Transaction
             color="success"
-            icon=<CurrencyRupeeIcon/>
-            name="ninepointer"
+            icon="expand_less"
+            name="Stripe"
             description="26 March 2020, at 13:45 PM"
-            value="+ ₹ 750"
+            value="+ $ 750"
           />
           <Transaction
             color="success"
-            icon=<CurrencyRupeeIcon/>
-            name="ninepointer"
+            icon="expand_less"
+            name="HubSpot"
             description="26 March 2020, at 12:30 PM"
-            value="+ ₹ 1,000"
+            value="+ $ 1,000"
           />
           <Transaction
             color="success"
-            icon=<CurrencyRupeeIcon/>
-            name="ninepointer"
+            icon="expand_less"
+            name="Creative Tim"
             description="26 March 2020, at 08:30 AM"
-            value="+ ₹ 2,500"
+            value="+ $ 2,500"
           />
           <Transaction
-            color="success"
-            icon=<CurrencyRupeeIcon/>
-            name="ninepointer"
+            color="dark"
+            icon="priority_high"
+            name="Webflow"
             description="26 March 2020, at 05:00 AM"
-            value="+ ₹ 2,500"
+            value="Pending"
           />
         </MDBox>
       </MDBox>
