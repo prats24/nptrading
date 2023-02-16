@@ -107,9 +107,11 @@ let yLabelsTemp = new Set(batchData.map((obj) =>{
 yLabelsTemp = ([...yLabelsTemp]) // prints an array of unique Batch numbers
 
 let yLabelTempArray = []
+if(yLabelsTemp.length != 0){
 for(let i = 0; i < yLabelsTemp.length; i++)
 {
   yLabelTempArray.push("Batch# " + "" + (i+1));
+}
 }
 
 let xLabelsTemp = new Set(batchData.map((obj) => {

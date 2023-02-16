@@ -22,6 +22,7 @@ import DailyPNLData from "./layouts/dailyPnlDashboard";
 import TraderPosition from "./layouts/traderPosition"
 import AdminReportLive from "./layouts/adminreportLive"
 import TradersReportLive from "./layouts/tradersReportLive"
+import TradersMarginAllocation from "./layouts/tradersMarginAllocation"
 
 
 // @mui icons
@@ -42,6 +43,7 @@ import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import WalletIcon from '@mui/icons-material/Wallet';
 
 
 const routes = [
@@ -69,6 +71,14 @@ const routes = [
     icon: <BusinessIcon/>,
     route: "/traderposition",
     component: <TraderPosition />,
+  },
+  {
+    type: "collapse",
+    name: "Margin Allocation",
+    key: "tradersMarginAllocation",
+    icon: <WalletIcon/>,
+    route: "/tradersMarginAllocation",
+    component: <TradersMarginAllocation />,
   },
 
   {
@@ -176,22 +186,22 @@ const routes = [
     route: "/users",
     component: <Users />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Funds",
-  //   key: "funds",
-  //   icon: <MonetizationOnIcon/>,
-  //   route: "/funds",
-  //   component: <Funds />,
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "Notifications",
-  //   key: "notifications",
-  //   icon: <NotificationsActiveIcon/>,
-  //   route: "/notifications",
-  //   component: <Notifications />,
-  // },
+  {
+    type: "collapse",
+    name: "Funds",
+    key: "funds",
+    icon: <MonetizationOnIcon/>,
+    route: "/funds",
+    component: <Funds />,
+  },
+  {
+    type: "collapse",
+    name: "Notifications",
+    key: "notifications",
+    icon: <NotificationsActiveIcon/>,
+    route: "/notifications",
+    component: <Notifications />,
+  },
   {
     type: "collapse",
     name: "Position",

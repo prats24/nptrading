@@ -162,18 +162,23 @@ export default function MockRealSwitch({userId, props, algoName}) {
                 return new Error(err);
             })
 
-        } else{
-
-            console.log("squaring off", liveTradeDetail)
-
-        axios.get(`${baseUrl}api/v1/getLiveTradeDetailsUser/${userId}`)
+        } 
+        else{
+            axios.get(`${baseUrl}api/v1/getLiveTradeDetailsUser/${userId}`)
         .then((res)=>{
             setLiveTradeDetail(res.data)
             console.log(res.data);
 
-            for(let i = 0; i < (res.data).length; i++){
+        }).catch((err)=>{
+            return new Error(err);
+        })
+
+        console.log("squaring off", liveTradeDetail)
+
+            for(let i = 0; i < (liveTradeDetail).length; i++){
+                console.log("squaring off",liveTradeDetail[i])
                 let usedAlgoBox = algoUsed.filter((elem)=>{
-                    return elem.algoName === (res.data)[i]._id.algoBoxName;
+                    return elem.algoName === (liveTradeDetail)[i]._id.algoBoxName;
                 })
     
                 let apiKeyArr = apiKeyDetails.filter((elem)=>{
@@ -186,31 +191,31 @@ export default function MockRealSwitch({userId, props, algoName}) {
                     
                 })
     
-                let transaction_type = (res.data)[i].lots > 0 ? "BUY" : "SELL";
-                let quantity = Math.abs((res.data)[i].lots);
+                let transaction_type = (liveTradeDetail)[i].lots > 0 ? "BUY" : "SELL";
+                let quantity = Math.abs((liveTradeDetail)[i].lots);
     
                 let detailObj = {
-                    symbol: (res.data)[i]._id.symbol,
-                    Product: (res.data)[i]._id.product,
-                    instrumentToken: (res.data)[i]._id.instrumentToken,
-                    exchange: (res.data)[i]._id.exchange,
-                    validity: (res.data)[i]._id.validity,
-                    OrderType: (res.data)[i]._id.order_type,
-                    variety: (res.data)[i]._id.variety,
+                    symbol: (liveTradeDetail)[i]._id.symbol,
+                    Product: (liveTradeDetail)[i]._id.product,
+                    instrumentToken: (liveTradeDetail)[i]._id.instrumentToken,
+                    exchange: (liveTradeDetail)[i]._id.exchange,
+                    validity: (liveTradeDetail)[i]._id.validity,
+                    OrderType: (liveTradeDetail)[i]._id.order_type,
+                    variety: (liveTradeDetail)[i]._id.variety,
                     buyOrSell: transaction_type,
                     // Quantity: quantity,
-                    tradeBy: (res.data)[i]._id.name
+                    tradeBy: (liveTradeDetail)[i]._id.name
                 }
 
                 let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
 
                 let interval = setInterval(() => {
                     if (quantity > 1800) {
-                        // console.log("quantity", 1800, (new Date()).getMilliseconds())
+                        console.log("squaring off done")
                       placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
                       quantity = quantity - 1800;
                     } else {
-                        // console.log("quantity", quantity, (new Date()).getMilliseconds())
+                        console.log("squaring off done")
                       placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
                       clearInterval(interval);
                     }
@@ -218,12 +223,6 @@ export default function MockRealSwitch({userId, props, algoName}) {
 
                 //   changeIsRealTrade(false)
             }
-
-        }).catch((err)=>{
-            return new Error(err);
-        })
-
-            
         }
 
 
