@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Card from "@mui/material/Card";
 
@@ -22,6 +7,7 @@ import MDTypography from "../../../../components/MDTypography";
 import MDButton from "../../../../components/MDButton";
 
 // Billing page components
+import Transactions from "../Invoice";
 import Invoice from "../Invoice";
 
 function Invoices() {
@@ -29,7 +15,7 @@ function Invoices() {
     <Card sx={{ height: "100%" }}>
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="h6" fontWeight="medium">
-          Invoices
+          Last 5 Transactions
         </MDTypography>
         <MDButton variant="outlined" color="info" size="small">
           view all
@@ -48,4 +34,4 @@ function Invoices() {
   );
 }
 
-export default Invoices;
+export default Invoice;

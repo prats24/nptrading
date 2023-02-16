@@ -15,6 +15,7 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PaymentsIcon from '@mui/icons-material/Payments';
 
+
 // Billing page components
 import PaymentMethod from "./components/PaymentMethod";
 import Invoices from "./components/Invoices";
@@ -29,12 +30,20 @@ function Billing() {
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={8}>
+            <Grid item xs={16} lg={12}>
               <Grid container spacing={3}>
                 {/* <Grid item xs={12} xl={6}>
                   <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
                 </Grid> */}
-                <Grid item xs={12} md={6} xl={3}>
+                <Grid item xs={16} md={6} xl={2.4}>
+                  <DefaultInfoCard
+                    icon=<AvailableIcon/>
+                    title="total credit"
+                    //description="Belong Interactive"
+                    value="+$2000"
+                  />
+                </Grid>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon=<AvailableIcon/>
                     title="available margin"
@@ -42,7 +51,7 @@ function Billing() {
                     value="+$2000"
                   />
                 </Grid>
-                <Grid item xs={12} md={6} xl={3}>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon=<ShoppingCartIcon/>
                     title="used margin"
@@ -50,7 +59,7 @@ function Billing() {
                     value="+$2000"
                   />
                 </Grid>
-                <Grid item xs={12} md={6} xl={3}>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon=<PaymentsIcon/>
                     title="available cash"
@@ -58,7 +67,7 @@ function Billing() {
                     value="$455.00"
                   />
                 </Grid>
-                <Grid item xs={12} md={6} xl={3}>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon=<AccountBalanceWalletIcon/>
                     title="opening balance"
@@ -66,17 +75,15 @@ function Billing() {
                     value="$455.00"
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  <PaymentMethod />
-                </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} lg={4}>
-              <Invoices />
-            </Grid>
+            
           </Grid>
         </MDBox>
-        <MDBox mb={3}>
+        <Grid item xs={12} lg={4}>
+              <Invoices />
+            </Grid>
+        <MDBox mt={3} mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={7}>
               <BillingInformation />

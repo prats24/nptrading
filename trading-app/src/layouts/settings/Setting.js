@@ -41,11 +41,14 @@ import team1 from "../../assets/images/team-1.jpg";
 import team2 from "../../assets/images/team-2.jpg";
 import team3 from "../../assets/images/team-3.jpg";
 import team4 from "../../assets/images/team-4.jpg";
+import TraderSettingView from "./TraderSettingView";
 
 function Setting() {
 
   const [marginData,setMarginData] = useState([]);
   const [accountIdData, setAccountIdData] = useState([]);
+  const [showSetting, setShowSetting] = useState(false)
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
  useEffect(()=>{
@@ -78,9 +81,11 @@ function Setting() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox mb={2} />
-      <Header>
+      <Header setShowSetting={setShowSetting} showSetting={showSetting}>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
+            {!showSetting ? 
+            <>
             <Grid item xs={12} md={6} xl={4}>
               <PlatformSettings />
             </Grid>
@@ -125,6 +130,12 @@ function Setting() {
                 shadow={false}
               />
             </Grid>
+            </>
+            :
+            <Grid item xs={12} md={6} xl={4}>
+            <TraderSettingView  />
+            </Grid>
+              }
           </Grid>
         </MDBox>
       </Header>
