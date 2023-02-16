@@ -93,6 +93,10 @@ const userDetailSchema = new mongoose.Schema({
     userId: {
         type: String,
               
+    },
+    fund: {
+        type: Number,
+              
     }
 })
 userDetailSchema.pre("save", async function(next){

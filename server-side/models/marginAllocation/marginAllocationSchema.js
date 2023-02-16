@@ -42,6 +42,10 @@ const marginSchema = new mongoose.Schema({
     },
     transactionId: {
         type: String
+    },
+    
+    fund: {
+        type: Number
     }
 
 })
