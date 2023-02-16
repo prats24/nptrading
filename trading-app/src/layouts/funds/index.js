@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 
@@ -25,12 +10,17 @@ import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
 import MasterCard from "../../examples/Cards/MasterCard";
 import DefaultInfoCard from "../../examples/Cards/InfoCards/DefaultInfoCard";
+import AvailableIcon from '@mui/icons-material/Savings';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PaymentsIcon from '@mui/icons-material/Payments';
 
 // Billing page components
 import PaymentMethod from "./components/PaymentMethod";
 import Invoices from "./components/Invoices";
 import BillingInformation from "./components/BillingInformation";
 import Transactions from "./components/Transactions";
+
 
 function Billing() {
   return (
@@ -41,22 +31,38 @@ function Billing() {
           <Grid container spacing={3}>
             <Grid item xs={12} lg={8}>
               <Grid container spacing={3}>
-                <Grid item xs={12} xl={6}>
+                {/* <Grid item xs={12} xl={6}>
                   <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} md={6} xl={3}>
                   <DefaultInfoCard
-                    icon="account_balance"
-                    title="salary"
-                    description="Belong Interactive"
+                    icon=<AvailableIcon/>
+                    title="available margin"
+                    //description="Belong Interactive"
                     value="+$2000"
                   />
                 </Grid>
                 <Grid item xs={12} md={6} xl={3}>
                   <DefaultInfoCard
-                    icon="paypal"
-                    title="paypal"
-                    description="Freelance Payment"
+                    icon=<ShoppingCartIcon/>
+                    title="used margin"
+                    //description="Belong Interactive"
+                    value="+$2000"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} xl={3}>
+                  <DefaultInfoCard
+                    icon=<PaymentsIcon/>
+                    title="available cash"
+                    //description="Freelance Payment"
+                    value="$455.00"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6} xl={3}>
+                  <DefaultInfoCard
+                    icon=<AccountBalanceWalletIcon/>
+                    title="opening balance"
+                    //description="Freelance Payment"
                     value="$455.00"
                   />
                 </Grid>
