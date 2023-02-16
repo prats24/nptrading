@@ -107,6 +107,8 @@ app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
 app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));
 app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
+app.use('/api/v1', require("./routes/marginAllocation/marginAllocationAuth"));
+
 
 require('./db/conn');
 

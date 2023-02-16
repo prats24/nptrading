@@ -16,7 +16,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PaymentsIcon from '@mui/icons-material/Payments';
 
 // Billing page components
-import PaymentMethod from "./components/PaymentMethod";
+import PaymentMethod from "./components/AddFunds";
 import Invoices from "./components/Invoices";
 import BillingInformation from "./components/BillingInformation";
 import Transactions from "./components/Transactions";
