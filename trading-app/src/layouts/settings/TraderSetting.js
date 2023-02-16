@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import uniqid from "uniqid";
-
-import MDBox from "../../../components/MDBox";
-
+import MDBox from "../../components/MDBox";
 import Switch from "@mui/material/Switch";
 
 
 
-export default function MockRealSwitch({userId, props, algoName}) {
+export default function TraderSetting({userId, isRealTradeEnable}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});
@@ -20,6 +18,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
     const [reRender, setReRender] = useState(true);
     const [realTradeState, setRealTradeState] = useState(true);
     const [liveTradeDetail, setLiveTradeDetail] = useState([]);
+    const [changeTrade, setChangeTrade] = useState(isRealTradeEnable)
 
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
@@ -110,10 +109,13 @@ export default function MockRealSwitch({userId, props, algoName}) {
             .then((res)=>{
                 setTradeDetail(res.data)
                 console.log(res.data);
+            }).catch((err)=>{
+                return new Error(err);
+            })
 
-                for(let i = 0; i < (res.data).length; i++){
+                for(let i = 0; i < tradeDetail.length; i++){
                     let usedAlgoBox = algoUsed.filter((elem)=>{
-                        return elem.algoName === (res.data)[i]._id.algoBoxName;
+                        return elem.algoName === tradeDetail[i]._id.algoBoxName;
                     })
         
                     let apiKeyArr = apiKeyDetails.filter((elem)=>{
@@ -126,20 +128,20 @@ export default function MockRealSwitch({userId, props, algoName}) {
                         
                     })
         
-                    let transaction_type = (res.data)[i].lots > 0 ? "BUY" : "SELL";
-                    let quantity = Math.abs((res.data)[i].lots);
+                    let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
+                    let quantity = Math.abs(tradeDetail[i].lots);
         
                     let detailObj = {
-                        symbol: (res.data)[i]._id.symbol,
-                        Product: (res.data)[i]._id.product,
-                        instrumentToken: (res.data)[i]._id.instrumentToken,
-                        exchange: (res.data)[i]._id.exchange,
-                        validity: (res.data)[i]._id.validity,
-                        OrderType: (res.data)[i]._id.order_type,
-                        variety: (res.data)[i]._id.variety,
+                        symbol: tradeDetail[i]._id.symbol,
+                        Product: tradeDetail[i]._id.product,
+                        instrumentToken: tradeDetail[i]._id.instrumentToken,
+                        exchange: tradeDetail[i]._id.exchange,
+                        validity: tradeDetail[i]._id.validity,
+                        OrderType: tradeDetail[i]._id.order_type,
+                        variety: tradeDetail[i]._id.variety,
                         buyOrSell: transaction_type,
                         // Quantity: quantity,
-                        tradeBy: (res.data)[i]._id.name
+                        tradeBy: tradeDetail[i]._id.name
                     }
     
                     let interval = setInterval(() => {
@@ -148,9 +150,13 @@ export default function MockRealSwitch({userId, props, algoName}) {
                           placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
                           quantity = quantity - 1800;
                         } else {
-                            // console.log("quantity", quantity, (new Date()).getMilliseconds())
-                          placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-                          clearInterval(interval);
+                            console.log("quantity", quantity, (new Date()).getMilliseconds())
+                            if(quantity>0){
+                                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
+                            } else{
+                                window.alert(`Quantity is 0 ${liveTradeDetail[i]._id.name}`)
+                            }
+                            clearInterval(interval);
                         }
                       }, 300);
     
@@ -158,9 +164,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
     
                 }
 
-            }).catch((err)=>{
-                return new Error(err);
-            })
+
 
         } else{
 
@@ -218,7 +222,11 @@ export default function MockRealSwitch({userId, props, algoName}) {
                       quantity = quantity - 1800;
                     } else {
                         // console.log("quantity", quantity, (new Date()).getMilliseconds())
-                      placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
+                        if(quantity>0){
+                            placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
+                        } else{
+                            window.alert(`Quantity is 0 ${liveTradeDetail[i]._id.name}`)
+                        }
                       clearInterval(interval);
                     }
                   }, 300);
@@ -241,7 +249,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
             
         }
 
-        props.handleSwitchChange(userId)
+        // props.handleSwitchChange(userId)
     }
 // onChange={() => props.handleSwitchChange(user.id)}
     const placeLiveOrder = async (algoBox, detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity)=>{
@@ -292,6 +300,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
     }
 
     const changeIsRealTrade = async (realTrade)=>{
+    
         const response = await fetch(`${baseUrl}api/v1/updaterealtradeenable/email/${userId}`, {
             method: "PATCH",
             headers: {
@@ -314,33 +323,32 @@ export default function MockRealSwitch({userId, props, algoName}) {
         // setTimeout(()=>{
         //     reRender? setReRender(false) : setReRender(true)
         // }, 1000) checked={render}
+        setChangeTrade(realTrade)
     
     }
 
-    let real;
-    console.log("props", props)
-    props.users.map((elem)=>{
-        if(elem.userId === userId){
-            real = (elem.isRealTradeEnable);
-        }
-    })
+    // let real;
+    // console.log("props", props)
+    // props.users.map((elem)=>{
+    //     if(elem.userId === userId){
+    //         real = (elem.isRealTradeEnable);
+    //     }
+    // })
   return (
 
 
-    props.users.map((elem)=>{
-        console.log("elem.userId === userId", elem.userId, userId)
+    // props.users.map((elem)=>{
+    //     console.log("elem.userId === userId", elem.userId, userId)
 
-        if(elem.userId === userId && elem.algoName === algoName){
-            // real = (elem.isRealTradeEnable);
-            return(
+    //     if(elem.userId === userId && elem.algoName === algoName){
+    //         // real = (elem.isRealTradeEnable);
+    //         return(
             <MDBox mt={0.5}>
-            <Switch  checked={elem.isRealTradeEnable}   onChange={() => {switchButtonFunc(elem.isRealTradeEnable)}} />
+            <Switch  checked={changeTrade}   onChange={() => {switchButtonFunc(changeTrade)}} />
             </MDBox>
-            )
-        }
-    })
+    //         )
+    //     }
+    // })
 
   )
 }
-
-

@@ -24,12 +24,14 @@ import breakpoints from "../../../../assets/theme/base/breakpoints";
 
 // Images
 import backgroundImage from "../../../../assets/images/trading.jpg";
+import TraderSetting from "../../TraderSetting";
 
-function Header({ children }) {
+function Header({ children, setShowSetting, showSetting }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   const [userDetail,setuserDetail] = useState([]);
   const getDetails = useContext(userContext);
+
   console.log("getDetails", getDetails)
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -66,6 +68,11 @@ function Header({ children }) {
   }, [tabsOrientation]);
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+
+  function showTraderSetting(){
+
+    showSetting ? setShowSetting(false) : setShowSetting(true);
+  }
 
   return (
     <MDBox position="relative" mb={5}>
@@ -135,6 +142,7 @@ function Header({ children }) {
                       settings
                     </Icon>
                   }
+                  onClick={showTraderSetting}
                 />
               </Tabs>
             </AppBar>
