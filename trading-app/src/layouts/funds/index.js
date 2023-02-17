@@ -157,3 +157,111 @@ function Billing() {
 }
 
 export default Billing;
+
+
+// {
+//   "status": "success",
+//   "data": {
+//     "initial": {
+//       "type": "",
+//       "tradingsymbol": "",
+//       "exchange": "",
+//       "span": 2009605,
+//       "exposure": 677702.2029615864,
+//       "option_premium": 0,
+//       "additional": 0,
+//       "bo": 0,
+//       "cash": 0,
+//       "var": 0,
+//       "pnl": {
+//         "realised": 0,
+//         "unrealised": 0
+//       },
+//       "leverage": 0,
+//       "charges": {
+//         "transaction_tax": 0,
+//         "transaction_tax_type": "",
+//         "exchange_turnover_charge": 0,
+//         "sebi_turnover_charge": 0,
+//         "brokerage": 0,
+//         "stamp_duty": 0,
+//         "gst": {
+//           "igst": 0,
+//           "cgst": 0,
+//           "sgst": 0,
+//           "total": 0
+//         },
+//         "total": 0
+//       },
+//       "total": 2687307.2029615864
+//     },
+//     "final": {
+//       "type": "",
+//       "tradingsymbol": "",
+//       "exchange": "",
+//       "span": 2009605,
+//       "exposure": 677702.2029615864,
+//       "option_premium": -224910,
+//       "additional": 0,
+//       "bo": 0,
+//       "cash": 0,
+//       "var": 0,
+//       "pnl": {
+//         "realised": 0,
+//         "unrealised": 0
+//       },
+//       "leverage": 0,
+//       "charges": {
+//         "transaction_tax": 0,
+//         "transaction_tax_type": "",
+//         "exchange_turnover_charge": 0,
+//         "sebi_turnover_charge": 0,
+//         "brokerage": 0,
+//         "stamp_duty": 0,
+//         "gst": {
+//           "igst": 0,
+//           "cgst": 0,
+//           "sgst": 0,
+//           "total": 0
+//         },
+//         "total": 0
+//       },
+//       "total": 2462397.2029615864
+//     },
+//     "orders": [ //
+//       {
+//         "type": "equity",
+//         "tradingsymbol": "NIFTY23FEB18050PE",
+//         "exchange": "NFO",
+//         "span": 2009605,
+//         "exposure": 677702.2029615864,
+//         "option_premium": 0,
+//         "additional": 0,
+//         "bo": 0,
+//         "cash": 0,
+//         "var": 0,
+//         "pnl": {
+//           "realised": 0,
+//           "unrealised": 0
+//         },
+//         "leverage": 1,
+//         "charges": {
+//           "transaction_tax": 0,
+//           "transaction_tax_type": "",
+//           "exchange_turnover_charge": 0,
+//           "sebi_turnover_charge": 0,
+//           "brokerage": 0,
+//           "stamp_duty": 0,
+//           "gst": {
+//             "igst": 0,
+//             "cgst": 0,
+//             "sgst": 0,
+//             "total": 0
+//           },
+//           "total": 0
+//         },
+//         "total": 2687307.2029615864
+//       }
+//     ]
+//   }
+// }

@@ -60,7 +60,7 @@ function Transactions() {
     obj = (
       <Transaction
         color={color}
-        icon=<CurrencyRupeeIcon/>
+        icon={<CurrencyRupeeIcon/>}
         name="ninepointer"
         description={datestring}
         value={amountstring}

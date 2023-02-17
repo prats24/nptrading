@@ -135,11 +135,14 @@ function AddFunds() {
                 sx={{margin: 0, padding: 0, width: "200px"}}
                 onChange={(e)=>{details.traderName = e.target.value}}
               >
-                {traders.map((option) => (
+                {traders.map((option) => {
+                  // console.log("option", option)
+                  return(
                   <MenuItem key={option.name} value={option.name} minHeight="10em">
                     {option.name}
                   </MenuItem>
-                ))}
+                  )
+                })}
               </TextField>
             </MDBox>
           </Grid>

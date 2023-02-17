@@ -9,10 +9,10 @@ router.post("/setmargin", async (req, res)=>{
 
     if(!traderName || !amount){
         //console.log("data nhi h pura");
-        return res.status(422).json({error : "plz filled the field..."})
+        return res.status(422).json({error : "Please fill all the feilds"})
     }
 
-   // let fund = fund + amount;
+   
     const margin = new Margin({amount, lastModifiedBy, uId, userId, createdBy});
 
     margin.save().then(()=>{
@@ -20,9 +20,10 @@ router.post("/setmargin", async (req, res)=>{
         res.status(201).json({massage : "data enter succesfully"});
     }).catch((err)=> console.log(err, "in adding fund"));
 
-    const userdetail = await UserDetail.find({email: userId});
-
-   // userdetail.updateOne({fund: fund});
+    const userdetail = await UserDetail.findOne({email: userId});
+    let fund = (userdetail.fund ? userdetail.fund : 0);
+    fund = Number(fund) + Number(amount);
+   await userdetail.updateOne({fund: fund});
     
 })
 

@@ -154,7 +154,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
                             if(quantity>0){
                                 placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
                             } else{
-                                window.alert(`Quantity is 0 ${liveTradeDetail[i]._id.name}`)
+                                window.alert(`Quantity is 0 ${tradeDetail[i]._id.name}`)
                             }
                             clearInterval(interval);
                         }
@@ -268,11 +268,11 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
             },
             body: JSON.stringify({
                 
-                apiKey, accessToken, tradeBy,
+                apiKey, accessToken, tradeBy: createdBy,
                 exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
-                validity, variety, createdBy, userId : 'system@ninepointer.in', createdOn, uId, 
+                validity, variety, createdBy: tradeBy, userId : 'system@ninepointer.in', createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-                productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken
+                productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken, checkingMultipleAlgoFlag
   
             })
         });

@@ -13,7 +13,7 @@ const { response } = require("express");
 const authoizeTrade = require('../controllers/authoriseTrade');
 
 
-router.post("/placeorder", authoizeTrade, (async (req, res)=>{
+router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
     let responseMsg;
     let responseErr;
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"

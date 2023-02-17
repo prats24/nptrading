@@ -496,7 +496,7 @@ useEffect(()=>{
             window.alert("AMO Request Recieved");
         } else{
             console.log("this is dataResp", dataResp)
-            window.alert(dataResp.massage);
+            window.alert(dataResp.message);
         }
     }
   }
@@ -528,7 +528,7 @@ useEffect(()=>{
     if (dataResp.status === 422 || dataResp.error || !dataResp) {
         window.alert(dataResp.error);
     } else {
-        window.alert("Trade succesfull");
+        window.alert(dataResp.message);
     }
 
   
@@ -561,7 +561,7 @@ useEffect(()=>{
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
           window.alert(dataResp.error);
       } else {
-          window.alert("Trade succesfull");
+          window.alert(dataResp.message);
       }
     
   }

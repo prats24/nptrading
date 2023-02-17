@@ -19,6 +19,10 @@ const UserTradeData = require("../../models/TradeDetails/liveTradeUserSchema");
 const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 const MissedHistoryData = require("../../marketData/getinstrumenttickshistorydata")
+const authoizeTrade = require('../../controllers/authoriseTrade');
+
+
+
 
 
 
@@ -36,9 +40,7 @@ const MissedHistoryData = require("../../marketData/getinstrumenttickshistorydat
 //       })
 // })
 
-// router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
-//     await MissedHistoryData();
-// })
+
 
 router.get("/upadteinstrumenttickshistorydata", async(req, res)=>{
     // if(dailyPnl.length === 0){
@@ -248,7 +250,7 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
 })
 
 
-router.post("/mocktradecompany", async (req, res)=>{
+router.post("/mocktradecompany", authoizeTrade.fundCheck, async (req, res)=>{
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
@@ -389,7 +391,7 @@ router.post("/mocktradecompany", async (req, res)=>{
 
             //console.log("mockTradeDetails", mockTradeDetailsUser);
             mockTradeDetailsUser.save().then(()=>{
-                res.status(201).json({massage : "data enter succesfully"});
+                res.status(201).json({status: 'Complete', message: 'Trade Succesful'});
             }).catch((err)=> {
                 // res.status(500).json({error:"Failed to enter data"})
             });
