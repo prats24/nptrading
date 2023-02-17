@@ -1387,5 +1387,146 @@ router.get("/batchwisepnl", async(req, res)=>{
   res.status(201).json(batchwisepnl);
 })
 
+router.get("/gettraderpnlformargin/:email/", async(req, res)=>{
+  const {email} = req.params;
+  let date = new Date();
+  let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+     
+  
+  let pnlDetails = await MockTradeDetails.aggregate([
+    {
+      $match:
+        {
+          trade_time: {
+            $lt: `${todayDate} 00:00:00`,
+          },
+          userId: email,
+          status: "COMPLETE",
+        },
+    },
+    {
+      $group:
+        {
+          _id: {
+            email: "$userId",
+            trader: "$createdBy",
+          },
+          gpnl: {
+            $sum: {
+              $multiply: ["$amount", -1],
+            },
+          },
+          brokerage: {
+            $sum: {
+              $toDouble: "$brokerage",
+            },
+          },
+        },
+    },
+    {
+      $addFields:
+        {
+          npnl: {
+            $subtract: ["$gpnl", "$brokerage"],
+          },
+        },
+    },
+  ])
+
+      res.status(201).json(pnlDetails);
+
+})
+
+router.get("/gettraderpnlforavailablemargin/:email/", async(req, res)=>{
+  const {email} = req.params;  
+  
+  let pnlDetails = await MockTradeDetails.aggregate([
+    {
+      $match:
+        {
+          userId: email,
+          status: "COMPLETE",
+        },
+    },
+    {
+      $group:
+        {
+          _id: {
+            email: "$userId",
+            trader: "$createdBy",
+          },
+          gpnl: {
+            $sum: {
+              $multiply: ["$amount", -1],
+            },
+          },
+          brokerage: {
+            $sum: {
+              $toDouble: "$brokerage",
+            },
+          },
+        },
+    },
+    {
+      $addFields:
+        {
+          npnl: {
+            $subtract: ["$gpnl", "$brokerage"],
+          },
+        },
+    },
+  ])
+
+      res.status(201).json(pnlDetails);
+
+})
+
+router.get("/gettraderpnlforusedmargin/:email/", async(req, res)=>{
+  const {email} = req.params; 
+  let date = new Date();
+  let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}` 
+  
+  let pnlDetails = await MockTradeDetails.aggregate([
+    {
+      $match:
+        {
+          trade_time: { $regex: todayDate},
+          userId: email,
+          status: "COMPLETE",
+        },
+    },
+    {
+      $group:
+        {
+          _id: {
+            email: "$userId",
+            trader: "$createdBy",
+          },
+          gpnl: {
+            $sum: {
+              $multiply: ["$amount", -1],
+            },
+          },
+          brokerage: {
+            $sum: {
+              $toDouble: "$brokerage",
+            },
+          },
+        },
+    },
+    {
+      $addFields:
+        {
+          npnl: {
+            $subtract: ["$gpnl", "$brokerage"],
+          },
+        },
+    },
+  ])
+
+      res.status(201).json(pnlDetails);
+
+})
+
 
 module.exports = router;

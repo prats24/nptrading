@@ -1,3 +1,7 @@
+import {useState, useContext, useEffect} from "react"
+import axios from "axios";
+import { userContext } from "../../AuthContext";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 
@@ -21,9 +25,65 @@ import PaymentMethod from "./components/PaymentMethod";
 import Invoices from "./components/Invoices";
 import BillingInformation from "./components/BillingInformation";
 import Transactions from "./components/Transactions";
+import TransactionData from './components/Transactions/data/transactionData';
 
 
 function Billing() {
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const [marginDetails, setMarginDetails] = useState([]);
+  const [lifetimePNL, setLifetimePNL] = useState([]);
+  const [availableMarginPNL, setAvailableMarginPNL] = useState([]);
+  const { columns, rows } = TransactionData();
+  const getDetails = useContext(userContext);
+
+  useEffect(()=>{
+      console.log(getDetails.userDetails.email)
+      axios.get(`${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`)
+        .then((res)=>{
+                console.log(res.data);
+                setMarginDetails(res.data);
+        }).catch((err)=>{
+            window.alert("Error Fetching Margin Details");
+            return new Error(err);
+        })
+
+        axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`)
+        .then((res)=>{
+                console.log(res.data);
+                setLifetimePNL(res.data);
+        }).catch((err)=>{
+            window.alert("Error Fetching P&L Details for Margin");
+            return new Error(err);
+        })
+        
+        axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`)
+        .then((res)=>{
+                console.log(res.data);
+                setAvailableMarginPNL(res.data);
+        }).catch((err)=>{
+            window.alert("Error Fetching P&L Details for Available Margin");
+            return new Error(err);
+        })
+  },[])
+
+  let totalCredit = 0;
+  marginDetails?.map((elem)=>{
+    totalCredit =+ totalCredit + elem.amount
+  })
+
+  let totalCreditString = totalCredit > 0 ? "+₹" + totalCredit.toLocaleString() : "-₹" + ((-totalCredit).toLocaleString())
+  let lifetimenetpnl = lifetimePNL[0] ? Number((lifetimePNL[0].npnl).toFixed(0)) : 0;
+  console.log(lifetimenetpnl)
+  let openingBalance = (totalCredit + lifetimenetpnl);
+  let openingBalanceString = openingBalance > 0 ? "+₹" + Number(openingBalance).toLocaleString() : "-₹" + (-Number(openingBalance)).toLocaleString()
+  let availableMarginpnl = availableMarginPNL[0] ? Number((availableMarginPNL[0].npnl).toFixed(0)) : 0;
+  let availableMargin = (totalCredit + availableMarginpnl)
+  let availableMarginpnlstring = availableMargin > 0 ? "+₹" + Number(availableMargin).toLocaleString() : "-₹" + (-Number(availableMargin)).toLocaleString()
+  
+
+
+
   return (
     <DashboardLayout>
       <DashboardNavbar absolute isMini />
@@ -40,7 +100,7 @@ function Billing() {
                     icon=<AvailableIcon/>
                     title="total credit"
                     //description="Belong Interactive"
-                    value="+₹2000"
+                    value={totalCreditString}
                   />
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
@@ -48,7 +108,7 @@ function Billing() {
                     icon=<AvailableIcon/>
                     title="available margin"
                     //description="Belong Interactive"
-                    value="+₹2000"
+                    value={availableMarginpnlstring}
                   />
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
@@ -72,7 +132,7 @@ function Billing() {
                     icon=<AccountBalanceWalletIcon/>
                     title="opening balance"
                     //description="Freelance Payment"
-                    value="₹455.00"
+                    value={openingBalanceString}
                   />
                 </Grid>
               </Grid>

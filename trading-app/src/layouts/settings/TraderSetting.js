@@ -24,9 +24,9 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const uId = uniqid();
-    const createdBy = "system";
+    const createdBy = "System";
     let modifiedOn = createdOn;
-    let modifiedBy = "system";
+    let modifiedBy = "System";
     let checkingMultipleAlgoFlag = 1;
 
 
@@ -270,7 +270,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
                 
                 apiKey, accessToken, tradeBy,
                 exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
-                validity, variety, createdBy, userId, createdOn, uId, 
+                validity, variety, createdBy, userId : 'system@ninepointer.in', createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
                 productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken
   
