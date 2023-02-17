@@ -37,6 +37,7 @@ import UserDashboard from "./layouts/userdashboard";
 import UserReport from "./layouts/userreports";
 import InventoryIcon from '@mui/icons-material/Inventory';
 import DvrIcon from '@mui/icons-material/Dvr';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 
 const routes = [
@@ -81,7 +82,7 @@ const routes = [
     type: "collapse",
     name: "Funds",
     key: "funds",
-    icon: <MonetizationOnIcon/>,
+    icon: <CurrencyRupeeIcon/>,
     route: "/funds",
     component: <Funds/>,
   },

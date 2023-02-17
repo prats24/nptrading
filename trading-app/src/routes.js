@@ -44,6 +44,7 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import WalletIcon from '@mui/icons-material/Wallet';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 
 const routes = [
@@ -188,14 +189,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Funds",
-    key: "funds",
-    icon: <MonetizationOnIcon/>,
-    route: "/funds",
-    component: <Funds />,
-  },
-  {
-    type: "collapse",
     name: "Notifications",
     key: "notifications",
     icon: <NotificationsActiveIcon/>,
@@ -225,6 +218,14 @@ const routes = [
     icon: <DashboardIcon/>,
     route: "/userreport",
     component: <UserReport />,
+  },
+  {
+    type: "collapse",
+    name: "Funds",
+    key: "funds",
+    icon: <CurrencyRupeeIcon/>,
+    route: "/funds",
+    component: <Funds />,
   },
   {
     type: "collapse",

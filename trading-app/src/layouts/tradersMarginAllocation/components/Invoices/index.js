@@ -7,6 +7,7 @@ import MDTypography from "../../../../components/MDTypography";
 import MDButton from "../../../../components/MDButton";
 
 // Billing page components
+import Transactions from "../Invoice";
 import Invoice from "../Invoice";
 
 function Invoices() {
@@ -14,7 +15,7 @@ function Invoices() {
     <Card sx={{ height: "100%" }}>
       <MDBox pt={2} px={2} display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="h6" fontWeight="medium">
-          Invoices
+          Last 5 Transactions
         </MDTypography>
         <MDButton variant="outlined" color="info" size="small">
           view all
@@ -33,4 +34,4 @@ function Invoices() {
   );
 }
 
-export default Invoices;
+export default Invoice;
