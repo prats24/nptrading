@@ -37,7 +37,10 @@ exports.fundCheck = async(req, res, next) => {
 
     const marginData = await axios.post(`https://api.kite.trade/margins/basket?consider_positions=true`, {headers : headers}, orderData)
 
-    if(userFunds - marginData  < 0){
+
+    //TODO: get user pnl data and replace 0 with the value
+    userNetPnl  = 0;
+    if(userFunds + userNetPnl - marginData  < 0){
         return res.status(401).json({status: 'Failed', message: 'Can\'t take trade. Reduce lots size or request funds.'});
     }       
     
