@@ -270,7 +270,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
                 
                 apiKey, accessToken, tradeBy: createdBy,
                 exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
-                validity, variety, createdBy: tradeBy, userId : 'system@ninepointer.in', createdOn, uId, 
+                validity, variety, createdBy: tradeBy, userId, createdOn, uId, 
                 algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
                 productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken, checkingMultipleAlgoFlag
   
