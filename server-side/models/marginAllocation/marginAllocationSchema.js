@@ -1,6 +1,7 @@
 //import mongoose, { Schema } from "mongoose";
 const mongoose = require("mongoose");
 const Schema = require("mongoose");
+let date = new Date();
 
 const marginSchema = new mongoose.Schema({
 
@@ -13,8 +14,8 @@ const marginSchema = new mongoose.Schema({
         // required : true
     },
     createdOn:{
-        type: Date,
-        default: Date.now(),
+        type: String,
+        default: `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getFullYear()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
         // required : true
     },
     createdBy:{
@@ -23,8 +24,8 @@ const marginSchema = new mongoose.Schema({
         // required : true
     },
     lastModifiedOn:{
-        type: Date,
-        default: Date.now(),
+        type: String,
+        default: `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getFullYear()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
         // required : true
     },
     lastModifiedBy:{
@@ -40,10 +41,13 @@ const marginSchema = new mongoose.Schema({
     userId:{
         type: String,
     },
+    traderName:{
+        type: String,
+        //required: true,
+    },
     transactionId: {
         type: String
     },
-    
     fund: {
         type: Number
     }

@@ -19,6 +19,7 @@ export default function AllActiveUsers() {
       { Header: "Date of Joining", accessor: "doj", align: "center"},
       { Header: "DOJ Week", accessor: "dojweek", align: "center"},
       { Header: "Role", accessor: "role", align: "center"},
+      { Header: "Available Funds", accessor: "fund", align: "center"},
       // { Header: "User Password", accessor: "userPass", align: "center"},
       { Header: "Status", accessor: "status", align: "center"},
     ],

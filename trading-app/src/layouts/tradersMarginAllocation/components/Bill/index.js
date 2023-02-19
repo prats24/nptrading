@@ -1,17 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -27,7 +13,7 @@ import MDButton from "../../../../components/MDButton";
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "../../../../context";
 
-function Bill({ name, company, email, vat, noGutter }) {
+function Bill({ name, company, email, vat,creditedOn,amount,color,totalCredit, noGutter }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -51,39 +37,49 @@ function Bill({ name, company, email, vat, noGutter }) {
           flexDirection={{ xs: "column", sm: "row" }}
           mb={2}
         >
-          <MDTypography variant="button" fontWeight="medium" textTransform="capitalize">
-            {name}
+          <MDTypography variant="button" fontWeight="medium" >
+            {name} | {email}
           </MDTypography>
 
           <MDBox display="flex" alignItems="center" mt={{ xs: 2, sm: 0 }} ml={{ xs: -1.5, sm: 0 }}>
             <MDBox mr={1}>
-              <MDButton variant="text" color="error">
-                <Icon>delete</Icon>&nbsp;delete
+              <MDButton variant="text" color={color}>
+                {/* <Icon>delete</Icon>&nbsp;delete */}
+                {amount}
               </MDButton>
             </MDBox>
             <MDButton variant="text" color={darkMode ? "white" : "dark"}>
-              <Icon>edit</Icon>&nbsp;edit
+              {/* <Icon>edit</Icon>&nbsp;edit */}
+              {totalCredit}
             </MDButton>
           </MDBox>
         </MDBox>
         <MDBox mb={1} lineHeight={0}>
           <MDTypography variant="caption" color="text">
-            Company Name:&nbsp;&nbsp;&nbsp;
-            <MDTypography variant="caption" fontWeight="medium" textTransform="capitalize">
-              {company}
+            Credited By:&nbsp;&nbsp;&nbsp;
+            <MDTypography variant="caption" fontWeight="medium">
+              {company} on {creditedOn}
             </MDTypography>
           </MDTypography>
         </MDBox>
-        <MDBox mb={1} lineHeight={0}>
+        {/* <MDBox mb={1} lineHeight={0}>
           <MDTypography variant="caption" color="text">
             Email Address:&nbsp;&nbsp;&nbsp;
             <MDTypography variant="caption" fontWeight="medium">
               {email}
             </MDTypography>
           </MDTypography>
-        </MDBox>
+        </MDBox> */}
+        {/* <MDBox mb={1} lineHeight={0}>
+          <MDTypography variant="caption" color="text">
+            Credited On:&nbsp;&nbsp;&nbsp;
+            <MDTypography variant="caption" fontWeight="medium">
+              {creditedOn}
+            </MDTypography>
+          </MDTypography>
+        </MDBox> */}
         <MDTypography variant="caption" color="text">
-          VAT Number:&nbsp;&nbsp;&nbsp;
+          Transaction ID:&nbsp;&nbsp;&nbsp;
           <MDTypography variant="caption" fontWeight="medium">
             {vat}
           </MDTypography>

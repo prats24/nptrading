@@ -97,7 +97,7 @@ function Billing() {
                 </Grid> */}
                 <Grid item xs={16} md={6} xl={2.4}>
                   <DefaultInfoCard
-                    icon=<AvailableIcon/>
+                    icon={<AvailableIcon/>}
                     title="total credit"
                     //description="Belong Interactive"
                     value={totalCreditString}
@@ -105,7 +105,7 @@ function Billing() {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon=<AvailableIcon/>
+                    icon={<AvailableIcon/>}
                     title="available margin"
                     //description="Belong Interactive"
                     value={availableMarginpnlstring}
@@ -113,7 +113,7 @@ function Billing() {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon=<ShoppingCartIcon/>
+                    icon={<ShoppingCartIcon/>}
                     title="used margin"
                     //description="Belong Interactive"
                     value="+₹2000"
@@ -121,7 +121,7 @@ function Billing() {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon=<PaymentsIcon/>
+                    icon={<PaymentsIcon/>}
                     title="available cash"
                     //description="Freelance Payment"
                     value="₹455.00"
@@ -129,7 +129,7 @@ function Billing() {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon=<AccountBalanceWalletIcon/>
+                    icon={<AccountBalanceWalletIcon/>}
                     title="opening balance"
                     //description="Freelance Payment"
                     value={openingBalanceString}

@@ -25,11 +25,13 @@ import { useMaterialUIController } from "../../../../context";
 import { userContext } from "../../../../AuthContext";
 import uniqid from "uniqid"
 
-function AddFunds() {
+function AddFunds({marginDetails, setMarginDetails}) {
+
   const [controller] = useMaterialUIController();
   const getDetails = useContext(userContext);
   const { darkMode } = controller;
   const [traders, setTraders] = useState([]);
+  // const [marginDetails, setMarginDetails] = useState([]);
   let valueInTraderName = 'Praveen K'
   let [traderName, setTraderName] = useState(valueInTraderName);
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -41,10 +43,14 @@ function AddFunds() {
 
   let createdBy = getDetails.userDetails.name;
   let lastModifiedBy = getDetails.userDetails.name;
+  //let date = new Date();
+  //let lastModifiedOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getFullYear()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${(date.getMinutes())}:${String(date.getSeconds()).padStart(2, '0')}`
   let uId = uniqid();
 
-  useEffect(()=>{
+  
+  
 
+  useEffect(()=>{
       axios.get(`${baseUrl}api/v1/readuserdetails`)
       .then((res)=>{
         let data = res.data;
@@ -56,11 +62,19 @@ function AddFunds() {
           window.alert("Error Fetching Trader Details");
           return new Error(err);
       })
-  },[traderName])
+  },[])
+
 
   async function addFund(){
     setDetails(details);
-    console.log(details)
+    axios.get(`${baseUrl}api/v1/getUserMarginDetailsAll`)
+      .then((res)=>{
+              console.log("Inside Add Funds");
+              setMarginDetails(res.data);
+      }).catch((err)=>{
+          window.alert("Error Fetching Margin Details");
+          return new Error(err);
+      })
     let userIdArr = traders.filter((elem)=>{
       return elem.name === details.traderName;
     })
@@ -68,14 +82,14 @@ function AddFunds() {
     console.log(userIdArr, details)
 
     const { traderName, amount } = details;
-
+    console.log(traderName,amount);
     const res = await fetch(`${baseUrl}api/v1/setmargin`, {
         method: "POST",
         headers: {
             "content-type": "application/json"
         },
         body: JSON.stringify({
-          traderName, amount, lastModifiedBy, uId, userId: userIdArr[0].email, createdBy
+          traderName, amount, lastModifiedBy, uId, userId: userIdArr[0].email, createdBy 
         })
     });
 
@@ -83,16 +97,20 @@ function AddFunds() {
     console.log(data);
     if (data.status === 422 || data.error || !data) {
         window.alert(data.error);
-        console.log("invalid entry");
+        console.log("Invalid Entry");
     } else {
         amount > 0 ?
         window.alert(`₹${amount} credited into ${traderName}'s trading account`)
         :
         window.alert(`₹${-amount} withdrawn from ${traderName}'s trading account`)
         
-        console.log("entry succesfull");
+        console.log("Entry Succesful");
     }
     // reRender ? setReRender(false) : setReRender(true)
+    
+    
+    
+
 
 
 
@@ -128,7 +146,7 @@ function AddFunds() {
                 label=""
                 defaultValue="Praveen K"
                 minHeight="4em"
-                //helperText="Please select the body condition"
+                helperText="Select Trader"
                 variant="outlined"
                 size="normal"
                 
@@ -166,10 +184,10 @@ function AddFunds() {
                 minHeight="4em"
                 size="small"
                 type="number"
-                //helperText="Please select the body condition"
                 variant="outlined"
                 sx={{margin: 0, padding: 0, width: "200px"}}
                 onChange={(e)=>{details.amount = e.target.value}}
+                helperText="Enter the amount"
               >
               </TextField>
             </MDBox>

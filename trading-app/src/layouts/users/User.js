@@ -138,6 +138,11 @@ const User = () => {
           {elem.role}
         </MDTypography>
       );
+      activeusers.fund = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem.fund}
+        </MDTypography>
+      );
     //   activeusers.userPass = (
     //     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
     //       {elem.password}

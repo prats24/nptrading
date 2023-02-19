@@ -13,7 +13,7 @@ router.post("/setmargin", async (req, res)=>{
     }
 
    
-    const margin = new Margin({amount, lastModifiedBy, uId, userId, createdBy});
+    const margin = new Margin({traderName, amount, lastModifiedBy, uId, userId, createdBy});
 
     margin.save().then(()=>{
         
@@ -46,6 +46,36 @@ router.get("/getUserMarginDetails/:email", (req, res)=>{
     .catch((err)=>{
         return res.status(422).json({error : "date not found"})
     })
+})
+
+router.get("/getUserMarginDetailsAll", (req, res)=>{
+    Margin.find().sort({createdOn: -1})
+    .then((data)=>{
+        return res.status(200).send(data);
+    })
+    .catch((err)=>{
+        return res.status(422).json({error : "date not found"})
+    })
+})
+
+
+router.get("/getUserTotalCreditDetails", async(req, res)=>{
+
+    let pnlDetails = await Margin.aggregate([
+        {
+          $group: {
+            _id: "$userId",
+            totalCredit: {
+              $sum: "$amount",
+            },
+          },
+        },
+      ])
+            
+       // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
 })
 
 module.exports = router;
