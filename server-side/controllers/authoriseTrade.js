@@ -13,7 +13,7 @@ exports.fundCheck = async(req, res, next) => {
            Product, OrderType, Quantity, userId} = req.body;
     
 
-    console.log("margin req", req.body)
+    //console.log("margin req", req.body)
 
     getKiteCred.getAccess().then(async (data)=>{
     console.log(data)
@@ -84,10 +84,12 @@ exports.fundCheck = async(req, res, next) => {
             let marginData;
             let zerodhaMargin;
 
-            if( (!runningLots[0]?.runningLots) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+            // if( (!runningLots[0]?.runningLots) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+             
                 marginData = await axios.post(`https://api.kite.trade/margins/basket?consider_positions=true`, orderData, {headers : headers})
+                console.log(marginData);
                 zerodhaMargin = marginData.data.data.orders[0].total;
-            }
+            // }
 
 
             //TODO: get user pnl data and replace 0 with the value 
@@ -134,11 +136,19 @@ exports.fundCheck = async(req, res, next) => {
             let userNetPnl = pnlDetails[0].npnl;
             console.log( userFunds , userNetPnl , zerodhaMargin)
             console.log((userFunds + userNetPnl - zerodhaMargin))
-            if(( !runningLots[0]?.runningLots || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
-                console.log("in if")
-                return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. please try with smaller lot size.'});
-            } else{
+            // if(( !runningLots[0]?.runningLots || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
+            // if(( !runningLots[0]?.runningLots || (((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot == buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){   
+                // console.log("in if")
+                // return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
+            if(Number(userFunds + userNetPnl) >= 0 && ((runningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
                 next();
+            } else{
+                if(Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
+                    return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
+                }
+                else{
+                    next();
+                }
             }     
     });
     

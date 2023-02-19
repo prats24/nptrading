@@ -16,14 +16,15 @@ router.get("/missedOrderId", async (req, res)=>{
     const missedOrderId = await RetreiveOrder.aggregate([
         {
           $match: {
-            order_timestamp: { $gte: "2023-02-14" },
+            order_timestamp: { $regex: "2023-02-16" },
             // quantity: realQuantity,
             // tradingsymbol: realSymbol,
             status: "COMPLETE",
-            $or: [
-                {tradingsymbol: "NIFTY2321617950PE"},
-                {tradingsymbol: "NIFTY2321617750CE"}
-            ]
+            tradingsymbol: "NIFTY2321618200PE"
+            // $or: [
+            //     {tradingsymbol: "NIFTY2321618200PE"},
+            //     {tradingsymbol: "NIFTY2321617950CE"}
+            // ]
 
           }
         },

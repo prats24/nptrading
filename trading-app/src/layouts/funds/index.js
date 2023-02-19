@@ -95,7 +95,7 @@ function Billing() {
                 {/* <Grid item xs={12} xl={6}>
                   <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
                 </Grid> */}
-                <Grid item xs={16} md={6} xl={2.4}>
+                <Grid item xs={16} md={6} xl={3}>
                   <DefaultInfoCard
                     icon={<AvailableIcon/>}
                     title="total credit"
@@ -103,7 +103,7 @@ function Billing() {
                     value={totalCreditString}
                   />
                 </Grid>
-                <Grid item xs={16} md={8} xl={2.4}>
+                <Grid item xs={16} md={8} xl={3}>
                   <DefaultInfoCard
                     icon={<AvailableIcon/>}
                     title="available margin"
@@ -111,23 +111,23 @@ function Billing() {
                     value={availableMarginpnlstring}
                   />
                 </Grid>
-                <Grid item xs={16} md={8} xl={2.4}>
+                {/* <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon={<ShoppingCartIcon/>}
                     title="used margin"
                     //description="Belong Interactive"
                     value="+₹2000"
                   />
-                </Grid>
-                <Grid item xs={16} md={8} xl={2.4}>
+                </Grid> */}
+                <Grid item xs={16} md={8} xl={3}>
                   <DefaultInfoCard
                     icon={<PaymentsIcon/>}
                     title="available cash"
                     //description="Freelance Payment"
-                    value="₹455.00"
+                    value={availableMarginpnlstring}
                   />
                 </Grid>
-                <Grid item xs={16} md={8} xl={2.4}>
+                <Grid item xs={16} md={8} xl={3}>
                   <DefaultInfoCard
                     icon={<AccountBalanceWalletIcon/>}
                     title="opening balance"
@@ -145,7 +145,7 @@ function Billing() {
             {/* <Grid item xs={12} md={7}>
               <BillingInformation />
             </Grid> */}
-            <Grid item xs={12} md={5}>
+            <Grid item xs={12} md={12}>
               <Transactions />
             </Grid>
           </Grid>

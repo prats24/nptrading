@@ -45,6 +45,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import WalletIcon from '@mui/icons-material/Wallet';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import DBEntry from "./layouts/InsertData/DBEntry";
 
 
 const routes = [
@@ -178,6 +179,14 @@ const routes = [
     icon: <QueryStatsIcon/>,
     route: "/DailyPnlData",
     component: <DailyPNLData />,
+  },
+  {
+    type: "collapse",
+    name: "DB Entry",
+    key: "dbentry",
+    icon: <QueryStatsIcon/>,
+    route: "/dbentry",
+    component: <DBEntry />,
   },
   {
     type: "collapse",
