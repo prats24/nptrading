@@ -23,7 +23,6 @@ const limiter = rateLimit({
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: "Too many request"
 })
-const { MongoClient } = require('mongodb');
 // Apply the rate limiting middleware to all requests
 // app.use(limiter)
 app.use(mongoSanitize());
@@ -108,6 +107,7 @@ app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));
 app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
 app.use('/api/v1', require("./routes/marginAllocation/marginAllocationAuth"));
+app.use('/api/v1', require("./routes/dbEntry/dbEntryRoute"));
 
 
 require('./db/conn');

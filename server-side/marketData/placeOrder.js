@@ -93,7 +93,7 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
 
 
     }).catch(async (err)=>{
-        console.log("order id not receive---------------------")
+        console.log(err, "order id not receive---------------------")
         if(err.response.data.message === "Order request timed out. Please check the order book and confirm before placing again."){
             await ifOrderIdNotFound(false, realBuyOrSell);
         } else{
@@ -414,7 +414,7 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
         
             }).catch(async (err)=>{
                 await retreiveOrderAndSave(url2, authOptions, false);
-                console.log("err in retreiving data in placeorder---------------");
+                console.log(err, "err in retreiving data in placeorder---------------");
             })
     
         }, 500)

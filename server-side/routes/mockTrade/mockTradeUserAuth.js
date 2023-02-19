@@ -500,7 +500,7 @@ router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=
         {
           $match: {
             trade_time: {
-              $regex: todayDate,
+              $regex: "2023-02-16",
             },
             status: "COMPLETE",
             userId: email

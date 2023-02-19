@@ -294,7 +294,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
                 window.alert("AMO Request Recieved");
             } else{
                 console.log("this is dataResp", dataResp)
-                window.alert("on order placing nothing happen");
+                window.alert(dataResp.message);
             }
         }
     }
