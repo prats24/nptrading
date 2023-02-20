@@ -45,28 +45,28 @@ exports.fundCheck = async(req, res, next) => {
             const user = await UserDetail.findOne({email: userId});
             const userFunds = user.fund;
 
-            let runningLots = await MockTradeData.aggregate([
-                {
-                $match:
-                    {
-                        trade_time: {$regex: todayDate},
-                        symbol: symbol,
-                        userId: userId,
-                        status: "COMPLETE",
-                    }
-                },
-                {
-                $group:
-                    {
-                    _id: {symbol: "$symbol"},
-                    runningLots: {
-                      $sum: {$toInt: "$Quantity"}
-                    }
-                  }
-                },
-            ]);
+            // let runningLots = await MockTradeData.aggregate([
+            //     {
+            //     $match:
+            //         {
+            //             trade_time: {$regex: todayDate},
+            //             symbol: symbol,
+            //             userId: userId,
+            //             status: "COMPLETE",
+            //         }
+            //     },
+            //     {
+            //     $group:
+            //         {
+            //         _id: {symbol: "$symbol"},
+            //         runningLots: {
+            //           $sum: {$toInt: "$Quantity"}
+            //         }
+            //       }
+            //     },
+            // ]);
 
-            let netRunningLots = await MockTradeData.aggregate([
+            let allRunningLots = await MockTradeData.aggregate([
                 {
                 $match:
                     {
@@ -86,11 +86,13 @@ exports.fundCheck = async(req, res, next) => {
                 },
             ]);
 
+            let currentRunningLots = allRunningLots.filter((lot)=>{return lot._id.symbol === symbol});
+
             //Traverse the array netRunningLots
             let runningPnl = 0 ;
             let searchQuery = '';
-            if(netRunningLots.length >0){
-                netRunningLots.forEach(element => {
+            if(allRunningLots.length >0){
+                allRunningLots.forEach(element => {
                     searchQuery == ''?
                         searchQuery = searchQuery + 'i=' + element._id.instrumentToken:
                         searchQuery = searchQuery + '&i=' + element._id.instrumentToken; 
@@ -114,20 +116,20 @@ exports.fundCheck = async(req, res, next) => {
             
 
 
-            let isSymbolMatch = true;
-            let isLesserQuantity = false;
-            let isOpposite = false;
-            let transactionTypeRunningLot = runningLots[0]?.runningLots > 0 ? "BUY" : "SELL";
-            if(runningLots[0]?._id?.symbol !== symbol){
-                isSymbolMatch = false;
-            } 
-            if(Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots)){
-                isLesserQuantity = true;
-            }
-            if(transactionTypeRunningLot !== buyOrSell){
-                isOpposite = true;
-            }
-            console.log(transactionTypeRunningLot, runningLots[0]?._id?.symbol, Math.abs(Number(Quantity)), Math.abs(runningLots[0]?.runningLots))
+            // let isSymbolMatch = true;
+            // let isLesserQuantity = false;
+            // let isOpposite = false;
+            // let transactionTypeRunningLot = runningLots[0]?.runningLots > 0 ? "BUY" : "SELL";
+            // if(runningLots[0]?._id?.symbol !== symbol){
+            //     isSymbolMatch = false;
+            // } 
+            // if(Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots)){
+            //     isLesserQuantity = true;
+            // }
+            // if(transactionTypeRunningLot !== buyOrSell){
+            //     isOpposite = true;
+            // }
+            console.log(transactionTypeRunningLot, currentRunningLots[0]?._id?.symbol, Math.abs(Number(Quantity)), Math.abs(currentRunningLots[0]?.runningLots))
             let marginData;
             let zerodhaMargin;
 
@@ -187,7 +189,7 @@ exports.fundCheck = async(req, res, next) => {
             // if(( !runningLots[0]?.runningLots || (((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot == buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){   
                 // console.log("in if")
                 // return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
-            if(Number(userFunds + userNetPnl) >= 0 && ((runningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+            if(Number(userFunds + userNetPnl) >= 0 && ((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
                 next();
             } else{
                 if(Number(userFunds + userNetPnl + runningPnl - zerodhaMargin)  < 0){
@@ -197,9 +199,10 @@ exports.fundCheck = async(req, res, next) => {
                          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
                          accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body
                     let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
+
                     const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: Price, Quantity: Quantity, Product:Product,
-                     buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, 
-                    symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow});
+                     buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, variety: variety,
+                    symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
 
                     await marginCall.save();
 
