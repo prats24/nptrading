@@ -39,7 +39,7 @@ router.get("/readApiExchange", (req, res)=>{
 
 router.get("/getUserMarginDetails/:email", (req, res)=>{
     const {email} = req.params
-    Margin.find({userId: {$regex: email}}).sort({createdOn: -1})
+    Margin.find({userId: {$regex: email}}).sort({creditedOn: -1})
     .then((data)=>{
         return res.status(200).send(data);
     })
@@ -49,7 +49,7 @@ router.get("/getUserMarginDetails/:email", (req, res)=>{
 })
 
 router.get("/getUserMarginDetailsAll", (req, res)=>{
-    Margin.find().sort({createdOn: -1})
+    Margin.find().sort({creditedOn: -1})
     .then((data)=>{
         return res.status(200).send(data);
     })
@@ -64,12 +64,17 @@ router.get("/getUserTotalCreditDetails", async(req, res)=>{
     let pnlDetails = await Margin.aggregate([
         {
           $group: {
-            _id: "$userId",
+            _id: {userId : "$userId", traderName : "$traderName"},
             totalCredit: {
               $sum: "$amount",
             },
           },
         },
+        {
+            $sort: {
+                totalCredit : -1
+            }
+        }
       ])
             
        // //console.log(pnlDetails)

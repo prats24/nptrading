@@ -62,14 +62,14 @@ const MarginGrid = () => {
     totalCredit =+ totalCredit + elem.amount
   })
 
-  let totalCreditString = totalCredit > 0 ? "+₹" + totalCredit.toLocaleString() : "-₹" + ((-totalCredit).toLocaleString())
+  let totalCreditString = totalCredit >= 0 ? "+₹" + totalCredit.toLocaleString() : "-₹" + ((-totalCredit).toLocaleString())
   let lifetimenetpnl = lifetimePNL[0] ? Number((lifetimePNL[0].npnl).toFixed(0)) : 0;
   console.log(lifetimenetpnl)
   let openingBalance = (totalCredit + lifetimenetpnl);
-  let openingBalanceString = openingBalance > 0 ? "+₹" + Number(openingBalance).toLocaleString() : "-₹" + (-Number(openingBalance)).toLocaleString()
+  let openingBalanceString = openingBalance >= 0 ? "+₹" + Number(openingBalance).toLocaleString() : "-₹" + (-Number(openingBalance)).toLocaleString()
   let availableMarginpnl = availableMarginPNL[0] ? Number((availableMarginPNL[0].npnl).toFixed(0)) : 0;
   let availableMargin = (totalCredit + availableMarginpnl)
-  let availableMarginpnlstring = availableMargin > 0 ? "+₹" + Number(availableMargin).toLocaleString() : "-₹" + (-Number(availableMargin)).toLocaleString()
+  let availableMarginpnlstring = availableMargin >= 0 ? "+₹" + Number(availableMargin).toLocaleString() : "-₹" + (-Number(availableMargin)).toLocaleString()
   rows.OpeningBalance = openingBalance
 
     // const { columns, rows } = authorsTableData();
