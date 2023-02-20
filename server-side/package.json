@@ -32,6 +32,7 @@
     "puppeteer-core": "^19.7.1",
     "socket.io": "^4.5.3",
     "totp-generator": "^0.0.14",
+    "uuid": "^9.0.0",
     "websocket": "^1.0.34",
     "xss-clean": "^0.1.1",
     "zerodha-auto-login": "^1.0.6"
