@@ -21,65 +21,50 @@ import TransactionData from './data/transactionData';
 function Transactions() {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [traderPNLDetails, settraderPNLDetails] = useState([]);
-  const [totalCreditDetails, setTotalCreditDetails] = useState([]);
   const { columns, rows } = TransactionData();
-  const getDetails = useContext(userContext);
-  //const [marginDetailsCount, setMarginDetailsCount] = useState([]);
-
-
 
   useEffect(()=>{
-      axios.get(`${baseUrl}api/v1/gettraderpnlformarginAll`)
+      axios.get(`${baseUrl}api/v1/getTraderPNLAndTotalCreditData`)
         .then((res)=>{
-                console.log(res.data);
+                // console.log(res.data);
                 settraderPNLDetails(res.data);
         }).catch((err)=>{
             window.alert("Error Fetching Margin Details");
             return new Error(err);
         })
+  })
 
-        axios.get(`${baseUrl}api/v1/getUserTotalCreditDetails`)
-        .then((res)=>{
-                console.log(res.data);
-                setTotalCreditDetails(res.data);
-        }).catch((err)=>{
-            window.alert("Error Fetching Margin Details");
-            return new Error(err);
-        })
-  },[])
 
-  // let availabelMarginData = [];
+  // traderPNLDetails.map((elem)=>{
+  //   let obj = {};
+  //   let pnlAmountString = elem.npnl ? (elem.npnl >= 0 ? "+₹" + (elem.npnl.toFixed(0)).toLocaleString() : "-₹" + (-(elem.npnl.toFixed(0))).toLocaleString()) : 0
+  //   let totalCreditString = elem.totalCredit ? (elem.totalCredit >= 0 ? "+₹" + (elem.totalCredit).toLocaleString() : "-₹" + (-(elem.totalCredit)).toLocaleString()) : 0
+  //   let availableMarginString = elem.availableMargin ? (elem.availableMargin >= 0 ? "+₹" + (elem.availableMargin.toFixed(0)).toLocaleString() : "-₹" + (-(elem.availableMargin.toFixed(0))).toLocaleString()) : 0
+  //   let color = elem.npnl >= 0 ? "success" : "error"
+  //   let colorTotal = elem.totalCredit >= 0 ? "success" : "error"
 
-  // let filteredData = traderPNLDetails.filter((elem)=>{
-  //    return totalCreditDetails._id === elem._id.email;
+  //   obj = (
+  //     <Transaction
+  //       color={color}
+  //       colorTotal={colorTotal}
+  //       icon={<CurrencyRupeeIcon/>}
+  //       name={elem.traderName}
+  //       // description={datestring + " Transaction ID: " + elem.transactionId}
+  //       value={pnlAmountString}
+  //       valueTotal={totalCreditString}
+  //       valueTotalAvailable={availableMarginString}
+  //       />
+  //     );
+  //   rows.push(obj);
   // })
 
-  // console.log(filteredData);
-
-
-  traderPNLDetails.map((elem)=>{
-    let obj = {};
-    let amountstring = elem.npnl > 0 ? "+₹" + (elem.npnl).toLocaleString() : "-₹" + (-(elem.npnl)).toLocaleString()
-    let color = elem.npnl > 0 ? "success" : "error"
-
-    obj = (
-      <Transaction
-        color={color}
-        icon={<CurrencyRupeeIcon/>}
-        name={elem._id.trader}
-        // description={datestring + " Transaction ID: " + elem.transactionId}
-        value={elem.npnl}
-        />
-      );
-  rows.push(obj);
-  })
 
 
   return (
     <Card sx={{ height: "100%" }}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pt={3} px={2}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-          Credit&apos;s
+          Net P&L, Total Credit & Available Margin Details
         </MDTypography>
         <MDBox display="flex" alignItems="flex-start">
           <MDBox color="text" mr={0.5} lineHeight={0}>
@@ -106,7 +91,45 @@ function Transactions() {
           m={0}
           sx={{ listStyle: "none" }}
         >
-          {rows}
+          <Transaction
+          color="info"
+          colorTotal="info"
+          colorTotalAvailable="info"
+          namecolor="info"
+          // colorTotal={colorTotal}
+          icon={<CurrencyRupeeIcon/>}
+          name="Trader Name"
+          // description={datestring + " Transaction ID: " + elem.transactionId}
+          value="Net P&L"
+          valueTotal="Total Credit"
+          valueTotalAvailable="Available Margin"
+          />
+          {/* {rows} */}
+          {
+            traderPNLDetails.map((elem)=>{
+              let obj = {};
+              let pnlAmountString = elem.npnl ? (elem.npnl >= 0 ? "+₹" + (elem.npnl.toFixed(0)).toLocaleString() : "-₹" + (-(elem.npnl.toFixed(0))).toLocaleString()) : 0
+              let totalCreditString = elem.totalCredit ? (elem.totalCredit >= 0 ? "+₹" + (elem.totalCredit).toLocaleString() : "-₹" + (-(elem.totalCredit)).toLocaleString()) : 0
+              let availableMarginString = elem.availableMargin ? (elem.availableMargin >= 0 ? "+₹" + (elem.availableMargin.toFixed(0)).toLocaleString() : "-₹" + (-(elem.availableMargin.toFixed(0))).toLocaleString()) : 0
+              let color = elem.npnl >= 0 ? "success" : "error"
+              let colorTotal = elem.totalCredit >= 0 ? "success" : "error"
+              let colorTotalAvailable = elem.availableMargin >= 0 ? "success" : "error"
+              obj = (
+                <Transaction
+                  color={color}
+                  colorTotal={colorTotal}
+                  colorTotalAvailable = {colorTotalAvailable}
+                  icon={<CurrencyRupeeIcon/>}
+                  name={elem.traderName}
+                  // description={datestring + " Transaction ID: " + elem.transactionId}
+                  value={pnlAmountString}
+                  valueTotal={totalCreditString}
+                  valueTotalAvailable={availableMarginString}
+                  />
+              );
+              return obj;
+            })
+          }
         </MDBox>
         {/* <MDBox mt={1} mb={2}>
           <MDTypography variant="caption" color="text" fontWeight="bold" textTransform="uppercase">
