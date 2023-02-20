@@ -183,13 +183,9 @@ exports.fundCheck = async(req, res, next) => {
 
 
             let userNetPnl = pnlDetails[0].npnl;
-            console.log( userFunds , userNetPnl , zerodhaMargin)
-            console.log((userFunds + userNetPnl - zerodhaMargin))
-            // if(( !runningLots[0]?.runningLots || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
-            // if(( !runningLots[0]?.runningLots || (((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot == buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){   
-                // console.log("in if")
-                // return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
-            if(Number(userFunds + userNetPnl) >= 0 && ((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+            console.log( userFunds , userNetPnl , runningPnl, zerodhaMargin);
+            console.log((userFunds + userNetPnl + runningPnl - zerodhaMargin));
+            if(((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
                 next();
             } else{
                 if(Number(userFunds + userNetPnl + runningPnl - zerodhaMargin)  < 0){
