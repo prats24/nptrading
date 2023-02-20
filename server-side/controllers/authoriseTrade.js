@@ -5,6 +5,8 @@ const UserDetail = require("../models/User/userDetailSchema");
 const MarginAllocation = require('../models/marginAllocation/marginAllocationSchema');
 const axios = require("axios");
 const getKiteCred = require('../marketData/getKiteCred'); 
+const MarginCall = require('../models/marginAllocation/MarginCall');
+const { v4: uuidv4 } = require('uuid');
  
 
 exports.fundCheck = async(req, res, next) => {
@@ -16,8 +18,6 @@ exports.fundCheck = async(req, res, next) => {
     //console.log("margin req", req.body)
 
     getKiteCred.getAccess().then(async (data)=>{
-    console.log(data)
-
             let date = new Date();
             let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
@@ -25,7 +25,6 @@ exports.fundCheck = async(req, res, next) => {
             // const access_token = data.getAccessToken;
             let auth = 'token ' + data.getApiKey + ':' + data.getAccessToken;
             // let auth = "token nq0gipdzk0yexyko:kDkeVh0s1q71pdlysC0x2a8Koecv4lmZ"
-            console.log(auth)
             let headers = {
                 'X-Kite-Version':'3',
                 'Authorization': auth,
@@ -65,7 +64,55 @@ exports.fundCheck = async(req, res, next) => {
                     }
                   }
                 },
-            ])
+            ]);
+
+            let netRunningLots = await MockTradeData.aggregate([
+                {
+                $match:
+                    {
+                        trade_time: {$regex: todayDate},
+                        userId: userId,
+                        status: "COMPLETE",
+                    }
+                },
+                {
+                $group:
+                    {
+                    _id: {symbol: '$symbol', instrumentToken: '$instrumentToken', exchange: '$exchange'},
+                    runningLots: {
+                      $sum: {$toInt: "$Quantity"}
+                    }
+                  }
+                },
+            ]);
+
+            //Traverse the array netRunningLots
+            let runningPnl = 0 ;
+            let searchQuery = '';
+            if(netRunningLots.length >0){
+                netRunningLots.forEach(element => {
+                    searchQuery == ''?
+                        searchQuery = searchQuery + 'i=' + element._id.instrumentToken:
+                        searchQuery = searchQuery + '&i=' + element._id.instrumentToken; 
+                });
+            }
+
+            //Send request and get ltp
+            if(searchQuery.length){
+                try{
+                    const resp = await axios.get(`https://api.kite.trade/quote/ltp?${searchQuery}`,{headers: headers});
+                    const livePrices = resp.data.data;
+        
+                    runningPnl = netRunningLots.map(lot => lot.runningLots * livePrices[lot._id.instrumentToken].last_price)
+                                              .reduce((total, pnl) => total + pnl, 0);
+                }catch(e){
+                    console.log(e);
+                }
+            }
+            
+
+            
+
 
             let isSymbolMatch = true;
             let isLesserQuantity = false;
@@ -143,14 +190,26 @@ exports.fundCheck = async(req, res, next) => {
             if(Number(userFunds + userNetPnl) >= 0 && ((runningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
                 next();
             } else{
-                if(Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
+                if(Number(userFunds + userNetPnl + runningPnl - zerodhaMargin)  < 0){
+                    let uid = uuidv4();
+                    let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
+                        TriggerPrice, validity, variety, createdBy,
+                         createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
+                         accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body
+                    let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
+                    const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: Price, Quantity: Quantity, Product:Product,
+                     buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, 
+                    symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow});
+
+                    await marginCall.save();
+
                     return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
                 }
                 else{
                     next();
                 }
             }     
-    });
+    }).catch((e)=>{console.log(e)});
     
    
 }
