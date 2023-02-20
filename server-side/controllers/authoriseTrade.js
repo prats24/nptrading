@@ -88,7 +88,7 @@ exports.fundCheck = async(req, res, next) => {
 
             let currentRunningLots = allRunningLots.filter((lot)=>{return lot._id.symbol === symbol});
 
-            //Traverse the array netRunningLots
+            //Traverse the array allRunningLots
             let runningPnl = 0 ;
             let searchQuery = '';
             if(allRunningLots.length >0){
@@ -105,7 +105,7 @@ exports.fundCheck = async(req, res, next) => {
                     const resp = await axios.get(`https://api.kite.trade/quote/ltp?${searchQuery}`,{headers: headers});
                     const livePrices = resp.data.data;
         
-                    runningPnl = netRunningLots.map(lot => lot.runningLots * livePrices[lot._id.instrumentToken].last_price)
+                    runningPnl = allRunningLots.map(lot => lot.runningLots * livePrices[lot._id.instrumentToken].last_price)
                                               .reduce((total, pnl) => total + pnl, 0);
                 }catch(e){
                     console.log(e);
@@ -199,12 +199,16 @@ exports.fundCheck = async(req, res, next) => {
                          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
                          accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body
                     let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
-
-                    const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: Price, Quantity: Quantity, Product:Product,
-                     buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, variety: variety,
-                    symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
-
-                    await marginCall.save();
+                    
+                    try{
+                        const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: Price, Quantity: Quantity, Product:Product,
+                         buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, variety: variety,
+                        symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
+    
+                        await marginCall.save();
+                    }catch(e){
+                        console.log(e);
+                    }
 
                     return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
                 }
