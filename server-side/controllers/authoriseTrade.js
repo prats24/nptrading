@@ -91,6 +91,15 @@ exports.fundCheck = async(req, res, next) => {
                 currentRunningLots = allRunningLots?.filter((lot)=>{return lot._id.symbol === symbol});
             }
 
+            let transactionTypeRunningLot = currentRunningLots[0]?.runningLots > 0 ? "BUY" : "SELL";
+
+            if(((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+                console.log(`fund check took ${performance.now() - time} ms. Check bypassed.`);
+                next();
+            }
+
+
+
             //Setting the search query
             let runningPnl = 0 ;
             let searchQuery = '';
@@ -122,7 +131,6 @@ exports.fundCheck = async(req, res, next) => {
             // let isSymbolMatch = true;
             // let isLesserQuantity = false;
             // let isOpposite = false;
-            let transactionTypeRunningLot = currentRunningLots[0]?.runningLots > 0 ? "BUY" : "SELL";
             // if(runningLots[0]?._id?.symbol !== symbol){
             //     isSymbolMatch = false;
             // } 
@@ -187,7 +195,7 @@ exports.fundCheck = async(req, res, next) => {
 
 
             let userNetPnl = pnlDetails[0].npnl;
-            
+
             console.log( userFunds , userNetPnl , runningPnl, zerodhaMargin);
             console.log((userFunds + userNetPnl - runningPnl - zerodhaMargin));
             if(((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
