@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
  
 
 exports.fundCheck = async(req, res, next) => {
-
+    let time = performance.now();
     const {exchange, symbol, buyOrSell, variety,
            Product, OrderType, Quantity, userId} = req.body;
     
@@ -86,7 +86,10 @@ exports.fundCheck = async(req, res, next) => {
                 },
             ]);
 
-            let currentRunningLots = allRunningLots.filter((lot)=>{return lot._id.symbol === symbol});
+            let currentRunningLots = [];
+            if(allRunningLots.length >0){
+                currentRunningLots = allRunningLots?.filter((lot)=>{return lot._id.symbol === symbol});
+            }
 
             //Setting the search query
             let runningPnl = 0 ;
@@ -134,10 +137,13 @@ exports.fundCheck = async(req, res, next) => {
             let zerodhaMargin;
 
             // if( (!runningLots[0]?.runningLots) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
-             
-                marginData = await axios.post(`https://api.kite.trade/margins/basket?consider_positions=true`, orderData, {headers : headers})
-                console.log(marginData);
-                zerodhaMargin = marginData.data.data.orders[0].total;
+                try{
+                    marginData = await axios.post(`https://api.kite.trade/margins/basket?consider_positions=true`, orderData, {headers : headers})
+                    console.log(marginData);
+                    zerodhaMargin = marginData.data.data.orders[0].total;
+                }catch(e){
+                    console.log(e);
+                }
             // }
 
 
@@ -181,9 +187,11 @@ exports.fundCheck = async(req, res, next) => {
 
 
             let userNetPnl = pnlDetails[0].npnl;
+            
             console.log( userFunds , userNetPnl , runningPnl, zerodhaMargin);
             console.log((userFunds + userNetPnl - runningPnl - zerodhaMargin));
             if(((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+                console.log(`fund check took ${performance.now() - time} ms. Check bypassed.`);
                 next();
             } else{
                 if(Number(userFunds + userNetPnl - runningPnl - zerodhaMargin)  < 0){
@@ -204,10 +212,11 @@ exports.fundCheck = async(req, res, next) => {
                     }catch(e){
                         console.log(e);
                     }
-
+                    console.log(`fund check took ${performance.now() - time} ms. Check failed.`);
                     return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
                 }
                 else{
+                    console.log(`fund check took ${performance.now() - time} ms. Check passed.`);
                     next();
                 }
             }     
