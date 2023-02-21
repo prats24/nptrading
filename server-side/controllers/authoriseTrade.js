@@ -88,7 +88,7 @@ exports.fundCheck = async(req, res, next) => {
 
             let currentRunningLots = allRunningLots.filter((lot)=>{return lot._id.symbol === symbol});
 
-            //Traverse the array allRunningLots
+            //Setting the search query
             let runningPnl = 0 ;
             let searchQuery = '';
             if(allRunningLots.length >0){
@@ -99,7 +99,7 @@ exports.fundCheck = async(req, res, next) => {
                 });
             }
 
-            //Send request and get ltp
+            //Get the running pnl for all running lots
             if(searchQuery.length){
                 try{
                     const resp = await axios.get(`https://api.kite.trade/quote/ltp?${searchQuery}`,{headers: headers});
@@ -182,11 +182,11 @@ exports.fundCheck = async(req, res, next) => {
 
             let userNetPnl = pnlDetails[0].npnl;
             console.log( userFunds , userNetPnl , runningPnl, zerodhaMargin);
-            console.log((userFunds + userNetPnl + runningPnl - zerodhaMargin));
+            console.log((userFunds + userNetPnl - runningPnl - zerodhaMargin));
             if(((currentRunningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(currentRunningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
                 next();
             } else{
-                if(Number(userFunds + userNetPnl + runningPnl - zerodhaMargin)  < 0){
+                if(Number(userFunds + userNetPnl - runningPnl - zerodhaMargin)  < 0){
                     let uid = uuidv4();
                     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
                         TriggerPrice, validity, variety, createdBy,
