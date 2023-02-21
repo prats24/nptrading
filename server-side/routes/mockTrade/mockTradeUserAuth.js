@@ -1579,5 +1579,77 @@ router.get("/gettraderpnlforusedmargin/:email/", async(req, res)=>{
 
 })
 
+router.get("/getTraderPNLAndTotalCreditData", async(req, res)=>{
+
+  let pnlDetails = await MockTradeDetails.aggregate([
+    {
+      $lookup: {
+        from: "user-personal-details",
+        localField: "userId",
+        foreignField: "email",
+        as: "result",
+      },
+    },
+    {
+      $match: {
+      status : "COMPLETE" 
+      }
+    },
+    {
+      $group: {
+        _id: {
+          userId: "$userId",
+          traderName: "$createdBy",
+          funds: {
+            $arrayElemAt: ["$result.fund", 0],
+          },
+        },
+        gpnl: {
+          $sum: {
+            $multiply: ["$amount", -1],
+          },
+        },
+        brokerage: {
+          $sum: {
+            $toDouble: "$brokerage",
+          },
+        },
+      },
+    },
+    {
+      $addFields:
+        {
+          npnl: {
+            $subtract: ["$gpnl", "$brokerage"],
+          },
+          availableMargin : {
+            $add : ["$_id.funds", {$subtract :["$gpnl", "$brokerage"]}]
+          }
+        },
+    },
+    {
+      $project:
+        {
+          _id: 0,
+          userId: "$_id.userId",
+          traderName: "$_id.traderName",
+          totalCredit: "$_id.funds",
+          gpnl: "$gpnl",
+          brokerage: "$brokerage",
+          npnl: "$npnl",
+          availableMargin: "$availableMargin"
+        },
+    },
+    {
+      $sort : {npnl : 1}
+    }
+  ])
+          
+              // //console.log(pnlDetails)
+
+      res.status(201).json(pnlDetails);
+
+})
+
 
 module.exports = router;
