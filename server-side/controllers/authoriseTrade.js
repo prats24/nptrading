@@ -119,7 +119,7 @@ exports.fundCheck = async(req, res, next) => {
             // let isSymbolMatch = true;
             // let isLesserQuantity = false;
             // let isOpposite = false;
-            // let transactionTypeRunningLot = runningLots[0]?.runningLots > 0 ? "BUY" : "SELL";
+            let transactionTypeRunningLot = currentRunningLots[0]?.runningLots > 0 ? "BUY" : "SELL";
             // if(runningLots[0]?._id?.symbol !== symbol){
             //     isSymbolMatch = false;
             // } 
@@ -140,8 +140,6 @@ exports.fundCheck = async(req, res, next) => {
                 zerodhaMargin = marginData.data.data.orders[0].total;
             // }
 
-
-            //TODO: get user pnl data and replace 0 with the value 
 
             let pnlDetails = await MockTradeData.aggregate([
                 {
@@ -193,7 +191,8 @@ exports.fundCheck = async(req, res, next) => {
                     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
                         TriggerPrice, validity, variety, createdBy,
                          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-                         accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body
+                         accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body;
+
                     let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
                     
                     try{
