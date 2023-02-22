@@ -30,7 +30,7 @@ import TransactionData from './components/Transactions/data/transactionData';
 
 function Billing() {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   const [marginDetails, setMarginDetails] = useState([]);
   const [lifetimePNL, setLifetimePNL] = useState([]);
   const [availableMarginPNL, setAvailableMarginPNL] = useState([]);

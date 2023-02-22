@@ -13,7 +13,7 @@ import MDTypography from "../../../components/MDTypography";
 
 export default function UserTodayTradeData() {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
 
   const [data, setData] = useState([]);
   const getDetails = useContext(userContext);

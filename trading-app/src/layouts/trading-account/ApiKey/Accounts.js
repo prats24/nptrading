@@ -30,7 +30,7 @@ const Accounts = () => {
   const { columns, rows } = AccountsData();
   const { columns: pColumns, rows: pRows } = AccountsDataInactive();
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
 
   const [activeData, setActiveData] = useState([]);
   const [inactiveData, setInactiveData] = useState([]);

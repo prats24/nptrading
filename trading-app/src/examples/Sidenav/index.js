@@ -52,7 +52,7 @@ import {
 } from "../../context";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();

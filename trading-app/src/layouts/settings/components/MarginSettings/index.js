@@ -31,7 +31,7 @@ function MarginSettings() {
   const getDetails = useContext(userContext)
   let modifiedBy = getDetails.userDetails.name;
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   
 
   useEffect(()=>{

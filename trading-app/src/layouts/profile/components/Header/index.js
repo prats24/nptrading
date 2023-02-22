@@ -32,7 +32,7 @@ function Header({ children }) {
   const [userDetail,setuserDetail] = useState([]);
   const getDetails = useContext(userContext);
   console.log("getDetails", getDetails)
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
 
  useEffect(()=>{
        axios.get(`${baseUrl}api/v1/readparticularuserdetails/${getDetails.userDetails.email}`)

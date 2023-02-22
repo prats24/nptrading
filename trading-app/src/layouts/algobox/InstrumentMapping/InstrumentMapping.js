@@ -27,7 +27,7 @@ import InstrumentMappingEdit from './instrumentMappingEdit';
 
 const InstrumentMapping = () => {
   const { columns, rows } = InstrumentData();
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   const [mappingData, setMappingData] = useState([]);
   const [reRender, setReRender] = useState(true);
 

@@ -41,7 +41,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         checkBuyOrSell = "SELL"
     }
     //console.log("data from props", exchange, symbol, instrumentToken, product)
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   
     const getDetails = React.useContext(userContext);
     let uId = uniqid();

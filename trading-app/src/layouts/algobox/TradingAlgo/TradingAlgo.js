@@ -30,7 +30,7 @@ import RealTrade from "../RealTrade/RealTrade"
 import TradingAlgoEditModel from "./TradingAlgoEditModel";
 
 const TradingAlgo = () => {
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   const { columns, rows } = TradingAlgoData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
   const [algoData, setAlgoData] = useState([]);

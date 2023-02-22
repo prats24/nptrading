@@ -25,7 +25,7 @@ import axios from "axios"
   const EditExpense = ({Render, setView, ExpenseData, id}) => {
 
     const {columns, rows} = CreateExpenseTableData();
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   
     const {reRender, setReRender} = Render;
     const[editData, setEditData] = useState(ExpenseData);

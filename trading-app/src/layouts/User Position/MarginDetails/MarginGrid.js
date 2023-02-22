@@ -21,7 +21,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 const MarginGrid = () => {
 
   const { netPnl } = useContext(NetPnlContext);
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
   const [marginDetails, setMarginDetails] = useState([]);
   const { columns, rows } = MarginDetails();
 //   const { columns: pColumns, rows: pRows } = MarginDetails();

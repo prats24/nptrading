@@ -30,7 +30,7 @@ const Categories = () => {
     const { columns: pColumns, rows: pRows } = ExpenseData();
     const [reRender, setReRender] = useState(true);
     const [categoryDetail, setCategoryDetail] = useState([]);
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://ocalhost:5000/"
 
     useEffect(()=>{
         axios.get(`${baseUrl}api/v1/readCategoryDetails`)
