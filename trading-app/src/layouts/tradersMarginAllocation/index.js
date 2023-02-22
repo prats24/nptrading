@@ -19,6 +19,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 
 // Billing page components
 import AddFunds from "./components/AddFunds";
+import TotalFunds from "./components/TotalFunds";
 import Invoices from "./components/Invoices";
 import BillingInformation from "./components/BillingInformation";
 import Transactions from "./components/Transactions";
@@ -55,9 +56,9 @@ function Billing() {
                 </Grid>
               </Grid>
             </Grid>
-            {/* <Grid item xs={12} lg={4}>
-              <Invoices />
-            </Grid> */}
+            <Grid item xs={12} lg={5}>
+              <TotalFunds />
+            </Grid>
           </Grid>
         </MDBox>
         <MDBox mb={3}>

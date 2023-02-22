@@ -2,7 +2,7 @@
 import React, {useEffect, useState, useContext} from 'react'
 import Card from "@mui/material/Card";
 import axios from "axios";
-
+import { NetPnlContext } from '../../../PnlContext';
 // Material Dashboard 2 React components
 
 // Material Dashboard 2 React example components
@@ -22,6 +22,7 @@ import ExitPosition from './ExitPosition';
 // import Button from '@mui/material/Button';
 
 function OverallGrid({socket, Render}) {
+  const { netPnl, updateNetPnl } = useContext(NetPnlContext);
   const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
 
@@ -90,9 +91,9 @@ function OverallGrid({socket, Render}) {
       }
     }, [])
 
-    tradeData.map((elem)=>{
-        totalTransactionCost += Number(elem.brokerage);
-    })
+    // tradeData.map((elem)=>{
+    //     totalTransactionCost += Number(elem.brokerage);
+    // })
 
     tradeData.map((subelem, index)=>{
       let obj = {};
@@ -101,6 +102,9 @@ function OverallGrid({socket, Render}) {
       let updatedValue = (subelem.amount+(subelem.lots)*liveDetail[index]?.last_price);
       totalGrossPnl += updatedValue;
 
+      totalTransactionCost += Number(subelem.brokerage);
+
+      updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
       const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
       const quantitycolor = subelem.lots >= 0 ? "success" : "error"
       const gpnlcolor = updatedValue >= 0 ? "success" : "error"

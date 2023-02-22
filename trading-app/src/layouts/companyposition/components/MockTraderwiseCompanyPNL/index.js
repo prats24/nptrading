@@ -261,9 +261,9 @@ finalTraderPnl.map((subelem, index)=>{
     <ViewOrderDetail userId={subelem.userId}/>
   );
 
-  obj.realOrMock = (
-    <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName} />
-  );
+  // obj.realOrMock = (
+  //   <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName} />
+  // );
 
   rows.push(obj);
 })

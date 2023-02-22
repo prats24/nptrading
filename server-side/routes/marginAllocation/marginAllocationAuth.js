@@ -114,4 +114,23 @@ router.get("/getUserPayInDetails/:email", async(req, res)=>{
  
 })
 
+router.get("/getTotalFundsCredited", async(req, res)=>{ 
+
+    let pnlDetails = await Margin.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalCredit: {
+              $sum: "$amount",
+            },
+          },
+        },
+      ])
+            
+       // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
 module.exports = router;
