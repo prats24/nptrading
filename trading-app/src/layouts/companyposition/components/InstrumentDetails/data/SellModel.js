@@ -26,7 +26,7 @@ import MDBox from '../../../../../components/MDBox';
 import { Box, Typography } from '@mui/material';
 
 const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp}) => {
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   // const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);

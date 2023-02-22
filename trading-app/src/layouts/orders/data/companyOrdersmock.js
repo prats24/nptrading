@@ -18,7 +18,7 @@ import { json } from "react-router-dom";
 
 export default function CompanyOrdersMock() {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const [data, setData] = useState([]);
   const [clickToRemove, setclickToRemove] = useState(1);

@@ -16,7 +16,7 @@ const authoizeTrade = require('../controllers/authoriseTrade');
 router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
     let responseMsg;
     let responseErr;
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
@@ -189,7 +189,7 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
                     Quantity = -Quantity;
                 }
 
-                let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+                let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
                 let originalLastPriceUser;
 
@@ -571,7 +571,7 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
             Quantity = -Quantity;
         }
 
-        let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+        let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
         let originalLastPriceUser;
 

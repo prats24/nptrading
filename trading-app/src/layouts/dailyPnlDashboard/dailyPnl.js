@@ -26,7 +26,7 @@ const Dailypnldata = () => {
     const [newrows, setNewRows] = useState([]);
     const [Data, setData] = useState([]);
     const [FDPNLData, setFDPNLData] = useState([]);
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     let date = new Date();
     let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     const [firstDate, setFirstDate] = useState(valueInDate);

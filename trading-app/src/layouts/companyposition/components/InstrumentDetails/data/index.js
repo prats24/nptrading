@@ -14,7 +14,7 @@ import SellModel from "./SellModel";
 
 export default function Data() {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [instrumentData, setInstrumentData] = useState([]);
   const [marketData, setMarketData] = useState([]);

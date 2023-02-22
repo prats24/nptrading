@@ -22,7 +22,7 @@ import axios from "axios";
 
 function InstrumentDetails({socket}) {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { columns, rows, instrumentData } = data();
   const [menu, setMenu] = useState(null);

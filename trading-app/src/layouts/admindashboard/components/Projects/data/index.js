@@ -30,7 +30,7 @@ export default function Data() {
     const [tradertrades, setTraderTrades] = useState([])
     const [tradername, setTraderName] = useState([])
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     useEffect(()=>{
 
