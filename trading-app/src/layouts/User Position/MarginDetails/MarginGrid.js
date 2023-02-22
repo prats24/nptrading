@@ -4,6 +4,7 @@ import Card from "@mui/material/Card";
 import {useState, useContext, useEffect} from "react"
 import axios from "axios";
 import { userContext } from "../../../AuthContext";
+import { NetPnlContext } from '../../../PnlContext';
 
 // Data
 
@@ -19,7 +20,8 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 
 const MarginGrid = () => {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const { netPnl } = useContext(NetPnlContext);
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   const [marginDetails, setMarginDetails] = useState([]);
   const { columns, rows } = MarginDetails();
 //   const { columns: pColumns, rows: pRows } = MarginDetails();
@@ -160,6 +162,7 @@ const MarginGrid = () => {
                 </Grid>
               </Grid>
             </Grid>
+            <h1>{netPnl}</h1>
           </Grid>
         </MDBox>
       </MDBox>

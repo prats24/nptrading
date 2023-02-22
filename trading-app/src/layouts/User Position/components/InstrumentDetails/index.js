@@ -23,7 +23,7 @@ import SellModel from "./data/SellModel";
 
 function InstrumentDetails({socket, Render}) {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
   const { reRender, setReRender } = Render;
   const { columns, rows, instrumentData } = data();
