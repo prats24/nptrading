@@ -16,6 +16,7 @@ import AvailableIcon from '@mui/icons-material/Savings';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PaymentsIcon from '@mui/icons-material/Payments';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 
 const MarginGrid = () => {
 
@@ -25,6 +26,7 @@ const MarginGrid = () => {
 //   const { columns: pColumns, rows: pRows } = MarginDetails();
   const [lifetimePNL, setLifetimePNL] = useState([]);
   const [availableMarginPNL, setAvailableMarginPNL] = useState([]);
+  const [payIn, setPayIn] = useState([]);
   const getDetails = useContext(userContext);
 
   useEffect(()=>{
@@ -55,6 +57,15 @@ const MarginGrid = () => {
             window.alert("Error Fetching P&L Details for Available Margin");
             return new Error(err);
         })
+
+        axios.get(`${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`)
+        .then((res)=>{
+                console.log(res.data);
+                setPayIn(res.data);
+        }).catch((err)=>{
+            window.alert("Error Fetching PayIn Data");
+            return new Error(err);
+        })
   },[])
 
   let totalCredit = 0;
@@ -65,12 +76,20 @@ const MarginGrid = () => {
   let totalCreditString = totalCredit >= 0 ? "+₹" + totalCredit.toLocaleString() : "-₹" + ((-totalCredit).toLocaleString())
   let lifetimenetpnl = lifetimePNL[0] ? Number((lifetimePNL[0].npnl).toFixed(0)) : 0;
   console.log(lifetimenetpnl)
+  let runninglotnumber = 50;
+  let runningPnl = -3000;
   let openingBalance = (totalCredit + lifetimenetpnl);
-  let openingBalanceString = openingBalance >= 0 ? "+₹" + Number(openingBalance).toLocaleString() : "-₹" + (-Number(openingBalance)).toLocaleString()
+  let openingBalanceString = openingBalance >= 0 ? "₹" + Number(openingBalance).toLocaleString() : "₹" + (-Number(openingBalance)).toLocaleString()
   let availableMarginpnl = availableMarginPNL[0] ? Number((availableMarginPNL[0].npnl).toFixed(0)) : 0;
   let availableMargin = (totalCredit + availableMarginpnl)
-  let availableMarginpnlstring = availableMargin >= 0 ? "+₹" + Number(availableMargin).toLocaleString() : "-₹" + (-Number(availableMargin)).toLocaleString()
+  let availableMarginpnlstring = availableMargin >= 0 ? "₹" + Number(availableMargin).toLocaleString() : "₹" + (-Number(availableMargin)).toLocaleString()
   rows.OpeningBalance = openingBalance
+  let usedMargin = runninglotnumber == 0 ? openingBalance - availableMargin : openingBalance - availableMargin + runningPnl
+  let usedMarginString = usedMargin >= 0 ? "+₹" + Number(usedMargin).toLocaleString() : "-₹" + (-Number(usedMargin)).toLocaleString()
+  let payInAmount = payIn[0] ? Number(payIn[0].totalCredit) : 0
+  let payInString = payInAmount >= 0 ? "+₹" + Number(payInAmount).toLocaleString() : "-₹" + (-Number(payInAmount)).toLocaleString()
+  
+  
 
     // const { columns, rows } = authorsTableData();
     
@@ -118,43 +137,43 @@ const MarginGrid = () => {
                 {/* <Grid item xs={12} xl={6}>
                   <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
                 </Grid> */}
-                <Grid item xs={16} md={6} xl={3}>
+                <Grid item xs={16} md={6} xl={2.4}>
                   <DefaultInfoCard
                     icon={<AvailableIcon/>}
                     title="total credit"
-                    //description="Belong Interactive"
+                    description="Total funds added by ninepointer"
                     value={totalCreditString}
                   />
                 </Grid>
-                <Grid item xs={16} md={8} xl={3}>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon={<AvailableIcon/>}
                     title="available margin"
-                    //description="Belong Interactive"
+                    description="Funds that you can used to trade today"
                     value={availableMarginpnlstring}
                   />
                 </Grid>
-                {/* <Grid item xs={16} md={8} xl={2.4}>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon={<ShoppingCartIcon/>}
                     title="used margin"
-                    //description="Belong Interactive"
-                    value="+₹2000"
-                  />
-                </Grid> */}
-                <Grid item xs={16} md={8} xl={3}>
-                  <DefaultInfoCard
-                    icon={<PaymentsIcon/>}
-                    title="available cash"
-                    //description="Freelance Payment"
-                    value={availableMarginpnlstring}
+                    description="Net funds utilized for your executed trades"
+                    value={usedMarginString}
                   />
                 </Grid>
-                <Grid item xs={16} md={8} xl={3}>
+                <Grid item xs={16} md={8} xl={2.4}>
+                  <DefaultInfoCard
+                    icon={<CurrencyRupeeIcon/>}
+                    title="Payin"
+                    description="Funds added in your trading account today"
+                    value={payInString}
+                  />
+                </Grid>
+                <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
                     icon={<AccountBalanceWalletIcon/>}
                     title="opening balance"
-                    //description="Freelance Payment"
+                    description="Cash available at the beginning of the day"
                     value={openingBalanceString}
                   />
                 </Grid>

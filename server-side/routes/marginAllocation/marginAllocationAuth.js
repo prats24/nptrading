@@ -60,8 +60,39 @@ router.get("/getUserMarginDetailsAll", (req, res)=>{
 
 
 router.get("/getUserTotalCreditDetails", async(req, res)=>{
+    let pnlDetails = await Margin.aggregate([
+        {
+          $group: {
+            _id: {userId : "$userId", traderName : "$traderName"},
+            totalCredit: {
+              $sum: "$amount",
+            },
+          },
+        },
+        {
+            $sort: {
+                totalCredit : -1
+            }
+        }
+      ])
+            
+       // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getUserPayInDetails/:email", async(req, res)=>{
+    const {email} = req.params; 
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}` 
 
     let pnlDetails = await Margin.aggregate([
+        {
+            $match : {
+                creditedOn : {$regex : todayDate}, userId : email
+            }
+        },
         {
           $group: {
             _id: {userId : "$userId", traderName : "$traderName"},
