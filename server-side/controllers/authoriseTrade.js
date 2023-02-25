@@ -5,6 +5,8 @@ const UserDetail = require("../models/User/userDetailSchema");
 const MarginAllocation = require('../models/marginAllocation/marginAllocationSchema');
 const axios = require("axios");
 const getKiteCred = require('../marketData/getKiteCred'); 
+const MarginCall = require('../models/marginAllocation/MarginCall');
+const { v4: uuidv4 } = require('uuid');
  
 
 exports.fundCheck = async(req, res, next) => {
@@ -42,9 +44,13 @@ exports.fundCheck = async(req, res, next) => {
                 "price": 0,
                 "trigger_price": 0
             }]
-
-            const user = await UserDetail.findOne({email: userId});
-            const userFunds = user.fund;
+            let userFunds;
+            try{
+                const user = await UserDetail.findOne({email: userId});
+                userFunds = user.fund;
+            }catch(e){
+                console.log(e);
+            }
 
             let runningLots = await MockTradeData.aggregate([
                 {
@@ -80,15 +86,21 @@ exports.fundCheck = async(req, res, next) => {
             if(transactionTypeRunningLot !== buyOrSell){
                 isOpposite = true;
             }
+            if(((runningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
+                next();
+            }
             console.log(transactionTypeRunningLot, runningLots[0]?._id?.symbol, Math.abs(Number(Quantity)), Math.abs(runningLots[0]?.runningLots))
             let marginData;
             let zerodhaMargin;
 
             // if( (!runningLots[0]?.runningLots) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
-             
+            try{
                 marginData = await axios.post(`https://api.kite.trade/margins/basket?consider_positions=true`, orderData, {headers : headers})
                 console.log(marginData);
                 zerodhaMargin = marginData.data.data.orders[0].total;
+            }catch(e){
+                console.log(e);
+            } 
             // }
 
 
@@ -153,7 +165,7 @@ exports.fundCheck = async(req, res, next) => {
                     let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
                     
                     try{
-                        const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: livePrices?.[currentRunningLots[0]._id.instrumentToken].last_price, Quantity: Quantity, Product:Product,
+                        const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: zerodhaMargin/Quantity, Quantity: Quantity, Product:Product,
                             buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, variety: variety,
                         symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
     
@@ -161,7 +173,6 @@ exports.fundCheck = async(req, res, next) => {
                     }catch(e){
                         console.log(e);
                     }
-                    console.log(`fund check took ${performance.now() - time} ms. Check failed.`);
 
                     return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
                 }

@@ -148,7 +148,6 @@ const MarginGrid = () => {
                 </Grid>
               </Grid>
             </Grid>
-            <h1>{netPnl}:{totalRunningLots}</h1>
           </Grid>
         </MDBox>
       </MDBox>
