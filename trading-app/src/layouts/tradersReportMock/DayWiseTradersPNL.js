@@ -83,8 +83,10 @@ useEffect(()=>{
 
 
 let traderNameList = []
+let traderNameBatchList = []
 tradersPNLData?.map((elem)=>{
     traderNameList.push(elem.trader_name)
+    traderNameBatchList.push(elem.trader_name + " {" + elem.cohort + "}")
 })
 
 traderNameList.push("Total")
@@ -125,7 +127,7 @@ console.log(pnldata)
 
 const xLabelsVisibility = xlabelnumber;
 
-const yLabels = traderNameList
+const yLabels = traderNameBatchList
 const xLabels = xlabelnumber;
 console.log(xLabels)
 
@@ -214,7 +216,7 @@ let labelsforcharts = xlabelnumber.filter((e)=>{
         xLabelsLocation={"top"}
         xLabelsVisibility={xLabelsVisibility}
         xLabelWidth={100}
-        yLabelWidth={100}
+        yLabelWidth={150}
         data={data}
         rectangles
         height={40}

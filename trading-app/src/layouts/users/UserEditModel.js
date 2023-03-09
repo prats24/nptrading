@@ -42,6 +42,7 @@ const {reRender, setReRender} = Render;
 const[editData, setEditData] = useState(data);
 
 const [name, setName] = useState();
+const [cohort, setCohort] = useState();
 const [designation, setDesignation] = useState();
 const [email, setEmail] = useState();
 const [dob, setDob] = useState();
@@ -81,6 +82,7 @@ const [employeeid, setemployeeId] = useState();
         //console.log("edit data", editData);
 
         setName(editData[0].name)
+        setCohort(editData[0].cohort)
         setDesignation(editData[0].designation);
         setEmail(editData[0].email);
         setMobile(editData[0].mobile);
@@ -97,10 +99,11 @@ const [employeeid, setemployeeId] = useState();
 
     }, [editData, reRender])
 
-    //console.log(editData, id);
-    //console.log(editData[0].name, name);
+    console.log(editData, id);
+    console.log(editData[0].name, name);
     const [formstate, setformstate] = useState({
       Name:"",
+      Cohort:"",
       Designation:"",
       EmailID:"",
       MobileNo:"",
@@ -123,6 +126,7 @@ const [employeeid, setemployeeId] = useState();
 async function formbtn() {
 
     formstate.Name = name;
+    formstate.Cohort = cohort;
     formstate.Designation = designation;
     formstate.Degree = degree;
     formstate.EmailID = email;
@@ -141,7 +145,7 @@ async function formbtn() {
     setformstate(formstate);
 
 
-    const { Name, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, userPassword, employeeId } = formstate;
+    const { Name,Cohort, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, userPassword, employeeId } = formstate;
 
     const res = await fetch(`${baseUrl}api/v1/readuserdetails/${id}`, {
         method: "PUT",
@@ -150,7 +154,7 @@ async function formbtn() {
             "content-type": "application/json"
         },
         body: JSON.stringify({
-            Name, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, lastModified, userPassword, employeeId
+            Name,Cohort, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, lastModified, userPassword, employeeId
         })
     });
 
@@ -213,6 +217,10 @@ async function Ondelete(){
             <TextField
               id="outlined-basic" label="Name" variant="standard" value={name}
               sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{setName( e.target.value)}}/>
+
+            <TextField
+              id="outlined-basic" label="Cohort" variant="standard" value={cohort}
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{setCohort( e.target.value)}}/>
 
             <TextField
               id="outlined-basic" label="Designation" variant="standard" value={designation} 

@@ -1928,4 +1928,571 @@ router.get("/updatealgoid", async(req, res)=>{
     }
   })
 
+  router.get("/getoverallpnlmocktradecompanytoday/batchwisedata/:batchName", async(req, res)=>{
+    let date = new Date();
+    const {batchName} = req.params;
+    // console.log( date, algoId)
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $lookup: {
+            from: "user-personal-details",
+            localField: "userId",
+            foreignField: "email",
+            as: "userDetails",
+          },
+        },
+        {
+          $project:
+            {
+              symbol: 1,
+              Product:1,
+              trade_time: 1,
+              status: 1,
+              instrumentToken: 1,
+              amount: 1,
+              buyOrSell: 1,
+              Quantity: 1,
+              brokerage: 1,
+              average_price: 1,
+              cohort: {
+                $arrayElemAt: [
+                  "$userDetails.cohort",
+                  0,
+                ],
+              },
+            },
+        },
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            cohort: batchName,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {
+                $multiply: ["$amount", -1],
+              },
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+
+        res.status(201).json(pnlDetails);
+
+})
+
+router.get("/gettraderwisepnlmocktradecompanytoday/batchwiseData/:batchName", async(req, res)=>{
+    let date = new Date();
+    const {batchName} = req.params;
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $lookup: {
+            from: "user-personal-details",
+            localField: "userId",
+            foreignField: "email",
+            as: "userDetails",
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            createdBy: 1,
+            trade_time: 1,
+            status: 1,
+            traderName: 1,
+            instrumentToken: 1,
+            amount: 1,
+            Quantity: 1,
+            brokerage: 1,
+            cohort: {
+              $arrayElemAt: ["$userDetails.cohort", 0],
+            },
+          },
+        },
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            cohort: batchName,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              traderId: "$userId",
+              traderName: "$createdBy",
+              symbol: "$instrumentToken",
+            },
+            amount: {
+              $sum: {
+                $multiply: ["$amount", -1],
+              },
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            trades: {
+              $count: {},
+            },
+            lotUsed: {
+              $sum: {
+                $abs: {
+                  $toInt: "$Quantity",
+                },
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getmocktradebatchestoday", async(req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let batchDetails = await MockTradeDetails.aggregate([
+        {
+          $lookup: {
+            from: "user-personal-details",
+            localField: "userId",
+            foreignField: "email",
+            as: "userDetails",
+          },
+        },
+        {
+          $project: {
+            trade_time: 1,
+            status: 1,
+            cohort: {
+              $arrayElemAt: ["$userDetails.cohort", 0],
+            },
+          },
+        },
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              cohort: "$cohort",
+            },
+            trades: {
+              $count: {},
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(batchDetails);
+ 
+})
+
+router.get("/getDayWiseTradersTradeDetailsCompanySide/:startDay/:endDay/:traderName", async(req, res)=>{
+    const {startDay, endDay, traderName} = req.params
+  
+    let pipeline = [
+      {
+        $lookup: {
+          from: "user-personal-details",
+          localField: "userId",
+          foreignField: "email",
+          as: "userDetails",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            trader_name: "$createdBy",
+            status: "$status",
+            email: "$userId",
+            joining_date: {
+              $arrayElemAt: [
+                "$userDetails.joining_date",
+                0,
+              ],
+            },
+            cohort: {
+              $arrayElemAt: [
+                "$userDetails.cohort",
+                0,
+              ],
+            },
+            designation: {
+              $arrayElemAt: [
+                "$userDetails.designation",
+                0,
+              ],
+            },
+            gender: {
+              $arrayElemAt: [
+                "$userDetails.gender",
+                0,
+              ],
+            },
+            day_number: {
+              $toInt: {
+                $floor: {
+                  $divide: [
+                    {
+                      $subtract: [
+                        {
+                          $toDate: "$trade_time",
+                        },
+                        {
+                          $toDate: {
+                            $arrayElemAt: [
+                              "$userDetails.joining_date",
+                              0,
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    86400000,
+                  ],
+                },
+              },
+            },
+          },
+          pnl: {
+            $sum: {
+              $multiply: ["$amount", -1],
+            },
+          },
+          brokerage: {
+            $sum: {
+              $toDouble: "$brokerage",
+            },
+          },
+          runningLots: {
+            $sum: "$Quantity",
+          },
+          lotsUsed: {
+            $sum: {
+              $abs: {
+                $toInt: "$Quantity",
+              },
+            },
+          },
+          trades: {
+            $count: {},
+          },
+        },
+      },
+      {
+        $match: {
+          "_id.designation": "Equity Trader",
+          "_id.status": "COMPLETE",
+        },
+      },
+      {
+        $addFields: {
+          npnl: {
+            $toDouble: {
+              $subtract: ["$pnl", "$brokerage"],
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            trader_name: "$_id.trader_name",
+            email: "$_id.email",
+            joining_date: "$_id.joining_date",
+            cohort: "$_id.cohort",
+            gender: "$_id.gender",
+          },
+          pnl_by_day: {
+            $push: {
+              day: "$_id.day_number",
+              pnl: "$pnl",
+              brokerage: "$brokerage",
+              npnl: "$npnl",
+              runningLots: "$runningLots",
+              lotsUsed: "$lotsUsed",
+              trades: "$trades",
+            },
+          },
+          pnl_by_day_size: {
+            $sum: 1,
+          },
+        },
+      },
+      {
+        $unwind: "$pnl_by_day",
+      },
+      {
+        $sort: {
+          "pnl_by_day.day": 1,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            trader_name: "$_id.trader_name",
+            email: "$_id.email",
+            joining_date: "$_id.joining_date",
+            cohort: "$_id.cohort",
+            gender: "$_id.gender",
+            pnl_by_day_size: "$pnl_by_day_size",
+          },
+          pnl_by_day: {
+            $push: "$pnl_by_day",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          trader_name: "$_id.trader_name",
+          email: "$_id.email",
+          joining_date: "$_id.joining_date",
+          cohort: "$_id.cohort",
+          gender: "$_id.gender",
+          pnl_by_day: {
+            $zip: {
+              inputs: [
+                {
+                  $map: {
+                    input: {
+                      $range: [
+                        0,
+                        "$_id.pnl_by_day_size",
+                      ],
+                    },
+                    as: "i",
+                    in: {
+                      serial_number: {
+                        $add: ["$$i", 1],
+                      },
+                      values: {
+                        $arrayElemAt: [
+                          "$pnl_by_day",
+                          "$$i",
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          trader_name: "$trader_name",
+          email: "$email",
+          joining_date: "$joining_date",
+          cohort: "$cohort",
+          gender: "$gender",
+          pnl_by_day: 1,
+          totalDays: {
+            $size: "$pnl_by_day",
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: "$pnl_by_day",
+          // includeArrayIndex: '1',
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+      {
+        $project: {
+          trader_name: 1,
+          email: 1,
+          joining_date: 1,
+          cohort: 1,
+          gender: 1,
+          totalDays: 1,
+          serial_number: {
+            $arrayElemAt: [
+              "$pnl_by_day.serial_number",
+              0,
+            ],
+          },
+          day: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.day",
+              0,
+            ],
+          },
+          gpnl: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.pnl",
+              0,
+            ],
+          },
+          brokerage: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.brokerage",
+              0,
+            ],
+          },
+          npnl: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.npnl",
+              0,
+            ],
+          },
+          runningLots: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.runningLots",
+              0,
+            ],
+          },
+          lotsUsed: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.lotsUsed",
+              0,
+            ],
+          },
+          trades: {
+            $arrayElemAt: [
+              "$pnl_by_day.values.trades",
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $match: {
+          serial_number: {
+            $gte: Number(startDay),
+            $lte: Number(endDay),
+          },
+          trader_name: traderName,
+        },
+      },
+      {
+        $group: {
+          _id: {
+            trader_name: "$trader_name",
+            email: "$email",
+            gender: "$gender",
+            joining_date: "$joining_date",
+            cohort: "$cohort",
+            totalDays: "$totalDays",
+          },
+          npnlsum: {
+            $sum: "$npnl",
+          },
+          gpnlsum: {
+            $sum: "$gpnl",
+          },
+          brokerage: {
+            $sum: "$brokerage",
+          },
+          trades: {
+            $sum: "$trades"
+          },
+          pnl_by_day: {
+            $push: {
+              serial_number: "$serial_number",
+              day: "$day",
+              gpnl: "$gpnl",
+              npnl: "$npnl",
+              brokerage: "$brokerage",
+              runningLots: "$runningLots",
+              lotsUsed: "$lotsUsed",
+              trades: "$trades",
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          trader_name: "$_id.trader_name",
+          email: "$_id.email",
+          joining_date: "$_id.joining_date",
+          cohort: "$_id.cohort",
+          gender: "$_id.gender",
+          totalDays: "$_id.totalDays",
+          npnlsum: "$npnlsum",
+          gpnlsum: "$gpnlsum",
+          brokeragesum: "$brokerage",
+          tradessum: "$trades",
+          pnl_by_day: 1,
+        },
+      },
+      {
+        $sort: {
+          joining_date: -1,
+        },
+      },
+    ]
+  
+    let tradeDetails = await MockTradeDetails.aggregate(pipeline)
+  
+        res.status(201).json(tradeDetails);
+  
+  })
+
 module.exports = router;

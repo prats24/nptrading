@@ -594,8 +594,8 @@ useEffect(()=>{
                 onChange={handleChange}
                 sx={{ display: "flex", flexDirection: "row" }}
               >
-                <FormControlLabel value="MIS" control={<Radio />} label="Intraday (MIS)" />
-                <FormControlLabel value="NRML" control={<Radio />} label="Overnight (NRML)" />
+                <FormControlLabel value="MIS" disabled="true" control={<Radio />} label="Intraday (MIS)" />
+                <FormControlLabel value="NRML" disabled="true" control={<Radio />} label="Overnight (NRML)" />
               </RadioGroup>
             </FormControl>
 
@@ -618,11 +618,11 @@ useEffect(()=>{
                 </Select>
               </FormControl>
               <TextField
-                id="outlined-basic" label="Price" variant="standard" onChange={(e) => { { sellFormDetails.Price = (e.target.value) } }}
+                id="outlined-basic" disabled="true" label="Price" variant="standard" onChange={(e) => { { sellFormDetails.Price = (e.target.value) } }}
                 sx={{ margin: 1, padding: 1, width: "300px", marginRight: 1, marginLeft: 1 }} />
 
               <TextField
-                id="outlined-basic" label="Trigger Price" variant="standard" onChange={(e) => { { sellFormDetails.TriggerPrice = (e.target.value) } }}
+                id="outlined-basic" disabled="true" label="Trigger Price" variant="standard" onChange={(e) => { { sellFormDetails.TriggerPrice = (e.target.value) } }}
                 sx={{ margin: 1, padding: 1, width: "300px" }} />
             </Box>
             <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "flex-end" }}>
@@ -635,8 +635,8 @@ useEffect(()=>{
                   onChange={marketHandleChange}
                   sx={{ display: "flex", flexDirection: "row" }}
                 >
-                  <FormControlLabel value="MARKET" control={<Radio />} label="MARKET" />
-                  <FormControlLabel value="LIMIT" control={<Radio />} label="LIMIT" />
+                  <FormControlLabel value="MARKET" disabled="true" control={<Radio />} label="MARKET" />
+                  <FormControlLabel value="LIMIT" disabled="true" control={<Radio />} label="LIMIT" />
                 </RadioGroup>
               </FormControl>
               <FormControl  >
@@ -647,8 +647,8 @@ useEffect(()=>{
                   onChange={(e) => { { sellFormDetails.stopLoss = (e.target.value) } }}
                   sx={{ display: "flex", flexDirection: "row" }}
                 >
-                  <FormControlLabel value="SL" control={<Radio />} label="SL" />
-                  <FormControlLabel value="SLM" control={<Radio />} label="SL-M" />
+                  <FormControlLabel value="SL" disabled="true" control={<Radio />} label="SL" />
+                  <FormControlLabel value="SLM" disabled="true" control={<Radio />} label="SL-M" />
                 </RadioGroup>
               </FormControl>
 
@@ -664,9 +664,9 @@ useEffect(()=>{
                   onChange={validityhandleChange}
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
-                  <FormControlLabel value="DAY" control={<Radio />} label="DAY" />
-                  <FormControlLabel value="IMMEDIATE" control={<Radio />} label="IMMEDIATE" />
-                  <FormControlLabel value="MINUTES" control={<Radio />} label="MINUTES" />
+                  <FormControlLabel value="DAY" disabled="true" control={<Radio />} label="DAY" />
+                  <FormControlLabel value="IMMEDIATE" disabled="true" control={<Radio />} label="IMMEDIATE" />
+                  <FormControlLabel value="MINUTES" disabled="true" control={<Radio />} label="MINUTES" />
                 </RadioGroup>
               </FormControl>
             </Box>

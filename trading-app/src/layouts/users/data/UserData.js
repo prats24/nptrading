@@ -10,6 +10,7 @@ export default function AllActiveUsers() {
       { Header: "Edit", accessor: "edit",align: "center" },
       { Header: "Employee ID", accessor: "employeeid",align: "center" },
       { Header: "Name", accessor: "name",align: "center" },
+      { Header: "Cohort", accessor: "cohort", align: "center"},
       { Header: "Designation", accessor: "designation",align: "center" },
       { Header: "Email ID", accessor: "email", align: "center"},
       { Header: "Mobile No.", accessor: "mobile", align: "center"},
@@ -20,7 +21,6 @@ export default function AllActiveUsers() {
       { Header: "DOJ Week", accessor: "dojweek", align: "center"},
       { Header: "Role", accessor: "role", align: "center"},
       { Header: "Available Funds", accessor: "fund", align: "center"},
-      // { Header: "User Password", accessor: "userPass", align: "center"},
       { Header: "Status", accessor: "status", align: "center"},
     ],
 

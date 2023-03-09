@@ -1667,10 +1667,17 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
       $group: {
         _id: {
           trader_name: "$createdBy",
+          status: "$status",
           email: "$userId",
           joining_date: {
             $arrayElemAt: [
               "$userDetails.joining_date",
+              0,
+            ],
+          },
+          cohort: {
+            $arrayElemAt: [
+              "$userDetails.cohort",
               0,
             ],
           },
@@ -1735,7 +1742,8 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
     },
     {
       $match: {
-       "_id.designation" : 'Equity Trader'
+       "_id.designation" : 'Equity Trader',
+       "_id.status" : "COMPLETE"
       }
     },
     {
@@ -1753,6 +1761,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
           trader_name: "$_id.trader_name",
           email: "$_id.email",
           joining_date: "$_id.joining_date",
+          cohort: "$_id.cohort",
           gender: "$_id.gender",
         },
         pnl_by_day: {
@@ -1784,6 +1793,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
           trader_name: "$_id.trader_name",
           email: "$_id.email",
           joining_date: "$_id.joining_date",
+          cohort: "$_id.cohort",
           gender: "$_id.gender",
           pnl_by_day_size: "$pnl_by_day_size",
         },
@@ -1798,6 +1808,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
         trader_name: "$_id.trader_name",
         email: "$_id.email",
         joining_date: "$_id.joining_date",
+        cohort: "$_id.cohort",
         gender: "$_id.gender",
         pnl_by_day: {
           $zip: {
@@ -1835,6 +1846,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
         trader_name: "$trader_name",
         email: "$email",
         joining_date: "$joining_date",
+        cohort: "$cohort",
         gender: "$gender",
         pnl_by_day: 1,
         totalDays: {
@@ -1856,6 +1868,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
           trader_name: 1,
           email: 1,
           joining_date: 1,
+          cohort: 1,
           gender: 1,
           totalDays: 1,
           serial_number: {
@@ -1917,6 +1930,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
           email: "$email",
           gender: "$gender",
           joining_date: "$joining_date",
+          cohort: "$cohort",
           totalDays: "$totalDays",
         },
         npnlsum: {
@@ -1947,6 +1961,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
           trader_name: "$_id.trader_name",
           email: "$_id.email",
           joining_date: "$_id.joining_date",
+          cohort: "$_id.cohort",
           gender: "$_id.gender",
           totalDays: "$_id.totalDays",
           npnlsum: "$npnlsum",
@@ -1958,7 +1973,7 @@ router.get("/getDayWiseTradersTradeDetails/:startDay/:endDay/", async(req, res)=
     {
       $sort:
         {
-          npnlsum: -1,
+          joining_date: -1,
         },
     },
   ]

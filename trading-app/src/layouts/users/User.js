@@ -93,6 +93,11 @@ const User = () => {
           {elem.name}
         </MDTypography>
       );
+      activeusers.cohort = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem.cohort}
+        </MDTypography>
+      );
       activeusers.designation = (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {elem.designation}

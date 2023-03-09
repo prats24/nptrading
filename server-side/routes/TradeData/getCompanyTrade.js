@@ -953,4 +953,225 @@ router.get("/companypnlreportLive/:startDate/:endDate", async(req, res)=>{
       
 })
 
+router.get("/getoverallpnllivetradecompanytoday/batchwisedata/:batchName", async(req, res)=>{
+    let date = new Date();
+    const {batchName} = req.params;
+    // console.log( date, algoId)
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $lookup: {
+            from: "user-personal-details",
+            localField: "userId",
+            foreignField: "email",
+            as: "userDetails",
+          },
+        },
+        {
+          $project:
+            {
+              symbol: 1,
+              Product:1,
+              trade_time: 1,
+              status: 1,
+              instrumentToken: 1,
+              amount: 1,
+              buyOrSell: 1,
+              Quantity: 1,
+              brokerage: 1,
+              average_price: 1,
+              cohort: {
+                $arrayElemAt: [
+                  "$userDetails.cohort",
+                  0,
+                ],
+              },
+            },
+        },
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            cohort: batchName,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              product: "$Product",
+              instrumentToken: "$instrumentToken",
+            },
+            amount: {
+              $sum: {
+                $multiply: ["$amount", -1],
+              },
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            lastaverageprice: {
+              $last: "$average_price",
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+
+        res.status(201).json(pnlDetails);
+
+})
+
+router.get("/gettraderwisepnllivetradecompanytoday/batchwiseData/:batchName", async(req, res)=>{
+    let date = new Date();
+    const {batchName} = req.params;
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let pnlDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $lookup: {
+            from: "user-personal-details",
+            localField: "userId",
+            foreignField: "email",
+            as: "userDetails",
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            createdBy: 1,
+            trade_time: 1,
+            status: 1,
+            traderName: 1,
+            instrumentToken: 1,
+            amount: 1,
+            Quantity: 1,
+            brokerage: 1,
+            cohort: {
+              $arrayElemAt: ["$userDetails.cohort", 0],
+            },
+          },
+        },
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+            cohort: batchName,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              traderId: "$userId",
+              traderName: "$createdBy",
+              symbol: "$instrumentToken",
+            },
+            amount: {
+              $sum: {
+                $multiply: ["$amount", -1],
+              },
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+              $sum: {
+                $toInt: "$Quantity",
+              },
+            },
+            trades: {
+              $count: {},
+            },
+            lotUsed: {
+              $sum: {
+                $abs: {
+                  $toInt: "$Quantity",
+                },
+              },
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
+router.get("/getlivetradebatchestoday", async(req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let batchDetails = await LiveCompanyTradeData.aggregate([
+        {
+          $lookup: {
+            from: "user-personal-details",
+            localField: "userId",
+            foreignField: "email",
+            as: "userDetails",
+          },
+        },
+        {
+          $project: {
+            trade_time: 1,
+            status: 1,
+            cohort: {
+              $arrayElemAt: ["$userDetails.cohort", 0],
+            },
+          },
+        },
+        {
+          $match: {
+            trade_time: {
+              $regex: todayDate,
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              cohort: "$cohort",
+            },
+            trades: {
+              $count: {},
+            },
+          },
+        },
+        {
+          $sort: {
+            _id: -1,
+          },
+        },
+      ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(batchDetails);
+ 
+})
+
 module.exports = router;
