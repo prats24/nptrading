@@ -5,9 +5,9 @@ const UserDetail = require("../../models/User/userDetailSchema");
 const authController = require("../../controllers/authController")
 
 router.post("/userdetail", authController.protect, authController.restrictTo("admin"), (req, res)=>{
-    const {status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
+    const {status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
     //console.log(req.body)
-    if(!status || !uId || !createdOn || !lastModified || !createdBy || !name || !designation || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation || !joining_date || !role){
+    if(!status || !uId || !createdOn || !lastModified || !createdBy || !name || !cohort || !designation || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation || !joining_date || !role){
         //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
     }
@@ -18,7 +18,7 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
             //console.log("data already");
             return res.status(422).json({error : "date already exist..."})
         }
-        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
+        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
         //console.log(userDetail)
         userDetail.save().then(()=>{
             res.status(201).json({massage : "data enter succesfully"});
@@ -62,6 +62,7 @@ router.put("/readuserdetails/:id", async (req, res)=>{
         if(req.body.userPassword){
             user.lastModified = req.body.lastModified,
             user.name = req.body.Name,
+            user.cohort = req.body.Cohort,
             user.designation = req.body.Designation,
             user.degree = req.body.Degree,
             user.email = req.body.EmailID,
@@ -79,6 +80,7 @@ router.put("/readuserdetails/:id", async (req, res)=>{
         } else{
             user.lastModified = req.body.lastModified,
             user.name = req.body.Name,
+            user.cohort = req.body.Cohort,
             user.designation = req.body.Designation,
             user.degree = req.body.Degree,
             user.email = req.body.EmailID,
@@ -98,6 +100,7 @@ router.put("/readuserdetails/:id", async (req, res)=>{
         res.status(201).json({massage : "data edit succesfully"});
 
     } catch (e){
+        console.log(e)
         res.status(500).json({error:"Failed to edit data"});
     }
 })
@@ -136,6 +139,28 @@ router.get("/getAdmins/", (req, res)=>{
     .catch((err)=>{
         return res.status(422).json({error : "date not found"})
     })
+})
+
+router.get("/getallbatch", async(req, res)=>{
+
+    let batch = await UserDetail.aggregate([
+        {
+          $group:
+            {
+              _id: "$cohort",
+            },
+        },
+        {
+          $sort:
+            {
+              _id: -1,
+            },
+        },
+      ])
+            
+
+        res.status(201).json(batch);
+
 })
 
 module.exports = router;

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@material-ui/core": "^4.12.4",
     "puppeteer": "^19.6.3",
     "totp-generator": "^0.0.14"
   }

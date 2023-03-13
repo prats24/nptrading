@@ -27,6 +27,7 @@ import TraderWiseReport from "../traderwisereport";
 import TraderSideHeatMapWeekly from "../TraderHeatMapWeekly";
 import TraderSideHeatMap from "../TraderHeatMap";
 import TraderSidePNL from "../MockTraderPNL";
+import DayWiseTradersPNL from "../DayWiseTradersPNL";
 
 
 
@@ -126,6 +127,14 @@ function TraderReportHeader({ children }) {
                     </Icon>
                   }
                 />
+                 <Tab
+                  label="Day Wise Traders P&L"
+                  icon={
+                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                      <MapIcon/>
+                    </Icon>
+                  }
+                />
                 {/* <Tab
                   label="Trader Side HeatMap(Day)"
                   icon={
@@ -149,7 +158,7 @@ function TraderReportHeader({ children }) {
             <TabPanel value={tabValue} index={1}><TraderSidePNL /> </TabPanel>
             <TabPanel value={tabValue} index={2}><TraderSideHeatMap /> </TabPanel>
             <TabPanel value={tabValue} index={3}><TraderSideHeatMapWeekly /> </TabPanel>
-            {/* <TabPanel value={tabValue} index={4}><TraderHeatMap /> </TabPanel> */}
+            <TabPanel value={tabValue} index={4}><DayWiseTradersPNL /> </TabPanel>
             {/* <TabPanel value={tabValue} index={5}><TraderHeatMapWeekly /> </TabPanel> */}
             {/* <TabPaneltwo/> */}
           </Grid>

@@ -9,6 +9,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
 import SettingsIcon from '@mui/icons-material/Settings';
+import CompanyAnalytics from "./layouts/analytics/companyPNLAnalytics1/companyAnalytics"
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 
 // Material Dashboard 2 React components
@@ -35,6 +37,7 @@ import createCache from "@emotion/cache";
 import routes from "./routes";
 // import adminRoutes from "./routes";
 import userRoutes from "./routesUser";
+import analyticsRoutes from "./analyticsRoutes"
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "./context";
@@ -80,6 +83,7 @@ export default function App() {
             },
         })
         .then((res)=>{
+          console.log(res.data.role)
           setDetails.setUserDetail(res.data);
           setDetailUser((res.data));
   
@@ -165,6 +169,7 @@ export default function App() {
       <SettingsIcon/>
     </MDBox>
   );
+  console.log("Analytics Routes: ",analyticsRoutes)
 
   return direction === "rtl" ? (
     
@@ -177,7 +182,16 @@ export default function App() {
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
                 brandName="ninepointer"
-                routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes :  userRoutes }
+                // routes=
+                // {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? 
+                // routes : ((detailUser.role === "user" || getDetails.userDetails.role === "user") ? userRoutes
+                // : (detailUser.role === "data" || getDetails.userDetails.role === "data") ? analyticsRoutes : '')}
+                // routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes :  analyticsRoutes }
+                routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin")
+                ? routes : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
+                ? userRoutes : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
+                ? analyticsRoutes : analyticsRoutes
+              }
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
@@ -187,7 +201,8 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
-          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") && getRoutes(userRoutes)} 
+          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") && getRoutes(userRoutes)}  */}
+          {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}  
             <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
           </Routes>
         </ThemeProvider>
@@ -203,7 +218,15 @@ export default function App() {
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="ninepointer"
-              routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes }
+              // routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes }
+              // routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? 
+              //  routes : ((detailUser.role === "user" || getDetails.userDetails.role === "user") ? userRoutes 
+              // : (detailUser.role === "data" || getDetails.userDetails.role === "data") && analyticsRoutes)} 
+              routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin")
+                ? routes : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
+                ? userRoutes : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
+                ? analyticsRoutes : analyticsRoutes
+              }
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
@@ -212,8 +235,16 @@ export default function App() {
           </>
         )}
         {layout === "companyposition" && <Configurator />}
+        {/* {layout === "analytics" && <Configurator />} */}
         <Routes>
-        {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") && getRoutes(userRoutes)}           {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
+        {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") 
+        ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
+        ? getRoutes(userRoutes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
+        ? getRoutes(analyticsRoutes) : getRoutes(analyticsRoutes)
+        }          
+         {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
+         console.log(detailUser.role,getDetails.userDetails.role)
+         {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
           <Route path="*" element={<SignIn />} />
         </Routes>
       </ThemeProvider>

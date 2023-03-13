@@ -102,7 +102,11 @@ function Basic() {
 
             if(userData.role === "admin"){
               navigate("/companyposition");
-            } else if(userData.role === "user"){
+            }
+            else if(userData.role === "data"){
+              navigate("/analytics");
+            } 
+            else if(userData.role === "user"){
               navigate("/Position");
             }
             

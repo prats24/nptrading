@@ -1,5 +1,6 @@
 // Material Dashboard 2 React layouts
 import CompanyPosition from "./layouts/companyposition";
+import CohortPosition from "./layouts/cohortposition";
 import AdminDashboard from "./layouts/admindashboard";
 import TraderDashboard from "./layouts/traderdashboard";
 import Orders from "./layouts/orders";
@@ -23,6 +24,7 @@ import TraderPosition from "./layouts/traderPosition"
 import AdminReportLive from "./layouts/adminreportLive"
 import TradersReportLive from "./layouts/tradersReportLive"
 import TradersMarginAllocation from "./layouts/tradersMarginAllocation"
+import AnalyticsRoutes from './analyticsRoutes'
 
 
 // @mui icons
@@ -64,6 +66,14 @@ const routes = [
     icon: <BusinessIcon/>,
     route: "/companyposition",
     component: <CompanyPosition />,
+  },
+  {
+    type: "collapse",
+    name: "Cohort Position",
+    key: "cohortposition",
+    icon: <BusinessIcon/>,
+    route: "/cohortposition",
+    component: <CohortPosition />,
   },
 
   {

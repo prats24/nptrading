@@ -153,9 +153,11 @@ exports.fundCheck = async(req, res, next) => {
                 },
             ])
 
-            let userNetPnl = pnlDetails[0].npnl;
-            //console.log( userFunds , userNetPnl , zerodhaMargin)
-            //console.log((userFunds + userNetPnl - zerodhaMargin))
+
+
+            let userNetPnl = pnlDetails[0]?.npnl;
+            console.log( userFunds , userNetPnl , zerodhaMargin)
+            console.log((userFunds + userNetPnl - zerodhaMargin))
             // if(( !runningLots[0]?.runningLots || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
             // if(( !runningLots[0]?.runningLots || (((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))) || ((runningLots[0]?._id?.symbol !== symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot == buyOrSell))) && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){   
                 // //console.log("in if")
@@ -196,3 +198,5 @@ exports.fundCheck = async(req, res, next) => {
     
    
 }
+
+

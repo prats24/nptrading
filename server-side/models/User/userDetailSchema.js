@@ -27,6 +27,10 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required : true
     },
+    cohort:{
+        type: String,
+        required : true
+    },
     designation:{
         type: String,
         required: true

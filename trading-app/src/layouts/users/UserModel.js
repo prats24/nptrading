@@ -26,6 +26,7 @@ const UserModel = () => {
 
   const [formstate, setformstate] = useState({
     Name:"",
+    Cohort:"",
     Designation:"",
     EmailID:"",
     MobileNo:"",
@@ -65,7 +66,7 @@ const UserModel = () => {
     setformstate(formstate);
     //console.log(formstate)
 
-    const { Name, Designation, EmailID, MobileNo, Degree, DOB, Gender, TradingExp, Location, LastOccupation , DateofJoining, Role, Status, userPassword, employeeId} = formstate;
+    const { Name,Cohort, Designation, EmailID, MobileNo, Degree, DOB, Gender, TradingExp, Location, LastOccupation , DateofJoining, Role, Status, userPassword, employeeId} = formstate;
 
     const res = await fetch(`${baseUrl}api/v1/userdetail`, {
       
@@ -76,7 +77,7 @@ const UserModel = () => {
             "Access-Control-Allow-Credentials": true
         },
         body: JSON.stringify({
-          name:Name, designation:Designation, email:EmailID, mobile:MobileNo, degree:Degree, dob:DOB, gender:Gender, trading_exp:TradingExp, location:Location,
+          name:Name, cohort:Cohort, designation:Designation, email:EmailID, mobile:MobileNo, degree:Degree, dob:DOB, gender:Gender, trading_exp:TradingExp, location:Location,
           last_occupation:LastOccupation , joining_date:DateofJoining, role:Role, status:Status, uId, createdBy, createdOn, lastModified, password: userPassword, employeeId
         })
     });
@@ -115,6 +116,10 @@ const UserModel = () => {
             <TextField
               id="outlined-basic" label="Name" variant="standard"
               sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Name = e.target.value}}/>
+
+            <TextField
+              id="outlined-basic" label="Cohort" variant="standard"
+              sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{formstate.Cohort = e.target.value}}/>
 
             <TextField
               id="outlined-basic" label="Designation" variant="standard" 
