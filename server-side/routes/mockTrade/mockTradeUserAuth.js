@@ -809,7 +809,8 @@ router.get("/traderwisetraderpnlreport/:startDate/:endDate", async(req, res)=>{
 })
 
 router.get("/getusermocktrades/:userId", async(req, res)=>{
-    const {userId} = req.params
+    const {userId} = req.params;
+    console.log(userId)
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     
@@ -837,6 +838,7 @@ router.get("/getusermocktrades/:userId", async(req, res)=>{
                 trade_time: 1,
                 order_id: 1,
                 status: 1,
+                userId: 1
               },
             },
             {

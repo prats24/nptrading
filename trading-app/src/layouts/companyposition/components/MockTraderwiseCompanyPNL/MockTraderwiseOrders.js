@@ -64,16 +64,18 @@ let totalGrossPnl = 0;
 let totalRunningLots = 0;
 
   useEffect(()=>{
-
     axios.get(`${baseUrl}api/v1/getusermocktrades/${userId}`)
     .then((res) => {
-        setOrderData(res.data);
+        if(open){
+          setOrderData(res.data);
+        }
+        
     }).catch((err) => {
         return new Error(err);
     })
-  }, [orderData])
+  }, [open])
 
-  console.log("mockorderData", orderData)
+  console.log("mockorderData", orderData, userId)
   orderData.map((elem,index)=>{
     let obj = {};
 

@@ -243,7 +243,7 @@ export default function App() {
         ? getRoutes(analyticsRoutes) : getRoutes(analyticsRoutes)
         }          
          {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
-         console.log(detailUser.role,getDetails.userDetails.role)
+         {/* console.log(detailUser.role,getDetails.userDetails.role) */}
          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
           <Route path="*" element={<SignIn />} />
         </Routes>
