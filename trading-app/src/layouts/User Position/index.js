@@ -59,25 +59,19 @@ function UserPosition() {
   const [reRender, setReRender] = useState(true);
 
   useEffect(() => {
-
-    //console.log(socket);
     socket.on("connect", () => {
-      //console.log(socket.id);
       socket.emit("hi", true)
     })
     socket.on("noToken", (data) => {
-      //console.log("no token");
       window.alert(data);
     })
     socket.on("wrongToken", (data) => {
-      //console.log("wrong Token");
       window.alert(data);
     })
 
   }, []);
 
   useEffect(() => {
-
     axios.get(`${baseUrl}api/v1/readmocktradecompanytodaycount`)
       .then((res) => {
         setTodayMockCount((res.data));
@@ -115,10 +109,6 @@ function UserPosition() {
         return new Error(err);
       })
   },[reRender]);
-  //console.log(todaymockcount)
-  //console.log(allmockcount)
-  //console.log(todaylivecount)
-  //console.log(alllivecount)
 
   return (
     <DashboardLayout>

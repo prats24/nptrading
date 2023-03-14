@@ -44,64 +44,84 @@ function OverallGrid({socket, Render}) {
 
     useEffect(()=>{
 
+      let abortController;
+      (async () => {
+           abortController = new AbortController();
+           let signal = abortController.signal;    
 
-      // let abortController;
-      // (async () => {
-      //      abortController = new AbortController();
-      //      let signal = abortController.signal;    
+           // the signal is passed into the request(s) we want to abort using this controller
+           const { data } = await axios.get(
+            `${baseUrl}api/v1/getliveprice`,
+               { signal: signal }
+           );
+           setMarketData(data);
+      })();
 
-      //      // the signal is passed into the request(s) we want to abort using this controller
-      //      const { data } = await axios.get(
-      //       `${baseUrl}api/v1/getliveprice`,
-      //          { signal: signal }
-      //      );
-      //      setMarketData(data);
-      // })();
-
-      
-
-      axios.get(`${baseUrl}api/v1/getliveprice`)
-      .then((res) => {
-          //console.log("live price data", res)
-          setMarketData(res.data);
-          // setDetails.setMarketData(data);
-      }).catch((err) => {
-          return new Error(err);
-      })
+      // axios.get(`${baseUrl}api/v1/getliveprice`)
+      // .then((res) => {
+      //     //console.log("live price data", res)
+      //     setMarketData(res.data);
+      //     // setDetails.setMarketData(data);
+      // }).catch((err) => {
+      //     return new Error(err);
+      // })
 
       socket.on("tick", (data) => {
-        //console.log("this is live market data", data);
         setMarketData(data);
-        // setDetails.setMarketData(data);
       })
 
-      // return () => abortController.abort();
+      return () => abortController.abort();
     }, [])
 
 
 
     useEffect(()=>{
 
-      axios.get(`${baseUrl}api/v1/getoverallpnlmocktradeparticularusertoday/${getDetails.userDetails.email}`)
-      .then((res) => {
-          setTradeData(res.data);
-          res.data.map((elem)=>{
-            marketData.map((subElem)=>{
-                if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
-                    liveDetailsArr.push(subElem)
-                }
-            })
-          })
+      // axios.get(`${baseUrl}api/v1/getoverallpnlmocktradeparticularusertoday/${getDetails.userDetails.email}`)
+      // .then((res) => {
+      //     setTradeData(res.data);
+      //     res.data.map((elem)=>{
+      //       marketData.map((subElem)=>{
+      //           if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
+      //               liveDetailsArr.push(subElem)
+      //           }
+      //       })
+      //     })
 
-        setLiveDetail(liveDetailsArr);
+      //   setLiveDetail(liveDetailsArr);
 
                  
 
-      }).catch((err) => {
-          return new Error(err);
-      })
+      // }).catch((err) => {
+      //     return new Error(err);
+      // })
+
+      let abortController;
+      (async () => {
+           abortController = new AbortController();
+           let signal = abortController.signal;    
+
+           // the signal is passed into the request(s) we want to abort using this controller
+           const { data } = await axios.get(
+            `${baseUrl}api/v1/getoverallpnlmocktradeparticularusertoday/${getDetails.userDetails.email}`,
+              { signal: signal }
+           );
+
+           setTradeData(data);
+           data.map((elem)=>{
+             marketData.map((subElem)=>{
+                 if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
+                     liveDetailsArr.push(subElem)
+                 }
+             })
+           })
+ 
+         setLiveDetail(liveDetailsArr);
+
+      })();
 
       reRender ? setRender(false) : setRender(true);
+      return () => abortController.abort();
     }, [marketData, render])
 
 
@@ -111,9 +131,6 @@ function OverallGrid({socket, Render}) {
       }
     }, [])
 
-    // tradeData.map((elem)=>{
-    //     totalTransactionCost += Number(elem.brokerage);
-    // })
 
     tradeData.map((subelem, index)=>{
       let obj = {};

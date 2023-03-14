@@ -33,42 +33,41 @@ const MarginGrid = () => {
   const getDetails = useContext(userContext);
 
   useEffect(()=>{
-      console.log(getDetails.userDetails.email)
-      axios.get(`${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`)
-        .then((res)=>{
-                console.log(res.data);
-                setMarginDetails(res.data);
-        }).catch((err)=>{
-            window.alert("Error Fetching Margin Details");
-            return new Error(err);
-        })
 
-        axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`)
-        .then((res)=>{
-                console.log(res.data);
-                setLifetimePNL(res.data);
-        }).catch((err)=>{
-            window.alert("Error Fetching P&L Details for Margin");
-            return new Error(err);
-        })
-        
-        axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`)
-        .then((res)=>{
-                console.log(res.data);
-                setAvailableMarginPNL(res.data);
-        }).catch((err)=>{
-            window.alert("Error Fetching P&L Details for Available Margin");
-            return new Error(err);
-        })
+    let abortController;
+    (async () => {
+         abortController = new AbortController();
+         let signal = abortController.signal;    
 
-        axios.get(`${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`)
-        .then((res)=>{
-                console.log(res.data);
-                setPayIn(res.data);
-        }).catch((err)=>{
-            window.alert("Error Fetching PayIn Data");
-            return new Error(err);
-        })
+         // the signal is passed into the request(s) we want to abort using this controller
+         const { data1 } = await axios.get(
+          `${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`,
+             { signal: signal }
+         );
+         setMarginDetails(data1);
+
+         const { data2 } = await axios.get(
+          `${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`,
+             { signal: signal }
+         );
+         setLifetimePNL(data2);
+
+         const { data3 } = await axios.get(
+          `${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`,
+            { signal: signal }
+         );
+         setAvailableMarginPNL(data3);
+
+         const { data4 } = await axios.get(
+          `${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`,
+             { signal: signal }
+         );
+         setPayIn(data4);
+
+    })();
+
+    return () => abortController.abort();
+
   },[netPnl,totalRunningLots])
 
   let totalCredit = 0;
