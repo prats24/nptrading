@@ -75,14 +75,16 @@ let totalGrossPnl = 0;
 let totalRunningLots = 0;
 
   useEffect(()=>{
-
     axios.get(`${baseUrl}api/v1/getusertrades/${userId}`)
     .then((res) => {
-        setOrderData(res.data);
+        if(open){
+          setOrderData(res.data);
+        }
+        
     }).catch((err) => {
         return new Error(err);
     })
-  }, [orderData])
+  }, [open])
 
   console.log("orderData", orderData)
   orderData.map((elem,index)=>{

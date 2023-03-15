@@ -36,17 +36,13 @@ function InstrumentDetails({socket, Render}) {
 
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
-        //console.log("live price data", res)
         setMarketData(res.data);
-        // setDetails.setMarketData(data);
     }).catch((err) => {
         return new Error(err);
     })
 
     socket.on("tick", (data) => {
-      //console.log("this is live market data", data);
       setMarketData(data);
-      // setDetails.setMarketData(data);
     })
   }, [])
 

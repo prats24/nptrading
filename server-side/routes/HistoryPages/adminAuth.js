@@ -7,8 +7,16 @@ const LiveCompany = require("../../models/TradeDetails/liveTradeSchema");
 const MockCompany = require("../../models/mock-trade/mockTradeCompanySchema");
 const RetreiveTrade = require("../../models/TradeDetails/retireivingTrade")
 const BrokerageDetail = require("../../models/Trading Account/brokerageSchema");
+const dbBackup = require("../../Backup/mongoDbBackUp")
 
 
+router.get("/dbbackup", async (req, res)=>{
+  const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+  const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+
+  await dbBackup.backupDatabase(sourceUri, targetUri);
+
+})
 
 router.get("/missedOrderId", async (req, res)=>{
 

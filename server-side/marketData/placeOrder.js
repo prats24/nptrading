@@ -12,8 +12,8 @@ const RetreiveOrder = require("../models/TradeDetails/retreiveOrder");
 const { response } = require("express");
 const authoizeTrade = require('../controllers/authoriseTrade');
 
-
-router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
+// 
+router.post("/placeorder", authoizeTrade.fundCheck,  (async (req, res)=>{
     let responseMsg;
     let responseErr;
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -97,7 +97,7 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
         if(err.response.data.message === "Order request timed out. Please check the order book and confirm before placing again."){
             await ifOrderIdNotFound(false, realBuyOrSell);
         } else{
-            res.status(422).json({error : err.response.data.message})
+            return res.status(422).json({error : err.response.data.message})
         }
     })
 
@@ -134,13 +134,13 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
                         pending_quantity, cancelled_quantity, guid, market_protection, disclosed_quantity, tradingsymbol, placed_by,
                         status_message, status_message_raw, exchange_order_id, exchange_timestamp}))
                   
-                        //console.log("this is trade data", tradeData, typeof(tradeData));
+                        // console.log("this is trade data", tradeData, typeof(tradeData));
                         tradeData.save()
                         .then(()=>{
-                            //console.log("data enter succesfully")
+                            // console.log("data enter succesfully")
                         }).catch((err)=> {
                           res.status(500).json({error:"Failed to Enter trade data"});
-                          //console.log("failed to enter data of order");
+                          console.log("failed to enter data of order");
                         })
                 }
     
@@ -322,12 +322,15 @@ router.post("/placeorder", authoizeTrade.fundCheck, (async (req, res)=>{
                             order_id, instrumentToken, brokerage: brokerageUser,
                             tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
-        
+                            
         
                         });
                         // console.log("this is REALuserTradeData", userTradeData);
                         userTradeData.save().then(()=>{
-                        }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                        }).catch((err)=> {
+                            console.log("fail in user live")
+                            res.status(500).json({error:"Failed to Trade company side"})
+                        });
                     }).catch(err => {console.log(err, "fail trader live data saving")});
                 }
     

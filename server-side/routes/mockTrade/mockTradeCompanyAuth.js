@@ -249,9 +249,10 @@ let {exchange, symbol, buyOrSell, Quantity, Price, Product, order_type, TriggerP
 
 })
 
+// 
+router.post("/mocktradecompany", authoizeTrade.fundCheck,  async (req, res)=>{
 
-router.post("/mocktradecompany", authoizeTrade.fundCheck, async (req, res)=>{
-
+    console.log("inside mocktrade")
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
           validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
           realBuyOrSell, realQuantity, checkingMultipleAlgoFlag, real_instrument_token, realSymbol } = req.body 
@@ -391,8 +392,10 @@ router.post("/mocktradecompany", authoizeTrade.fundCheck, async (req, res)=>{
 
             //console.log("mockTradeDetails", mockTradeDetailsUser);
             mockTradeDetailsUser.save().then(()=>{
+                console.log("sending response");
                 res.status(201).json({status: 'Complete', message: 'Trade Succesful'});
             }).catch((err)=> {
+                console.log("in err", err)
                 // res.status(500).json({error:"Failed to enter data"})
             });
             
