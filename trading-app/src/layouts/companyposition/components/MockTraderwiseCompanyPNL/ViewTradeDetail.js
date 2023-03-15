@@ -272,7 +272,7 @@ function ViewTradeDetail({userId, socket}) {
   );
 
 
-  console.log("mock live view", rows)
+  //console.log("mock live view", rows)
 
 return (
   <div>

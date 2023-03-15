@@ -73,7 +73,7 @@ let totalRunningLots = 0;
     })
   }, [orderData])
 
-  console.log("mockorderData", orderData)
+  //console.log("mockorderData", orderData)
   orderData.map((elem,index)=>{
     let obj = {};
 

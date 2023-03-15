@@ -137,7 +137,7 @@ function CompanyPosition() {
       );
     };
 
-    console.log("re rendering index")
+    //console.log("re rendering index")
 
   return (
     <DashboardLayout>

@@ -47,7 +47,7 @@ const TradeSwitchButton = ({tradeData, props}) => {
   
   const [addUser, setAddUser] = useState([]);
 
-  console.log("permissionData", permissionData)
+  //console.log("permissionData", permissionData)
 
 
   tradeData.sort((a,b)=>{
