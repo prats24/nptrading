@@ -109,7 +109,7 @@ exports.fundCheck = async(req, res, next) => {
                 zerodhaMargin = marginData.data.data.orders[0].total;
                 //console.log("zerodhaMargin", zerodhaMargin);
             }catch(e){
-                console.log("error fetching zerodha margin", e);
+                // console.log("error fetching zerodha margin", e);
             } 
             // }
 
