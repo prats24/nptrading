@@ -70,6 +70,8 @@ export default function App() {
   const [detailUser, setDetailUser] = useState({});
   const { pathname } = useLocation();
 
+  console.log("pathname", pathname)
+
   //get userdetail who is loggedin
   const setDetails = useContext(userContext);
   const getDetails = useContext(userContext);
@@ -255,12 +257,12 @@ export default function App() {
           {/* <Route path="*" element={<SignIn />} /> */}
 
           {!cookieValue ? 
-          <Route path="*" element={<SignIn />} />
+          <Route path="/" element={<SignIn />} />
           :
-          !pathname || pathname === "/" ?
-          <Route path="*" element={<Navigate to="/Position" />} />
+          pathname == "/" || !pathname ?
+          <Route path="/" element={<Navigate to="/Position" />} />
           :
-          <Route path="*" element={<Navigate to={pathname} />} />
+          <Route path="/" element={<Navigate to={pathname} />} />
           }
 
         </Routes>

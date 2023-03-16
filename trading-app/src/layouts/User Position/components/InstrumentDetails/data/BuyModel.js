@@ -301,10 +301,13 @@ useEffect(()=>{
         ////console.log(elem);
         // if(elem.isTradeEnable){
 
-            if (elem.transactionChange === "TRUE") {
+            if(elem.transactionChange === "TRUE") {
                 companyTrade.realBuyOrSell = "SELL"
-            } else {
+            }else if(elem.transactionChange === "FALSE"){
                 companyTrade.realBuyOrSell = "BUY"
+            }else{
+              window.alert("This Trade is not placed");
+              return;
             }
 
             if(elem.instrumentChange === "TRUE"){
@@ -450,7 +453,7 @@ useEffect(()=>{
           }
 
           if(isCompany){
-              mockTradeCompany(fakeAlgo);
+              // mockTradeCompany(fakeAlgo);
           } else{
               window.alert("Your Trade is Disabled, contact authorize person")
           }

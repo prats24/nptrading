@@ -301,12 +301,15 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
                     companyTrade.realBuyOrSell = "SELL"
                 }
               
-          } else {
+          } else if (elem.transactionChange === "FALSE"){
             if(checkBuyOrSell === "BUY"){
                 companyTrade.realBuyOrSell = "SELL"
             } else if(checkBuyOrSell === "SELL"){
                 companyTrade.realBuyOrSell = "BUY"
             }
+          } else{
+            window.alert("This Trade is not placed");
+            return;
           }
 
           if(elem.instrumentChange === "TRUE"){
