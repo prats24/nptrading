@@ -35,42 +35,11 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
   let createdBy = getDetails.userDetails.name;
   let userId = getDetails.userDetails.email;
-  let totalAmount = 0;
   let tradeBy = getDetails.userDetails.name;
   let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
-  let isCompany = false;
-  let checkingMultipleAlgoFlag = 1;
 
 
-  const [userPermission, setUserPermission] = useState([]);
-  const [bsBtn, setBsBtn] = useState(true)
-  const [modal, setModal] = useState(false);
-  const [instrumentMapping, setInstrumentMapping] = useState([]);
 
-
-  const [selected, setSelected] = useState("NRML");
-
-  let [accessTokenDetails, setAccessToken] = useState([]);
-  let [apiKeyDetails, setApiKey] = useState([]);
-  const [tradeData, setTradeData] = useState([]);
-  const [brokerageData, setBrokerageData] = useState([]);
-  const [tradingAlgoData, setTradingAlgoData] = useState([]);
-  const [pageRender, setPageRander] = useState();
-  const [otmData, setOtmData] = useState([]);
-
-  const [companyTrade, setCompanyTrade] = useState({
-    realBuyOrSell: "",
-    realSymbol: "",
-    realQuantity: "",
-    realInstrument: "",
-    realBrokerage: "",
-    realAmount: "",
-    real_last_price: "",
-    real_instrument_token: ""
-  })
-
-  // let lotSize = lotsize;
-  // let maxLot = maxlot;
   let finalLot = maxLot/lotSize;
   let optionData = [];
   for(let i =1; i<= finalLot; i++){
@@ -101,12 +70,6 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     validity: "",
   })
 
-  const [otmDetailsForm, setOtmDetailsForm] = React.useState({
-    otm: "",
-    otm_quantity: "",
-    otm_token: ""
-  })
-
 
   const [value, setValue] = React.useState('NRML');
   sellFormDetails.Product = value;
@@ -130,17 +93,17 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   };
 
   const handleClickOpen = () => {
-    axios.get(`${baseUrl}api/v1/readpermission`)
-    .then((res) => {
-    let perticularUser = (res.data).filter((elem) => {
-        ////console.log(elem.userId, userId);
-        return elem.userId === userId;
-    })
-    setUserPermission(perticularUser);
-    }).catch((err) => {
-        // //window.alert("Server Down");
-        return new Error(err);
-    })
+    // axios.get(`${baseUrl}api/v1/readpermission`)
+    // .then((res) => {
+    // let perticularUser = (res.data).filter((elem) => {
+    //     ////console.log(elem.userId, userId);
+    //     return elem.userId === userId;
+    // })
+    // setUserPermission(perticularUser);
+    // }).catch((err) => {
+    //     // //window.alert("Server Down");
+    //     return new Error(err);
+    // })
     setOpen(true);
 
   }; 
@@ -149,7 +112,6 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     setOpen(false);
   };
 
-  console.log("in open", userPermission, tradingAlgoData, userId)
 
 
   const [appLive, setAppLive] = useState([]);
@@ -163,231 +125,9 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         return new Error(err);
     })
 
-    axios.get(`${baseUrl}api/v1/readRequestToken`)
-        .then((res) => {
-            let activeAccessToken = (res.data).filter((elem) => {
-                return elem.status === "Active"
-            })
-            setAccessToken(activeAccessToken);
-        }).catch((err) => {
-            return new Error(err);
-        })
-    axios.get(`${baseUrl}api/v1/readAccountDetails`)
-        .then((res) => {
-            let activeApiKey = (res.data).filter((elem) => {
-                return elem.status === "Active"
-            })
-            setApiKey(activeApiKey);
-        }).catch((err) => {
-
-            return new Error(err);
-        })
-
-
-    axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
-        .then((res) => {
-            let dataArr = (res.data).filter((elem) => {
-                return elem.status === "Active"
-            })
-            setTradeData(dataArr)
-        }).catch((err) => {
-
-            return new Error(err);
-        })
-
-
-        axios.get(`${baseUrl}api/v1/readpermission`)
-        .then((res) => {
-        let perticularUser = (res.data).filter((elem) => {
-            //////console.log(elem.userId, userId);
-            return elem.userId === userId;
-        })
-        setUserPermission(perticularUser);
-        }).catch((err) => {
-            // //window.alert("Server Down");
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readtradingAlgo`)
-        .then((res) => {
-          let dataArr = (res.data).filter((elem) => {
-            return elem.status === "Active"
-          })
-          setTradingAlgoData(dataArr);
-        }).catch((err) => {
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readInstrumentAlgo`)
-        .then((res) => {
-            let dataArr = (res.data).filter((elem) => {
-              return elem.Status === "Active"
-            })
-            setInstrumentMapping(dataArr);
-        }).catch((err) => {
-            return new Error(err);
-        })
-
-
-
-    setTradeData([...tradeData])
-
-    //////console.log(perticularInstrumentData);
 }, [getDetails])
 
-useEffect(()=>{
-  axios.get(`${baseUrl}api/v1/userwiseOtm/${userId}`)
-  .then((res) => {
-      setOtmData(res.data);
-  }).catch((err) => {
-      return new Error(err);
-  })
-},[otmDetailsForm])
 
-// ////console.log(tradingAlgoData, userPermission);
-
-  const tradingAlgoArr = [];
-  apiKeyDetails.map((elem) => {
-      accessTokenDetails.map((subelem) => {
-          tradingAlgoData.map((element) => {
-              if (element.status === "Active" && subelem.accountId == element.tradingAccount && elem.accountId == element.tradingAccount) {
-                  tradingAlgoArr.push(element);
-              }
-          })
-      })
-  })
-
-
-  const userPermissionAlgo = [];
-  for (let elem of tradingAlgoArr) {
-      for (let subElem of userPermission) {
-          if (elem.algoName === subElem.algoName && subElem.isTradeEnable) {
-              userPermissionAlgo.push(elem)
-          }
-      }
-  }
-
-
-  let tradeEnable = false ;
-
-  function instrumentMappingFunc(){
-    let flag = true;
-    for(let i = 0; i < instrumentMapping.length; i++){
-      if(instrumentMapping[i].InstrumentNameIncoming === sellFormDetails.symbol){
-        companyTrade.realSymbol = instrumentMapping[i].InstrumentNameOutgoing;
-        companyTrade.real_instrument_token = instrumentMapping[i].OutgoingInstrumentCode;
-        flag = false;
-        break;
-      }
-      if(flag){
-        companyTrade.realSymbol = sellFormDetails.symbol;
-        companyTrade.real_instrument_token = instrumentToken;
-      }
-    }
-  }
-
-  function tradingAlgo() {
-    // if (userPermissionAlgo.length) {
-    userPermissionAlgo.map((elem) => {
-        //////console.log(elem);
-        // if(elem.isTradeEnable){
-
-            if (elem.transactionChange === "TRUE") {
-                companyTrade.realBuyOrSell = "BUY"
-            } else {
-                companyTrade.realBuyOrSell = "SELL"
-            }
-
-            if(elem.instrumentChange === "TRUE"){
-              instrumentMappingFunc();
-            } else{
-              companyTrade.realSymbol = sellFormDetails.symbol;
-              companyTrade.real_instrument_token = instrumentToken;
-            }
-            companyTrade.realQuantity = elem.lotMultipler * (sellFormDetails.Quantity);
-            let accessTokenParticular = accessTokenDetails.filter((element) => {
-                return elem.tradingAccount === element.accountId
-            })
-            setAccessToken(accessTokenParticular);
-            let apiKeyParticular = apiKeyDetails.filter((element) => {
-                return elem.tradingAccount === element.accountId
-            })
-            setApiKey(apiKeyParticular);
-            
-            setCompanyTrade(companyTrade)
-            //////console.log("companyTrade", companyTrade);
-            if(elem.marginDeduction){
-              let temp_otm_quantity = companyTrade.realQuantity
-              if(elem.transactionChange === "TRUE"){
-                // here trade gona buy hence otm will be sell side.
-
-                // agar kisi ek instrument ke 50 sell kiye then 50 otm buy
-                // another instrument ke bhi 50 sell kiye then 50 otm buy again
-                // now 1st wale ke 100 buy krta hu then this logic buy 50 + 50 otm
-                for( let subElem of otmData){
-                  if(subElem.runningLots){
-                    //console.log("temp_otm_quantity", temp_otm_quantity, Math.abs(subElem.runningLots))
-                    if(temp_otm_quantity > (subElem.runningLots)){
-                      otmDetailsForm.otm = subElem._id.otm;
-                      otmDetailsForm.otm_quantity = -(Math.abs(subElem.runningLots));
-                      otmDetailsForm.otm_token = subElem._id.otm_token;
-                      setOtmDetailsForm(otmDetailsForm)
-                      
-                      mockOtmTradeCompany(elem);
-                      temp_otm_quantity = temp_otm_quantity - Math.abs(subElem.runningLots)
-                      
-                    } else{
-                      otmDetailsForm.otm = subElem._id.otm;
-                      otmDetailsForm.otm_quantity = -(Math.abs(temp_otm_quantity));
-                      otmDetailsForm.otm_token = subElem._id.otm_token;
-                      setOtmDetailsForm(otmDetailsForm)
-                      
-                      mockOtmTradeCompany(elem);
-                      temp_otm_quantity = temp_otm_quantity - Math.abs(subElem.runningLots)
-                      break;
-                    }
-                  }
-                }
-              } else{
-                
-                  let particulerInstrument = tradeData.filter((elem)=>{
-                    return elem.instrumentToken === instrumentToken;
-                  }) 
-                  otmDetailsForm.otm = particulerInstrument[0].otm;
-                  otmDetailsForm.otm_quantity = -(companyTrade.realQuantity);
-                  otmDetailsForm.otm_token = particulerInstrument[0].otmToken;
-
-                  setOtmDetailsForm(otmDetailsForm)
-              }
-
-            }
-
-            //console.log("otmDetailsForm", otmDetailsForm)
-
-            //console.log("userPermission", userPermission)
-            userPermission.map((subElem)=>{
-              if(subElem.algoName === elem.algoName){
-                  if(subElem.isRealTradeEnable && subElem.isTradeEnable){
-                      sendOrderReq(elem, checkingMultipleAlgoFlag, apiKeyParticular, accessTokenParticular);
-                      checkingMultipleAlgoFlag += 1;
-                      tradeEnable = true;
-                  } else if(subElem.isTradeEnable){
-                      mockTradeCompany(elem, checkingMultipleAlgoFlag);
-                      checkingMultipleAlgoFlag += 1;
-                      tradeEnable = true;
-                  }
-              }
-          })
-
-          if(!tradeEnable){
-            console.log("tradeEnable", tradeEnable)
-            window.alert("Your trade is disable, please contact to authorise person");
-            return;
-          }
-
-        setModal(!modal);
-    })
-  }
 
   async function sellFunction(e, uId) {
       e.preventDefault()
@@ -410,71 +150,38 @@ useEffect(()=>{
       sellFormDetails.exchange = exchange;
       sellFormDetails.symbol = symbol
 
+      setsellFormDetails(sellFormDetails)
 
-      // Algo box applied here....
+      placeOrder();
 
-      if (userPermissionAlgo.length && !isCompany) {
-          setsellFormDetails(sellFormDetails)
-          tradingAlgo();
-      } else {
-          companyTrade.realBuyOrSell = "SELL";
-          companyTrade.realSymbol = sellFormDetails.symbol
-          companyTrade.realQuantity = sellFormDetails.Quantity;
-          
-          setCompanyTrade(companyTrade)
-          setsellFormDetails(sellFormDetails)
-
-          const fakeAlgo = {
-              algoName: "no algo",
-              transactionChange: "no algo",
-              instrumentChange: "no algo",
-              exchangeChange: "no algo",
-              lotMultipler: "no algo",
-              productChange: "no algo",
-              tradingAccount: "no algo"
-          }
-
-          if(isCompany){
-              mockTradeCompany(fakeAlgo);
-          } else{
-              window.alert("Your Trade is Disabled, contact authorize person")
-          }
-
-          // mockTradeCompany(fakeAlgo, "no");
-          setModal(!modal);
-      } 
-
-      // rerenderParentCallback();
       let id = setTimeout(()=>{
           reRender ? setReRender(false) : setReRender(true)
       }, 1000);
       
   }
 
-  async function sendOrderReq(algoBox, checkingMultipleAlgoFlag, apiKeyParticular, accessTokenParticular) {
+  async function placeOrder() {
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
-    const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
+    // const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
+    // const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
 
-    const { apiKey } = apiKeyParticular[0];
-    const { accessToken } = accessTokenParticular[0];
+    // const { apiKey } = apiKeyParticular[0];
+    // const { accessToken } = accessTokenParticular[0];
 
-    const res = await fetch(`${baseUrl}api/v1/placeorder`, {
+    const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
         method: "POST",
         headers: {
             "content-type": "application/json"
         },
         body: JSON.stringify({
             
-            apiKey, accessToken, userId,
-            exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
-            stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
-            algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken, real_instrument_token, 
-            checkingMultipleAlgoFlag, realSymbol
+          exchange, symbol, buyOrSell, Quantity, Price, 
+          Product, OrderType, TriggerPrice, stopLoss, uId,
+          validity, variety, createdBy, order_id:dummyOrderId,
+          userId, instrumentToken
 
         })
     });
@@ -501,74 +208,6 @@ useEffect(()=>{
     }
   }
 
-  async function mockTradeCompany(algoBox, checkingMultipleAlgoFlag){
-  
-  let date = new Date();
-  let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
-
-  const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-  const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
-  const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
-  const {otm, otm_quantity, otm_token} = otmDetailsForm;
-
-    const res = await fetch(`${baseUrl}api/v1/mocktradecompany`, {
-      method: "POST",
-      headers: {
-          "content-type": "application/json"
-      },
-      body: JSON.stringify({
-          exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
-          stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
-          algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-          productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id:dummyOrderId, instrumentToken, real_instrument_token,
-           otm, otm_quantity, otm_token, checkingMultipleAlgoFlag, realSymbol
-      })
-    });
-    const dataResp = await res.json();
-    console.log("dataResp", dataResp)
-    if (dataResp.status === 422 || dataResp.error || !dataResp) {
-        window.alert(dataResp.error);
-    } else {
-      console.log("dataResp", dataResp)
-
-        window.alert(dataResp.message);
-    }
-
-  
-  }
-
-  async function mockOtmTradeCompany(algoBox){
-    
-    let date = new Date();
-    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
-
-    const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount } = algoBox;
-    const { realBuyOrSell, realQuantity, real_instrument_token } = companyTrade;
-    const {otm, otm_quantity, otm_token} = otmDetailsForm;
-    console.log("otm, otm_quantity, otm_token", otm, otm_quantity, otm_token)
-
-      const res = await fetch(`${baseUrl}api/v1/mockOtmtradecompany`, {
-        method: "POST",
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({
-            exchange, symbol, buyOrSell, realBuyOrSell, Quantity, realQuantity, Price, Product, OrderType, TriggerPrice, 
-            stopLoss, validity, variety, createdBy, userId, createdOn, uId, 
-            algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-            productChange, tradingAccount}, order_id:dummyOrderId, instrumentToken, real_instrument_token, otm, otm_quantity, otm_token
-        })
-      });
-      const dataResp = await res.json();
-      if (dataResp.status === 422 || dataResp.error || !dataResp) {
-          window.alert(dataResp.error);
-      } else {
-          window.alert(dataResp.message);
-      }
-    
-  }
-  
 
   return (
     <div>
