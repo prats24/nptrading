@@ -48,8 +48,11 @@ import brandDark from "./assets/images/logo-ct-dark.png";
 import SignIn from "./layouts/authentication/sign-in"
 import NewMain from "./NewMain"
 import { userContext } from "./AuthContext";
+import Cookies from 'js-cookie';
+import homeRoutes from "./homeRoute";
 
 export default function App() {
+  const cookieValue = Cookies.get("jwt");
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -178,7 +181,9 @@ export default function App() {
           <CssBaseline />
           {layout === "companyposition" && (
             <>
-              <Sidenav
+              {
+                (getDetails.userDetails.role === "admin" || getDetails.userDetails.role === "user"|| getDetails.userDetails.role === "data") &&
+                <Sidenav
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
                 brandName="ninepointer"
@@ -190,11 +195,13 @@ export default function App() {
                 routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin")
                 ? routes : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
                 ? userRoutes : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
-                ? analyticsRoutes : analyticsRoutes
+                ? analyticsRoutes : homeRoutes
+                }
+                  onMouseEnter={handleOnMouseEnter}
+                  onMouseLeave={handleOnMouseLeave}
+                />
               }
-                onMouseEnter={handleOnMouseEnter}
-                onMouseLeave={handleOnMouseLeave}
-              />
+              
               <Configurator />
               {configsButton}
             </>
@@ -214,22 +221,22 @@ export default function App() {
         <CssBaseline />
         {layout === "dashboard" && (
           <>
+          {
+            (getDetails.userDetails.role === "admin" || getDetails.userDetails.role === "user"|| getDetails.userDetails.role === "data") &&
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="ninepointer"
-              // routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes : userRoutes }
-              // routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? 
-              //  routes : ((detailUser.role === "user" || getDetails.userDetails.role === "user") ? userRoutes 
-              // : (detailUser.role === "data" || getDetails.userDetails.role === "data") && analyticsRoutes)} 
               routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin")
                 ? routes : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
                 ? userRoutes : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
-                ? analyticsRoutes : analyticsRoutes
+                ? analyticsRoutes : homeRoutes
               }
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
+          }
+            
             <Configurator />
             {/* {configsButton} */}
           </>
@@ -240,12 +247,22 @@ export default function App() {
         {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") 
         ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
         ? getRoutes(userRoutes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
-        ? getRoutes(analyticsRoutes) : getRoutes(analyticsRoutes)
+        ? getRoutes(analyticsRoutes) : getRoutes(homeRoutes)
         }          
          {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
          {/* console.log(detailUser.role,getDetails.userDetails.role) */}
          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
+          {/* <Route path="*" element={<SignIn />} /> */}
+
+          {!cookieValue ? 
           <Route path="*" element={<SignIn />} />
+          :
+          !pathname || pathname === "/" ?
+          <Route path="*" element={<Navigate to="/Position" />} />
+          :
+          <Route path="*" element={<Navigate to={pathname} />} />
+          }
+
         </Routes>
       </ThemeProvider>
     

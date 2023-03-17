@@ -32,43 +32,86 @@ const MarginGrid = () => {
   const [payIn, setPayIn] = useState([]);
   const getDetails = useContext(userContext);
 
-  useEffect(()=>{
+  // useEffect(()=>{
 
+  //   let abortController;
+  //   (async () => {
+  //        abortController = new AbortController();
+  //        let signal = abortController.signal;    
+
+  //        // the signal is passed into the request(s) we want to abort using this controller
+  //        const { data1 } = await axios.get(
+  //         `${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`,
+  //            { signal: signal }
+  //        );
+  //        setMarginDetails(data1);
+
+  //        const { data2 } = await axios.get(
+  //         `${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`,
+  //            { signal: signal }
+  //        );
+         
+  //        setLifetimePNL(data2);
+
+  //        const { data3 } = await axios.get(
+  //         `${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`,
+  //           { signal: signal }
+  //        );
+  //        setAvailableMarginPNL(data3);
+
+  //        const { data4 } = await axios.get(
+  //         `${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`,
+  //            { signal: signal }
+  //        );
+  //        setPayIn(data4);
+
+  //   })();
+
+  //   return () => abortController.abort();
+
+  // },[netPnl,totalRunningLots])
+
+  useEffect(() => {
     let abortController;
     (async () => {
-         abortController = new AbortController();
-         let signal = abortController.signal;    
-
-         // the signal is passed into the request(s) we want to abort using this controller
-         const { data1 } = await axios.get(
-          `${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`,
-             { signal: signal }
-         );
-         setMarginDetails(data1);
-
-         const { data2 } = await axios.get(
-          `${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`,
-             { signal: signal }
-         );
-         setLifetimePNL(data2);
-
-         const { data3 } = await axios.get(
-          `${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`,
-            { signal: signal }
-         );
-         setAvailableMarginPNL(data3);
-
-         const { data4 } = await axios.get(
-          `${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`,
-             { signal: signal }
-         );
-         setPayIn(data4);
-
+      abortController = new AbortController();
+      let signal = abortController.signal;
+  
+      try {
+        const { data: data1 } = await axios.get(`${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`, {
+          signal: signal,
+        });
+        if (!signal.aborted) {
+          setMarginDetails(data1);
+        }
+  
+        const { data: data2 } = await axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`, {
+          signal: signal,
+        });
+        if (!signal.aborted) {
+          setLifetimePNL(data2);
+        }
+  
+        const { data: data3 } = await axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`, {
+          signal: signal,
+        });
+        if (!signal.aborted) {
+          setAvailableMarginPNL(data3);
+        }
+  
+        const { data: data4 } = await axios.get(`${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`, {
+          signal: signal,
+        });
+        if (!signal.aborted) {
+          setPayIn(data4);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     })();
-
+  
     return () => abortController.abort();
-
-  },[netPnl,totalRunningLots])
+  }, [netPnl, totalRunningLots]);
 
   let totalCredit = 0;
   marginDetails?.map((elem)=>{
@@ -82,13 +125,13 @@ const MarginGrid = () => {
   let runningPnl = Number(netPnl?.toFixed(0));
   let openingBalance = (totalCredit + lifetimenetpnl);
   let openingBalanceString = openingBalance >= 0 ? "₹" + Number(openingBalance).toLocaleString() : "₹" + (-Number(openingBalance)).toLocaleString()
-  let availableMarginpnl = availableMarginPNL[0] ? Number((availableMarginPNL[0]?.npnl).toFixed(0)) : 0;
+  let availableMarginpnl = availableMarginPNL[0] ? Number((availableMarginPNL[0].npnl).toFixed(0)) : 0;
   let availableMargin = (totalCredit + availableMarginpnl)
   let availableMarginpnlstring = availableMargin >= 0 ? "₹" + Number(availableMargin).toLocaleString() : "₹" + (-Number(availableMargin)).toLocaleString()
   rows.OpeningBalance = openingBalance
   let usedMargin = runninglotnumber == 0 ? openingBalance - availableMargin : openingBalance - availableMargin + runningPnl
   let usedMarginString = usedMargin >= 0 ? "+₹" + Number(usedMargin).toLocaleString() : "-₹" + (-Number(usedMargin)).toLocaleString()
-  let payInAmount = payIn[0] ? Number(payIn[0].totalCredit) : 0
+  let payInAmount = payIn && (payIn[0] ? Number(payIn[0].totalCredit) : 0)
   let payInString = payInAmount >= 0 ? "+₹" + Number(payInAmount).toLocaleString() : "-₹" + (-Number(payInAmount)).toLocaleString()
   
   
