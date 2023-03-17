@@ -9,8 +9,9 @@ const InstrumentMapping = require("../models/AlgoBox/instrumentMappingSchema");
 
 const ApplyAlgo = async (req, res, next)=>{
 
-    console.log(req.body, "in apply algo")
-    const {userId, symbol, instrumentToken, Quantity} = req.body;
+    // console.log(req.body, "in apply algo")
+    const {userId, symbol, instrumentToken, Quantity, buyOrSell} = req.body;
+
     let accessTokenDetails = await AccessToken.find({status: "Active"});
     let apiKeyDetails = await ApiKey.find({status: "Active"});
     let tradingAlgoData = await TradingAlgo.find({status: "Active"});
@@ -43,7 +44,7 @@ const ApplyAlgo = async (req, res, next)=>{
     function instrumentMappingFunc(){
         let flag = true;
         for(let i = 0; i < instrumentMapping.length; i++){
-          if(instrumentMapping[i].InstrumentNameIncoming === buyFormDetails.symbol){
+          if(instrumentMapping[i].InstrumentNameIncoming === symbol){
             companyTrade.realSymbol = instrumentMapping[i].InstrumentNameOutgoing;
             companyTrade.real_instrument_token = instrumentMapping[i].OutgoingInstrumentCode;
             flag = false;
@@ -60,9 +61,20 @@ const ApplyAlgo = async (req, res, next)=>{
         userPermissionAlgo.map((elem) => {
     
             if(elem.transactionChange === "TRUE") {
-                companyTrade.realBuyOrSell = "SELL"
+                if(buyOrSell === "BUY"){
+                    companyTrade.realBuyOrSell = "SELL"
+                }
+                else if(buyOrSell === "SELL"){
+                    companyTrade.realBuyOrSell = "BUY"
+                }
+                
             }else if(elem.transactionChange === "FALSE"){
-                companyTrade.realBuyOrSell = "BUY"
+                if(buyOrSell === "BUY"){
+                    companyTrade.realBuyOrSell = "BUY"
+                }
+                else if(buyOrSell === "SELL"){
+                    companyTrade.realBuyOrSell = "SELL"
+                }
             }else{
                 return;
             }
@@ -95,8 +107,8 @@ const ApplyAlgo = async (req, res, next)=>{
                         req.body.real_instrument_token = companyTrade.real_instrument_token;
                         req.body.realBuyOrSell = companyTrade.realBuyOrSell;
                         req.body.realQuantity = companyTrade.realQuantity;
-                        req.body.apiKey = companyTrade.apiKey;
-                        req.body.accessToken = companyTrade.accessToken;
+                        req.body.apiKey = apiKey;
+                        req.body.accessToken = accessToken;
                         req.body.algoBox = elem;
 
                     } else if(subElem.isTradeEnable){
