@@ -13,8 +13,8 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 import React from "react";
-import axios from "axios";
-import { useEffect, useState } from "react";
+// import axios from "axios";
+import {  useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";

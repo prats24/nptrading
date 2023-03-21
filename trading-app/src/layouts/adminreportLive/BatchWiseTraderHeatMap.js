@@ -1,28 +1,21 @@
-import React, { useRef } from "react";
-import jsPDF from "jspdf";
+import React from "react";
 import HeatMap from "react-heatmap-grid";
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
 import MDBox from "../../components/MDBox";
-import MDButton from "../../components/MDButton";
-import { Typography } from "@mui/material";
 import axios from "axios";
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import {useState, useContext, useEffect} from "react"
+import {useState, useEffect} from "react"
 
 function BatchWiseTradersHeatMap() {
 
 // Display only even labels
-let date = new Date();
+// let date = new Date();
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-let valueInDate2 = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
-let valueInDate1 = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
-const [firstDate, setFirstDate] = useState(valueInDate1);
-const [secondDate, setSecondDate] = useState(valueInDate2);
+// let valueInDate2 = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
+// let valueInDate1 = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
+// const [firstDate, setFirstDate] = useState(valueInDate1);
+// const [secondDate, setSecondDate] = useState(valueInDate2);
 const [batchData, setBatchData] = useState([]);
-const [udates, setUDates] = useState([]);
-let [overallPnl, setOverallPnl] = useState([]);
+// const [udates, setUDates] = useState([]);
+// let [overallPnl, setOverallPnl] = useState([]);
 
 
 useEffect(()=>{
@@ -76,24 +69,24 @@ useEffect(()=>{
 
 
 
-let pnldates = []
-udates.map((elem)=>{
-    const dateString = elem._id.date;
-    const date = new Date(dateString);
-    const options = { month: "short", day: "numeric" };
-    const formattedDate = date.toLocaleDateString("en-US", options);
-    console.log(formattedDate); // Output: "Jan 1"
-    pnldates.push([elem._id.date,formattedDate])
-})
-console.log(pnldates);
-let pnldata = []
-overallPnl.map((elem)=>{
-    pnldata.push([elem._id.date,elem.amount])
-})
-console.log(pnldata)
+// let pnldates = []
+// udates.map((elem)=>{
+//     const dateString = elem._id.date;
+//     const date = new Date(dateString);
+//     const options = { month: "short", day: "numeric" };
+//     const formattedDate = date.toLocaleDateString("en-US", options);
+//     console.log(formattedDate); // Output: "Jan 1"
+//     pnldates.push([elem._id.date,formattedDate])
+// })
+// console.log(pnldates);
+// let pnldata = []
+// overallPnl.map((elem)=>{
+//     pnldata.push([elem._id.date,elem.amount])
+// })
+// console.log(pnldata)
 
 
-let yLabels = uniqueBatches
+// let yLabels = uniqueBatches
 let xLabels = uniqueWeeks;
 
 let yLabelsTemp = new Set(batchData.map((obj) =>{

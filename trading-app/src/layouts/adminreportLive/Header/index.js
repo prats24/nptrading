@@ -25,8 +25,8 @@ import CompanyDailyPNLTWise from "../CompanyDailyPNLTWise";
 import MockCompanyPNL from "../LiveCompanyPNL"
 import TraderPNL from "../TraderPNLTWise";
 import TraderMatrix from "../TraderMatrix";
-import TraderHeatMap from "../TraderHeatMap";
-import TraderHeatMapWeekly from "../TraderHeatMapWeekly";
+// import TraderHeatMap from "../TraderHeatMap";
+// import TraderHeatMapWeekly from "../TraderHeatMapWeekly";
 import BatchWiseTradersHeatMap from "../BatchWiseTraderHeatMap";
 
 

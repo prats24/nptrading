@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 // @mui material components
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
@@ -25,8 +24,8 @@ import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart"
 import ComplexStatisticsCard from "../../examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-import reportsBarChartData from "./data/reportsBarChartData";
-import reportsLineChartData from "./data/reportsLineChartData";
+// import reportsBarChartData from "./data/reportsBarChartData";
+// import reportsLineChartData from "./data/reportsLineChartData";
 
 
 
@@ -35,8 +34,8 @@ import reportsLineChartData from "./data/reportsLineChartData";
 import Projects from "./components/Projects";
 
 function AdminDashboard() {
-  const { pnl, pnlpoints } = reportsLineChartData;
-  const {labels, datasets} = reportsBarChartData;
+  // const { pnl, pnlpoints } = reportsLineChartData;
+  // const {labels, datasets} = reportsBarChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
  
@@ -45,65 +44,65 @@ function AdminDashboard() {
     const [livebrokerage, setliveBrokeragearray] = useState([]);
     const [livepnldate, setlivePNLDatearray] = useState([]);
 
-    const [PNLData, setPNLData] = useState([]);
+    // const [PNLData, setPNLData] = useState([]);
     const [gpnl, setGpnlarray] = useState([]);
     const [npnl, setNpnlarray] = useState([]);
     const [brokerage, setBrokeragearray] = useState([]);
-    const [ThisWeekPNLData, setThisWeekPNLData] = useState([]);
+    // const [ThisWeekPNLData, setThisWeekPNLData] = useState([]);
     const [pnldate, setPNLDatearray] = useState([]);
     const [thisweekgpnl, setThisWeekGPNL] = useState([]);
     const [thisweekbrokerage, setThisWeekBrokerage] = useState([]);
     const [thisweektrades, setThisWeekTrades] = useState([]);
     const [thisweeknpnl, setThisWeekNPNL] = useState([]);
-    const [ThisMonthPNLData, setThisMonthPNLData] = useState([]);
+    // const [ThisMonthPNLData, setThisMonthPNLData] = useState([]);
     const [thismonthgpnl, setThisMonthGPNL] = useState([]);
     const [thismonthbrokerage, setThisMonthBrokerage] = useState([]);
     const [thismonthtrades, setThisMonthTrades] = useState([]);
     const [thismonthnpnl, setThisMonthNPNL] = useState([]);
-    const [ThisYearPNLData, setThisYearPNLData] = useState([]);
+    // const [ThisYearPNLData, setThisYearPNLData] = useState([]);
     const [thisyeargpnl, setThisYearGPNL] = useState([]);
     const [thisyearbrokerage, setThisYearBrokerage] = useState([]);
     const [thisyeartrades, setThisYearTrades] = useState([]);
     const [thisyearnpnl, setThisYearNPNL] = useState([]);
-    const [ThisYesterdayPNLData, setThisYesterdayPNLData] = useState([]);
+    // const [ThisYesterdayPNLData, setThisYesterdayPNLData] = useState([]);
     const [thisyesterdaygpnl, setThisYesterdayGPNL] = useState([]);
     const [thisyesterdaybrokerage, setThisYesterdayBrokerage] = useState([]);
     const [thisyesterdaytrades, setThisYesterdayTrades] = useState([]);
     const [thisyesterdaynpnl, setThisYesterdayNPNL] = useState([]);
-    const [ThisDayBeforeYesterdayPNLData, setThisDayBeforeYesterdayPNLData] = useState([]);
+    // const [ThisDayBeforeYesterdayPNLData, setThisDayBeforeYesterdayPNLData] = useState([]);
     const [thisDayBeforeyesterdaygpnl, setThisDayBeforeYesterdayGPNL] = useState([]);
     const [thisDayBeforeyesterdaybrokerage, setThisDayBeforeYesterdayBrokerage] = useState([]);
     const [thisDayBeforeyesterdaytrades, setThisDayBeforeYesterdayTrades] = useState([]);
     const [thisDayBeforeyesterdaynpnl, setThisDayBeforeYesterdayNPNL] = useState([]);
-    const [LastMonthPNLData, setLastMonthPNLData] = useState([]);
+    // const [LastMonthPNLData, setLastMonthPNLData] = useState([]);
     const [lastmonthgpnl, setLastMonthGPNL] = useState([]);
     const [lastmonthbrokerage, setLastMonthBrokerage] = useState([]);
     const [lastmonthtrades, setLastMonthTrades] = useState([]);
     const [lastmonthnpnl, setLastMonthNPNL] = useState([]);
-    const [LastYearPNLData, setLastYearPNLData] = useState([]);
+    // const [LastYearPNLData, setLastYearPNLData] = useState([]);
     const [lastyeargpnl, setLastYearGPNL] = useState([]);
     const [lastyearbrokerage, setLastYearBrokerage] = useState([]);
     const [lastyeartrades, setLastYearTrades] = useState([]);
     const [lastyearnpnl, setLastYearNPNL] = useState([]);
-    const [LastWeekPNLData, setLastWeekPNLData] = useState([]);
+    // const [LastWeekPNLData, setLastWeekPNLData] = useState([]);
     const [lastweekgpnl, setLastWeekGPNL] = useState([]);
     const [lastweekbrokerage, setLastWeekBrokerage] = useState([]);
     const [lastweektrades, setLastWeekTrades] = useState([]);
     const [lastweeknpnl, setLastWeekNPNL] = useState([]);
-    const [LastFiveTradesarr, setLastFiveTradesarr] = useState([]);
+    // const [LastFiveTradesarr, setLastFiveTradesarr] = useState([]);
     const [CreatedBy, setCreatedBy] = useState([]);
     const [Quantity, setQuantity] = useState([]);
     const [Type, setType] = useState([]);
     const [Symbol, setSymbol] = useState([]);
     const [TradeTime, setTradeTime] = useState([]);
-    const [monthPNLData, setMonthPNLData] = useState([]);
-    const [monthgpnl, setMonthGpnlarray] = useState([]);
+    // const [monthPNLData, setMonthPNLData] = useState([]);
+    // const [monthgpnl, setMonthGpnlarray] = useState([]);
     const [monthnpnl, setMonthNpnlarray] = useState([]);
-    const [monthbrokerage, setMonthBrokeragearray] = useState([]);
+    // const [monthbrokerage, setMonthBrokeragearray] = useState([]);
     const [monthpnldate, setMonthPNLDatearray] = useState([]);
-    const [livemonthgpnl, setliveMonthGpnlarray] = useState([]);
+    // const [livemonthgpnl, setliveMonthGpnlarray] = useState([]);
     const [livemonthnpnl, setliveMonthNpnlarray] = useState([]);
-    const [livemonthbrokerage, setliveMonthBrokeragearray] = useState([]);
+    // const [livemonthbrokerage, setliveMonthBrokeragearray] = useState([]);
     const [livemonthpnldate, setliveMonthPNLDatearray] = useState([]);
 
     
@@ -326,7 +325,7 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getpnlmocktradecompanylastfivedays`)
     .then((res)=>{
         //console.log("Last 5 days Chart Data: "+res.data);
-        setPNLData(res.data) 
+        // setPNLData(res.data) 
         for(let item of res.data)
         {
           setBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
@@ -340,7 +339,7 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getpnllivetradecompanylastfivedays`)
     .then((res)=>{
         //console.log("Last 5 days Chart Data Live: "+res.data);
-        setPNLData(res.data) 
+        // setPNLData(res.data) 
         for(let item of res.data)
         {
           setliveBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
@@ -357,7 +356,7 @@ useEffect(()=>{
       // setLastFiveTrades(res.data) 
       for(let item of res.data)
       {
-        setLastFiveTradesarr(res.data)
+        // setLastFiveTradesarr(res.data)
         setCreatedBy((prev)=>{return[...prev,(item.createdBy)]})
         setQuantity((prev)=>{return[...prev,item.Quantity]})
         setType((prev)=>{return[...prev,item.buyOrSell]})
@@ -369,12 +368,12 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getpnlmocktradecompanydailythismonth`)
     .then((res)=>{
         //console.log("This month Chart Data: "+res.data);
-        setMonthPNLData(res.data) 
+        // setMonthPNLData(res.data) 
         for(let item of res.data)
         {
-          setMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
+          // setMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
           setMonthPNLDatearray((prev)=>{return[...prev,item._id.date]})
-          setMonthGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
+          // setMonthGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
           setMonthNpnlarray((prev)=>{return[...prev,((-item.amount)-item.brokerage).toFixed(0)]})
           
         }
@@ -383,19 +382,19 @@ useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getpnllivetradecompanydailythismonth`)
     .then((res)=>{
         //console.log("This month Chart Data live: "+res.data);
-        setMonthPNLData(res.data) 
+        // setMonthPNLData(res.data) 
         for(let item of res.data)
         {
-          setliveMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
+          // setliveMonthBrokeragearray((prev)=>{return[...prev,(item.brokerage).toFixed(0)]})
           setliveMonthPNLDatearray((prev)=>{return[...prev,item._id.date]})
-          setliveMonthGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
+          // setliveMonthGpnlarray((prev)=>{return[...prev,(-item.amount).toFixed(0)]})
           setliveMonthNpnlarray((prev)=>{return[...prev,((-item.amount)-item.brokerage).toFixed(0)]})
           
         }
     })
 
 
-},[])
+  },[])
 
 let monthpnldatestring = []
 monthpnldate.map((elem)=>{
