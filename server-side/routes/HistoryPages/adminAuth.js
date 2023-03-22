@@ -8,13 +8,33 @@ const MockCompany = require("../../models/mock-trade/mockTradeCompanySchema");
 const RetreiveTrade = require("../../models/TradeDetails/retireivingTrade")
 const BrokerageDetail = require("../../models/Trading Account/brokerageSchema");
 const dbBackup = require("../../Backup/mongoDbBackUp")
+const newdbBackup = require("../../Backup/newBackup")
 
 
 router.get("/dbbackup", async (req, res)=>{
-  const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+  // const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority"
+  // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+  // const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+
+  // const targetUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+
+  const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority"
+  // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
   const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
 
   await dbBackup.backupDatabase(sourceUri, targetUri);
+
+})
+
+router.get("/dbCopyAndDelete", async (req, res)=>{
+
+  // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+
+  // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+  const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+
+  await newdbBackup.deleteDb(targetUri);
+  // await newdbBackup.copy(sourceUri, targetUri);
 
 })
 

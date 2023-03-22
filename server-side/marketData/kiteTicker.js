@@ -38,10 +38,10 @@ const unSubscribeTokens = async(token) => {
 
 const getTicks = (socket, tokens) => {
     ticker.on('ticks', (ticks) => {
-      if(ticks.length == tokens.length){
+      // if(ticks.length == tokens.length){
         // console.log('sending ticks', ticks);
         socket.emit('tick', ticks); 
-      }
+      // }
     });
 }
 

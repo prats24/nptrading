@@ -165,7 +165,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
         })
     }
 
-    function functionality(isRealTrade){
+    async function functionality(isRealTrade){
 
         patchReqForRealTradeSwitching(id, isRealTrade);
 
@@ -175,24 +175,66 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             //console.log("real trade", isRealTrade)
             changeAllUserRealTrade(false)
             isRealTrade = false;
-            axios.get(`${baseUrl}api/v1/getLiveTradeDetailsAllUser`)
-            .then((res) => {
-                takingTradeHelper(res.data, true)
-            }).catch((err)=>{
-                return new Error(err);
-            })
+            // axios.get(`${baseUrl}api/v1/getLiveTradeDetailsAllUser`)
+            // .then((res) => {
+            //     takingTradeHelper(res.data, true)
+            // }).catch((err)=>{
+            //     return new Error(err);
+            // })
             
         } else{
             //console.log("real trade", isRealTrade)
             changeAllUserRealTrade(true)
             isRealTrade = true;
-            axios.get(`${baseUrl}api/v1/getMockTradeDetailsAllUser`)
-            .then((res) => {
-                takingTradeHelper(res.data, false)
-            }).catch((err)=>{
-                return new Error(err);
-            })
+            // axios.get(`${baseUrl}api/v1/getMockTradeDetailsAllUser`)
+            // .then((res) => {
+            //     takingTradeHelper(res.data, false)
+            // }).catch((err)=>{
+            //     return new Error(err);
+            // })
         }
+
+
+        const res = await fetch(`${baseUrl}api/v1/swichingTrade`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                
+                isChecked: isRealTrade, tradingAlgo, fromAlgo: true, uId
+                // apiKey, accessToken, tradeBy,
+                // exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
+                // validity, variety, createdBy, userId, createdOn, uId, 
+                // algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
+                // productChange, tradingAccount, marginDeduction, isDefault, _id}, instrumentToken
+  
+            })
+        });
+        const dataResp = await res.json();
+        ////console.log("dataResp", dataResp)
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            ////console.log(dataResp.error)
+            window.alert(dataResp.error);
+            //////console.log("Failed to Trade");
+        } else {
+            if(dataResp.massage === "COMPLETE"){
+                //console.log(dataResp);
+                window.alert("Trade Succesfull Completed");
+            } else if(dataResp.massage === "REJECTED"){
+                //console.log(dataResp);
+                window.alert("Trade is Rejected due to Insufficient Fund");
+            } else if(dataResp.massage === "AMO REQ RECEIVED"){
+                //console.log(dataResp);
+                window.alert("AMO Request Recieved");
+            } else{
+                //console.log("this is dataResp", dataResp)
+                window.alert("on order placing nothing happen");
+            }
+        }
+
+
+
         
         
 

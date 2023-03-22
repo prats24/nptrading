@@ -67,7 +67,13 @@ function OverallGrid({socket, Render}) {
       // })
 
       socket.on("tick", (data) => {
-        setMarketData(data);
+        setMarketData(prevInstruments => {
+          const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+          data.forEach(instrument => {
+            instrumentMap.set(instrument.instrument_token, instrument);
+          });
+          return Array.from(instrumentMap.values());
+        });
       })
 
       return () => abortController.abort();

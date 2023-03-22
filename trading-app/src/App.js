@@ -2,16 +2,12 @@ import { useState, useEffect, useMemo, useContext } from "react";
 import axios from "axios"
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Icon from "@mui/material/Icon";
 import SettingsIcon from '@mui/icons-material/Settings';
-import CompanyAnalytics from "./layouts/analytics/companyPNLAnalytics1/companyAnalytics"
-import DashboardIcon from '@mui/icons-material/Dashboard';
-
 
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
@@ -69,13 +65,14 @@ export default function App() {
   // const [routes1, setRoutes] = useState();
   const [detailUser, setDetailUser] = useState({});
   const { pathname } = useLocation();
+  let noCookie = false;
 
   console.log("pathname", pathname)
 
   //get userdetail who is loggedin
   const setDetails = useContext(userContext);
   const getDetails = useContext(userContext);
-
+  const navigate = useNavigate();
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   
   useEffect(()=>{
@@ -94,7 +91,9 @@ export default function App() {
   
         }).catch((err)=>{
           console.log("Fail to fetch data of user");
+          noCookie = true;
           console.log(err);
+          navigate("/");
         })
                 
   }, [])
@@ -256,7 +255,7 @@ export default function App() {
          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
           {/* <Route path="*" element={<SignIn />} /> */}
 
-          {!cookieValue ? 
+          {!cookieValue  ? 
           <Route path="/" element={<SignIn />} />
           :
           pathname == "/" || !pathname ?

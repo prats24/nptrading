@@ -18,225 +18,51 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
     const [reRender, setReRender] = useState(true);
     const [realTradeState, setRealTradeState] = useState(true);
     const [liveTradeDetail, setLiveTradeDetail] = useState([]);
-    const [changeTrade, setChangeTrade] = useState(isRealTradeEnable)
+    const [isChecked, setIsChecked] = useState(isRealTradeEnable)
 
     let date = new Date();
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const uId = uniqid();
-    const createdBy = "System";
+    const tradeBy = "System";
     let modifiedOn = createdOn;
     let modifiedBy = "System";
     let checkingMultipleAlgoFlag = 1;
 
-
-
-
-    useEffect(()=>{
-
-        axios.get(`${baseUrl}api/v1/getMockTradeDetailsUser/${userId}`)
-        .then((res)=>{
-            setTradeDetail(res.data)
-            console.log(res.data);
-        }).catch((err)=>{
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/getLiveTradeDetailsUser/${userId}`)
-        .then((res)=>{
-            setLiveTradeDetail(res.data)
-            console.log(res.data);
-        }).catch((err)=>{
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readtradingAlgo`)
-        .then((res)=>{
-            let dataArr = (res.data).filter((elem) => {
-                return elem.status === "Active"
-            })
-            setAlgoUsed(dataArr)
-            console.log(res.data);
-        }).catch((err)=>{
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readRequestToken`)
-        .then((res) => {
-            let activeAccessToken = (res.data).filter((elem) => {
-                return elem.status === "Active"
-            })
-            setAccessToken(activeAccessToken);
-        }).catch((err) => {
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readAccountDetails`)
-        .then((res) => {
-            let activeApiKey = (res.data).filter((elem) => {
-                return elem.status === "Active"
-            })
-            setApiKey(activeApiKey);
-        }).catch((err) => {
-
-            return new Error(err);
-        })
-
-    }, [realTradeState])
-
-    useEffect(()=>{
-        axios.get(`${baseUrl}api/v1/readpermissionbyemail/${userId}`)
-        .then((res)=>{
-            setPermissionDetail(res.data)
-            setRealTradeState(res.data.isRealTradeEnable)
-            // setRender(res.data.isRealTradeEnable)
-            console.log("tradeDetailReal", res.data);
-        }).catch((err)=>{
-            return new Error(err);
-        })
-        // reRender? setReRender(false) : setReRender(true)
-    }, [])
-
-
     console.log("rendering", userId)
 
-    const switchButtonFunc = (checkRealTrade)=>{
+    const switchButtonFunc = async (checkRealTrade)=>{
         console.log("checkRealTrade", checkRealTrade)
 
-        if(!checkRealTrade){
-            console.log("squaring off not")
-            axios.get(`${baseUrl}api/v1/getMockTradeDetailsUser/${userId}`)
-            .then((res)=>{
-                setTradeDetail(res.data)
-                console.log(res.data);
-            }).catch((err)=>{
-                return new Error(err);
+        const res = await fetch(`${baseUrl}api/v1/swichingTrade`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({
+                userId, isChecked, uId
             })
-
-                for(let i = 0; i < tradeDetail.length; i++){
-                    let usedAlgoBox = algoUsed.filter((elem)=>{
-                        return elem.algoName === tradeDetail[i]._id.algoBoxName;
-                    })
-        
-                    let apiKeyArr = apiKeyDetails.filter((elem)=>{
-                        return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                        
-                    })
-        
-                    let accessTokenArr = accessTokenDetails.filter((elem)=>{
-                        return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                        
-                    })
-        
-                    let transaction_type = tradeDetail[i].lots > 0 ? "BUY" : "SELL";
-                    let quantity = Math.abs(tradeDetail[i].lots);
-        
-                    let detailObj = {
-                        symbol: tradeDetail[i]._id.symbol,
-                        Product: tradeDetail[i]._id.product,
-                        instrumentToken: tradeDetail[i]._id.instrumentToken,
-                        exchange: tradeDetail[i]._id.exchange,
-                        validity: tradeDetail[i]._id.validity,
-                        OrderType: tradeDetail[i]._id.order_type,
-                        variety: tradeDetail[i]._id.variety,
-                        buyOrSell: transaction_type,
-                        // Quantity: quantity,
-                        tradeBy: tradeDetail[i]._id.name
-                    }
-    
-                    let interval = setInterval(() => {
-                        if (quantity > 1800) {
-                            // console.log("quantity", 1800, (new Date()).getMilliseconds())
-                          placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, 1800);
-                          quantity = quantity - 1800;
-                        } else {
-                            console.log("quantity", quantity, (new Date()).getMilliseconds())
-                            if(quantity>0){
-                                placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, transaction_type, quantity);
-                            } else{
-                                window.alert(`Quantity is 0 ${tradeDetail[i]._id.name}`)
-                            }
-                            clearInterval(interval);
-                        }
-                      }, 300);
-    
-                    //   changeIsRealTrade(true)
-    
-                }
-
-
-
-        } else{
-
-            
-
-        axios.get(`${baseUrl}api/v1/getLiveTradeDetailsUser/${userId}`)
-        .then((res)=>{
-            setLiveTradeDetail(res.data)
-            console.log(res.data);
-
-        }).catch((err)=>{
-            return new Error(err);
-        })
-
-        console.log("squaring off", liveTradeDetail)
-
-            for(let i = 0; i < (liveTradeDetail).length; i++){
-                console.log("squaring off",liveTradeDetail[i])
-                let usedAlgoBox = algoUsed.filter((elem)=>{
-                    return elem.algoName === (liveTradeDetail)[i]._id.algoBoxName;
-                })
-    
-                let apiKeyArr = apiKeyDetails.filter((elem)=>{
-                    return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                    
-                })
-    
-                let accessTokenArr = accessTokenDetails.filter((elem)=>{
-                    return elem.accountId == usedAlgoBox[0]?.tradingAccount
-                    
-                })
-    
-                let transaction_type = (liveTradeDetail)[i].lots > 0 ? "BUY" : "SELL";
-                let quantity = Math.abs((liveTradeDetail)[i].lots);
-    
-                let detailObj = {
-                    symbol: (liveTradeDetail)[i]._id.symbol,
-                    Product: (liveTradeDetail)[i]._id.product,
-                    instrumentToken: (liveTradeDetail)[i]._id.instrumentToken,
-                    exchange: (liveTradeDetail)[i]._id.exchange,
-                    validity: (liveTradeDetail)[i]._id.validity,
-                    OrderType: (liveTradeDetail)[i]._id.order_type,
-                    variety: (liveTradeDetail)[i]._id.variety,
-                    buyOrSell: transaction_type,
-                    // Quantity: quantity,
-                    tradeBy: (liveTradeDetail)[i]._id.name
-                }
-
-                let new_transaction_type = (transaction_type === "SELL") ? "BUY" : "SELL";
-
-                let interval = setInterval(() => {
-                    if (quantity > 1800) {
-                        // console.log("quantity", 1800, (new Date()).getMilliseconds())
-                      placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, 1800);
-                      quantity = quantity - 1800;
-                    } else {
-                        // console.log("quantity", quantity, (new Date()).getMilliseconds())
-                        if(quantity>0){
-                            placeLiveOrder(usedAlgoBox[0], detailObj, apiKeyArr, accessTokenArr, new_transaction_type, quantity);
-                        } else{
-                            window.alert(`Quantity is 0 ${liveTradeDetail[i]._id.name}`)
-                        }
-                      clearInterval(interval);
-                    }
-                  }, 300);
-
-                //   changeIsRealTrade(false)
+        });
+        const dataResp = await res.json();
+        // console.log("dataResp", dataResp)
+        if (dataResp.status === 422 || dataResp.error || !dataResp) {
+            //console.log(dataResp.error)
+            window.alert(dataResp.error);
+            ////console.log("Failed to Trade");
+        } else {
+            if(dataResp.massage === "COMPLETE"){
+                console.log(dataResp);
+                window.alert("Trade Succesfull Completed");
+            } else if(dataResp.massage === "REJECTED"){
+                console.log(dataResp);
+                window.alert("Trade is Rejected due to Insufficient Fund");
+            } else if(dataResp.massage === "AMO REQ RECEIVED"){
+                console.log(dataResp);
+                window.alert("AMO Request Recieved");
+            } else{
+                console.log("this is dataResp", dataResp)
+                window.alert(dataResp.message);
             }
-
-
-
-            
         }
 
 
@@ -268,11 +94,11 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
             },
             body: JSON.stringify({
                 
-                apiKey, accessToken, tradeBy: createdBy,
-                exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
-                validity, variety, createdBy: tradeBy, userId, createdOn, uId, 
-                algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
-                productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken, checkingMultipleAlgoFlag
+                // apiKey, accessToken, tradeBy: createdBy,
+                // exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
+                // validity, variety, createdBy: tradeBy, userId, createdOn, uId, 
+                // algoBox: {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
+                // productChange, tradingAccount, _id, marginDeduction, isDefault}, instrumentToken, checkingMultipleAlgoFlag
   
             })
         });
@@ -323,7 +149,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
         // setTimeout(()=>{
         //     reRender? setReRender(false) : setReRender(true)
         // }, 1000) checked={render}
-        setChangeTrade(realTrade)
+        setIsChecked(realTrade)
     
     }
 
@@ -344,7 +170,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
     //         // real = (elem.isRealTradeEnable);
     //         return(
             <MDBox mt={0.5}>
-            <Switch  checked={changeTrade}   onChange={() => {switchButtonFunc(changeTrade)}} />
+            <Switch  checked={isChecked}   onChange={() => {switchButtonFunc(isChecked)}} />
             </MDBox>
     //         )
     //     }

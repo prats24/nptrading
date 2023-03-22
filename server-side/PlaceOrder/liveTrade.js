@@ -18,8 +18,15 @@ exports.liveTrade = async (reqBody, res) => {
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,trader,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-         accessToken, userId, real_instrument_token, realSymbol} = reqBody
+         accessToken, userId, real_instrument_token, realSymbol, switching, dontSendResp, tradeBy} = reqBody
 
+         console.log(reqBody)
+
+         if(switching){
+            tradeBy = "System"
+         } else{
+            tradeBy = createdBy
+         }
 
     const {algoName, transactionChange, instrumentChange
        , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
@@ -284,17 +291,19 @@ exports.liveTrade = async (reqBody, res) => {
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                         lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
                         brokerage: brokerageCompany,
-                        tradeBy: createdBy,trader: trader, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: tradeBy,trader: trader, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
     
             
                     });
-                    // console.log("this is REAL CompanyTradeData", companyTradeData);
+                    console.log("this is REAL CompanyTradeData", companyTradeData);
                     companyTradeData.save().then(()=>{
-                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                    }).catch((err)=> {
+                        console.log(err, "fail in company live")
+                        res.status(500).json({error:"Failed to Trade company side"})
+                    });
                 }).catch(err => {console.log( err,"fail company live data saving")});
     
-                // if(checkingMultipleAlgoFlag === 1){
                     UserTradeData.findOne({order_id : order_id})
                     .then((dataExist)=>{
                         if(dataExist){
@@ -317,56 +326,55 @@ exports.liveTrade = async (reqBody, res) => {
                             Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                             variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                             order_id, instrumentToken, brokerage: brokerageUser,
-                            tradeBy: createdBy, trader: trader, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
                             
         
                         });
-                        // console.log("this is REALuserTradeData", userTradeData);
+                        console.log("this is REALuserTradeData", userTradeData);
                         userTradeData.save().then(()=>{
                         }).catch((err)=> {
-                            console.log("fail in user live")
+                            console.log(err, "fail in user live")
                             res.status(500).json({error:"Failed to Trade company side"})
                         });
                     }).catch(err => {console.log(err, "fail trader live data saving")});
-                // }
     
-                MockTradeCompany.findOne({order_id : order_id})
-                .then((dataExist)=>{
-                    if(dataExist && dataExist.order_timestamp !== new_order_timestamp ){
-                        // console.log("data already in mock company");
-                        return res.status(422).json({error : "date already exist..."})
-                    }
-                    const tempDate = new Date();
-                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                    function addMinutes(date, hours) {
-                      date.setMinutes(date.getMinutes() + hours);
-                      return date;
-                     }
-                    const date = new Date(temp_order_save_time);
-                    const newDate = addMinutes(date, 330);
-                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
-             
-                    const mockTradeDetails = new MockTradeCompany({
+                if(!switching){
+                    MockTradeCompany.findOne({order_id : order_id})
+                    .then((dataExist)=>{
+                        if(dataExist && dataExist.order_timestamp !== new_order_timestamp ){
+                            // console.log("data already in mock company");
+                            return res.status(422).json({error : "date already exist..."})
+                        }
+                        const tempDate = new Date();
+                        let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                        function addMinutes(date, hours) {
+                        date.setMinutes(date.getMinutes() + hours);
+                        return date;
+                        }
+                        const date = new Date(temp_order_save_time);
+                        const newDate = addMinutes(date, 330);
+                        const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                
+                        const mockTradeDetails = new MockTradeCompany({
+        
+                            status, uId, createdBy, average_price, Quantity: quantity, 
+                            Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
+                            variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
+                            algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+                            lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
+                            brokerage: brokerageCompany,
+                            tradeBy: createdBy, trader: trader, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                            order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
+        
+                        });
+                
+                        // console.log("mockTradeDetails comapny", mockTradeDetails);
+                        mockTradeDetails.save().then(()=>{
+                            // res.status(201).json({massage : "data enter succesfully"});
+                        }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
+                    }).catch(err => {console.log(err, "fail company mock in placeorder")});
     
-                        status, uId, createdBy, average_price, Quantity: quantity, 
-                        Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
-                        variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
-                        algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
-                        brokerage: brokerageCompany,
-                        tradeBy: createdBy, trader: trader, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
-    
-                    });
-            
-                    // console.log("mockTradeDetails comapny", mockTradeDetails);
-                    mockTradeDetails.save().then(()=>{
-                        // res.status(201).json({massage : "data enter succesfully"});
-                    }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-                }).catch(err => {console.log(err, "fail company mock in placeorder")});
-    
-                // if(checkingMultipleAlgoFlag === 1){
                     MockTradeUser.findOne({order_id : order_id})
                     .then((dataExist)=>{
                         if(dataExist){
@@ -402,11 +410,10 @@ exports.liveTrade = async (reqBody, res) => {
                         });
                 
                     }).catch(err => {console.log(err, "fail company mock in placeorder")});
-                // }
-    
-    
+                }
+    // dontSendResp = false then resopse will sent
                 setTimeout(()=>{
-                    if(!isMissed){
+                    if(!isMissed && !dontSendResp){
                         return res.status(201).json({massage : responseMsg, err: responseErr})
                     }
                 },0)
