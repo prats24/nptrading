@@ -1,33 +1,15 @@
 import {useState, useEffect} from "react"
 import axios from "axios";
-// @mui material components
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-// import MDButton from '../../../components/MDButton';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import { Box, Typography } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-// import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
@@ -46,16 +28,11 @@ function LiveViewTradeDetail({userId, socket}) {
 const [open, setOpen] = useState(false);
 const theme = useTheme();
 const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-const [menu, setMenu] = useState(null);
-
-const closeMenu = () => setMenu(null);
 
 
-const [regularSwitch, setRegularSwitch] = useState(true);
+
 const handleClickOpen = () => {
-
   setOpen(true);
-
 }; 
 
 const handleClose = (e) => {
@@ -250,31 +227,6 @@ let totalRunningLots = 0;
 
   rows.push(obj);
 
-
-
-const renderMenu = (
-  <Menu
-    id="simple-menu"
-    anchorEl={menu}
-    anchorOrigin={{
-      vertical: "top",
-      horizontal: "left",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "right",
-    }}
-    open={Boolean(menu)}
-    onClose={closeMenu}
-  >
-    <MenuItem onClick={closeMenu}>Action</MenuItem>
-    <MenuItem onClick={closeMenu}>Another action</MenuItem>
-    <MenuItem onClick={closeMenu}>Something else</MenuItem>
-  </Menu>
-);
-
-
-console.log("mock live view", rows)
 
 return (
 <div>

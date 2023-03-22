@@ -2,7 +2,6 @@ import { useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -24,7 +23,7 @@ function MismatchDetails({socket}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const { columns, rows, MismatchData } = data();
+  const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [OpenPositionData, setOpenPositionData] = useState([]);
@@ -162,8 +161,6 @@ function MismatchDetails({socket}) {
   let obj = {};
 
   const zerodhaplusapplotsbgcolor = appAndZerodhaSameSymbolRunningLotTotal  == apprunninglotsTotal ? "#e0e1e5" : "#ffff00"
-  const appAndZerodhaSameSymbolRunningLotTotalcolor = appAndZerodhaSameSymbolRunningLotTotal >= 0 ? "info" : "error"
-  const apprunninglotsTotalcolor = apprunninglotsTotal >= 0 ? "info" : "error"
   const otmgrosspnlcolor = (zerodhaPnlTotal-appPnlTotal) >= 0 ? "success" : "error"
   const appPnlTotalcolor = appPnlTotal >= 0 ? "success" : "error"
   const zerodhaPnlTotalcolor = zerodhaPnlTotal >= 0 ? "success" : "error"
@@ -209,29 +206,8 @@ function MismatchDetails({socket}) {
 
   
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
 
   return (
     <Card>
@@ -254,12 +230,9 @@ function MismatchDetails({socket}) {
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
-          {/* <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon> */}
+
           Available Margin: 
         </MDBox>
-        {/* {renderMenu} */}
       </MDBox>
       <MDBox>
         <DataTable

@@ -8,16 +8,10 @@ import Card from "@mui/material/Card";
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
-// Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
-import Header from "./Header";
 import TextField from '@mui/material/TextField';
 import { Typography } from "@mui/material";
 import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
 
 // Data
 import MockTraderPNLTWiseData from "./data/MockTraderPNLTWiseData";
@@ -33,16 +27,13 @@ const TableFour = () => {
     let valueInStartDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     const [firstDate, setFirstDate] = useState(valueInStartDate);
     const [secondDate, setSecondDate] = useState(valueInDate);
-    let [totalPnl, setPnl] = useState(0);
-    let [totalnPnl, setnPnl] = useState(0);
-    let [totalTransactionCost, setCost] = useState(0);
-    let [totalTrade, setTrade] = useState(0);
-    let [totalTradingDays, setTradingDay] = useState(0);
-    let [totalPositiveTrader, setTotalPositiveTrader] = useState(0);
-    let [totalNegativeTrader, setNegativeTrader] = useState(0);
-    let [overallPnl, setOverallPnl] = useState([]);
-    //console.log("Dates: "+firstDate,secondDate)
-    //console.log(`${baseUrl}api/v1/traderwisetraderpnlreport/${firstDate}/${secondDate}`)
+    let totalPnl = 0;
+    let totalnPnl = 0;
+    let totalTransactionCost = 0;
+    let totalTrade = 0;
+    let totalTradingDays = 0;
+    let totalPositiveTrader = 0;
+    let totalNegativeTrader = 0;
    
     useEffect(()=>{
         //console.log(`${baseUrl}api/v1/traderwisetraderpnlreport/${firstDate}/${secondDate}`)
@@ -58,7 +49,7 @@ const TableFour = () => {
   
     
 
-    function startDate(e){
+      function startDate(e){
         e.preventDefault();
         if(e.target.value > secondDate){
           window.alert("Please select a valid range");
@@ -79,8 +70,6 @@ const TableFour = () => {
     
     let tradername = [];
     let tradernpnl = [];
-    let traderpnl = [];
-    //console.log(traderpnldata);
     traderpnldata?.map((elem)=>{
     let tpnl = {}
     tradername.push(elem._id);
@@ -100,7 +89,6 @@ const TableFour = () => {
     const gpnlcolor = (elem.gpnl) >= 0 ? "success" : "error"
     //const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
     const npnlcolor = (elem.npnl) >= 0 ? "success" : "error"
-    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][elem.dayOfWeek-1];
 
     tpnl.trader = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -127,10 +115,7 @@ const TableFour = () => {
         {elem.trades}
       </MDTypography>
     );
-    //console.log(typeof(tpnl));
-    //console.log(tpnl)
-    //companypnl.push(cpnl)
-    //console.log(traderpnl)
+
     rows.push(tpnl)
 
     })

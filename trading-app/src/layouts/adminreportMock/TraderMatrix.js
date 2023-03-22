@@ -29,19 +29,16 @@ const TableThree = () => {
     let valueInStartDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     const [firstDate, setFirstDate] = useState(valueInStartDate);
     const [secondDate, setSecondDate] = useState(valueInDate);
-    let [totalPnl, setPnl] = useState(0);
-    let [totalnPnl, setnPnl] = useState(0);
-    let [totalTransactionCost, setCost] = useState(0);
-    let [totalTrade, setTrade] = useState(0);
-    let [totalTradingDays, setTradingDay] = useState(0);
-    let [totalPositiveTrader, setTotalPositiveTrader] = useState(0);
-    let [totalNegativeTrader, setNegativeTrader] = useState(0);
-    let [totalPositivePnl, setTotalPositivePnl] = useState(0);
-    let [totalNegativePnl, setNegativePnl] = useState(0);
-    let [overallPnl, setOverallPnl] = useState([]);
-    //console.log("Dates: "+firstDate,secondDate)
-    //console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
-   
+    let totalPnl = 0;
+    let totalnPnl = 0;
+    let totalTransactionCost = 0;
+    let totalTrade = 0;
+    let totalTradingDays = 0;
+    let totalPositiveTrader = 0;
+    let totalNegativeTrader = 0;
+    let totalPositivePnl = 0;
+    let totalNegativePnl = 0;
+  
     useEffect(()=>{
         //console.log(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
         axios.get(`${baseUrl}api/v1/tradermatrixpnlreport/${firstDate}/${secondDate}`)
@@ -56,7 +53,7 @@ const TableThree = () => {
   
     
 
-    function startDate(e){
+      function startDate(e){
         e.preventDefault();
         if(e.target.value > secondDate){
           window.alert("Please select a valid range");
@@ -77,7 +74,6 @@ const TableThree = () => {
     
     let tradername = [];
     let tradernpnl = [];
-    let traderpnl = [];
     let tradermatrix = [];
     let createdBy = '';
     //console.log(traderpnldata);
@@ -128,7 +124,6 @@ const TableThree = () => {
       pnlmatrixArr.push(value);
     }
 
-    //console.log("PNL Matrix Array: "+pnlmatrixArr[0]);
 
 
     //Code Ends
@@ -173,7 +168,6 @@ const TableThree = () => {
     }
     const npnlcolor = (elem.LifetimeNPnl) >= 0 ? "success" : "error"
     const gpnlcolor = (elem.LifetimeGPnl) >= 0 ? "success" : "error"
-    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][elem.dayOfWeek-1];
     let ratio = 0;
     let averagereddaysgpnl = elem.RedDays != 0 ? elem.NegativePnl/elem.RedDays : 0
     let averagegreendaysgpnl = elem.GreenDays != 0 ? elem.PositivePnl/elem.GreenDays : 0
@@ -262,10 +256,7 @@ const TableThree = () => {
         {averagereddaysgpnl >= 0 ? "+₹" + averagereddaysgpnl.toFixed(0) : "-₹" + (-averagereddaysgpnl).toFixed(0)}
       </MDTypography>
     );
-    //console.log(typeof(tpnl));
-    //console.log(tpnl)
-    //companypnl.push(cpnl)
-    //console.log(traderpnl)
+
     rows.push(tpnl)
 
     })

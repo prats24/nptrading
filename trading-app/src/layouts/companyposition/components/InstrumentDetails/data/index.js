@@ -1,27 +1,15 @@
 
 // @mui material components
-import Tooltip from "@mui/material/Tooltip";
-import MDBox from "../../../../../components/MDBox";
-import MDButton from "../../../../../components/MDButton";
 import MDTypography from "../../../../../components/MDTypography";
-import MDAvatar from "../../../../../components/MDAvatar";
-import MDProgress from "../../../../../components/MDProgress";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import BuyModel from "./BuyModel";
-import SellModel from "./SellModel";
 
 export default function Data() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [instrumentData, setInstrumentData] = useState([]);
-  const [marketData, setMarketData] = useState([]);
-  const [livedata, setLiveData] = useState([]);
-  let date = new Date();
-  let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-
 
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/readInstrumentDetails`)

@@ -1,33 +1,16 @@
 import {useState, useEffect} from "react"
 import axios from "axios";
 // @mui material components
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
-import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
 // import MDButton from '../../../components/MDButton';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import { Box, Typography } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-// import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
 import ViewOrders from '@mui/icons-material/ViewList';
 
 // Material Dashboard 2 React examples
@@ -36,23 +19,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import LiveViewTradeDetailData from "./data/LiveTraderwiseOrdersData";
 
- 
-// Data
-// import data from "./data";
-
-
 function TraderOrders({userId}) {
   const {columns, rows} = LiveViewTradeDetailData();
 
 const [open, setOpen] = useState(false);
 const theme = useTheme();
 const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-const [menu, setMenu] = useState(null);
 
-const closeMenu = () => setMenu(null);
-
-
-const [regularSwitch, setRegularSwitch] = useState(true);
 const handleClickOpen = () => {
 
   setOpen(true);
@@ -67,12 +40,7 @@ const handleClose = (e) => {
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 const [orderData, setOrderData] = useState([]);
-const [tradeData, setTradeData] = useState([]);
 
-let liveDetailsArr = [];
-let totalTransactionCost = 0;
-let totalGrossPnl = 0;
-let totalRunningLots = 0;
 
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getusertrades/${userId}`)
@@ -87,10 +55,9 @@ let totalRunningLots = 0;
   }, [open])
 
   console.log("orderData", orderData)
-  orderData.map((elem,index)=>{
+  orderData.map((elem)=>{
     let obj = {};
 
-    const typecolor = elem.buyOrSell == "BUY" ? "info" : "error"
     const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
     const quantitycolor = elem.Quantity > 0 ? "info" : "error"
     const productcolor = elem.Product == "MIS" ? "warning" : "info"

@@ -1,15 +1,12 @@
-import React, { useRef } from "react";
-import jsPDF from "jspdf";
+import React from "react";
 import HeatMap from "react-heatmap-grid";
 import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
 import MDBox from "../../components/MDBox";
 import MDButton from "../../components/MDButton";
 import { Typography } from "@mui/material";
 import axios from "axios";
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import {useState, useContext, useEffect} from "react"
+import {useState, useEffect} from "react"
 
 function TradersHeatMap() {
 
