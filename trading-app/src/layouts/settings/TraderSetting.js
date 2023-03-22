@@ -40,7 +40,7 @@ export default function TraderSetting({userId, isRealTradeEnable}) {
                 "content-type": "application/json"
             },
             body: JSON.stringify({
-                userId, isChecked
+                userId, isChecked, uId
             })
         });
         const dataResp = await res.json();

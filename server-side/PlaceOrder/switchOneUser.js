@@ -1,22 +1,16 @@
 const axios = require("axios")
-// const getOrderData = require("./retrieveOrder");
-// const BrokerageDetail = require("../models/Trading Account/brokerageSchema");
 const CompanyTradeData = require("../models/TradeDetails/liveTradeSchema");
-// const TradeData = require("../models/TradeDetails/allTradeSchema"); 
-// const UserTradeData = require("../models/TradeDetails/liveTradeUserSchema")
 const MockTradeCompany = require("../models/mock-trade/mockTradeCompanySchema")
-// const MockTradeUser = require("../models/mock-trade/mockTradeUserSchema");
-// const RetreiveOrder = require("../models/TradeDetails/retreiveOrder");
 const TradingAlgo = require("../models/AlgoBox/tradingAlgoSchema");
 const AccessToken = require("../models/Trading Account/requestTokenSchema");
 const ApiKey = require("../models/Trading Account/accountSchema");
-// const UserPermission = require("../models/User/permissionSchema");
 const liveTrade = require("./liveTrade");
 
 
 exports.switchAlgoCheck = async (reqBody, res) => {
 
-    const {userId, isChecked} = reqBody
+    const {userId, isChecked, uId} = reqBody
+    console.log("isChecked in oneUser", isChecked)
     let date = new Date();
     let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
@@ -48,6 +42,11 @@ exports.switchAlgoCheck = async (reqBody, res) => {
                 $toInt: "$Quantity",
               }
             }
+          }
+        },
+        {
+          $match: {
+            lots: { $ne: 0 }
           }
         }
     ])
@@ -81,6 +80,11 @@ exports.switchAlgoCheck = async (reqBody, res) => {
               }
             }
           }
+        },
+        {
+          $match: {
+            lots: { $ne: 0 }
+          }
         }
     ])
 
@@ -98,7 +102,7 @@ exports.switchAlgoCheck = async (reqBody, res) => {
 
 
     function takeTrade(tradeDetailArr){
-        let sendSingleResp = true;
+        // let dontSendResp = true;
         for(let i = 0; i < tradeDetailArr.length; i++){
             let usedAlgoBox = tradingAlgoData.filter((elem)=>{
                 return elem.algoName === tradeDetailArr[i]._id.algoBoxName;
@@ -118,11 +122,20 @@ exports.switchAlgoCheck = async (reqBody, res) => {
             let quantity = Math.abs(tradeDetailArr[i].lots);
 
             let realBuyOrSell, buyOrSell;
-            if(transaction_type === "BUY"){
+            if(isChecked){
+              if(transaction_type === "BUY"){
                 realBuyOrSell = "SELL";
+              } else{
+                  realBuyOrSell = "BUY";
+              }
             } else{
+              if(transaction_type === "BUY"){
                 realBuyOrSell = "BUY";
+              } else{
+                  realBuyOrSell = "SELL";
+              }
             }
+
 
             if(usedAlgoBox[0].transactionChange === "TRUE"){
                 if(realBuyOrSell === "BUY"){
@@ -140,8 +153,10 @@ exports.switchAlgoCheck = async (reqBody, res) => {
 
             let detailObj = {
                 realSymbol: tradeDetailArr[i]._id.symbol,
+                symbol: tradeDetailArr[i]._id.symbol,
                 Product: tradeDetailArr[i]._id.product,
                 instrumentToken: tradeDetailArr[i]._id.instrumentToken,
+                real_instrument_token: tradeDetailArr[i]._id.instrumentToken,
                 exchange: tradeDetailArr[i]._id.exchange,
                 validity: tradeDetailArr[i]._id.validity,
                 OrderType: tradeDetailArr[i]._id.order_type,
@@ -154,23 +169,29 @@ exports.switchAlgoCheck = async (reqBody, res) => {
                 accessToken: accessTokenArr[0].accessToken,
                 algoBox: usedAlgoBox[0],
                 userId: userId,
-                tradeBy: "System"
+                tradeBy: "System",
+                uId: uId
             }
 
-            let interval = setInterval(() => {
+            detailObj.dontSendResp = (i !== (tradeDetailArr.length-1)); // false
+
+            // console.log("detailObj", detailObj)
+            let interval = setInterval(async () => {
                 if (quantity > 1800) {
                     detailObj.realQuantity = 1800;
-                    detailObj.Quantity = 1800/usedAlgoBox[0].lotMultipler 
-                    liveTrade.liveTrade(detailObj, res);
+                    detailObj.Quantity = 1800/usedAlgoBox[0].lotMultipler ;
+                    detailObj.dontSendResp = true;
+                    await liveTrade.liveTrade(detailObj, res);
                     quantity = quantity - 1800;
                 } else {
                     console.log("quantity", quantity, (new Date()).getMilliseconds())
-                    if(quantity>0){
-                        sendSingleResp = false;
+                    if(quantity > 0 && quantity <= 1800){
                         detailObj.realQuantity = quantity;
                         detailObj.Quantity = quantity/usedAlgoBox[0].lotMultipler ;
-                        detailObj.sendSingleResp = false;
-                        liveTrade.liveTrade(detailObj, res);
+                        if(i === (tradeDetailArr.length-1)){
+                          detailObj.dontSendResp = false;
+                        }
+                        await liveTrade.liveTrade(detailObj, res);
                         
                     } 
                     clearInterval(interval);
@@ -178,7 +199,7 @@ exports.switchAlgoCheck = async (reqBody, res) => {
             }, 300);
         }
 
-        // if(sendSingleResp){
+        // if(dontSendResp){
         //     res.status(201).json({message : `Quantity is 0`})
         // }
     }

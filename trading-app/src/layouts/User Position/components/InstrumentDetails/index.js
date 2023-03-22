@@ -42,9 +42,18 @@ function InstrumentDetails({socket, Render}) {
     })
 
     socket.on("tick", (data) => {
-      setMarketData(data);
+
+      // setMarketData(data);
+      setMarketData(prevInstruments => {
+        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+        data.forEach(instrument => {
+          instrumentMap.set(instrument.instrument_token, instrument);
+        });
+        return Array.from(instrumentMap.values());
+      });
     })
   }, [])
+
 
   useEffect(() => {
     axios.get(`${baseUrl}api/v1/readsetting`)
@@ -53,7 +62,6 @@ function InstrumentDetails({socket, Render}) {
       });
   }, []);
 
-  console.log("marketData in userPosition", marketData)
   let ltpArr = [];
   
   rows.map((elem)=>{

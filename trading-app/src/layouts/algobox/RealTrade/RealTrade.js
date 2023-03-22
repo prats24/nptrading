@@ -202,7 +202,7 @@ export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
             },
             body: JSON.stringify({
                 
-                isChecked: isRealTrade, tradingAlgo, fromAlgo: true
+                isChecked: isRealTrade, tradingAlgo, fromAlgo: true, uId
                 // apiKey, accessToken, tradeBy,
                 // exchange, symbol, buyOrSell: transaction_type, realBuyOrSell: transaction_type, Quantity: quantity, realQuantity: quantity, Product, OrderType, 
                 // validity, variety, createdBy, userId, createdOn, uId, 

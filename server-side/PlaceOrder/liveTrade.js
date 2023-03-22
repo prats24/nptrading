@@ -18,9 +18,15 @@ exports.liveTrade = async (reqBody, res) => {
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-         accessToken, userId, real_instrument_token, realSymbol, switching, sendSingleResp} = reqBody
+         accessToken, userId, real_instrument_token, realSymbol, switching, dontSendResp, tradeBy} = reqBody
 
          console.log(reqBody)
+
+         if(switching){
+            tradeBy = "System"
+         } else{
+            tradeBy = createdBy
+         }
 
     const {algoName, transactionChange, instrumentChange
        , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
@@ -285,14 +291,17 @@ exports.liveTrade = async (reqBody, res) => {
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                         lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
                         brokerage: brokerageCompany,
-                        tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: tradeBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
     
             
                     });
-                    // console.log("this is REAL CompanyTradeData", companyTradeData);
+                    console.log("this is REAL CompanyTradeData", companyTradeData);
                     companyTradeData.save().then(()=>{
-                    }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
+                    }).catch((err)=> {
+                        console.log(err, "fail in company live")
+                        res.status(500).json({error:"Failed to Trade company side"})
+                    });
                 }).catch(err => {console.log( err,"fail company live data saving")});
     
                     UserTradeData.findOne({order_id : order_id})
@@ -317,15 +326,15 @@ exports.liveTrade = async (reqBody, res) => {
                             Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                             variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                             order_id, instrumentToken, brokerage: brokerageUser,
-                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                            tradeBy: tradeBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
                             
         
                         });
-                        // console.log("this is REALuserTradeData", userTradeData);
+                        console.log("this is REALuserTradeData", userTradeData);
                         userTradeData.save().then(()=>{
                         }).catch((err)=> {
-                            console.log("fail in user live")
+                            console.log(err, "fail in user live")
                             res.status(500).json({error:"Failed to Trade company side"})
                         });
                     }).catch(err => {console.log(err, "fail trader live data saving")});
@@ -402,9 +411,9 @@ exports.liveTrade = async (reqBody, res) => {
                 
                     }).catch(err => {console.log(err, "fail company mock in placeorder")});
                 }
-    
+    // dontSendResp = false then resopse will sent
                 setTimeout(()=>{
-                    if(!isMissed && !sendSingleResp){
+                    if(!isMissed && !dontSendResp){
                         return res.status(201).json({massage : responseMsg, err: responseErr})
                     }
                 },0)
