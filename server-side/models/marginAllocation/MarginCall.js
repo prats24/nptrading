@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const MarginCallSchema = new mongoose.Schema({
     status:{
@@ -85,7 +86,12 @@ const MarginCallSchema = new mongoose.Schema({
     },
     lastModifiedOn:{
         type: String
-    }
+    },
+    marginCallFor:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-detail',
+        // required : true
+    },
 });
 
 MarginCallSchema.pre('save', async function(next){

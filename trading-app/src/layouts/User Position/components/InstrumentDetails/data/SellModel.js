@@ -36,6 +36,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   let createdBy = getDetails.userDetails.name;
   let userId = getDetails.userDetails.email;
   let tradeBy = getDetails.userDetails.name;
+  let trader = getDetails.userDetails._id;
   let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
 
 
@@ -181,7 +182,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
           exchange, symbol, buyOrSell, Quantity, Price, 
           Product, OrderType, TriggerPrice, stopLoss, uId,
           validity, variety, createdBy, order_id:dummyOrderId,
-          userId, instrumentToken
+          userId, instrumentToken, trader
 
         })
     });
