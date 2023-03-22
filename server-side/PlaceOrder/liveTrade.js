@@ -18,8 +18,9 @@ exports.liveTrade = async (reqBody, res) => {
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
         TriggerPrice, validity, variety, createdBy,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-         accessToken, userId, real_instrument_token, realSymbol} = reqBody
+         accessToken, userId, real_instrument_token, realSymbol, switching, sendSingleResp} = reqBody
 
+         console.log(reqBody)
 
     const {algoName, transactionChange, instrumentChange
        , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
@@ -294,7 +295,6 @@ exports.liveTrade = async (reqBody, res) => {
                     }).catch((err)=> res.status(500).json({error:"Failed to Trade company side"}));
                 }).catch(err => {console.log( err,"fail company live data saving")});
     
-                // if(checkingMultipleAlgoFlag === 1){
                     UserTradeData.findOne({order_id : order_id})
                     .then((dataExist)=>{
                         if(dataExist){
@@ -329,44 +329,43 @@ exports.liveTrade = async (reqBody, res) => {
                             res.status(500).json({error:"Failed to Trade company side"})
                         });
                     }).catch(err => {console.log(err, "fail trader live data saving")});
-                // }
     
-                MockTradeCompany.findOne({order_id : order_id})
-                .then((dataExist)=>{
-                    if(dataExist && dataExist.order_timestamp !== new_order_timestamp ){
-                        // console.log("data already in mock company");
-                        return res.status(422).json({error : "date already exist..."})
-                    }
-                    const tempDate = new Date();
-                    let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
-                    function addMinutes(date, hours) {
-                      date.setMinutes(date.getMinutes() + hours);
-                      return date;
-                     }
-                    const date = new Date(temp_order_save_time);
-                    const newDate = addMinutes(date, 330);
-                    const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
-             
-                    const mockTradeDetails = new MockTradeCompany({
+                if(!switching){
+                    MockTradeCompany.findOne({order_id : order_id})
+                    .then((dataExist)=>{
+                        if(dataExist && dataExist.order_timestamp !== new_order_timestamp ){
+                            // console.log("data already in mock company");
+                            return res.status(422).json({error : "date already exist..."})
+                        }
+                        const tempDate = new Date();
+                        let temp_order_save_time = `${String(tempDate.getDate()).padStart(2, '0')}-${String(tempDate.getMonth() + 1).padStart(2, '0')}-${(tempDate.getFullYear())} ${String(tempDate.getHours()).padStart(2, '0')}:${String(tempDate.getMinutes()).padStart(2, '0')}:${String(tempDate.getSeconds()).padStart(2, '0')}:${String(tempDate.getMilliseconds()).padStart(2, '0')}`
+                        function addMinutes(date, hours) {
+                        date.setMinutes(date.getMinutes() + hours);
+                        return date;
+                        }
+                        const date = new Date(temp_order_save_time);
+                        const newDate = addMinutes(date, 330);
+                        const order_save_time = (`${String(newDate.getDate()).padStart(2, '0')}-${String(newDate.getMonth() + 1).padStart(2, '0')}-${(newDate.getFullYear())} ${String(newDate.getHours()).padStart(2, '0')}:${String(newDate.getMinutes()).padStart(2, '0')}:${String(newDate.getSeconds()).padStart(2, '0')}:${String(newDate.getMilliseconds()).padStart(2, '0')}`);
+                
+                        const mockTradeDetails = new MockTradeCompany({
+        
+                            status, uId, createdBy, average_price, Quantity: quantity, 
+                            Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
+                            variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
+                            algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+                            lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
+                            brokerage: brokerageCompany,
+                            tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                            order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
+        
+                        });
+                
+                        // console.log("mockTradeDetails comapny", mockTradeDetails);
+                        mockTradeDetails.save().then(()=>{
+                            // res.status(201).json({massage : "data enter succesfully"});
+                        }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
+                    }).catch(err => {console.log(err, "fail company mock in placeorder")});
     
-                        status, uId, createdBy, average_price, Quantity: quantity, 
-                        Product:product, buyOrSell:transaction_type, order_timestamp: new_order_timestamp,
-                        variety, validity, exchange, order_type: order_type, symbol:tradingsymbol, placed_by: placed_by, userId,
-                        algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-                        lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
-                        brokerage: brokerageCompany,
-                        tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
-                        order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
-    
-                    });
-            
-                    // console.log("mockTradeDetails comapny", mockTradeDetails);
-                    mockTradeDetails.save().then(()=>{
-                        // res.status(201).json({massage : "data enter succesfully"});
-                    }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-                }).catch(err => {console.log(err, "fail company mock in placeorder")});
-    
-                // if(checkingMultipleAlgoFlag === 1){
                     MockTradeUser.findOne({order_id : order_id})
                     .then((dataExist)=>{
                         if(dataExist){
@@ -402,11 +401,10 @@ exports.liveTrade = async (reqBody, res) => {
                         });
                 
                     }).catch(err => {console.log(err, "fail company mock in placeorder")});
-                // }
-    
+                }
     
                 setTimeout(()=>{
-                    if(!isMissed){
+                    if(!isMissed && !sendSingleResp){
                         return res.status(201).json({massage : responseMsg, err: responseErr})
                     }
                 },0)

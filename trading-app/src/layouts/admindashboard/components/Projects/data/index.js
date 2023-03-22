@@ -2,33 +2,17 @@ import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-// @mui material components
-import Tooltip from "@mui/material/Tooltip";
-import MDBox from "../../../../../components/MDBox";
 import MDTypography from "../../../../../components/MDTypography";
-import MDAvatar from "../../../../../components/MDAvatar";
-import MDProgress from "../../../../../components/MDProgress";
 
-// Images
-import logoXD from "../../../../../assets/images/small-logos/logo-xd.svg";
-import logoAtlassian from "../../../../../assets/images/small-logos/logo-atlassian.svg";
-import logoSlack from "../../../../../assets/images/small-logos/logo-slack.svg";
-import logoSpotify from "../../../../../assets/images/small-logos/logo-spotify.svg";
-import logoJira from "../../../../../assets/images/small-logos/logo-jira.svg";
-import logoInvesion from "../../../../../assets/images/small-logos/logo-invision.svg";
-import team1 from "../../../../../assets/images/team-1.jpg";
-import team2 from "../../../../../assets/images/team-2.jpg";
-import team3 from "../../../../../assets/images/team-3.jpg";
-import team4 from "../../../../../assets/images/team-4.jpg";
 
 export default function Data() {
 
   const [tradersData, setTradersData] = useState([])
-    const [tradergpnl, setTraderGPNL] = useState([])
-    const [tradernpnl, setTraderNPNL] = useState([])
-    const [traderbrokerge, setTraderBrokerage] = useState([])
-    const [tradertrades, setTraderTrades] = useState([])
-    const [tradername, setTraderName] = useState([])
+    // const [tradergpnl, setTraderGPNL] = useState([])
+    // const [tradernpnl, setTraderNPNL] = useState([])
+    // const [traderbrokerge, setTraderBrokerage] = useState([])
+    // const [tradertrades, setTraderTrades] = useState([])
+    // const [tradername, setTraderName] = useState([])
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -38,14 +22,14 @@ export default function Data() {
       .then((res)=>{
           console.log("Data: "+res.data)
           setTradersData(res.data);
-          for(let item of res.data)
-          {
-            setTraderName((prev)=>{return[...prev,(item._id)]})
-            setTraderGPNL((prev)=>{return[...prev,item.gpnl]})
-            setTraderNPNL((prev)=>{return[...prev,(item.npnl).toFixed(0)]})
-            setTraderTrades((prev)=>{return[...prev,(item.trades)]})
-            setTraderBrokerage((prev)=>{return[...prev,(item.brokerage)]}) 
-          }
+          // for(let item of res.data)
+          // {
+          //   // setTraderName((prev)=>{return[...prev,(item._id)]})
+          //   // setTraderGPNL((prev)=>{return[...prev,item.gpnl]})
+          //   // setTraderNPNL((prev)=>{return[...prev,(item.npnl).toFixed(0)]})
+          //   // setTraderTrades((prev)=>{return[...prev,(item.trades)]})
+          //   // setTraderBrokerage((prev)=>{return[...prev,(item.brokerage)]}) 
+          // }
       }).catch((err)=>{
           window.alert("Error in Fetching top 5 loss making traders data");
           return new Error(err);

@@ -1,39 +1,12 @@
 
-  // export default {
-  //   labels: ["M", "T", "W", "T", "F"],
-  //   datasets: { label: "Transaction Cost", data: [10,12,14,16,19] },
-  // };
-
-
-  import React from "react";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
-import MDBox from "../../../components/MDBox";
-import MDTypography from "../../../components/MDTypography";
-
-// Material Dashboard 2 React example components
-import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
-import Footer from "../../../examples/Footer";
-import DataTable from "../../../examples/Tables/DataTable";
+import { useEffect } from "react";
 let Tdata = [];
 
 export default function TransactionCostData() {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-  let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
-  let socket;
-  try{
-      socket = io.connect(`${baseUrl1}`)
-  } catch(err){
-      throw new Error(err);
-  }
+
 
   
   // const [tcost, setTCost] = useState();
