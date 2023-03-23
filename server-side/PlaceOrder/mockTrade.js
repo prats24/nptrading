@@ -9,7 +9,7 @@ exports.mockTrade = async (reqBody, res) => {
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
         validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-        realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = reqBody 
+        realBuyOrSell, realQuantity, real_instrument_token, realSymbol, trader } = reqBody 
 
 
     const {algoName, transactionChange, instrumentChange
@@ -111,7 +111,7 @@ exports.mockTrade = async (reqBody, res) => {
             variety, validity, exchange, order_type: OrderType, symbol: realSymbol, placed_by: "ninepointer", userId,
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
             lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, brokerage: brokerageCompany,
-            tradeBy: createdBy, isRealTrade: false, amount: (Number(realQuantity)*originalLastPriceCompany), trade_time:trade_time,
+            tradeBy: createdBy,trader : trader, isRealTrade: false, amount: (Number(realQuantity)*originalLastPriceCompany), trade_time:trade_time,
             
         });
 
@@ -133,7 +133,7 @@ exports.mockTrade = async (reqBody, res) => {
             status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
             variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
             isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
-            tradeBy: createdBy, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+            tradeBy: createdBy,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
             
         });
 

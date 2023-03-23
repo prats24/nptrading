@@ -7,11 +7,7 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Icon from "@mui/material/Icon";
 import SettingsIcon from '@mui/icons-material/Settings';
-import CompanyAnalytics from "./layouts/analytics/companyPNLAnalytics1/companyAnalytics"
-import DashboardIcon from '@mui/icons-material/Dashboard';
-
 
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
@@ -177,7 +173,7 @@ export default function App() {
       <SettingsIcon/>
     </MDBox>
   );
-  console.log("Analytics Routes: ",analyticsRoutes)
+  // console.log("Analytics Routes: ",analyticsRoutes)
 
   return direction === "rtl" ? (
     

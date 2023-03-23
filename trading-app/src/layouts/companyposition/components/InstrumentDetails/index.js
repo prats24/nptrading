@@ -24,12 +24,10 @@ function InstrumentDetails({socket}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const { columns, rows, instrumentData } = data();
+  const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
-  const [settings, setSettings] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
-  // let isAppLive = '';
 
   useEffect(()=>{
 
@@ -61,14 +59,11 @@ function InstrumentDetails({socket}) {
   }, []);
   
   
-  //console.log("marketData", marketData)
   let ltpArr = [];
   
   rows.map((elem)=>{
     let ltpObj = {};
-    let pericularInstrument = instrumentData.filter((element)=>{
-      return elem.instrumentToken.props.children == element.instrumentToken
-    })
+
     marketData.map((subelem)=>{
       
       const percentagechangecolor = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
@@ -98,7 +93,7 @@ function InstrumentDetails({socket}) {
     ltpArr.push(ltpObj);
   })
 
-  const newRows = rows.concat(ltpArr);
+  // const newRows = rows.concat(ltpArr);
   //console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);

@@ -1,30 +1,22 @@
-import React, { useRef } from "react";
-import jsPDF from "jspdf";
+import React from "react";
 import HeatMap from "react-heatmap-grid";
 import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
 import MDBox from "../../components/MDBox";
 import MDButton from "../../components/MDButton";
 import { Typography } from "@mui/material";
 import axios from "axios";
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import {useState, useContext, useEffect} from "react"
+import {useState, useEffect} from "react"
 
 function TradersHeatMapWeekly() {
 
-// Display only even labels
-const [selectedWeek, setSelectedWeek] = useState(1);
 const weekNumbers = Array.from({ length: 52 }, (_, i) => i + 1);
-let date = new Date();
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-let valueInDate2 = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
-let valueInDate1 = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
 const [firstWeek, setFirstWeek] = useState(1);
 const [secondWeek, setSecondWeek] = useState(52);
 const [traders, setTraders] = useState([]);
 const [uweeks, setUWeeks] = useState([]);
-const [uweeks1, setUWeeks1] = useState([]);
 let [overallPnl, setOverallPnl] = useState([]);
 
 
@@ -73,7 +65,6 @@ useEffect(()=>{
     console.log(firstWeek,secondWeek)
     axios.get(`${baseUrl}api/v1/getweeklytraderpnl/${firstWeek}/${secondWeek}`)
     .then((res) => {
-      let data = res.data;
       console.log(res.data);
       setOverallPnl(res.data);
 
@@ -83,7 +74,6 @@ useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/getuniqueweeks/${firstWeek}/${secondWeek}`)
     .then((res) => {
-      let data = res.data;
       console.log(res.data);
       setUWeeks(res.data);
 

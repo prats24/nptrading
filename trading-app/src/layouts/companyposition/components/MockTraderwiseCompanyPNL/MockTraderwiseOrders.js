@@ -1,11 +1,5 @@
 import {useState, useEffect} from "react"
 import axios from "axios";
-// @mui material components
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -26,9 +20,6 @@ import { useTheme } from '@mui/material/styles';
 import MockViewTradeDetailData from "./data/MockTraderwiseOrdersData";
 
  
-// Data
-// import data from "./data";
-
 
 function TraderMockOrders({userId}) {
   const {columns, rows} = MockViewTradeDetailData();
@@ -36,16 +27,9 @@ function TraderMockOrders({userId}) {
 const [open, setOpen] = useState(false);
 const theme = useTheme();
 const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-const [menu, setMenu] = useState(null);
 
-const closeMenu = () => setMenu(null);
-
-
-const [regularSwitch, setRegularSwitch] = useState(true);
 const handleClickOpen = () => {
-
   setOpen(true);
-
 }; 
 
 const handleClose = (e) => {
@@ -56,12 +40,6 @@ const handleClose = (e) => {
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 const [orderData, setOrderData] = useState([]);
-const [tradeData, setTradeData] = useState([]);
-
-let liveDetailsArr = [];
-let totalTransactionCost = 0;
-let totalGrossPnl = 0;
-let totalRunningLots = 0;
 
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/getusermocktrades/${userId}`)
@@ -76,10 +54,9 @@ let totalRunningLots = 0;
   }, [open])
 
   console.log("mockorderData", orderData, userId)
-  orderData.map((elem,index)=>{
+  orderData.map((elem)=>{
     let obj = {};
 
-    const typecolor = elem.buyOrSell == "BUY" ? "info" : "error"
     const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
     const quantitycolor = elem.Quantity > 0 ? "info" : "error"
     const productcolor = elem.Product == "MIS" ? "warning" : "info"

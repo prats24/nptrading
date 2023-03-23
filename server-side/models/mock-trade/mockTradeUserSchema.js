@@ -1,4 +1,6 @@
+// import mongoose, { Schema } from "mongoose";
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const mockTradeSchema = new mongoose.Schema({
     order_id:{
@@ -100,6 +102,11 @@ const mockTradeSchema = new mongoose.Schema({
     isMissed:{
         type: Boolean,
         default: false
+    },
+    trader:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-detail',
+        // required : true
     },
 })
 

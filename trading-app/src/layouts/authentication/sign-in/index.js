@@ -113,6 +113,11 @@ function Basic() {
         }
     }
 
+    async function signUpButton(e){
+            e.preventDefault();
+            navigate("/signup");
+            }
+
   return (
     <BasicLayout image={bgImage}>
       <Card>
@@ -153,6 +158,14 @@ function Basic() {
             <MDBox mt={4} mb={1}>
               <MDButton variant="gradient" color="info" onClick={logInButton} fullWidth>
                 sign in
+              </MDButton>
+            </MDBox>
+            <MDBox mt={2} mb={1}>
+              <MDTypography variant="h4" fontWeight="medium" color="black" mt={1} mb={1} textAlign="center">
+                Don't have an account?
+              </MDTypography>
+              <MDButton variant="gradient" color="warning" onClick={signUpButton} fullWidth>
+                sign up
               </MDButton>
             </MDBox>
 

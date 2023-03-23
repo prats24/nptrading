@@ -124,22 +124,7 @@ function AdminReportHeader({ children }) {
                     </Icon>
                   }
                 />
-                {/* <Tab
-                  label="Trader Side HeatMap(Day)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      <SupervisorAccountIcon/>
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Trader Side HeatMap(Week)"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      <SupervisorAccountIcon/>
-                    </Icon>
-                  }
-                /> */}
+
 
 <               Tab
                   label="Batch Wise"
@@ -156,8 +141,6 @@ function AdminReportHeader({ children }) {
             <TabPanel value={tabValue} index={1}><MockCompanyPNL /> </TabPanel>
             <TabPanel value={tabValue} index={2}><TraderPNL /> </TabPanel>
             <TabPanel value={tabValue} index={3}><TraderMatrix /> </TabPanel>
-            {/* <TabPanel value={tabValue} index={4}><TraderHeatMap /> </TabPanel> */}
-            {/* <TabPanel value={tabValue} index={5}><TraderHeatMapWeekly /> </TabPanel> */}
             <TabPanel value={tabValue} index={4}><BatchWiseTradersHeatMap /> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>

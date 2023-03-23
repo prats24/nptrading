@@ -6,7 +6,7 @@ const authController = require("../../controllers/authController")
 
 router.post("/userdetail", authController.protect, authController.restrictTo("admin"), (req, res)=>{
     const {status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
-    //console.log(req.body)
+    console.log(req.body)
     if(!status || !uId || !createdOn || !lastModified || !createdBy || !name || !cohort || !designation || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation || !joining_date || !role){
         //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
@@ -16,7 +16,7 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
     .then((dateExist)=>{
         if(dateExist){
             //console.log("data already");
-            return res.status(422).json({error : "date already exist..."})
+            return res.status(422).json({error : "data already exist..."})
         }
         const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
         //console.log(userDetail)
@@ -25,6 +25,29 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
     }).catch(err => {console.log("fail in   userAuth")});
 })
+
+router.post("/signup", (req, res)=>{
+    const {status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
+    //console.log(req.body)
+    if( !name || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation){
+        //console.log("data nhi h pura");
+        return res.status(422).json({error : "plz filled the field..."})
+    }
+
+    UserDetail.findOne({email : email})
+    .then((dateExist)=>{
+        if(dateExist){
+            //console.log("data already");
+            return res.status(422).json({error : "data already exist..."})
+        }
+        const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
+        //console.log(userDetail)
+        userDetail.save().then(()=>{
+            res.status(201).json({massage : "data enter succesfully"});
+        }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
+    }).catch(err => {console.log("fail in   userAuth")});
+})
+
 
 router.get("/readuserdetails", (req, res)=>{
     UserDetail.find((err, data)=>{

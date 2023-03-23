@@ -38,7 +38,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
         axios.get(`${baseUrl}api/v1/getMockTradeDetailsUser/${userId}`)
         .then((res)=>{
             setTradeDetail(res.data)
-            console.log(res.data);
+            //console.log(res.data);
         }).catch((err)=>{
             return new Error(err);
         })
@@ -46,7 +46,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
         axios.get(`${baseUrl}api/v1/getLiveTradeDetailsUser/${userId}`)
         .then((res)=>{
             setLiveTradeDetail(res.data)
-            console.log(res.data);
+            //console.log(res.data);
         }).catch((err)=>{
             return new Error(err);
         })
@@ -57,7 +57,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
                 return elem.status === "Active"
             })
             setAlgoUsed(dataArr)
-            console.log(res.data);
+            //console.log(res.data);
         }).catch((err)=>{
             return new Error(err);
         })
@@ -91,7 +91,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
             setPermissionDetail(res.data)
             setRealTradeState(res.data.isRealTradeEnable)
             // setRender(res.data.isRealTradeEnable)
-            console.log("tradeDetailReal", res.data);
+            //console.log("tradeDetailReal", res.data);
         }).catch((err)=>{
             return new Error(err);
         })
@@ -99,13 +99,13 @@ export default function MockRealSwitch({userId, props, algoName}) {
     }, [])
 
 
-    console.log("rendering", userId)
+    //console.log("rendering", userId)
 
     const switchButtonFunc = (checkRealTrade)=>{
-        console.log("checkRealTrade", checkRealTrade)
+        //console.log("checkRealTrade", checkRealTrade)
 
         if(!checkRealTrade){
-            console.log("squaring off not")
+            //console.log("squaring off not")
             for(let i = 0; i < tradeDetail.length; i++){
                 let usedAlgoBox = algoUsed.filter((elem)=>{
                     return elem.algoName === tradeDetail[i]._id.algoBoxName;
@@ -154,7 +154,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
             }
         } else{
 
-            console.log("squaring off")
+            //console.log("squaring off")
             for(let i = 0; i < liveTradeDetail.length; i++){
                 let usedAlgoBox = algoUsed.filter((elem)=>{
                     return elem.algoName === liveTradeDetail[i]._id.algoBoxName;
@@ -205,7 +205,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
         }
 
 
-        console.log("checkRealTrade", checkRealTrade)
+        //console.log("checkRealTrade", checkRealTrade)
         if(checkRealTrade){
             changeIsRealTrade(false)
             // setRealTradeState(false)
@@ -225,7 +225,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
         const { apiKey } = apiKeyArr[0];
         const { accessToken } = accessTokenArr[0];
   
-        console.log("detailObj", detailObj, apiKey, accessToken, algoBox)
+        //console.log("detailObj", detailObj, apiKey, accessToken, algoBox)
         const res = await fetch(`${baseUrl}api/v1/switchToRealTrade`, {
             method: "POST",
             headers: {
@@ -249,16 +249,16 @@ export default function MockRealSwitch({userId, props, algoName}) {
             ////console.log("Failed to Trade");
         } else {
             if(dataResp.massage === "COMPLETE"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("Trade Succesfull Completed");
             } else if(dataResp.massage === "REJECTED"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("Trade is Rejected due to Insufficient Fund");
             } else if(dataResp.massage === "AMO REQ RECEIVED"){
-                console.log(dataResp);
+                //console.log(dataResp);
                 window.alert("AMO Request Recieved");
             } else{
-                console.log("this is dataResp", dataResp)
+                //console.log("this is dataResp", dataResp)
                 window.alert("on order placing nothing happen");
             }
         }
@@ -291,7 +291,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
     }
 
     let real;
-    console.log("props", props)
+    //console.log("props", props)
     props.users.map((elem)=>{
         if(elem.userId === userId){
             real = (elem.isRealTradeEnable);
@@ -301,7 +301,7 @@ export default function MockRealSwitch({userId, props, algoName}) {
 
 
     props.users.map((elem)=>{
-        console.log("elem.userId === userId", elem.userId, userId)
+        //console.log("elem.userId === userId", elem.userId, userId)
 
         if(elem.userId === userId && elem.algoName === algoName){
             // real = (elem.isRealTradeEnable);

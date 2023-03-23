@@ -5,13 +5,10 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ViewOrders from '@mui/icons-material/ViewList';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
-import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
-import Button from '@mui/material/Button';
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
@@ -20,14 +17,11 @@ import DataTable from "../../../../examples/Tables/DataTable";
 import data from "./data";
 import ViewTradeDetail from "./ViewTradeDetail";
 import ViewOrderDetail from "./MockTraderwiseOrders";
-// import MockRealSwitch from "../LiveTraderwiseCompanyPNL/MockRealSwitch"
-import MockRealSwitch from "../MockRealSwitch";
 
 function MockTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
   const [menu, setMenu] = useState(null);
 
-  // const {render, setRender} = Render
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
@@ -58,13 +52,15 @@ function MockTraderwiseCompantPNL(props) {
     
   const [allTrade, setAllTrade] = useState([]);
   const [marketData, setMarketData] = useState([]);
-  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
-  const [lastestTradeTime, setLatestTradeTime] = useState([]);
-  const [lastestTradeBy, setLatestTradeBy] = useState([]);
-  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
-  const [lastestTradeType, setLatestTradeType] = useState([]);
-  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
-  const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
+
+  let [latestLive, setLatestLive] = useState({
+    tradeTime: "",
+    tradeBy: "",
+    tradeSymbol: "",
+    tradeType: "",
+    tradeQuantity: "",
+    tradeStatus: ""
+  })
 
   useEffect(()=>{
 
@@ -90,6 +86,8 @@ function MockTraderwiseCompantPNL(props) {
     })
   }, [])
 
+  
+
   useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/gettraderwisepnlmocktradecompanytoday`)
@@ -108,20 +106,22 @@ function MockTraderwiseCompantPNL(props) {
     }
   }, [])
 
+
+  
+
   useEffect(()=>{
           // Get Lastest Trade timestamp
           axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
           // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
           .then((res)=>{
-              //console.log(res.data);
-              setLatestTradeTimearr(res.data);
-              setLatestTradeTime(res.data.trade_time) ;
-              setLatestTradeBy(res.data.createdBy) ;
-              setLatestTradeType(res.data.buyOrSell) ;
-              setLatestTradeQuantity(res.data.Quantity) ;
-              setLatestTradeSymbol(res.data.symbol) ;
-              setLatestTradeStatus(res.data.status);
-                //console.log(lastestTradeTimearr);
+            latestLive.tradeTime = (res.data.trade_time) ;
+            latestLive.tradeBy = (res.data.createdBy) ;
+            latestLive.tradeType = (res.data.buyOrSell) ;
+            latestLive.tradeQuantity = (res.data.Quantity) ;
+            latestLive.tradeSymbol = (res.data.symbol) ;
+            latestLive.tradeStatus = (res.data.status)
+      
+            setLatestLive(latestLive)
           }).catch((err) => {
             return new Error(err);
           })
@@ -347,7 +347,7 @@ rows.push(obj);
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-            &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime} - {lastestTradeStatus}
+            &nbsp;<strong>last trade</strong> {latestLive.tradeBy} {latestLive.tradeType === "BUY" ? "bought" : "sold"} {Math.abs(latestLive.tradeQuantity)} quantity of {latestLive.tradeSymbol} at {latestLive.tradeTime} - {latestLive.tradeStatus}
             </MDTypography>
           </MDBox>
         </MDBox>
