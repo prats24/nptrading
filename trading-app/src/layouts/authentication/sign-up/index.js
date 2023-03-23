@@ -267,7 +267,7 @@ function Cover() {
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
-              <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">Gender*</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -283,11 +283,11 @@ function Cover() {
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput disabled={showEmailOTP} type="number" label="Trading Experience(in months)" variant="standard" fullWidth onChange={(e)=>{formstate.trading_exp = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="number" label="Trading Experience(in months)*" variant="standard" fullWidth onChange={(e)=>{formstate.trading_exp = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
-              <InputLabel id="demo-simple-select-standard-label">Applying for</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">Applying for*</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -302,11 +302,11 @@ function Cover() {
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput disabled={showEmailOTP} type="text" label="Last Occupation" variant="standard" fullWidth onChange={(e)=>{formstate.last_occupation = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Last Occupation*" variant="standard" fullWidth onChange={(e)=>{formstate.last_occupation = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
-              <InputLabel id="demo-simple-select-standard-label">Degree</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">Degree*</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -325,7 +325,7 @@ function Cover() {
             </FormControl>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
-              <InputLabel id="demo-simple-select-standard-label">Family Yearly Income(in INR)</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">Family Yearly Income(in INR)*</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -343,23 +343,23 @@ function Cover() {
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput disabled={showEmailOTP} type="text" label="Full Address" variant="standard" fullWidth onChange={(e)=>{formstate.address = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Full Address*" variant="standard" fullWidth onChange={(e)=>{formstate.address = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput disabled={showEmailOTP} type="text" label="City/Village" variant="standard" fullWidth onChange={(e)=>{formstate.city = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="City/Village*" variant="standard" fullWidth onChange={(e)=>{formstate.city = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput disabled={showEmailOTP} type="text" label="State" variant="standard" fullWidth onChange={(e)=>{formstate.state = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="State*" variant="standard" fullWidth onChange={(e)=>{formstate.state = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput disabled={showEmailOTP} type="text" label="Country" variant="standard" fullWidth onChange={(e)=>{formstate.country = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Country*" variant="standard" fullWidth onChange={(e)=>{formstate.country = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
-              <InputLabel id="demo-simple-select-standard-label">Purpose of Joining</InputLabel>
+              <InputLabel id="demo-simple-select-standard-label">Purpose of Joining*</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -396,7 +396,7 @@ function Cover() {
                 color="info"
                 textGradient
               >
-                Currently Employeed?
+                Currently Employeed?*
               </MDTypography>
             </MDBox>         
               
@@ -424,7 +424,7 @@ function Cover() {
                 color="info"
                 textGradient
               >
-                Terms and Conditions
+                Terms and Conditions*
               </MDTypography>
             </MDBox>
             </>
