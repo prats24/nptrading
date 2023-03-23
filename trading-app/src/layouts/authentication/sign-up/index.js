@@ -1,8 +1,9 @@
 
 // react-router-dom components
 import { Link } from "react-router-dom";
-import React, {useState, useContext} from "react"
+import React, {useState, useContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
+import OtpInput from 'react-otp-input';
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -30,6 +31,12 @@ function Cover() {
   console.log("Inside Sign UP")
 
   const navigate = useNavigate();
+  const [showEmailOTP, setShowEmailOTP] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(true);
+  const [resendTimer, setResendTimer] = useState(10); // Resend timer in seconds
+  const [timerActive, setTimerActive] = useState(false); // Flag to check if timer is active
+
+  console.log(resendTimer,timerActive)
 
   const [formstate, setformstate] = useState({
     first_name:"", 
@@ -53,6 +60,30 @@ function Cover() {
     terms_and_conditions:false,
   });
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+  useEffect(() => {
+    let countdownTimer = null;
+      console.log("useeffect called")
+      console.log(timerActive,resendTimer)
+      // If the timer is active, decrement the resendTimer every second
+      if (timerActive && resendTimer > 0) {
+        countdownTimer = setTimeout(() => {
+          setResendTimer(prevTime => prevTime - 1);
+        }, 1000);
+      }
+
+      // If the timer reaches 0, stop the countdown and set the timerActive flag to false
+      if (resendTimer === 0) {
+        clearTimeout(countdownTimer);
+        setTimerActive(false);
+      }
+
+      // Cleanup function to clear the timeout when the component unmounts
+      return () => {
+        clearTimeout(countdownTimer);
+      };
+    }, [resendTimer, timerActive]);
+
 
   async function formSubmit() {
     setformstate(formstate);
@@ -103,11 +134,81 @@ function Cover() {
         // window.alert(data.error);
         console.log("Invalid Entry");
     }else{
-        window.alert("Sign up request submitted.");
+      setShowEmailOTP(true);
+      setTimerActive(true);
+      setResendTimer(10);
+        // window.alert("Sign up request submitted.");
         // console.log("entry succesfull");
-        navigate("/response");
+        // navigate("/response");
     }
 }
+
+  async function otpConfirmation() {
+    console.log(formstate.email_otp)
+    const res = await fetch(`${baseUrl}api/v1/verifyotp`, {
+      
+      method: "PATCH",
+      // credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": false
+      },
+      body: JSON.stringify({
+        email:formstate.email, 
+        email_otp:formstate.email_otp,
+      })
+  });
+
+
+  const data = await res.json();
+  console.log(data);
+  if(data.status === 422 || data.error || !data){ 
+      // window.alert(data.error);
+      console.log("Invalid Entry");
+  }else{
+    setShowConfirmation(false)
+      window.alert("OTP Confirmed");
+      // console.log("entry succesfull");
+      // navigate("/response");
+  }
+
+  }
+
+  const resendOTP = async () => {
+  
+      setTimerActive(true);
+      console.log("Active timer set to true")
+      setResendTimer(10);
+    
+    const res = await fetch(`${baseUrl}api/v1/resendotp`, {
+      
+      method: "PATCH",
+      // credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": false
+      },
+      body: JSON.stringify({
+        email:formstate.email, 
+      })
+  });
+
+
+  const data = await res.json();
+  // console.log(data);
+  if(data.status === 422 || data.error || !data){ 
+      // window.alert(data.error);
+      // console.log("Invalid Entry");
+  }else{
+    // setShowEmailOTP(true)
+      
+      // window.alert("OTP Resent");
+
+      // console.log("entry succesfull");
+      // navigate("/response");
+  }
+
+  }
 
 
   return (
@@ -131,32 +232,38 @@ function Cover() {
             Enter your details to get started
           </MDTypography>
         </MDBox>
+        
         <MDBox pt={4} pb={3} px={3}>
+        
           <MDBox component="form" role="form">
+          { showConfirmation && (
+          <>
           <MDBox display="flex" flexWrap="wrap" justifyContent="space-around">
-
+          
+          
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="First Name" variant="standard" fullWidth onChange={(e)=>{formstate.first_name = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="First Name*" variant="standard" fullWidth onChange={(e)=>{formstate.first_name = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="Last Name" variant="standard" fullWidth onChange={(e)=>{formstate.last_name = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Last Name*" variant="standard" fullWidth onChange={(e)=>{formstate.last_name = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth onChange={(e)=>{formstate.email = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="email" label="Email*" variant="standard" fullWidth onChange={(e)=>{formstate.email = e.target.value}} />
             </MDBox>  
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="Mobile No." variant="standard" fullWidth onChange={(e)=>{formstate.mobile = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Mobile No.*" variant="standard" fullWidth onChange={(e)=>{formstate.mobile = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="WhatsApp Number" variant="standard" fullWidth onChange={(e)=>{formstate.watsApp_number = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="WhatsApp Number*" variant="standard" fullWidth onChange={(e)=>{formstate.watsApp_number = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="date" label="Date of Birth" variant="standard" fullWidth onChange={(e)=>{formstate.dob = e.target.value}} />
+              <MDInput
+              disabled={showEmailOTP} type="date" label="Date of Birth*" variant="standard" fullWidth onChange={(e)=>{formstate.dob = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -165,6 +272,7 @@ function Cover() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Gender"
+                disabled={showEmailOTP}
                 // sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formstate.gender = e.target.value}}
               >
@@ -175,7 +283,7 @@ function Cover() {
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="number" label="Trading Experience(in months)" variant="standard" fullWidth onChange={(e)=>{formstate.trading_exp = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="number" label="Trading Experience(in months)" variant="standard" fullWidth onChange={(e)=>{formstate.trading_exp = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -184,6 +292,7 @@ function Cover() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Gender"
+                disabled={showEmailOTP}
                 // sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formstate.applying_for = e.target.value}}
               >
@@ -193,7 +302,7 @@ function Cover() {
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="Last Occupation" variant="standard" fullWidth onChange={(e)=>{formstate.last_occupation = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Last Occupation" variant="standard" fullWidth onChange={(e)=>{formstate.last_occupation = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -202,6 +311,7 @@ function Cover() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Gender"
+                disabled={showEmailOTP}
                 onChange={(e)=>{formstate.degree = e.target.value}}
               >
                 <MenuItem value="BTech">B.Tech</MenuItem>
@@ -220,6 +330,7 @@ function Cover() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Gender"
+                disabled={showEmailOTP}
                 // sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formstate.family_yearly_income = e.target.value}}
               >
@@ -232,19 +343,19 @@ function Cover() {
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="Full Address" variant="standard" fullWidth onChange={(e)=>{formstate.address = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Full Address" variant="standard" fullWidth onChange={(e)=>{formstate.address = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="City/Village" variant="standard" fullWidth onChange={(e)=>{formstate.city = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="City/Village" variant="standard" fullWidth onChange={(e)=>{formstate.city = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="State" variant="standard" fullWidth onChange={(e)=>{formstate.state = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="State" variant="standard" fullWidth onChange={(e)=>{formstate.state = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="Country" variant="standard" fullWidth onChange={(e)=>{formstate.country = e.target.value}} />
+              <MDInput disabled={showEmailOTP} type="text" label="Country" variant="standard" fullWidth onChange={(e)=>{formstate.country = e.target.value}} />
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -253,6 +364,7 @@ function Cover() {
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
                 label="Gender"
+                disabled={showEmailOTP}
                 // sx={{ margin: 1, padding: 1, width: "300px" }}
                 onChange={(e)=>{formstate.purpose_of_joining = e.target.value}}
               >
@@ -266,6 +378,7 @@ function Cover() {
             <MDBox display="flex" alignItems="center" ml={1} sx={{width:"30%" }}>
               <Checkbox 
               checked={formstate.employeed}
+              disabled={showEmailOTP}
               onChange={(e)=>{setformstate(prevState => ({...prevState, employeed: e.target.checked}))}}
               />
               <MDTypography
@@ -288,11 +401,11 @@ function Cover() {
             </MDBox>         
               
             </MDBox> 
-
-            
+   
             <MDBox display="flex" alignItems="center" ml={1}>
             <Checkbox 
                 checked={formstate.terms_and_conditions}
+                disabled={showEmailOTP}
                 onChange={(e)=>{setformstate(prevState => ({...prevState, terms_and_conditions: e.target.checked}))}}
             />
               <MDTypography
@@ -314,17 +427,53 @@ function Cover() {
                 Terms and Conditions
               </MDTypography>
             </MDBox>
+            </>
+            )}
+            
+
+            {!showEmailOTP && (
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth onClick={formSubmit}>
+              <MDButton variant="gradient" color="info" fullWidth onClick={formSubmit} >
                 Submit
               </MDButton>
+            </MDBox>)}
+
+            
+            {showEmailOTP && showConfirmation && (
+            <>
+            <MDBox display="flex" ml={2} mt={2}>
+
+            <OtpInput
+              value={formstate.email_otp}
+              onChange={(e)=>{setformstate(prevState => ({...prevState, email_otp: e}))}}
+              // onChange={(e)=>{console.log(e)}}
+              numInputs={6}
+              renderSeparator={<span>-</span>}
+              renderInput={(props) => <input {...props} />}
+              inputStyle={{width:50, height:50}}
+            />
+            <MDButton disabled={timerActive} mb={0} sx={{width:"20%"}} variant="text" color="info" fullWidth onClick={resendOTP}>
+              {timerActive ? `Resend OTP in ${resendTimer} seconds` : 'Resend OTP'}
+              </MDButton>
             </MDBox>
+
+            <MDBox mt={4} mb={1} display="flex" justifyContent="space-around">
+              <MDButton variant="gradient" color="info" fullWidth onClick={otpConfirmation}>
+                Confirm
+              </MDButton>
+            </MDBox>
+            </>
+            )}
+            
+
+
+
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Already have an account?{" "}
                 <MDTypography
                   component={Link}
-                  to="/authentication/sign-in"
+                  to="/"
                   variant="button"
                   color="info"
                   fontWeight="medium"
@@ -336,6 +485,26 @@ function Cover() {
             </MDBox>
           </MDBox>
         </MDBox>
+        
+
+        {!showConfirmation && (
+          <>
+        <MDTypography variant="h4" fontWeight="medium" textAlign="center" color="black" mt={5}>
+            Your details has been submitted. We will contact you shortly.
+        </MDTypography>
+        <MDTypography
+                  component={Link}
+                  to="/"
+                  variant="button"
+                  color="info"
+                  fontWeight="medium"
+                  textGradient
+                  sx={{textAlign:"center", margin:10}}
+                >
+                  Back to Home Page
+                </MDTypography>
+                </>
+        )}
       </Card>
     </CoverLayout>
   );

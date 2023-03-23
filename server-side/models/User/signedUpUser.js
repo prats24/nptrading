@@ -87,7 +87,12 @@ const signedUpUserSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
         required: true,
-    }
+    },
+    status:{
+        type: String,
+        enum: ['OTP Verification Pending','OTP Verified','Approved','Rejected'],
+        default:'OTP Verification Pending'
+    },
   
 })
 

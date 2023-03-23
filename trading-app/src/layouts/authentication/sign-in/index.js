@@ -160,10 +160,10 @@ function Basic() {
               </MDButton>
             </MDBox>
             <MDBox mt={2} mb={1}>
-              <MDTypography variant="h4" fontWeight="medium" color="black" mt={1} mb={1} textAlign="center">
-                Don't have an account?
+              <MDTypography variant="h6" fontWeight="medium" color="black" mt={1} mb={1} textAlign="center">
+                Learn and earn from stock market trading. Claim your free account now!
               </MDTypography>
-              <MDButton variant="gradient" color="warning" onClick={signUpButton} fullWidth>
+              <MDButton variant="gradient" color="error" onClick={signUpButton} fullWidth>
                 sign up
               </MDButton>
             </MDBox>
