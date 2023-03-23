@@ -67,37 +67,8 @@ const getInstrumentTicksHistoryData = async () => {
                   mailSender("Fail to enter data")
               // res.status(500).json({error:"Failed to enter data"});
             })
-            }
+          }
 
-          setTimeout(async ()=>{
-
-            const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
-            const dailyPnl = await DailyPNLData.find({timestamp: {$regex:matchingDate}})
-            const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:matchingDate}})
-            
-            let length = historyDataforLen.length;
-            mailSender(length);
-
-            if(dailyPnl.length === 0){
-              await dailyPnlDataController.dailyPnlCalculation(matchingDate);
-            }
-
-            if(traderDailyPnl.length === 0){
-              await traderwiseDailyPnlController.traderDailyPnlCalculation(matchingDate);
-            }
-
-            const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority"
-            // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
-            const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
-
-            await dbBackup.backupDatabase(sourceUri, targetUri);
-            await RetreiveOrder.retreiveOrder()
-
-
-          },20000)
-
-
-          
         } catch (err){
             return new Error(err);
         }
@@ -112,6 +83,33 @@ const getInstrumentTicksHistoryData = async () => {
       }
   
     } 
+
+    setTimeout(async ()=>{
+
+      const historyDataforLen = await HistoryData.find({timestamp: {$regex:matchingDate}})
+      const dailyPnl = await DailyPNLData.find({timestamp: {$regex:matchingDate}})
+      const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:matchingDate}})
+      
+      let length = historyDataforLen.length;
+      mailSender(length);
+
+      if(dailyPnl.length === 0){
+        await dailyPnlDataController.dailyPnlCalculation(matchingDate);
+      }
+
+      if(traderDailyPnl.length === 0){
+        await traderwiseDailyPnlController.traderDailyPnlCalculation(matchingDate);
+      }
+
+      const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority"
+      // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+      const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+
+      // await dbBackup.backupDatabase(sourceUri, targetUri);
+      await RetreiveOrder.retreiveOrder()
+
+
+    },20000)
 
   });
 };

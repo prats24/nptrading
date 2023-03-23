@@ -57,7 +57,13 @@ function MockOverallCompantPNL({socket, batchName}) {
 
       socket.on("tick", (data) => {
         //console.log("this is live market data", data);
-        setMarketData(data);
+        setMarketData(prevInstruments => {
+          const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+          data.forEach(instrument => {
+            instrumentMap.set(instrument.instrument_token, instrument);
+          });
+          return Array.from(instrumentMap.values());
+        });
         // setDetails.setMarketData(data);
       })
     }, [])
