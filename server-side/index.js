@@ -94,6 +94,8 @@ app.use('/api/v1', require("./marketData/getRetrieveOrder"));
 app.use('/api/v1', require('./marketData/placeOrder'));
 app.use('/api/v1', require('./marketData/switchToRealTrade'));
 app.use('/api/v1', require('./routes/instrument/instrumentAuth'));
+app.use('/api/v1', require('./routes/instrument/tradableInstrument'));
+
 app.use('/api/v1', require('./routes/TradingAccountAuth/accountAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/brokerageAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/parameterAuth'));

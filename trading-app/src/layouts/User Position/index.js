@@ -6,9 +6,12 @@ import { io } from "socket.io-client";
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
 import Grid from "@mui/material/Grid";
+// import Input from "@mui/material/Input";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
+import TextField from '@mui/material/TextField';
+
 
 
 
@@ -38,84 +41,79 @@ import OverallGrid from "./OverallP&L/OverallGrid";
 import MarginGrid from "./MarginDetails/MarginGrid";
 
 function UserPosition() {
-  const { columns, rows } = OverallPL();
-  const { columns: pColumns, rows: pRows } = OverallPL();
-
-  const { pnl, pnlpoints } = reportsLineChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
-  let socket;
-  try {
-    socket = io.connect(`${baseUrl1}`)
-  } catch (err) {
-    throw new Error(err);
-  }
+  // let socket;
+  // try {
+  //   socket = io.connect(`${baseUrl1}`)
+  // } catch (err) {
+  //   throw new Error(err);
+  // }
 
-  const [todaymockcount, setTodayMockCount] = useState([]);
-  const [allmockcount, setAllMockCount] = useState([]);
-  const [todaylivecount, setTodayLiveCount] = useState([]);
-  const [alllivecount, setAllLiveCount] = useState([]);
+  const [inputData, setInputData] = useState();
   const [reRender, setReRender] = useState(true);
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      socket.emit("hi", true)
+  
+  useEffect(()=>{
+
+                
+  }, [])
+
+
+  let timeoutId; // store the timeout id
+
+function sendSearchReq(data) {
+  // clear previous timeout if there is one
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+  }
+
+  // set a new timeout to send the request after 1 second
+  timeoutId = setTimeout(() => {
+    sendRequest(data);
+  }, 1000);
+}
+
+
+
+
+  function sendRequest(data){
+
+
+    // console.log("data", data.toUpperCase())
+
+
+    axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}`, {
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
     })
-    socket.on("noToken", (data) => {
-      window.alert(data);
+    .then((res)=>{
+      console.log("instrumentData", res.data)
+
+
+    }).catch((err)=>{
+      console.log(err);
     })
-    socket.on("wrongToken", (data) => {
-      window.alert(data);
-    })
 
-  }, []);
-
-  useEffect(() => {
-    axios.get(`${baseUrl}api/v1/readmocktradecompanytodaycount`)
-      .then((res) => {
-        setTodayMockCount((res.data));
-        //setOrderCountTodayCompany((res.data).length);
-      }).catch((err) => {
-        //window.alert("Server Down");
-        return new Error(err);
-      })
-
-    axios.get(`${baseUrl}api/v1/readlivetradecompanycountToday`)
-      .then((res) => {
-        setTodayLiveCount((res.data));
-        //setOrderCountTodayCompany((res.data).length);
-      }).catch((err) => {
-        //window.alert("Server Down");
-        return new Error(err);
-      })
-
-
-    axios.get(`${baseUrl}api/v1/readmocktradecompanycount`)
-      .then((res) => {
-        setAllMockCount((res.data));
-        //setOrderCountTodayCompany((res.data).length);
-      }).catch((err) => {
-        //window.alert("Server Down");
-        return new Error(err);
-      })
-
-    axios.get(`${baseUrl}api/v1/readlivetradecompanycount`)
-      .then((res) => {
-        setAllLiveCount((res.data));
-        //setOrderCountTodayCompany((res.data).length);
-      }).catch((err) => {
-        //window.alert("Server Down");
-        return new Error(err);
-      })
-  },[reRender]);
+  }
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
 
-        <MDBox mt={0}>
+
+        <TextField
+          id="outlined-basic" label="Search Symbol" variant="standard" type="text"
+          sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
+
+
+        {/* <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} />
@@ -136,7 +134,7 @@ function UserPosition() {
               <MarginGrid/>
             </Grid>
           </Grid>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
     </DashboardLayout>
   );

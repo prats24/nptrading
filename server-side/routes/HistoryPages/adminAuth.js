@@ -9,7 +9,12 @@ const RetreiveTrade = require("../../models/TradeDetails/retireivingTrade")
 const BrokerageDetail = require("../../models/Trading Account/brokerageSchema");
 const dbBackup = require("../../Backup/mongoDbBackUp")
 const newdbBackup = require("../../Backup/newBackup")
+const TradableInstrument = require("../../controllers/TradableInstrument/tradableInstrument")
 
+
+// router.get("/tradableInstrument", async (req, res)=>{
+//   await TradableInstrument.tradableInstrument();
+// })
 
 router.get("/dbbackup", async (req, res)=>{
   // const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority"
