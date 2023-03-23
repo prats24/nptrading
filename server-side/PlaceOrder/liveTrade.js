@@ -883,5 +883,4 @@ exports.liveTrade = async (reqBody, res) => {
     
     }
 
-
 }
