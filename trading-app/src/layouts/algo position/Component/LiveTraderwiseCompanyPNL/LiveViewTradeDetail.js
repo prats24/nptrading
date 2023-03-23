@@ -80,7 +80,13 @@ let totalRunningLots = 0;
     axios.get(`${baseUrl}api/v1/getliveprice`)
     .then((res) => {
         //console.log("live price data", res)
-        setMarketData(res.data);
+        setMarketData(prevInstruments => {
+          const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+          data.forEach(instrument => {
+            instrumentMap.set(instrument.instrument_token, instrument);
+          });
+          return Array.from(instrumentMap.values());
+        });
         // setDetails.setMarketData(data);
     }).catch((err) => {
         return new Error(err);
