@@ -100,7 +100,7 @@ exports.liveTrade = async (reqBody, res) => {
         console.log(err, "order id not receive---------------------")
         if(err.response.data.message === "Order request timed out. Please check the order book and confirm before placing again."){
             await ifOrderIdNotFound(false, realBuyOrSell);
-        } else{
+        } else if(!dontSendResp){
             return res.status(422).json({error : err.response.data.message})
         }
     })
