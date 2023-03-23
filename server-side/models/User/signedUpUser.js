@@ -93,6 +93,11 @@ const signedUpUserSchema = new mongoose.Schema({
         enum: ['OTP Verification Pending','OTP Verified','Approved','Rejected'],
         default:'OTP Verification Pending'
     },
+    trading_account:{
+        type: String,
+        enum: ['Zerodha','Upstox','PayTM Money','Trading View','Groww','I don\'t have any trading account','Other'],
+        // default:'OTP Verification Pending'
+    },
   
 })
 

@@ -200,7 +200,7 @@ async function Ondelete(){
 
   return (
     <div>
-      <MDButton variant="outlined" color="info" onClick={handleClickOpen}>
+      <MDButton variant="text" color="info" onClick={handleClickOpen}>
         <EditSharpIcon/>
       </MDButton>
       <Dialog

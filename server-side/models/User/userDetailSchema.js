@@ -27,9 +27,17 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required : true
     },
-    cohort:{
+    first_name:{
         type: String,
         required : true
+    },
+    last_name:{
+        type: String,
+        required : true
+    },
+    cohort:{
+        type: String,
+        // required : true
     },
     designation:{
         type: String,
@@ -40,6 +48,10 @@ const userDetailSchema = new mongoose.Schema({
         required: true
     },
     mobile:{
+        type: String,
+        required: true
+    },
+    whatsApp_number:{
         type: String,
         required: true
     },
@@ -55,6 +67,10 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    address:{
+        type: String,
+        // required: true
+    },
     trading_exp:{
         type: String,
         required: true
@@ -63,12 +79,34 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    city:{
+        type: String,
+        // required: true
+    },
+    state:{
+        type: String,
+        // required: true
+    },
+    country:{
+        type: String,
+        // required: true
+    },
     last_occupation:{
         type: String,
         required: true
     },
+    family_yearly_income:{
+        type: String,
+        // require: true,
+    },
     joining_date:{
         type: String,
+    },
+    purpose_of_joining:{
+        type: String,
+    },
+    employeed:{
+        type: Boolean,
     },
     role:{
         type: String,
@@ -103,6 +141,7 @@ const userDetailSchema = new mongoose.Schema({
               
     }
 })
+
 userDetailSchema.pre("save", async function(next){
     if(!this.isModified('password')){
         return next();

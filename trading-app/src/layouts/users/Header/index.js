@@ -22,6 +22,7 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import backgroundImage from "../../../assets/images/trading.jpg";
 import User from "../User";
 import Roles from "../Roles";
+import SignedUpUsers from "../SignedUpUsers"
 
 
 
@@ -96,6 +97,12 @@ function UserHeader({ children }) {
                     <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
                   }
                 />
+                <Tab
+                  label="SignedUp Users"
+                  icon={
+                    <PersonIcon fontSize="small" sx={{ mt: -0.25}}/>
+                  }
+                />
 
                 <Tab
                   label="Roles"
@@ -107,7 +114,8 @@ function UserHeader({ children }) {
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><User/> </TabPanel>
-            <TabPanel value={tabValue} index={1}><Roles/> </TabPanel>
+            <TabPanel value={tabValue} index={1}><SignedUpUsers /> </TabPanel>
+            <TabPanel value={tabValue} index={2}><Roles/> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>

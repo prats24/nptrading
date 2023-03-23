@@ -33,7 +33,7 @@ function Cover() {
   const navigate = useNavigate();
   const [showEmailOTP, setShowEmailOTP] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(true);
-  const [resendTimer, setResendTimer] = useState(10); // Resend timer in seconds
+  const [resendTimer, setResendTimer] = useState(30); // Resend timer in seconds
   const [timerActive, setTimerActive] = useState(false); // Flag to check if timer is active
 
   console.log(resendTimer,timerActive)
@@ -58,6 +58,7 @@ function Cover() {
     watsApp_number:"",
     purpose_of_joining:"",
     terms_and_conditions:false,
+    trading_account:"",
   });
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -94,7 +95,7 @@ function Cover() {
       return window.alert("Please accept the terms and conditions to proceed")
     }
 
-    const { first_name, last_name, applying_for, email, mobile, watsApp_number, degree, dob, gender, trading_exp, family_yearly_income, city, state, country,address, last_occupation,purpose_of_joining, employeed, terms_and_conditions} = formstate;
+    const { first_name, last_name, applying_for, email, mobile, watsApp_number, degree, dob, gender, trading_exp, family_yearly_income, city, state, country,address, last_occupation,purpose_of_joining, employeed, terms_and_conditions, trading_account} = formstate;
 
     const res = await fetch(`${baseUrl}api/v1/signup`, {
       
@@ -124,6 +125,7 @@ function Cover() {
           family_yearly_income:family_yearly_income,
           purpose_of_joining:purpose_of_joining,
           terms_and_conditions:terms_and_conditions,
+          trading_account:trading_account,
         })
     });
 
@@ -136,15 +138,12 @@ function Cover() {
     }else{
       setShowEmailOTP(true);
       setTimerActive(true);
-      setResendTimer(10);
-        // window.alert("Sign up request submitted.");
-        // console.log("entry succesfull");
-        // navigate("/response");
+      setResendTimer(30);
     }
 }
 
   async function otpConfirmation() {
-    console.log(formstate.email_otp)
+    // console.log(formstate.email_otp)
     const res = await fetch(`${baseUrl}api/v1/verifyotp`, {
       
       method: "PATCH",
@@ -154,8 +153,25 @@ function Cover() {
           "Access-Control-Allow-Credentials": false
       },
       body: JSON.stringify({
+        first_name:formstate.first_name,
+        last_name:formstate.last_name,
+        mobile:formstate.mobile,
+        watsApp_number:formstate.watsApp_number,
+        city:formstate.city,
+        state:formstate.state,
+        country:formstate.country,
+        dob:formstate.dob,
+        applying_for:formstate.applying_for,
+        degree:formstate.degree,
+        gender:formstate.gender,
+        trading_exp:formstate.trading_exp,
+        last_occupation:formstate.last_occupation,
+        mobile:formstate.mobile,
+        purpose_of_joining:formstate.purpose_of_joining,
+        employeed:formstate.employeed,
         email:formstate.email, 
         email_otp:formstate.email_otp,
+        trading_account:formstate.trading_account,
       })
   });
 
@@ -167,7 +183,7 @@ function Cover() {
       console.log("Invalid Entry");
   }else{
     setShowConfirmation(false)
-      window.alert("OTP Confirmed");
+      window.alert("Details Submitted Successfully");
       // console.log("entry succesfull");
       // navigate("/response");
   }
@@ -177,8 +193,8 @@ function Cover() {
   const resendOTP = async () => {
   
       setTimerActive(true);
-      console.log("Active timer set to true")
-      setResendTimer(10);
+      // console.log("Active timer set to true")
+      setResendTimer(30);
     
     const res = await fetch(`${baseUrl}api/v1/resendotp`, {
       
@@ -315,12 +331,12 @@ function Cover() {
                 onChange={(e)=>{formstate.degree = e.target.value}}
               >
                 <MenuItem value="BTech">B.Tech</MenuItem>
-                <MenuItem value="BSc.">BE</MenuItem>
-                <MenuItem value="BSc.">Msc.</MenuItem>
+                <MenuItem value="BE">BE</MenuItem>
+                <MenuItem value="MSc.">Msc.</MenuItem>
                 <MenuItem value="BSc.">Bsc.</MenuItem>
-                <MenuItem value="BSc.">BA</MenuItem>
-                <MenuItem value="BSc.">MA</MenuItem>
-                <MenuItem value="BSc.">Other</MenuItem>
+                <MenuItem value="BA">BA</MenuItem>
+                <MenuItem value="MA">MA</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
               </Select>
             </FormControl>
 
@@ -372,6 +388,26 @@ function Cover() {
                 <MenuItem value="Earn Money">Earn Money</MenuItem>
                 <MenuItem value="Just for Fun">Just for Fun</MenuItem>
                 <MenuItem value="Don't have anythign else to do">Don't have anythign else to do</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
+              <InputLabel id="demo-simple-select-standard-label">Please select the trading app which you use currently*</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Trading Account"
+                disabled={showEmailOTP}
+                // sx={{ margin: 1, padding: 1, width: "300px" }}
+                onChange={(e)=>{formstate.trading_account = e.target.value}}
+              >
+                <MenuItem value="Zerodha">Zerodha</MenuItem>
+                <MenuItem value="Upstox">Upstox</MenuItem>
+                <MenuItem value="Groww">Groww</MenuItem>
+                <MenuItem value="PayTM Money">PayTM Money</MenuItem>
+                <MenuItem value="Trading View">Trading View</MenuItem>
+                <MenuItem value="Other">Other</MenuItem>
+                <MenuItem value="I don't have any trading account">I don't have any trading account</MenuItem>
               </Select>
             </FormControl>
 
@@ -465,9 +501,6 @@ function Cover() {
             </>
             )}
             
-
-
-
             <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Already have an account?{" "}
