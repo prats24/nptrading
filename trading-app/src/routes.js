@@ -26,6 +26,7 @@ import TradersReportLive from "./layouts/tradersReportLive"
 import TradersMarginAllocation from "./layouts/tradersMarginAllocation"
 import AnalyticsRoutes from './analyticsRoutes'
 import SignUp from './layouts/authentication/sign-up'
+import Response from './layouts/authentication/sign-up/responseSubmit'
 
 
 // @mui icons
@@ -63,10 +64,18 @@ const routes = [
   {
     // type: "collapse",
     // name: "Company Dashboard",
-    key: "admindashboard",
+    key: "signup",
     // icon: <DashboardIcon/>,
     route: "/signup",
     component: <SignUp />,
+  },
+  {
+    // type: "collapse",
+    // name: "Company Dashboard",
+    key: "response",
+    // icon: <DashboardIcon/>,
+    route: "/response",
+    component: <Response />,
   },
   {
     type: "collapse",

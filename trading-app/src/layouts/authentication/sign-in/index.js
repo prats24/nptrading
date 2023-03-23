@@ -40,7 +40,6 @@ function Basic() {
   const setDetails = useContext(userContext);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
-  console.log("sign componenet")
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
@@ -118,7 +117,7 @@ function Basic() {
             navigate("/signup");
             }
 
-  return (
+  return ( 
     <BasicLayout image={bgImage}>
       <Card>
         <MDBox

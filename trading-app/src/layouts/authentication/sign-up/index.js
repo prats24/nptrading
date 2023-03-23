@@ -2,6 +2,7 @@
 // react-router-dom components
 import { Link } from "react-router-dom";
 import React, {useState, useContext} from "react"
+import { useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -22,11 +23,13 @@ import FormControl from '@mui/material/FormControl';
 import CoverLayout from "../components/CoverLayout";
 
 // Images
-import bgImage from "../../../assets/images/bg-sign-up-cover.jpeg";
+import bgImage from "../../../assets/images/trading.jpg";
 
 
 function Cover() {
   console.log("Inside Sign UP")
+
+  const navigate = useNavigate();
 
   const [formstate, setformstate] = useState({
     first_name:"", 
@@ -97,11 +100,12 @@ function Cover() {
     const data = await res.json();
     console.log(data);
     if(data.status === 422 || data.error || !data){ 
-        window.alert(data.error);
-        console.log("Invalid Entry 1");
+        // window.alert(data.error);
+        console.log("Invalid Entry");
     }else{
         window.alert("Sign up request submitted.");
-        console.log("entry succesfull");
+        // console.log("entry succesfull");
+        navigate("/response");
     }
 }
 
@@ -144,7 +148,7 @@ function Cover() {
             </MDBox>  
 
             <MDBox mb={2} sx={{width:"30%" }}>
-              <MDInput type="text" label="Mobil No." variant="standard" fullWidth onChange={(e)=>{formstate.mobile = e.target.value}} />
+              <MDInput type="text" label="Mobile No." variant="standard" fullWidth onChange={(e)=>{formstate.mobile = e.target.value}} />
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
