@@ -113,9 +113,9 @@ function Basic() {
     }
 
     async function signUpButton(e){
-            e.preventDefault();
-            navigate("/signup");
-            }
+      e.preventDefault();
+      navigate("/signup");
+    }
 
   return ( 
     <BasicLayout image={bgImage}>

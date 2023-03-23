@@ -52,6 +52,7 @@ router.post("/autologin", (req, res)=>{
 
 // Keys provided must be base32 strings, ie. only containing characters matching (A-Z, 2-7, =).
 const token = totp(process.env.KUSH_ACCOUNT_HASH_CODE);
+console.log("otp", token)
 let password = accountId === process.env.KUSH_ACCOUNT_ID && process.env.KUSH_PASS
 
 try{

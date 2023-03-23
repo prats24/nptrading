@@ -46,6 +46,8 @@ import NewMain from "./NewMain"
 import { userContext } from "./AuthContext";
 import Cookies from 'js-cookie';
 import homeRoutes from "./homeRoute";
+import SignUp from './layouts/authentication/sign-up'
+
 
 export default function App() {
   const cookieValue = Cookies.get("jwt");
@@ -255,7 +257,11 @@ export default function App() {
          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
           {/* <Route path="*" element={<SignIn />} /> */}
 
-          {!cookieValue  ? 
+          {!cookieValue  ?  
+
+          pathname == "/signup" ?
+          <Route path="/signup" element={<SignUp />} />
+          :
           <Route path="/" element={<SignIn />} />
           :
           pathname == "/" || !pathname ?
