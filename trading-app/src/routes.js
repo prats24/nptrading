@@ -63,7 +63,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Company Dashboard",
-    key: "admindashboard",
+    key: "signup",
     // icon: <DashboardIcon/>,
     route: "/signup",
     component: <SignUp />,
