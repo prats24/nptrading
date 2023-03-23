@@ -10,7 +10,6 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
-import MDButton from "../../components/MDButton"
 
 
 
@@ -18,29 +17,17 @@ import MDButton from "../../components/MDButton"
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
-import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "../../examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-import reportsBarChartData from "./data/reportsBarChartData";
-import reportsLineChartData from "./data/reportsLineChartData";
 
-
-
-// Dashboard components
-
-import Projects from "./components/Projects";
 import MismatchDetails from "./components/MismatchDetails";
 import InstrumentDetails from "./components/InstrumentDetails";
 import MockOverallCompanyPNL from "./components/MockOverallCompanyPNL";
 import LiveOverallCompanyPNL from "./components/LiveOverallCompanyPNL";
 import MockTraderwiseCompanyPNL from "./components/MockTraderwiseCompanyPNL";
 import LiveTraderwiseCompanyPNL from "./components/LiveTraderwiseCompanyPNL";
-import OrdersOverview from "./components/OrdersOverview";
 
 function CompanyPosition() {
-  const { pnl, pnlpoints } = reportsLineChartData;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -51,70 +38,10 @@ function CompanyPosition() {
       throw new Error(err);
   }
 
-    const [todaymockcount, setTodayMockCount] = useState([]);
-    const [allmockcount, setAllMockCount] = useState([]);
-    const [todaylivecount, setTodayLiveCount] = useState([]);
-    const [alllivecount, setAllLiveCount] = useState([]);
 
     const [userPermission, setUserPermission] = useState([]);
-   
-    useEffect(()=>{
-
-        //console.log(socket);
-        socket.on("connect", ()=>{
-            //console.log(socket.id);
-            socket.emit("hi",true)
-        })
-        socket.on("noToken", (data)=>{
-            //console.log("no token");
-            window.alert(data);
-        })
-        socket.on("wrongToken", (data)=>{
-            //console.log("wrong Token");
-            window.alert(data);
-        })
-
-    }, []);
 
     useEffect(()=>{
-
-        axios.get(`${baseUrl}api/v1/readmocktradecompanytodaycount`)
-        .then((res)=>{
-            setTodayMockCount((res.data));            
-            //setOrderCountTodayCompany((res.data).length);
-        }).catch((err)=>{
-            //window.alert("Server Down");
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readlivetradecompanycountToday`)
-        .then((res)=>{
-            setTodayLiveCount((res.data));            
-            //setOrderCountTodayCompany((res.data).length);
-        }).catch((err)=>{
-            //window.alert("Server Down");
-            return new Error(err);
-        })
-
-
-        axios.get(`${baseUrl}api/v1/readmocktradecompanycount`)
-        .then((res)=>{
-            setAllMockCount((res.data));            
-            //setOrderCountTodayCompany((res.data).length);
-        }).catch((err)=>{
-            //window.alert("Server Down");
-            return new Error(err);
-        })
-
-        axios.get(`${baseUrl}api/v1/readlivetradecompanycount`)
-        .then((res)=>{
-            setAllLiveCount((res.data));            
-            //setOrderCountTodayCompany((res.data).length);
-        }).catch((err)=>{
-            //window.alert("Server Down");
-            return new Error(err);
-        })
-
         axios.get(`${baseUrl}api/v1/readpermission`)
         .then((res)=>{
           setUserPermission((res.data));            
@@ -137,7 +64,6 @@ function CompanyPosition() {
       );
     };
 
-    //console.log("re rendering index")
 
   return (
     <DashboardLayout>

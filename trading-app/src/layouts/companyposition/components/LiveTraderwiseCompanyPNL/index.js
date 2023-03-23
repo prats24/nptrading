@@ -5,25 +5,20 @@ import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import TextField from '@mui/material/TextField';
 
 
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
-import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
 import LiveViewTradeDetail from "./LiveViewTradeDetail"
 import LiveTraderwiseOrders from "./LiveTraderwiseOrders"
-// import MockRealSwitch from "./MockRealSwitch";
-import MockRealSwitch from "../MockRealSwitch";
 
 // Data
 import data from "./data";
-import TradeSwitchButton from "../TradeSwitchButton";
 
 function LiveTraderwiseCompantPNL(props) {
   const { columns, rows } = data();
@@ -31,37 +26,38 @@ function LiveTraderwiseCompantPNL(props) {
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
-  const [lastestLiveTradeTimearr, setLatestLiveTradeTimearr] = useState([]);
-  const [lastestLiveTradeTime, setLatestLiveTradeTime] = useState([]);
-  const [lastestLiveTradeBy, setLatestLiveTradeBy] = useState([]);
-  const [lastestLiveTradeSymbol, setLatestLiveTradeSymbol] = useState([]);
-  const [lastestLiveTradeType, setLatestLiveTradeType] = useState([]);
-  const [lastestLiveTradeQunaity, setLatestLiveTradeQuantity] = useState([]);
-  const [lastestLiveTradeStatus, setLatestLiveTradeStatus] = useState([]);
+  // const [lastestLiveTradeTimearr, setLatestLiveTradeTimearr] = useState([]);
+  let [latestLive, setLatestLive] = useState({
+    tradeTime: "",
+    tradeBy: "",
+    tradeSymbol: "",
+    tradeType: "",
+    tradeQuantity: "",
+    tradeStatus: ""
+  })
 
-  console.log("re rendering index live")
   // const {render, setRender} = Render
 
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
+  // const renderMenu = (
+  //   <Menu
+  //     id="simple-menu"
+  //     anchorEl={menu}
+  //     anchorOrigin={{
+  //       vertical: "top",
+  //       horizontal: "left",
+  //     }}
+  //     transformOrigin={{
+  //       vertical: "top",
+  //       horizontal: "right",
+  //     }}
+  //     open={Boolean(menu)}
+  //     onClose={closeMenu}
+  //   >
+  //     <MenuItem onClick={closeMenu}>Action</MenuItem>
+  //     <MenuItem onClick={closeMenu}>Another action</MenuItem>
+  //     <MenuItem onClick={closeMenu}>Something else</MenuItem>
+  //   </Menu>
+  // );
 
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -116,20 +112,22 @@ function LiveTraderwiseCompantPNL(props) {
   // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
   .then((res)=>{
       //console.log(res.data);
-      setLatestLiveTradeTimearr(res.data);
-      setLatestLiveTradeTime(res.data.trade_time) ;
-      setLatestLiveTradeBy(res.data.createdBy) ;
-      setLatestLiveTradeType(res.data.buyOrSell) ;
-      setLatestLiveTradeQuantity(res.data.Quantity) ;
-      setLatestLiveTradeSymbol(res.data.symbol) ;
-      setLatestLiveTradeStatus(res.data.status)
-        //console.log(lastestLiveTradeTimearr);
+      // setLatestLiveTradeTimearr(res.data);
+      latestLive.tradeTime = (res.data.trade_time) ;
+      latestLive.tradeBy = (res.data.createdBy) ;
+      latestLive.tradeType = (res.data.buyOrSell) ;
+      latestLive.tradeQuantity = (res.data.Quantity) ;
+      latestLive.tradeSymbol = (res.data.symbol) ;
+      latestLive.tradeStatus = (res.data.status)
+
+      setLatestLive(latestLive)
   }).catch((err) => {
     return new Error(err);
   })
   }, [marketData])
 
-
+if(allTrade.length !== 0)
+{
     let mapForParticularUser = new Map();
     //console.log("Length of All Trade Array:",allTrade.length);
     for(let i = 0; i < allTrade.length; i++){
@@ -321,100 +319,13 @@ function LiveTraderwiseCompantPNL(props) {
        </MDTypography>
      );
    
-     ////console.log(obj)
      rows.push(obj);
-
-  // }, [marketData])
-  // function search(e){
-  //   console.log("value", e.target.value)
-  //   let obj = {};
-  //   rows =[];
-  //   finalTraderPnl.map((subelem)=>{
-  //     console.log("value",subelem.name.toLowerCase().includes(e.target.value))
-  //     if(subelem.name.toLowerCase().includes(e.target.value)){
-  //       console.log("value in  if", subelem)
-
-  //       let npnlcolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
-  //       let tradercolor = ((subelem.totalPnl)-(subelem.brokerage)) >= 0 ? "success" : "error"
-  //       let gpnlcolor = (subelem.totalPnl) >= 0 ? "success" : "error"
-  //       let runninglotscolor = subelem.runninglots > 0 ? "info" : (subelem.runninglots < 0 ? "error" : "dark")
-  //       let traderbackgroundcolor = subelem.runninglots != 0 ? "white" : "#e0e1e5"
-  //       let runninglotsbgcolor = subelem.runninglots > 0 ? "#ffff00" : ""
-  
-  //        totalGrossPnlGrid += (subelem.totalPnl);
-  //        //console.log("Gross P&L: ",subelem.name,subelem.totalPnl );
-  //        totalTransactionCost += (subelem.brokerage);
-  //        totalNoRunningLots += (subelem.runninglots);
-  //        totalLotsUsed += (subelem.lotUsed);
-  //        totalTrades += (subelem.noOfTrade);
-  //        totalTraders += 1;
-  
-  //        obj.userId = (
-  //         <MDTypography component="a" variant="caption" fontWeight="medium">
-  //           {subelem.userId}
-  //         </MDTypography>
-  //       );
-  
-  //        obj.traderName = (
-  //          <MDTypography component="a" variant="caption" color={tradercolor} fontWeight="medium" backgroundColor={traderbackgroundcolor} padding="5px" borderRadius="5px">
-  //            {(subelem.name)}
-  //          </MDTypography>
-  //        );
-     
-  //        obj.grossPnl = (
-  //          <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
-  //            {(subelem.totalPnl) > 0.00 ? "+₹" + ((subelem.totalPnl).toFixed(2)): "-₹" + (-subelem.totalPnl).toFixed(2)}
-  //          </MDTypography>
-  //        );
-     
-  //        obj.noOfTrade = (
-  //          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-  //            {subelem.noOfTrade}
-  //          </MDTypography>
-  //        );
-     
-  //        obj.runningLots = (
-  //          <MDTypography component="a" variant="caption" color={runninglotscolor} backgroundColor={runninglotsbgcolor} fontWeight="medium">
-  //            {subelem.runninglots}
-  //          </MDTypography>
-  //        );
-     
-  //        obj.lotUsed = (
-  //          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-  //            {subelem.lotUsed}
-  //          </MDTypography>
-  //        );
-     
-  //        obj.brokerage = (
-  //          <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-  //            {"₹"+(subelem.brokerage).toFixed(2)}
-  //          </MDTypography>
-  //        );
-     
-  //        obj.netPnl = (
-  //          <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
-  //            {((subelem.totalPnl)-(subelem.brokerage)) > 0.00 ? "+₹" + (((subelem.totalPnl)-(subelem.brokerage)).toFixed(2)): "-₹" + ((-((subelem.totalPnl)-(subelem.brokerage))).toFixed(2))}
-  //          </MDTypography>
-  //        );
-  //        obj.view = (
-  //         <LiveViewTradeDetail socket={props.socket} userId={subelem.userId}/>
-  //       );
-  //       obj.orders = (
-  //         <LiveTraderwiseOrders userId={subelem.userId}/>
-  //       );
-  //       obj.realOrMock = (
-  //         <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName}/>
-  //       );
-     
-  //        rows.push(obj);
-
-  //     }
-  //   })
-  // }
-
-     
+}
 
   return (
+<>
+    { allTrade.length !== 0 && (
+      
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
@@ -432,15 +343,11 @@ function LiveTraderwiseCompantPNL(props) {
               done
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-            &nbsp;<strong>last trade</strong> {lastestLiveTradeBy} {lastestLiveTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestLiveTradeQunaity)} quantity of {lastestLiveTradeSymbol} at {lastestLiveTradeTime} - {lastestLiveTradeStatus}
+            &nbsp;<strong>last trade</strong> {latestLive.tradeBy} {latestLive.tradeType === "BUY" ? "bought" : "sold"} {Math.abs(latestLive.tradeQuantity)} quantity of {latestLive.tradeSymbol} at {latestLive.tradeTime} - {latestLive.tradeStatus}
             </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
-          <MDButton > <TradeSwitchButton tradeData={finalTraderPnl} props={props} /> </MDButton>
-          {/* <TextField
-              id="outlined-basic" label="" variant="standard" onChange={(e)=>{search(e)}}
-              sx={{ margin: 1, padding: 1, width: "300px" }} /> */}
 
           <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
             more_vert
@@ -448,7 +355,7 @@ function LiveTraderwiseCompantPNL(props) {
           
 
         </MDBox>
-        {renderMenu}
+        {/* {renderMenu} */}
       </MDBox>
       <MDBox>
         <DataTable
@@ -459,6 +366,9 @@ function LiveTraderwiseCompantPNL(props) {
         />
       </MDBox>
     </Card>
+   
+  )}
+   </>
   );
 }
 export default LiveTraderwiseCompantPNL;

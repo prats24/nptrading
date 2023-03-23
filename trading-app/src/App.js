@@ -173,7 +173,7 @@ export default function App() {
       <SettingsIcon/>
     </MDBox>
   );
-  console.log("Analytics Routes: ",analyticsRoutes)
+  // console.log("Analytics Routes: ",analyticsRoutes)
 
   return direction === "rtl" ? (
     

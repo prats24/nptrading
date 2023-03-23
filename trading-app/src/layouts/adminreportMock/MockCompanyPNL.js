@@ -8,18 +8,11 @@ import Card from "@mui/material/Card";
 import MDBox from "../../components/MDBox";
 import MDTypography from "../../components/MDTypography";
 
-// Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
 import DataTable from "../../examples/Tables/DataTable";
-import Header from "./Header";
 import TextField from '@mui/material/TextField';
 import { Typography } from "@mui/material";
-import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
 
-// Data
 import MockCompanyPNLData from "./data/MockCompanyPNLData";
 
 const TableOne = () => {
@@ -33,21 +26,18 @@ const TableOne = () => {
     let valueInStartDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-01`
     const [firstDate, setFirstDate] = useState(valueInStartDate);
     const [secondDate, setSecondDate] = useState(valueInDate);
-    let [totalPnl, setPnl] = useState(0);
-    let [totalnPnl, setnPnl] = useState(0);
-    let [totalTransactionCost, setCost] = useState(0);
-    let [totalTrade, setTrade] = useState(0);
-    let [totalTradingDays, setTradingDay] = useState(0);
-    let [totalGreenDays, setGreenDays] = useState(0);
-    let [totalRedDays, setRedDays] = useState(0);
-    let [greenDaysPnl, setGreenDaysPnl] = useState(0);
-    let [redDaysPnl, setRedDaysPnl] = useState(0);
-    let [greenDaysAvgPnl, setGreenDaysAvgPnl] = useState(0);
-    let [redDaysAvgPnl, setRedDaysAvgPnl] = useState(0);
-    let [overallPnl, setOverallPnl] = useState([]);
-    //console.log("Dates: "+firstDate,secondDate)
-    //console.log(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
-   
+    let totalPnl = 0;
+    let totalnPnl = 0;
+    let totalTransactionCost = 0;
+    let totalTrade = 0;
+    let totalTradingDays = 0;
+    let totalGreenDays = 0;
+    let totalRedDays = 0;
+    let greenDaysPnl = 0;
+    let redDaysPnl = 0;
+    let greenDaysAvgPnl = 0;
+    let redDaysAvgPnl = 0;
+
     useEffect(()=>{
         //console.log(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
         axios.get(`${baseUrl}api/v1/companypnlreport/${firstDate}/${secondDate}`)
@@ -83,7 +73,6 @@ const TableOne = () => {
     
     let pnldate = [];
     let companynpnl = [];
-    let companypnl = [];
     //console.log(companypnldata);
     companypnldata?.map((elem)=>{
     let cpnl = {}
@@ -138,10 +127,7 @@ const TableOne = () => {
         {elem.trades}
       </MDTypography>
     );
-    //console.log(typeof(cpnl));
-    //console.log(cpnl)
-    //companypnl.push(cpnl)
-    //console.log(companypnl)
+
     rows.push(cpnl)
 
     })

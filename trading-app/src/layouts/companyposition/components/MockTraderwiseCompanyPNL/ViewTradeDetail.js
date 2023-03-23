@@ -1,34 +1,17 @@
 import {useState, useEffect} from "react"
 import axios from "axios";
-// @mui material components
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
-import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-// import MDButton from '../../../components/MDButton';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import { Box, Typography } from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-// import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -50,7 +33,6 @@ function ViewTradeDetail({userId, socket}) {
   const closeMenu = () => setMenu(null);
 
 
-  const [regularSwitch, setRegularSwitch] = useState(true);
   const handleClickOpen = () => {
 
     setOpen(true);
@@ -198,7 +180,6 @@ function ViewTradeDetail({userId, socket}) {
         );
       }
       
-      //console.log(obj)
       rows.push(obj);
     })
 
@@ -249,31 +230,6 @@ function ViewTradeDetail({userId, socket}) {
     rows.push(obj);
   
 
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
-
-
-  //console.log("mock live view", rows)
-
 return (
   <div>
 
@@ -304,14 +260,7 @@ return (
 
         </DialogContentText>
       </DialogContent>
-      {/* <DialogActions>
-        <MDButton autoFocus variant="contained" color="info" onClick={(e) => { exitPosition(e) }}>
-          EXIT
-        </MDButton>
-        <MDButton variant="contained" color="info" onClick={handleClose} autoFocus>
-          Close
-        </MDButton>
-      </DialogActions> */}
+
     </Dialog>
   </div >
 
