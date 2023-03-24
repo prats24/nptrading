@@ -54,7 +54,8 @@ function AdminReportHeader() {
   }, [tabsOrientation]);
 
 
-  const handleSetTabValue = ( newValue) => setTabValue(newValue);
+  const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+  console.log(tabValue)
 
 
   return (
