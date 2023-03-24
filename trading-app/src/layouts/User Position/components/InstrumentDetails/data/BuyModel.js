@@ -96,17 +96,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   };
 
   const handleClickOpen = () => {
-    // axios.get(`${baseUrl}api/v1/readpermission`)
-    // .then((res) => {
-    // let perticularUser = (res.data).filter((elem) => {
-    //     ////console.log(elem.userId, userId);
-    //     return elem.userId === userId;
-    // })
-    // setUserPermission(perticularUser);
-    // }).catch((err) => {
-    //     // //window.alert("Server Down");
-    //     return new Error(err);
-    // })
+
 
     setOpen(true);
 

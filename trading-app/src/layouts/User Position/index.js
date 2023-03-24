@@ -54,6 +54,24 @@ function UserPosition() {
     throw new Error(err);
   }
 
+  useEffect(()=>{
+  
+    //console.log(socket);
+    socket.on("connect", ()=>{
+        //console.log(socket.id);
+        socket.emit("hi",true)
+    })
+    socket.on("noToken", (data)=>{
+        //console.log("no token");
+        window.alert(data);
+    })
+    socket.on("wrongToken", (data)=>{
+        //console.log("wrong Token");
+        window.alert(data);
+    })
+
+  }, []);
+
   const [instrumentsData, setInstrumentsData] = useState();
   const [reRender, setReRender] = useState(true);
 
@@ -129,10 +147,12 @@ function UserPosition() {
 
       // this function is extracting data of user who is logged in
       // await userDetail();
-      console.log(data)
+      console.log(data.message)
       
       
     }
+
+    reRender ? setReRender(false) : setReRender(true);
   }
 
   return (
@@ -145,16 +165,16 @@ function UserPosition() {
           id="outlined-basic" label="Search Symbol" variant="standard" type="text"
           sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
 
-        {instrumentsData?.length > 0 &&
+        {/* {instrumentsData?.length > 0 &&
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <TradableInstrument data={instrumentsData} />
             </Grid>
           </Grid>
-        </MDBox> }
+        </MDBox> } */}
 
-        {/* { instrumentsData?.length > 0 &&
+        { instrumentsData?.length > 0 &&
           (instrumentsData.map((elem)=>{
             const date = new Date(elem.expiry);
             const day = date.getDate();
@@ -178,7 +198,7 @@ function UserPosition() {
               </>
             )
           }))
-        } */}
+        }
 
         <MDBox mt={0}>
           <Grid container spacing={3}>

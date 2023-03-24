@@ -15,40 +15,50 @@ import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 
-export default function Data() {
+export default function Data(reRender) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [instrumentData, setInstrumentData] = useState([]);
-  const [marketData, setMarketData] = useState([]);
-  const [livedata, setLiveData] = useState([]);
+  // const [marketData, setMarketData] = useState([]);
+  // const [livedata, setLiveData] = useState([]);
   let date = new Date();
   let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
 
+  console.log("rows re rendering data")
 
-  const Company = ({ image, name }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
-      <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-        {name}
-      </MDTypography>
-    </MDBox>
-  );
+  // const Company = ({ image, name }) => (
+  //   <MDBox display="flex" alignItems="center" lineHeight={1}>
+  //     <MDAvatar src={image} name={name} size="sm" />
+  //     <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+  //       {name}
+  //     </MDTypography>
+  //   </MDBox>
+  // );
+
+  console.log(reRender)
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readInstrumentDetails`)
+    axios.get(`${baseUrl}api/v1/readInstrumentDetails`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+    })
     .then((res) => {
-        let dataArr = (res.data).filter((elem) => {
-            return elem.status === "Active"
-        })
-        setInstrumentData(dataArr)
+
+        console.log("rows data inside", res.data)
+
+        setInstrumentData(res.data)
     }).catch((err) => {
         return new Error(err);
     })
-  }, [])
+  }, [reRender])
 
     let instrumentDetailArr = [];
-    //console.log("instrumentData", instrumentData)
+    console.log("rows data", instrumentData, reRender)
     instrumentData.map((elem)=>{
     let instrumentDetailObj = {}
 
@@ -114,6 +124,7 @@ export default function Data() {
       { Header: "Chart", accessor: "chart", width: "5%", align: "center" },
       { Header: "buy", accessor: "buy", width: "5%", align: "center" },
       { Header: "sell", accessor: "sell", width: "5%", align: "center" },
+      { Header: "remove", accessor: "remove", width: "5%", align: "center" }
     ],
 
     rows: instrumentDetailArr,

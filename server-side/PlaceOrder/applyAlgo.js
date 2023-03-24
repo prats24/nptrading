@@ -58,6 +58,9 @@ const ApplyAlgo = async (req, res, next)=>{
     }
 
     function tradingAlgo() {
+        if(userPermissionAlgo.length === 0){
+            return res.status(401).send({message: "Your profile is not active yet, please contact the admin @ team@ninepointer.in for more details."})
+        }
         userPermissionAlgo.map((elem) => {
     
             if(elem.transactionChange === "TRUE") {
