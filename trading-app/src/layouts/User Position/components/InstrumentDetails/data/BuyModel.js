@@ -97,18 +97,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   };
 
   const handleClickOpen = () => {
-    // axios.get(`${baseUrl}api/v1/readpermission`)
-    // .then((res) => {
-    // let perticularUser = (res.data).filter((elem) => {
-    //     ////console.log(elem.userId, userId);
-    //     return elem.userId === userId;
-    // })
-    // setUserPermission(perticularUser);
-    // }).catch((err) => {
-    //     // //window.alert("Server Down");
-    //     return new Error(err);
-    // })
-
+    
     setOpen(true);
 
 
@@ -198,16 +187,16 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
         ////console.log("Failed to Trade");
     } else {
         if(dataResp.massage === "COMPLETE"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("Trade Succesfull Completed");
         } else if(dataResp.massage === "REJECTED"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("Trade is Rejected due to Insufficient Fund");
         } else if(dataResp.massage === "AMO REQ RECEIVED"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("AMO Request Recieved");
         } else{
-            console.log("this is dataResp", dataResp)
+            // console.log("this is dataResp", dataResp)
             window.alert(dataResp.message);
         }
     }

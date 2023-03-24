@@ -6,6 +6,16 @@ const signedUpUserSchema = new mongoose.Schema({
         type: String,
         required : true
     },
+    createdOn:{
+        type: Date,
+        required: true,
+        default: new Date(),
+    },
+    last_modifiedOn:{
+        type: Date,
+        required: true,
+        default: new Date(),
+    },
     last_name:{
         type: String,
         required : true

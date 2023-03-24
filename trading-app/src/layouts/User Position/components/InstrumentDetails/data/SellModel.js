@@ -194,16 +194,16 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         ////console.log("Failed to Trade");
     } else {
         if(dataResp.massage === "COMPLETE"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("Trade Succesfull Completed");
         } else if(dataResp.massage === "REJECTED"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("Trade is Rejected due to Insufficient Fund");
         } else if(dataResp.massage === "AMO REQ RECEIVED"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("AMO Request Recieved");
         } else{
-            console.log("this is dataResp", dataResp)
+            // console.log("this is dataResp", dataResp)
             window.alert(dataResp.message);
         }
     }

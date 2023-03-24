@@ -4,13 +4,15 @@ const express = require("express");
 const router = express.Router();
 require("../../db/conn");
 const SignedUpUser = require("../../models/User/signedUpUser");
+const User = require("../../models/User/userDetailSchema");
 
 router.post("/signup", (req, res)=>{
     console.log("Inside SignUp Routes")
     const {first_name, last_name, applying_for,address, family_yearly_income, email, mobile, watsApp_number, degree, dob, gender, trading_exp, city, state, country, last_occupation, employeed, purpose_of_joining, terms_and_conditions, trading_account } = req.body;
     console.log(req.body)
+    console.log(!first_name || !last_name || !email || !applying_for || !mobile || !watsApp_number || !degree || !dob || !gender || !trading_exp || !city || !state || !country || !last_occupation || !terms_and_conditions || !purpose_of_joining || !trading_account)
     if( !first_name || !last_name || !email || !applying_for || !mobile || !watsApp_number || !degree || !dob || !gender || !trading_exp || !city || !state || !country || !last_occupation || !terms_and_conditions || !purpose_of_joining || !trading_account){
-        return res.status(422).json({error : "Plz fill all the details to proceed"})
+        return res.status(422).json({message : "Plz fill all the details to proceed"})
     }
 
     SignedUpUser.findOne({ $or: [{ email: email }, { mobile: mobile }, { watsApp_number: watsApp_number }] })
@@ -28,7 +30,7 @@ router.post("/signup", (req, res)=>{
         });
         console.log(signedUser)
         signedUser.save().then(()=>{
-            res.status(201).json({massage : "Data enter succesfully"});
+            res.status(201).json({message : "Data enter succesfully"});
             let email = signedUser.email;
             let subject = "OTP from ninepointer";
             let message = `Your OTP for email verification is: ${email_otp}`
@@ -42,7 +44,7 @@ router.patch("/verifyotp", async (req, res)=>{
         const {
         first_name, 
         last_name, 
-        designation, 
+        applying_for, 
         address, 
         family_yearly_income, 
         email, 
@@ -59,9 +61,11 @@ router.patch("/verifyotp", async (req, res)=>{
         employeed, 
         purpose_of_joining, 
         email_otp,
+        trading_account,
         } = req.body
 
     console.log("OTP Verification")
+    console.log("Request Body in OTP Verification: ",req.body)
 
     const user = await SignedUpUser.findOne({email: email})
     if(!user)
@@ -77,10 +81,60 @@ router.patch("/verifyotp", async (req, res)=>{
         })
     }
         user.status = 'OTP Verified'
+        user.last_modifiedOn = new Date()
         await user.save();
-        res.status(200).json({
-            message: "OTP verification done"
+        // res.status(200).json({
+        //     message: "OTP verification done"
+        // })
+
+        User.findOne({ $or: [{ email: email }, { mobile: mobile }] })
+        .then( async (dataExist)=>{
+        if(dataExist){
+            console.log(dataExist)
+            console.log("data already exists");
+            return res.status(422).json({error : "Already a User"})
+        }
+        //  const newuser = new User({
+        //     first_name, last_name, designation: applying_for,address: address, family_yearly_income, email, 
+        //     mobile, whatsApp_number: watsApp_number, degree, dob, gender, trading_exp, city, state, 
+        //     country, last_occupation, employeed, purpose_of_joining, trading_account, role: 'user', 
+        //     createdBy: first_name + ' ' + last_name,last_modifiedBy: first_name + ' ' + last_name, 
+        //     name: first_name + ' ' + last_name.substring(0,1), createdOn: user.last_modifiedOn, 
+        //     lastModified: user.last_modifiedOn, password: 'np' + last_name + '@123', status: 'Active',
+
+        // });
+        // console.log("New User: ",newuser);
+
+        const count = await User.countDocuments();
+        console.log("Count of Documents: ",count)
+        const userId = "NP" + (count + 1).toString().padStart(8, "0");
+        console.log("ninepointer Id: ",userId)
+
+        try{
+        const newuser = await User.create({
+            first_name, last_name, designation: applying_for,address: address, family_yearly_income, email, 
+            mobile, whatsApp_number: watsApp_number, degree, dob, gender, trading_exp, city, state, 
+            country, last_occupation, employeed, purpose_of_joining, trading_account, role: 'user', 
+            createdBy: first_name + ' ' + last_name,last_modifiedBy: first_name + ' ' + last_name, 
+            name: first_name + ' ' + last_name.substring(0,1), createdOn: user.last_modifiedOn, 
+            lastModified: user.last_modifiedOn, password: 'np' + last_name + '@123', status: 'Active', 
+            employeeid: userId,fund: 0, location: city, creationProcess: 'Auto SignUp',joining_date:user.last_modifiedOn, 
+        });
+
+        if(!newuser) return next(console.log('Couldn\'t create user', 400));
+
+        res.status(201).json({status: "Success", data:newuser, message:"User created succesfully"});
+        }
+        catch(error){
+            throw new Error(error);
+        }
+        // await newuser.create().then(()=>{
+        //     res.status(201).json({message : "User created succesfully"});
+        // }).catch((err)=> res.status(500).json({err}));
+        
+
         })
+
         
 })
 

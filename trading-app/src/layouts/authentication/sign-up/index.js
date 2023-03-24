@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import React, {useState, useContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
 import OtpInput from 'react-otp-input';
+import { makeStyles } from '@material-ui/core/styles';
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -25,9 +26,13 @@ import CoverLayout from "../components/CoverLayout";
 
 // Images
 import bgImage from "../../../assets/images/trading.jpg";
+import { Typography } from "@mui/material";
+
+
 
 
 function Cover() {
+
   console.log("Inside Sign UP")
 
   const navigate = useNavigate();
@@ -35,8 +40,9 @@ function Cover() {
   const [showConfirmation, setShowConfirmation] = useState(true);
   const [resendTimer, setResendTimer] = useState(30); // Resend timer in seconds
   const [timerActive, setTimerActive] = useState(false); // Flag to check if timer is active
+  const [submitClicked, setSubmitClicked] = useState(false);
 
-  console.log(resendTimer,timerActive)
+  // console.log(resendTimer,timerActive)
 
   const [formstate, setformstate] = useState({
     first_name:"", 
@@ -49,7 +55,7 @@ function Cover() {
     trading_exp:"",
     city:"",
     state:"",
-    country:"India",
+    country:"",
     last_occupation :"",
     employeed:false,
     address:"",
@@ -87,6 +93,7 @@ function Cover() {
 
 
   async function formSubmit() {
+    setSubmitClicked(true)
     setformstate(formstate);
     console.log(formstate)
 
@@ -132,8 +139,8 @@ function Cover() {
 
     const data = await res.json();
     console.log(data);
-    if(data.status === 422 || data.error || !data){ 
-        // window.alert(data.error);
+    if(data.status === 422 || data.message || !data){ 
+        window.alert(data.message);
         console.log("Invalid Entry");
     }else{
       setShowEmailOTP(true);
@@ -172,6 +179,7 @@ function Cover() {
         email:formstate.email, 
         email_otp:formstate.email_otp,
         trading_account:formstate.trading_account,
+        address:formstate.address,
       })
   });
 
@@ -183,7 +191,7 @@ function Cover() {
       console.log("Invalid Entry");
   }else{
     setShowConfirmation(false)
-      window.alert("Details Submitted Successfully");
+      window.alert(data.message);
       // console.log("entry succesfull");
       // navigate("/response");
   }
@@ -259,27 +267,33 @@ function Cover() {
           
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="First Name*" variant="standard" fullWidth onChange={(e)=>{formstate.first_name = e.target.value}} />
+              {(submitClicked && !formstate.first_name) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="Last Name*" variant="standard" fullWidth onChange={(e)=>{formstate.last_name = e.target.value}} />
+              {(submitClicked && !formstate.last_name) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="email" label="Email*" variant="standard" fullWidth onChange={(e)=>{formstate.email = e.target.value}} />
+              {(submitClicked && !formstate.email) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>  
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="Mobile No.*" variant="standard" fullWidth onChange={(e)=>{formstate.mobile = e.target.value}} />
+              {(submitClicked && !formstate.mobile) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="WhatsApp Number*" variant="standard" fullWidth onChange={(e)=>{formstate.watsApp_number = e.target.value}} />
+              {(submitClicked && !formstate.watsApp_number) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput
               disabled={showEmailOTP} type="date" label="Date of Birth*" variant="standard" fullWidth onChange={(e)=>{formstate.dob = e.target.value}} />
+              {(submitClicked && !formstate.dob) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -296,10 +310,12 @@ function Cover() {
                 <MenuItem value="Female">Female</MenuItem>
                 <MenuItem value="Female">Other</MenuItem>
               </Select>
+              {(submitClicked && !formstate.gender) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="number" label="Trading Experience(in months)*" variant="standard" fullWidth onChange={(e)=>{formstate.trading_exp = e.target.value}} />
+              {(submitClicked && !formstate.trading_exp) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -315,10 +331,12 @@ function Cover() {
                 <MenuItem value="Equity Trader">Equity Trader</MenuItem>
                 {/* <MenuItem value="Female">Female</MenuItem> */}
               </Select>
+              {(submitClicked && !formstate.applying_for) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="Last Occupation*" variant="standard" fullWidth onChange={(e)=>{formstate.last_occupation = e.target.value}} />
+              {(submitClicked && !formstate.last_occupation) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -338,6 +356,7 @@ function Cover() {
                 <MenuItem value="MA">MA</MenuItem>
                 <MenuItem value="Other">Other</MenuItem>
               </Select>
+              {(submitClicked && !formstate.degree) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </FormControl>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -356,22 +375,27 @@ function Cover() {
                 <MenuItem value="5 Lkahs to 7 Lakhs">5 Lkahs to 7 Lakhs</MenuItem>
                 <MenuItem value="More than 7 Lakhs">More than 7 Lakhs</MenuItem>
               </Select>
+              {(submitClicked && !formstate.family_yearly_income) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </FormControl>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="Full Address*" variant="standard" fullWidth onChange={(e)=>{formstate.address = e.target.value}} />
+              {(submitClicked && !formstate.address) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="City/Village*" variant="standard" fullWidth onChange={(e)=>{formstate.city = e.target.value}} />
+              {(submitClicked && !formstate.city) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="State*" variant="standard" fullWidth onChange={(e)=>{formstate.state = e.target.value}} />
+              {(submitClicked && !formstate.state) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <MDBox mb={2} sx={{width:"30%" }}>
               <MDInput disabled={showEmailOTP} type="text" label="Country*" variant="standard" fullWidth onChange={(e)=>{formstate.country = e.target.value}} />
+              {(submitClicked && !formstate.country) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </MDBox>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -389,6 +413,7 @@ function Cover() {
                 <MenuItem value="Just for Fun">Just for Fun</MenuItem>
                 <MenuItem value="Don't have anythign else to do">Don't have anythign else to do</MenuItem>
               </Select>
+              {(submitClicked && !formstate.purpose_of_joining) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
             </FormControl>
 
             <FormControl variant="standard" mb={2} sx={{width:"30%" }}>
@@ -409,9 +434,12 @@ function Cover() {
                 <MenuItem value="Other">Other</MenuItem>
                 <MenuItem value="I don't have any trading account">I don't have any trading account</MenuItem>
               </Select>
-            </FormControl>
+              {(submitClicked && !formstate.trading_account) && <Typography style={{fontSize:10,color:"red"}}>This is a required field</Typography>}
+            </FormControl>        
+              
+            </MDBox> 
 
-            <MDBox display="flex" alignItems="center" ml={1} sx={{width:"30%" }}>
+            <MDBox display="flex" alignItems="centre" justifyContent="flex-start" ml={1} sx={{width:"40%", justifyContent: "flex-start" }}>
               <Checkbox 
               checked={formstate.employeed}
               disabled={showEmailOTP}
@@ -431,11 +459,11 @@ function Cover() {
                 fontWeight="bold"
                 color="info"
                 textGradient
+                mt={1}
               >
                 Currently Employeed?*
               </MDTypography>
-            </MDBox>         
-              
+              {/* {(submitClicked && !formstate.employeed) && <Typography mt={1.5} style={{fontSize:10,color:"red"}}>This is a required field</Typography>} */}
             </MDBox> 
    
             <MDBox display="flex" alignItems="center" ml={1}>

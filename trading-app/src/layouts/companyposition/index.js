@@ -53,6 +53,19 @@ function CompanyPosition() {
 
     }, []);
 
+    useEffect(() => {
+      socket.on("connect", () => {
+        socket.emit("hi", true)
+      })
+      socket.on("noToken", (data) => {
+        window.alert(data);
+      })
+      socket.on("wrongToken", (data) => {
+        window.alert(data);
+      })
+  
+    }, []);
+
     const handleSwitchChange = id => {
       setUserPermission(prevUsers =>
         prevUsers.map(user => {

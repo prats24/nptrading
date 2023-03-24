@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs")
+const uniqid = require("uniqid");
 
 const userDetailSchema = new mongoose.Schema({
     status:{
@@ -9,7 +10,8 @@ const userDetailSchema = new mongoose.Schema({
     },
     uId:{
         type: String,
-        required : true
+        required : true,
+        default: uniqid(),
     },
     createdOn:{
         type: String,
@@ -69,7 +71,7 @@ const userDetailSchema = new mongoose.Schema({
     },
     address:{
         type: String,
-        // required: true
+        required: true
     },
     trading_exp:{
         type: String,
@@ -77,19 +79,19 @@ const userDetailSchema = new mongoose.Schema({
     },
     location:{
         type: String,
-        required: true
+        // required: true
     },
     city:{
         type: String,
-        // required: true
+        required: true
     },
     state:{
         type: String,
-        // required: true
+        required: true
     },
     country:{
         type: String,
-        // required: true
+        required: true
     },
     last_occupation:{
         type: String,
@@ -97,7 +99,7 @@ const userDetailSchema = new mongoose.Schema({
     },
     family_yearly_income:{
         type: String,
-        // require: true,
+        require: true,
     },
     joining_date:{
         type: String,
@@ -107,10 +109,16 @@ const userDetailSchema = new mongoose.Schema({
     },
     employeed:{
         type: Boolean,
+        required: true,
     },
     role:{
         type: String,
         required: true
+    },
+    creationProcess:{
+        type: String,
+        required: true,
+        enum: ['Auto SignUp','By Admin']
     },
     employeeid:{
         type: String,
@@ -119,6 +127,12 @@ const userDetailSchema = new mongoose.Schema({
     password:{
         type: String,
         // required: true
+    },
+    resetPasswordOTP:{
+        type: String,
+    },
+    resetPasswordExpires:{
+        type: Date,
     },
     passwordChangedAt:{
         type: String,
@@ -141,6 +155,21 @@ const userDetailSchema = new mongoose.Schema({
               
     }
 })
+
+//Adding the ninepointer id before saving
+userDetailSchema.pre('save', async function(next){
+    console.log("inside employee id generator code")
+    if(!this.employeeid|| this.isNew){
+        const count = await this.constructor.countDocuments();
+        console.log("Count of Documents: ",count)
+        const userId = "NP" + (count + 1).toString().padStart(8, "0");
+        console.log("ninepointer Id: ",userId)
+        this.employeeid = userId;
+        next();
+    } else {
+        next();
+    }
+});
 
 userDetailSchema.pre("save", async function(next){
     if(!this.isModified('password')){

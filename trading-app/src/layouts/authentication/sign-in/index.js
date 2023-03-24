@@ -117,6 +117,11 @@ function Basic() {
       navigate("/signup");
     }
 
+    async function forgotPasswordButton(e){
+      e.preventDefault();
+      navigate("/resetpassword");
+    }
+
   return ( 
     <BasicLayout image={bgImage}>
       <Card>
@@ -154,9 +159,12 @@ function Basic() {
 
               </MDTypography>
             </MDBox>
-            <MDBox mt={4} mb={1}>
+            <MDBox mt={2} mb={1}>
               <MDButton variant="gradient" color="info" onClick={logInButton} fullWidth>
                 sign in
+              </MDButton>
+              <MDButton variant="text" color="info" onClick={forgotPasswordButton} fullWidth>
+                forgot password?
               </MDButton>
             </MDBox>
             <MDBox mt={2} mb={1}>

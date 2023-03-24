@@ -22,7 +22,7 @@ function CoverLayout({ coverHeight, image, children }) {
       <DefaultNavbar
         action={{
           type: "external",
-          route: "https://www.ninepointer.in/signin",
+          route: "/",
           label: "Sign In",
         }}
         transparent
