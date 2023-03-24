@@ -171,7 +171,7 @@ function UserPosition() {
         <MDBox display="flex" flexDirection="column" justifyContent="space-between" sx={{width:"100%"}}>
         <TextField
           id="outlined-basic" label="Click here to search any symbol and add them in your watchlist to start trading" variant="outlined" type="text"
-          sx={{margin: 0, padding : 1 ,width:"100%",'& label': { color: '#49a3f1', fontSize:25, padding:0.4 }}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
+          sx={{margin: 0, padding : 1 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
         <MDBox>
         { instrumentsData?.length > 0 &&
           (instrumentsData.map((elem)=>{

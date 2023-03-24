@@ -5,9 +5,7 @@ import axios from "axios";
 import { NetPnlContext } from '../../../PnlContext';
 // Material Dashboard 2 React components
 
-// Material Dashboard 2 React example components
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import { GrAnchor } from "react-icons/gr";
 
 
 // Data
@@ -265,39 +263,24 @@ function OverallGrid({socket, Render}) {
     rows.push(obj);
   
 
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
-
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
           <MDTypography variant="h6" gutterBottom>
-            Overall P&L
+            Positions
           </MDTypography>
         </MDBox>
-        {renderMenu}
       </MDBox>
-      <MDBox>
+      {rows.length === 1 ? (
+      <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
+        <GrAnchor style={{fontSize: '40px'}}/>
+        <MDTypography style={{fontSize: '25px'}}>No open positions yet</MDTypography>
+        <MDTypography mb={2} fontSize={15}>Add instruments and start trading.</MDTypography>
+        <MDButton variant="outlined" color="info">Get Started</MDButton>
+      </MDBox>)
+      :
+      (<MDBox>
         <DataTable
           table={{ columns, rows }}
           showTotalEntries={false}
@@ -306,6 +289,7 @@ function OverallGrid({socket, Render}) {
           entriesPerPage={false}
         />
       </MDBox>
+      )}
     </Card>
   );
 
