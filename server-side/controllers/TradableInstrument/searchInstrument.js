@@ -9,7 +9,7 @@ exports.search = async (searchString, res) => {
 //, 
     console.log(searchString)
     // searchString = Number(searchString)
-    const searchedInstrument = await TradableInstrument.find({ tradingsymbol: { $regex: searchString }, $options: 'i' });
+    const searchedInstrument = await TradableInstrument.find({ tradingsymbol: { $regex: searchString }, $options: 'i' }).sort({expiry: 1});
 
     res.send(searchedInstrument)
 

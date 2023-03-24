@@ -6,10 +6,12 @@ import { io } from "socket.io-client";
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
 import Grid from "@mui/material/Grid";
+import uniqid from "uniqid"
 // import Input from "@mui/material/Input";
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
+import MDButton from "../../components/MDButton";
 import TextField from '@mui/material/TextField';
 
 
@@ -39,41 +41,36 @@ import InstrumentDetails from "./components/InstrumentDetails";
 import OverallPL from "./OverallP&L/Overall P&L";
 import OverallGrid from "./OverallP&L/OverallGrid";
 import MarginGrid from "./MarginDetails/MarginGrid";
+import TradableInstrument from "./components/TradableInstrument/TradableInstrument";
 
 function UserPosition() {
-
+  const uId = uniqid();
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
-  // let socket;
-  // try {
-  //   socket = io.connect(`${baseUrl1}`)
-  // } catch (err) {
-  //   throw new Error(err);
-  // }
+  let socket;
+  try {
+    socket = io.connect(`${baseUrl1}`)
+  } catch (err) {
+    throw new Error(err);
+  }
 
-  const [inputData, setInputData] = useState();
+  const [instrumentsData, setInstrumentsData] = useState();
   const [reRender, setReRender] = useState(true);
-
-  
-  useEffect(()=>{
-
-                
-  }, [])
 
 
   let timeoutId; // store the timeout id
 
-function sendSearchReq(data) {
-  // clear previous timeout if there is one
-  if (timeoutId) {
-    clearTimeout(timeoutId);
-  }
+  function sendSearchReq(data) {
+    // clear previous timeout if there is one
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
 
-  // set a new timeout to send the request after 1 second
-  timeoutId = setTimeout(() => {
-    sendRequest(data);
-  }, 1000);
-}
+    // set a new timeout to send the request after 1 second
+    timeoutId = setTimeout(() => {
+      sendRequest(data);
+    }, 1000);
+  }
 
 
 
@@ -82,6 +79,11 @@ function sendSearchReq(data) {
 
 
     // console.log("data", data.toUpperCase())
+
+    if(data == ""){
+      setInstrumentsData([])
+      return;
+    }
 
 
     axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}`, {
@@ -94,12 +96,43 @@ function sendSearchReq(data) {
     })
     .then((res)=>{
       console.log("instrumentData", res.data)
+      setInstrumentsData(res.data)
 
 
     }).catch((err)=>{
       console.log(err);
     })
 
+  }
+
+  async function subscribeInstrument(instrumentData){
+    const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
+    console.log(instrumentData)
+    const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
+      method: "POST",
+      credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+      body: JSON.stringify({
+        instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: 1800
+      })
+    });
+  
+    const data = await res.json();
+    //console.log(data);
+    if(data.status === 422 || data.error || !data){
+        window.alert(data.error);
+        // setInvalidDetail(`Email or Password is incorrect`);
+    }else{
+
+      // this function is extracting data of user who is logged in
+      // await userDetail();
+      console.log(data)
+      
+      
+    }
   }
 
   return (
@@ -112,8 +145,42 @@ function sendSearchReq(data) {
           id="outlined-basic" label="Search Symbol" variant="standard" type="text"
           sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
 
+        {instrumentsData?.length > 0 &&
+        <MDBox mt={0}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              <TradableInstrument data={instrumentsData} />
+            </Grid>
+          </Grid>
+        </MDBox> }
 
-        {/* <MDBox mt={0}>
+        {/* { instrumentsData?.length > 0 &&
+          (instrumentsData.map((elem)=>{
+            const date = new Date(elem.expiry);
+            const day = date.getDate();
+            const options = { month: 'short' };
+            const month = new Intl.DateTimeFormat('en-US', options).format(date);
+            const formattedDate = `${day}${getOrdinalSuffix(day)} ${month}`;
+
+            function getOrdinalSuffix(day) {
+              const suffixes = ['th', 'st', 'nd', 'rd'];
+              const v = day % 100;
+              return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
+            } //justifyContent = "space-around" border= "1px solid grey"
+            return(
+              <>
+                <MDBox key={elem._id} display="flex" gap="15px" alignItems="center" >
+                  <MDBox>{elem.name}</MDBox>
+                  <MDBox>{formattedDate}</MDBox>
+                  <MDBox>{elem.tradingsymbol}</MDBox>
+                  <MDBox><MDButton onClick={()=>{subscribeInstrument(elem)}}>Add</MDButton></MDBox>
+                </MDBox>
+              </>
+            )
+          }))
+        } */}
+
+        <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} />
@@ -134,7 +201,7 @@ function sendSearchReq(data) {
               <MarginGrid/>
             </Grid>
           </Grid>
-        </MDBox> */}
+        </MDBox>
       </MDBox>
     </DashboardLayout>
   );

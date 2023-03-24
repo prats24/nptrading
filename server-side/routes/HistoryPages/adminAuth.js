@@ -10,11 +10,16 @@ const BrokerageDetail = require("../../models/Trading Account/brokerageSchema");
 const dbBackup = require("../../Backup/mongoDbBackUp")
 const newdbBackup = require("../../Backup/newBackup")
 const TradableInstrument = require("../../controllers/TradableInstrument/tradableInstrument")
+const cronjob = require("../../marketData/getinstrumenttickshistorydata")
 
 
 // router.get("/tradableInstrument", async (req, res)=>{
 //   await TradableInstrument.tradableInstrument();
 // })
+
+router.get("/cronjob", async (req, res)=>{
+  await cronjob();
+})
 
 router.get("/dbbackup", async (req, res)=>{
   // const sourceUri = "mongodb+srv://vvv201214:5VPljkBBPd4Kg9bJ@cluster0.j7ieec6.mongodb.net/admin-data?retryWrites=true&w=majority"
@@ -31,17 +36,17 @@ router.get("/dbbackup", async (req, res)=>{
 
 })
 
-router.get("/dbCopyAndDelete", async (req, res)=>{
+// router.get("/dbCopyAndDelete", async (req, res)=>{
 
-  // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+//   // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
 
-  // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
-  const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
+//   // const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
+//   const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
 
-  await newdbBackup.deleteDb(targetUri);
-  // await newdbBackup.copy(sourceUri, targetUri);
+//   await newdbBackup.deleteDb(targetUri);
+//   // await newdbBackup.copy(sourceUri, targetUri);
 
-})
+// })
 
 router.get("/missedOrderId", async (req, res)=>{
 

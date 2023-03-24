@@ -9,36 +9,15 @@ import Grid from "@mui/material/Grid";
 // import Input from "@mui/material/Input";
 
 // Material Dashboard 2 React components
-import MDBox from "../../components/MDBox";
-import TextField from '@mui/material/TextField';
+import MDBox from "../../../../components/MDButton";
 
-
-
-
-// Material Dashboard 2 React example components
-import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import Footer from "../../examples/Footer";
-import ReportsBarChart from "../../examples/Charts/BarCharts/ReportsBarChart";
-import ReportsLineChart from "../../examples/Charts/LineCharts/ReportsLineChart";
-import ComplexStatisticsCard from "../../examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import Card from "@mui/material/Card";
-import MDTypography from "../../components/MDTypography";
-import DataTable from "../../examples/Tables/DataTable";
+import MDTypography from "../../../../components/MDButton";
+import DataTable from "../../../../examples/Tables/DataTable";
+// import MDButton from "../";
+import MDButton from "../../../../components/MDButton";
 
 
-// Data
-import reportsBarChartData from "./data/reportsBarChartData";
-import reportsLineChartData from "./data/reportsLineChartData";
-
-
-
-// Dashboard components
-
-import InstrumentDetails from "./components/InstrumentDetails";
-import OverallPL from "./OverallP&L/Overall P&L";
-import OverallGrid from "./OverallP&L/OverallGrid";
-import MarginGrid from "./MarginDetails/MarginGrid";
 import SearchTableData from "./data/data";
 
 
@@ -46,10 +25,72 @@ function TradableInstrument({data}) {
 
   const { columns, rows } = SearchTableData();
 
+  data.map((elem)=>{
+    let searchData = {}
 
-//   return (
+    searchData.name = (
+        <MDButton variant="Contained" color="info" fontWeight="medium">
+          {elem.name}
+        </MDButton>
+      );
+    searchData.symbol = (
+      <MDTypography component="a" href="#" variant="caption" color="info" fontWeight="medium">
+        {elem.tradingsymbol}
+      </MDTypography>
+    );
+    searchData.expiry = (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {elem.expiry}
+      </MDTypography>
+    );
+    searchData.add = (
+      <MDTypography component="a" href="#" variant="caption" color="info" fontWeight="medium">
+        
+      </MDTypography>
+    );
+   
+    rows.push(searchData)
+  })
 
-//   );
+  return (<>
+    <MDBox pt={6} pb={3}>
+        <Grid container spacing={6}>
+            <Grid item xs={12} md={12} lg={12}>
+                <Card>
+                    {/* <MDBox
+                        mx={2}
+                        mt={-3}
+                        py={1}
+                        px={2}
+                        variant="gradient"
+                        bgColor="info"
+                        borderRadius="lg"
+                        coloredShadow="info"
+                        sx={{
+                            display: 'flex',
+                            justifyContent: "space-between",
+                          }}>
+
+                        <MDTypography variant="h6" color="white" py={2.5}>
+                            Active Instruments
+                        </MDTypography>
+                       <InstrumentModel Render={{reRender, setReRender}}/>
+                    </MDBox> */}
+                    <MDBox pt={3}>
+                        <DataTable
+                            table={{ columns, rows }}
+                            isSorted={false}
+                            entriesPerPage={false}
+                            showTotalEntries={false}
+                            noEndBorder
+                        />
+                    </MDBox>
+                </Card>
+            </Grid>
+        </Grid> 
+    </MDBox> 
+    </>
+)
 }
 
 export default TradableInstrument;
