@@ -57,6 +57,7 @@ function AdminReportHeader({ children }) {
 
 
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+  console.log(tabValue)
 
 
   return (

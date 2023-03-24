@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
-const instrumentSchema = new mongoose.Schema({
-    instrument:{
-        type: String,
+const addInstrumentSchema = new mongoose.Schema({
+    instrument_token:{
+        type: Number,
         required: true
     },
-    exchange:{
+    tradingsymbol:{
         type: String,
         required : true
     },
@@ -51,33 +51,29 @@ const instrumentSchema = new mongoose.Schema({
     },
     otm_p1:{
         type: String,
-        // required : true
+        required : true
     },
     otm_p1_Token:{
         type: Number,
-        // required : true
+        required : true
     },
     otm_p2:{
         type: String,
-        // required : true
+        required : true
     },
     otm_p2_Token:{
         type: Number,
-        // required : true
+        required : true
     },
     otm_p3:{
         type: String,
-        // required : true
+        required : true
     },
     otm_p3_Token:{
         type: Number,
-        // required : true
-    },
-    user_id: {
-        type: String,
         required : true
     }
 })
 
-const instrumentDetail = mongoose.model("instrument-detail", instrumentSchema);
+const instrumentDetail = mongoose.model("watchlist-detail", addInstrumentSchema);
 module.exports = instrumentDetail;

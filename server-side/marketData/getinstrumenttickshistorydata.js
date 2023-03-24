@@ -22,12 +22,13 @@ const RetreiveOrder = require("../controllers/retreiveOrder")
 const getInstrumentTicksHistoryData = async () => {
   getKiteCred.getAccess().then(async (data)=>{
     const activeInstrument = await ActiveInstruments.find({status: "Active"});
+    let matchingDate;
     for(let i = 0; i < activeInstrument.length; i++){
       let {instrumentToken, createdOn, symbol} = activeInstrument[i];
       let date = createdOn.split(" ")[0];
 
       let tempData = date.split("-");
-      let matchingDate = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
+      matchingDate = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
 
       const historyData = await HistoryData.find({instrumentToken: instrumentToken, timestamp: {$regex:matchingDate}})
       if(historyData.length === 0){

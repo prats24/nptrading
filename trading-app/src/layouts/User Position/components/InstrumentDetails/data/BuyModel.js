@@ -97,7 +97,8 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   };
 
   const handleClickOpen = () => {
-    
+
+
     setOpen(true);
 
 

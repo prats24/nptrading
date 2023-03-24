@@ -62,7 +62,7 @@ const InstrumentModel = ({Render}) => {
       setFormData(formData);
       console.log(formData)
       const { contractDate, instrument, exchange, symbol, lotSize, maxLot, otm_p1, otm_p2, otm_p3, status } = formData;
-
+         
       const res = await fetch(`${baseUrl}api/v1/instrument`, {
           method: "POST",
           credentials:"include",

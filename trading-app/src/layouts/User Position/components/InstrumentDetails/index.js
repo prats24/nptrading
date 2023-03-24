@@ -4,6 +4,7 @@ import { useState } from "react";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -26,7 +27,8 @@ function InstrumentDetails({socket, Render}) {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
-  const { columns, rows, instrumentData } = data();
+  let { columns, rows, instrumentData } = data(reRender);
+  console.log("rows", rows)
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
@@ -52,7 +54,7 @@ function InstrumentDetails({socket, Render}) {
         return Array.from(instrumentMap.values());
       });
     })
-  }, [])
+  }, [reRender])
 
 
   useEffect(() => {
@@ -60,11 +62,42 @@ function InstrumentDetails({socket, Render}) {
       .then((res) => {
         setisAppLive(res.data[0].isAppLive);
       });
-  }, []);
+  }, [reRender]);
+
+  async function removeInstrument(instrumentToken){
+    console.log("in remove")
+    const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
+      method: "PATCH",
+      headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+      },
+      body: JSON.stringify({
+          status: "Inactive"
+      })
+    });
+
+    const permissionData = await response.json();
+    console.log("remove", permissionData)
+    if (permissionData.status === 422 || permissionData.error || !permissionData) {
+        window.alert(permissionData.error);
+        //console.log("Failed to Edit");
+    }else {
+      // window.alert(permissionData.massage);
+        //console.log(permissionData);
+        // window.alert("Edit succesfull");
+        //console.log("Edit succesfull");
+    }
+    reRender ? setReRender(false) : setReRender(true);
+
+
+  }
 
   let ltpArr = [];
   
   rows.map((elem)=>{
+
+    console.log("rows elem", elem)
     let ltpObj = {};
     let pericularInstrument = instrumentData.filter((element)=>{
       return elem.instrumentToken.props.children == element.instrumentToken
@@ -73,6 +106,7 @@ function InstrumentDetails({socket, Render}) {
       const percentagechangecolor = subelem.change >= 0 ? "success" : "error"
       const percentagechangecolor1 = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
       if(elem.instrumentToken.props.children === subelem.instrument_token){
+        console.log("rows ltp", elem.symbol.props.children, subelem.last_price)
         elem.last_price = (
             <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
               {"₹"+(subelem.last_price).toFixed(2)}
@@ -100,12 +134,17 @@ function InstrumentDetails({socket, Render}) {
             <SellModel Render={{ reRender, setReRender }} symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
           );
 
+          elem.remove = (
+            <RemoveCircleOutlineIcon onClick={()=>{removeInstrument(elem.instrumentToken.props.children)}} />
+          );
+
       }
     })
-    ltpArr.push(ltpObj);
+    // ltpArr.push(elem);
   })
 
-  const newRows = rows.concat(ltpArr);
+  console.log("rows ltpArr", rows)
+  // const newRows = rows.concat(ltpArr);
   //console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);

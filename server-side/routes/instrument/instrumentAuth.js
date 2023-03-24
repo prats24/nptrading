@@ -53,15 +53,15 @@ router.post("/instrument", async (req, res)=>{
     }
 })
 
-router.get("/readInstrumentDetails", (req, res)=>{
-    Instrument.find((err, data)=>{
-        if(err){
-            return res.status(500).send(err);
-        }else{
-            return res.status(200).send(data);
-        }
-    }).sort({$natural:-1})
-})
+// router.get("/readInstrumentDetails", (req, res)=>{
+//     Instrument.find((err, data)=>{
+//         if(err){
+//             return res.status(500).send(err);
+//         }else{
+//             return res.status(200).send(data);
+//         }
+//     }).sort({$natural:-1})
+// })
 
 router.get("/readInstrumentDetails/:id", (req, res)=>{
     //console.log(req.params)

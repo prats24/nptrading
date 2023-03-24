@@ -81,6 +81,7 @@ let totalRunningLots = 0;
     .then((res) => {
         //console.log("live price data", res)
         setMarketData(res.data);
+        setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
         return new Error(err);
@@ -88,7 +89,6 @@ let totalRunningLots = 0;
 
     socket.on("tick", (data) => {
       //console.log("this is live market data", data);
-      
       setMarketData(prevInstruments => {
         const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
         data.forEach(instrument => {
