@@ -58,7 +58,7 @@ function InstrumentDetails({socket}) {
       });
   }, []);
   
-  
+  console.log(marketData)
   let ltpArr = [];
   
   rows.map((elem)=>{
