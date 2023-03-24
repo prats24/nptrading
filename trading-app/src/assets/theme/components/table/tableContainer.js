@@ -18,7 +18,7 @@ import colors from "../../base/colors";
 import boxShadows from "../../base/boxShadows";
 import borders from "../../base/borders";
 
-const { white } = colors;
+const { white,primary } = colors;
 const { md } = boxShadows;
 const { borderRadius } = borders;
 

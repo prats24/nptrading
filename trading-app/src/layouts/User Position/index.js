@@ -13,6 +13,7 @@ import uniqid from "uniqid"
 import MDBox from "../../components/MDBox";
 import MDButton from "../../components/MDButton";
 import TextField from '@mui/material/TextField';
+import { createTheme } from '@mui/material/styles';
 
 
 
@@ -42,6 +43,19 @@ import MarginGrid from "./MarginDetails/MarginGrid";
 import TradableInstrument from "./components/TradableInstrument/TradableInstrument";
 
 function UserPosition() {
+  
+  const theme = createTheme({
+    components: {
+      MuiGrid: {
+        styleOverrides: {
+          root: {
+            color: 'white',
+          },
+        },
+      },
+    },
+  });
+
   const uId = uniqid();
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -153,11 +167,11 @@ function UserPosition() {
       <DashboardNavbar />
       <MDBox py={1}>
 
-        <MDBox sx={{backgroundColor:"#C0C0C0", display:"flex", borderRadius:2, marginBottom:2}}>
+        <MDBox sx={{backgroundColor:"white", display:"flex", borderRadius:2, marginBottom:2}}>
         <MDBox display="flex" flexDirection="column" justifyContent="space-between" sx={{width:"100%"}}>
         <TextField
-          id="outlined-basic" label="Search Symbol and add them to start trading" variant="outlined" type="text"
-          sx={{margin: 0, padding : 1 ,width:"100%"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
+          id="outlined-basic" label="Click here to search any symbol and add them in your watchlist to start trading" variant="outlined" type="text"
+          sx={{margin: 0, padding : 1 ,width:"100%",'& label': { color: '#49a3f1', fontSize:25, padding:0.4 }}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
         <MDBox>
         { instrumentsData?.length > 0 &&
           (instrumentsData.map((elem)=>{
@@ -174,12 +188,35 @@ function UserPosition() {
             } //justifyContent = "space-around" border= "1px solid grey"
             return(
               <>
-                <Grid container lg={12} key={elem._id} sx={{fontSize:15}}  display="flex" gap="15px" alignItems="center" flexDirection="row" justifyContent="space-between" border="1px solid grey" padding="2px" >
-                  <Grid lg={2.2}>{elem.name}</Grid>
-                  <Grid lg={2.2}>{formattedDate}</Grid>
-                  <Grid lg={2.2}>{elem.tradingsymbol}</Grid>
-                  <Grid lg={2.2}>{elem.exchange}</Grid>
-                  <Grid lg={2.2}><MDButton size="small" onClick={()=>{subscribeInstrument(elem)}}>Add</MDButton></Grid>
+                <Grid container lg={12} key={elem._id}
+                sx={{
+                  fontSize:13,
+                  display:"flex",
+                  gap:"10px",
+                  alignItems:"center",
+                  flexDirection:"row",
+                  justifyContent:"space-between",
+                  border:"0.25px solid white",
+                  borderRadius:2,
+                  color:"white",
+                  padding:"0.5px",
+                  '&:hover': {
+                    backgroundColor: 'lightgray',
+                    cursor: 'pointer',
+                    fontWeight: 600
+                  }
+                }}
+                >
+                  <Grid sx={{color:"white", textAlign:"center", display: { xs: 'none', lg: 'block' }}} xs={0} lg={2.2}>{elem.name}</Grid>
+                  <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{formattedDate}</Grid>
+                  <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
+                  <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
+                  <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
+                    <Grid><MDButton size="small" color="info" ml={1} onClick={()=>{subscribeInstrument(elem)}}>B</MDButton></Grid>
+                    <Grid><MDButton size="small" color="error" ml={1} onClick={()=>{subscribeInstrument(elem)}}>S</MDButton></Grid>
+                    <Grid><MDButton size="small" color="warning" ml={1} onClick={()=>{subscribeInstrument(elem)}}>+</MDButton></Grid>
+                  </Grid>
+                  
                 </Grid>
               </>
             )

@@ -236,7 +236,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
     <div>
 
 
-    <MDButton variant="contained" color="info" onClick={handleClickOpen} fullWidth>
+    <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} fullWidth>
         Exit Position
     </MDButton>
     <div>
