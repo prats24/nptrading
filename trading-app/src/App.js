@@ -7,11 +7,7 @@ import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import Icon from "@mui/material/Icon";
 import SettingsIcon from '@mui/icons-material/Settings';
-import CompanyAnalytics from "./layouts/analytics/companyPNLAnalytics1/companyAnalytics"
-import DashboardIcon from '@mui/icons-material/Dashboard';
-
 
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
@@ -50,6 +46,8 @@ import NewMain from "./NewMain"
 import { userContext } from "./AuthContext";
 import Cookies from 'js-cookie';
 import homeRoutes from "./homeRoute";
+import SignUp from './layouts/authentication/sign-up'
+
 
 export default function App() {
   const cookieValue = Cookies.get("jwt");
@@ -177,7 +175,7 @@ export default function App() {
       <SettingsIcon/>
     </MDBox>
   );
-  console.log("Analytics Routes: ",analyticsRoutes)
+  // console.log("Analytics Routes: ",analyticsRoutes)
 
   return direction === "rtl" ? (
     
@@ -259,7 +257,11 @@ export default function App() {
          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
           {/* <Route path="*" element={<SignIn />} /> */}
 
-          {!cookieValue  ? 
+          {!cookieValue  ?  
+
+          pathname == "/signup" ?
+          <Route path="/signup" element={<SignUp />} />
+          :
           <Route path="/" element={<SignIn />} />
           :
           pathname == "/" || !pathname ?

@@ -38,26 +38,26 @@ function LiveTraderwiseCompantPNL(props) {
 
   // const {render, setRender} = Render
 
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
+  // const renderMenu = (
+  //   <Menu
+  //     id="simple-menu"
+  //     anchorEl={menu}
+  //     anchorOrigin={{
+  //       vertical: "top",
+  //       horizontal: "left",
+  //     }}
+  //     transformOrigin={{
+  //       vertical: "top",
+  //       horizontal: "right",
+  //     }}
+  //     open={Boolean(menu)}
+  //     onClose={closeMenu}
+  //   >
+  //     <MenuItem onClick={closeMenu}>Action</MenuItem>
+  //     <MenuItem onClick={closeMenu}>Another action</MenuItem>
+  //     <MenuItem onClick={closeMenu}>Something else</MenuItem>
+  //   </Menu>
+  // );
 
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -126,7 +126,8 @@ function LiveTraderwiseCompantPNL(props) {
   })
   }, [marketData])
 
-
+if(allTrade.length !== 0)
+{
     let mapForParticularUser = new Map();
     //console.log("Length of All Trade Array:",allTrade.length);
     for(let i = 0; i < allTrade.length; i++){
@@ -319,9 +320,12 @@ function LiveTraderwiseCompantPNL(props) {
      );
    
      rows.push(obj);
-
+}
 
   return (
+<>
+    { allTrade.length !== 0 && (
+      
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
         <MDBox>
@@ -351,7 +355,7 @@ function LiveTraderwiseCompantPNL(props) {
           
 
         </MDBox>
-        {renderMenu}
+        {/* {renderMenu} */}
       </MDBox>
       <MDBox>
         <DataTable
@@ -362,6 +366,9 @@ function LiveTraderwiseCompantPNL(props) {
         />
       </MDBox>
     </Card>
+   
+  )}
+   </>
   );
 }
 export default LiveTraderwiseCompantPNL;

@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs")
+const uniqid = require("uniqid");
 
 const userDetailSchema = new mongoose.Schema({
     status:{
@@ -9,7 +10,8 @@ const userDetailSchema = new mongoose.Schema({
     },
     uId:{
         type: String,
-        required : true
+        required : true,
+        default: uniqid(),
     },
     createdOn:{
         type: String,
@@ -27,9 +29,17 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required : true
     },
-    cohort:{
+    first_name:{
         type: String,
         required : true
+    },
+    last_name:{
+        type: String,
+        required : true
+    },
+    cohort:{
+        type: String,
+        // required : true
     },
     designation:{
         type: String,
@@ -40,6 +50,10 @@ const userDetailSchema = new mongoose.Schema({
         required: true
     },
     mobile:{
+        type: String,
+        required: true
+    },
+    whatsApp_number:{
         type: String,
         required: true
     },
@@ -55,11 +69,27 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    address:{
+        type: String,
+        required: true
+    },
     trading_exp:{
         type: String,
         required: true
     },
     location:{
+        type: String,
+        // required: true
+    },
+    city:{
+        type: String,
+        required: true
+    },
+    state:{
+        type: String,
+        required: true
+    },
+    country:{
         type: String,
         required: true
     },
@@ -67,12 +97,28 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    family_yearly_income:{
+        type: String,
+        require: true,
+    },
     joining_date:{
         type: String,
+    },
+    purpose_of_joining:{
+        type: String,
+    },
+    employeed:{
+        type: Boolean,
+        required: true,
     },
     role:{
         type: String,
         required: true
+    },
+    creationProcess:{
+        type: String,
+        required: true,
+        enum: ['Auto SignUp','By Admin']
     },
     employeeid:{
         type: String,
@@ -81,6 +127,12 @@ const userDetailSchema = new mongoose.Schema({
     password:{
         type: String,
         // required: true
+    },
+    resetPasswordOTP:{
+        type: String,
+    },
+    resetPasswordExpires:{
+        type: Date,
     },
     passwordChangedAt:{
         type: String,
@@ -103,6 +155,22 @@ const userDetailSchema = new mongoose.Schema({
               
     }
 })
+
+//Adding the ninepointer id before saving
+userDetailSchema.pre('save', async function(next){
+    console.log("inside employee id generator code")
+    if(!this.employeeid|| this.isNew){
+        const count = await this.constructor.countDocuments();
+        console.log("Count of Documents: ",count)
+        const userId = "NP" + (count + 1).toString().padStart(8, "0");
+        console.log("ninepointer Id: ",userId)
+        this.employeeid = userId;
+        next();
+    } else {
+        next();
+    }
+});
+
 userDetailSchema.pre("save", async function(next){
     if(!this.isModified('password')){
         return next();

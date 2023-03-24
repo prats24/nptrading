@@ -86,6 +86,8 @@ function MockTraderwiseCompantPNL(props) {
     })
   }, [])
 
+  
+
   useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/gettraderwisepnlmocktradecompanytoday`)
@@ -103,6 +105,9 @@ function MockTraderwiseCompantPNL(props) {
         props.socket.close();
     }
   }, [])
+
+
+  
 
   useEffect(()=>{
           // Get Lastest Trade timestamp

@@ -16,7 +16,7 @@ exports.liveTrade = async (reqBody, res) => {
     let responseErr;
 
     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
-        TriggerPrice, validity, variety, createdBy,
+        TriggerPrice, validity, variety, createdBy,trader,
          createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
          accessToken, userId, real_instrument_token, realSymbol, switching, dontSendResp, tradeBy} = reqBody
 
@@ -291,7 +291,7 @@ exports.liveTrade = async (reqBody, res) => {
                         algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                         lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
                         brokerage: brokerageCompany,
-                        tradeBy: tradeBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                        tradeBy: tradeBy,trader: trader, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                         order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
     
             
@@ -326,7 +326,7 @@ exports.liveTrade = async (reqBody, res) => {
                             Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                             variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                             order_id, instrumentToken, brokerage: brokerageUser,
-                            tradeBy: tradeBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                            tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
                             
         
@@ -364,7 +364,7 @@ exports.liveTrade = async (reqBody, res) => {
                             algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                             lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
                             brokerage: brokerageCompany,
-                            tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                            tradeBy: createdBy, trader: trader, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
         
                         });
@@ -397,7 +397,7 @@ exports.liveTrade = async (reqBody, res) => {
                             Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                             variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                             order_id, instrumentToken, brokerage: brokerageUser,
-                            tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                            tradeBy: createdBy, trader: trader, isRealTrade: false, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                             order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
         
                         });
@@ -678,7 +678,7 @@ exports.liveTrade = async (reqBody, res) => {
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                 lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
                 brokerage: brokerageCompany,
-                tradeBy: createdBy, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                tradeBy: createdBy, trader: trader, isRealTrade: true, amount: (Number(quantity)*average_price), trade_time:trade_time,
                 order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
 
     
@@ -712,7 +712,7 @@ exports.liveTrade = async (reqBody, res) => {
                     Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                     variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                     order_id, instrumentToken, brokerage: brokerageUser,
-                    tradeBy: createdBy, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                    tradeBy: createdBy, trader: trader, isRealTrade: true, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                     order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
 
 
@@ -748,7 +748,7 @@ exports.liveTrade = async (reqBody, res) => {
                 algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
                 lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, 
                 brokerage: brokerageCompany,
-                tradeBy: createdBy, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
+                tradeBy: createdBy, trader: trader, isRealTrade: false, amount: (Number(quantity)*average_price), trade_time:trade_time,
                 order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
 
             });
@@ -783,7 +783,7 @@ exports.liveTrade = async (reqBody, res) => {
                     Product:Product, buyOrSell:buyOrSell, order_timestamp: new_order_timestamp,
                     variety, validity, exchange, order_type: OrderType, symbol:symbol, placed_by: placed_by, userId,
                     order_id, instrumentToken, brokerage: brokerageUser,
-                    tradeBy: createdBy, isRealTrade: false, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                    tradeBy: createdBy, trader: trader, isRealTrade: false, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
                     order_req_time: createdOn, order_save_time: order_save_time, exchange_order_id, exchange_timestamp, isMissed
 
                 });

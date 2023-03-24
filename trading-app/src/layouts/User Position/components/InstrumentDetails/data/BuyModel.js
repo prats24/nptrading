@@ -39,6 +39,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   let createdBy = getDetails.userDetails.name;
   let userId = getDetails.userDetails.email;
   let tradeBy = getDetails.userDetails.name;
+  let trader = getDetails.userDetails._id;
   let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
  
   let finalLot = maxLot/lotSize;
@@ -175,7 +176,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
           exchange, symbol, buyOrSell, Quantity, Price, 
           Product, OrderType, TriggerPrice, stopLoss, uId,
           validity, variety, createdBy, order_id:dummyOrderId,
-          userId, instrumentToken
+          userId, instrumentToken, trader
 
         })
     });
@@ -187,16 +188,16 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
         ////console.log("Failed to Trade");
     } else {
         if(dataResp.massage === "COMPLETE"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("Trade Succesfull Completed");
         } else if(dataResp.massage === "REJECTED"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("Trade is Rejected due to Insufficient Fund");
         } else if(dataResp.massage === "AMO REQ RECEIVED"){
-            console.log(dataResp);
+            // console.log(dataResp);
             window.alert("AMO Request Recieved");
         } else{
-            console.log("this is dataResp", dataResp)
+            // console.log("this is dataResp", dataResp)
             window.alert(dataResp.message);
         }
     }

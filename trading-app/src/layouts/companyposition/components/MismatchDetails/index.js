@@ -62,7 +62,6 @@ function MismatchDetails({socket}) {
     axios.get(`${baseUrl}api/v1/getOpenPositions`)
     .then((res) => {
         setOpenPositionData(res.data);
-
     }).catch((err) => {
         return new Error(err);
     })
@@ -84,6 +83,10 @@ function MismatchDetails({socket}) {
   }, [])
 
 
+  console.log("Open Position Data: ",OpenPositionData)
+
+  if(OpenPositionData.length !== 0)
+  {
 
   OpenPositionData.map((elem)=>{
     let appPnlData = tradeData.filter((element)=>{
@@ -204,7 +207,7 @@ function MismatchDetails({socket}) {
 
   rows.push(obj)
 
-  
+  }
 
   const closeMenu = () => setMenu(null);
 

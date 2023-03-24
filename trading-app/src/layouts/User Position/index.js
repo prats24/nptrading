@@ -33,8 +33,6 @@ import DataTable from "../../examples/Tables/DataTable";
 import reportsBarChartData from "./data/reportsBarChartData";
 import reportsLineChartData from "./data/reportsLineChartData";
 
-
-
 // Dashboard components
 
 import InstrumentDetails from "./components/InstrumentDetails";
@@ -150,22 +148,14 @@ function UserPosition() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox py={1}>
 
-
+        <MDBox sx={{backgroundColor:"#C0C0C0", display:"flex", borderRadius:2, marginBottom:2}}>
+        <MDBox display="flex" flexDirection="column" justifyContent="space-between" sx={{width:"100%"}}>
         <TextField
-          id="outlined-basic" label="Search Symbol" variant="standard" type="text"
-          sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
-
-        {/* {instrumentsData?.length > 0 &&
-        <MDBox mt={0}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              <TradableInstrument data={instrumentsData} />
-            </Grid>
-          </Grid>
-        </MDBox> } */}
-
+          id="outlined-basic" label="Search Symbol and add them to start trading" variant="outlined" type="text"
+          sx={{margin: 0, padding : 1 ,width:"100%"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
+        <MDBox>
         { instrumentsData?.length > 0 &&
           (instrumentsData.map((elem)=>{
             const date = new Date(elem.expiry);
@@ -181,16 +171,20 @@ function UserPosition() {
             } //justifyContent = "space-around" border= "1px solid grey"
             return(
               <>
-                <MDBox key={elem._id} display="flex" gap="15px" alignItems="center" >
-                  <MDBox>{elem.name}</MDBox>
-                  <MDBox>{formattedDate}</MDBox>
-                  <MDBox>{elem.tradingsymbol}</MDBox>
-                  <MDBox><MDButton onClick={()=>{subscribeInstrument(elem)}}>Add</MDButton></MDBox>
-                </MDBox>
+                <Grid container lg={12} key={elem._id} sx={{fontSize:15}}  display="flex" gap="15px" alignItems="center" flexDirection="row" justifyContent="space-between" border="1px solid grey" padding="2px" >
+                  <Grid lg={2.2}>{elem.name}</Grid>
+                  <Grid lg={2.2}>{formattedDate}</Grid>
+                  <Grid lg={2.2}>{elem.tradingsymbol}</Grid>
+                  <Grid lg={2.2}>{elem.exchange}</Grid>
+                  <Grid lg={2.2}><MDButton size="small" onClick={()=>{subscribeInstrument(elem)}}>Add</MDButton></Grid>
+                </Grid>
               </>
             )
           }))
         }
+        </MDBox>
+        </MDBox>
+        </MDBox>
 
         <MDBox mt={0}>
           <Grid container spacing={3}>

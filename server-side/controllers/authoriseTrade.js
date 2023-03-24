@@ -171,19 +171,19 @@ exports.fundCheck = async(req, res, next) => {
                     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
                         TriggerPrice, validity, variety, createdBy,
                             createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
-                            accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol} = req.body;
+                            accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol, trader} = req.body;
 
                     let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
                     
                     try{
                         const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: zerodhaMargin/Quantity, Quantity: Quantity, Product:Product,
                             buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, variety: variety,
-                        symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
+                        symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, marginCallFor: trader, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
     
-                        //console.log("margincall saving")
+                        console.log("margincall saving")
                         await marginCall.save();
                     }catch(e){
-                        //console.log("error saving margin call", e);
+                        console.log("error saving margin call", e);
                     }
 
                     //console.log("sending response from authorise trade");

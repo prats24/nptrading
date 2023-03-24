@@ -81,6 +81,7 @@ let totalRunningLots = 0;
     .then((res) => {
         //console.log("live price data", res)
         setMarketData(res.data);
+        setMarketData(res.data);
         // setDetails.setMarketData(data);
     }).catch((err) => {
         return new Error(err);

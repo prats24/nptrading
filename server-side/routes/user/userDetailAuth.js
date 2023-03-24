@@ -1,4 +1,6 @@
 const express = require("express");
+const otpGenerator = require('otp-generator')
+const emailService = require("../../utils/emailService")
 const router = express.Router();
 require("../../db/conn");
 const UserDetail = require("../../models/User/userDetailSchema");
@@ -6,7 +8,7 @@ const authController = require("../../controllers/authController")
 
 router.post("/userdetail", authController.protect, authController.restrictTo("admin"), (req, res)=>{
     const {status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeId} = req.body;
-    //console.log(req.body)
+    console.log(req.body)
     if(!status || !uId || !createdOn || !lastModified || !createdBy || !name || !cohort || !designation || !email || !mobile || !degree || !dob || !gender || !trading_exp || !location || !last_occupation || !joining_date || !role){
         //console.log("data nhi h pura");
         return res.status(422).json({error : "plz filled the field..."})
@@ -16,7 +18,7 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
     .then((dateExist)=>{
         if(dateExist){
             //console.log("data already");
-            return res.status(422).json({error : "date already exist..."})
+            return res.status(422).json({error : "data already exist..."})
         }
         const userDetail = new UserDetail({status, uId, createdOn, lastModified, createdBy, name, cohort, designation, email, mobile, degree, dob, gender, trading_exp, location, last_occupation, joining_date, role, userId, password, employeeid: employeeId});
         //console.log(userDetail)
@@ -24,6 +26,52 @@ router.post("/userdetail", authController.protect, authController.restrictTo("ad
             res.status(201).json({massage : "data enter succesfully"});
         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
     }).catch(err => {console.log("fail in   userAuth")});
+})
+
+router.patch("/resetpassword", async (req, res)=>{
+    const {email, resetPasswordOTP, confirm_password, password} = req.body;
+    console.log(req.body)
+    
+    let resetuser = await UserDetail.findOne({email : email})
+    if(!resetuser)
+    {
+        return res.status(404).json({error : "User doesn't exist"})
+    }
+
+    if(resetPasswordOTP != resetuser.resetPasswordOTP)
+    {
+        return res.status(401).json({message : "OTP doesn't match, please try again!"})
+    }
+
+    if(password != confirm_password)
+    {
+        return res.status(401).json({message : "Password & Confirm Password didn't match."})
+    }
+            //console.log("data already");
+        
+        resetuser.password = password
+        await resetuser.save({validateBeforeSave:false})
+        return res.status(200).json({message : "Password Reset Done"})
+})
+
+router.patch("/generateOTP", async (req, res)=>{
+    const {email} = req.body
+    const resetuser = await UserDetail.findOne({email: email})
+    if(!resetuser)
+    {
+        return res.status(404).json({
+            message: "User with this email doesn't exist"
+        })
+    }
+    let email_otp = otpGenerator.generate(6, { upperCaseAlphabets: true,lowerCaseAlphabets: false, specialChars: false });
+    let subject = "Password Reset ninepointer";
+    let message = `Your OTP for password reset is: ${email_otp}`
+    resetuser.resetPasswordOTP = email_otp
+        await resetuser.save({validateBeforeSave:false});
+        res.status(200).json({
+            message: "Password Reset OTP Resent"
+        })
+    emailService(email,subject,message);
 })
 
 router.get("/readuserdetails", (req, res)=>{
