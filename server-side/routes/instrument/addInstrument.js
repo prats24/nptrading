@@ -99,7 +99,7 @@ router.get("/readInstrumentDetails", authentication, (req, res)=>{
 
 router.get("/getInstrument/:_id", (req, res)=>{
     const {_id} = req.params
-    Instrument.find({user_id: _id, status: "Active"}, (err, data)=>{
+    Instrument.find({user_id: _id, isAddedWatchlist: true}, (err, data)=>{
         if(err){
             return res.status(500).send(err);
         }else{
