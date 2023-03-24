@@ -85,9 +85,6 @@ function UserPosition() {
     }, 1000);
   }
 
-
-
-
   function sendRequest(data){
 
 

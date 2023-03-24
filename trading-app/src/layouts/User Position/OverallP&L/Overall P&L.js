@@ -11,6 +11,8 @@ export default function OverallPL() {
       { Header: "Gross P&L", accessor: "grossPnl", width: "10%", align: "center" },
       { Header: "Change(%)", accessor: "change", width: "10%", align: "center" },
       { Header: "Exit Position", accessor: "exit", width: "10%", align: "center" },
+      { Header: "BUY", accessor: "buy", width: "10%", align: "center" },
+      { Header: "SELL", accessor: "sell", width: "10%", align: "center" },
     ],
 
     rows: [

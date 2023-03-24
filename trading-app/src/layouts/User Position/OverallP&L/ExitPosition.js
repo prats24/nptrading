@@ -27,11 +27,6 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
-
-
-
-// import Button from '@mui/material/Button';
-
 function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
 
     let checkBuyOrSell ;

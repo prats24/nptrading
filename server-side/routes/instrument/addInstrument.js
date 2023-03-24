@@ -69,12 +69,12 @@ router.patch("/inactiveInstrument/:instrumentToken", async (req, res)=>{
     //console.log("this is body", req.body);
     try{ 
         const {instrumentToken} = req.params
-        const {status} = req.body;
+        const {isAddedWatchlist} = req.body;
         //console.log(realTrade);
         const inactiveInstrument = await Instrument.findOneAndUpdate({instrumentToken : instrumentToken}, {
             $set:{ 
                 
-                status: status
+                isAddedWatchlist: isAddedWatchlist
             }
             
         })
@@ -88,6 +88,17 @@ router.patch("/inactiveInstrument/:instrumentToken", async (req, res)=>{
 
 router.get("/readInstrumentDetails", authentication, (req, res)=>{
     const {_id} = req.user
+    Instrument.find({user_id: _id, status: "Active"}, (err, data)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else{
+            return res.status(200).send(data);
+        }
+    }).sort({$natural:-1})
+})
+
+router.get("/getInstrument/:_id", (req, res)=>{
+    const {_id} = req.params
     Instrument.find({user_id: _id, status: "Active"}, (err, data)=>{
         if(err){
             return res.status(500).send(err);

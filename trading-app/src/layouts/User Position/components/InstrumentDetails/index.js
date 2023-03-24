@@ -73,7 +73,7 @@ function InstrumentDetails({socket, Render}) {
           "content-type": "application/json"
       },
       body: JSON.stringify({
-          status: "Inactive"
+        isAddedWatchlist: false
       })
     });
 
