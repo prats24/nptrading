@@ -153,6 +153,7 @@ function OverallGrid({socket, Render}) {
       totalTransactionCost += Number(subelem.brokerage);
 
       let perticularInstrumentData = instrumentData.filter((elem)=>{
+        console.log("elem", elem, subelem)
         return subelem._id.instrumentToken == elem.instrumentToken;
       })
 
