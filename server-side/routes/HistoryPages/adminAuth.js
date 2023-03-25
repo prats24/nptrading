@@ -13,9 +13,9 @@ const TradableInstrument = require("../../controllers/TradableInstrument/tradabl
 const cronjob = require("../../marketData/getinstrumenttickshistorydata")
 
 
-// router.get("/tradableInstrument", async (req, res)=>{
-//   await TradableInstrument.tradableInstrument();
-// })
+router.get("/tradableInstrument", async (req, res)=>{
+  await TradableInstrument.tradableInstrument();
+})
 
 router.get("/cronjob", async (req, res)=>{
   await cronjob();

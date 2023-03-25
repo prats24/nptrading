@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef,useContext } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 // @mui material components
@@ -10,17 +10,14 @@ import uniqid from "uniqid"
 
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
-import {ListItem} from "@material-ui/core"
 import Paper from '@mui/material/Paper';
 import MDButton from "../../components/MDButton";
 import TextField from '@mui/material/TextField';
 // import { createTheme } from '@mui/material/styles';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import { RxCross2 } from 'react-icons/rx';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 
-import IconButton from '@material-ui/core/IconButton';
 
 
 
@@ -39,12 +36,24 @@ import OverallGrid from "./OverallP&L/OverallGrid";
 import MarginGrid from "./MarginDetails/MarginGrid";
 import TradableInstrument from "./components/TradableInstrument/TradableInstrument";
 import { Typography } from "@mui/material";
+import { userContext } from "../../AuthContext";
+import BuyModel from "./components/InstrumentDetails/data/BuyModel";
+import SellModel from "./components/InstrumentDetails/data/SellModel";
+
 
 function UserPosition() {
 
   const uId = uniqid();
+  const getDetails = useContext(userContext);
+  const [reRender, setReRender] = useState(true);
+  const [instrumentsData, setInstrumentsData] = useState();
+  const [buttonStates, setButtonStates] = useState({});
+  const [userInstrumentData, setUserInstrumentData] = useState([]);
+  const [text,setText] = useState('');
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
+
   let socket;
   try {
     socket = io.connect(`${baseUrl1}`)
@@ -65,10 +74,17 @@ function UserPosition() {
 
   }, []);
 
-  const [instrumentsData, setInstrumentsData] = useState();
-  const [reRender, setReRender] = useState(true);
-  const [text, setText] = useState('');
-  const textRef = useRef(null);
+  useEffect(()=>{
+    axios.get(`${baseUrl}api/v1/getInstrument/${getDetails.userDetails._id}`)
+    .then((res) => {
+        //console.log("live price data", res)
+        setUserInstrumentData(res.data);
+        // setDetails.setMarketData(data);
+    }).catch((err) => {
+        return new Error(err);
+    })
+  }, [reRender])
+
 
 
   let timeoutId; // store the timeout id
@@ -85,6 +101,7 @@ function UserPosition() {
     }, 1000);
   }
 
+  let textRef = useRef(null);
   function writeText() {
     textRef.current.focus();
     setText('17300CE');
@@ -98,9 +115,6 @@ function UserPosition() {
 
 
   function sendRequest(data){
-
-
-    // console.log("data", data.toUpperCase())
 
     if(data == ""){
       setInstrumentsData([])
@@ -127,33 +141,66 @@ function UserPosition() {
 
   }
 
-  async function subscribeInstrument(instrumentData){
+  async function subscribeInstrument(instrumentData, addOrRemove){
     const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
-    console.log(instrumentData)
-    const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
-      method: "POST",
-      credentials:"include",
-      headers: {
-          "content-type" : "application/json",
-          "Access-Control-Allow-Credentials": true
-      },
-      body: JSON.stringify({
-        instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: 1800
-      })
-    });
-  
-    const data = await res.json();
-    //console.log(data);
-    if(data.status === 422 || data.error || !data){
-        window.alert(data.error);
-        // setInvalidDetail(`Email or Password is incorrect`);
-    }else{
 
-      // this function is extracting data of user who is logged in
-      // await userDetail();
-      console.log(data.message)
-      
-      
+    if(addOrRemove === "Add"){
+      console.log(instrumentData)
+      const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
+        method: "POST",
+        credentials:"include",
+        headers: {
+            "content-type" : "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+        body: JSON.stringify({
+          instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: 1800
+        })
+      });
+    
+      const data = await res.json();
+      //console.log(data);
+      if(data.status === 422 || data.error || !data){
+          window.alert(data.error);
+          // setInvalidDetail(`Email or Password is incorrect`);
+      }else{
+  
+        // this function is extracting data of user who is logged in
+        // await userDetail();
+        console.log(data.message)
+        
+        
+      }
+      const id = instrument_token;
+      const currentButtonState = buttonStates[id];
+      setButtonStates({
+        ...buttonStates,
+        [id]: !currentButtonState,
+      });
+    } else{
+      const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrument_token}`, {
+        method: "PATCH",
+        credentials:"include",
+        headers: {
+            "Accept": "application/json",
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({
+          isAddedWatchlist: false
+        })
+      });
+  
+      const permissionData = await response.json();
+      console.log("remove", permissionData)
+      if (permissionData.status === 422 || permissionData.error || !permissionData) {
+          window.alert(permissionData.error);
+          //console.log("Failed to Edit");
+      }else {
+        // window.alert(permissionData.massage);
+          //console.log(permissionData);
+          // window.alert("Edit succesfull");
+          //console.log("Edit succesfull");
+      }
     }
 
     reRender ? setReRender(false) : setReRender(true);
@@ -239,6 +286,10 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
         <MDBox>
         { instrumentsData?.length > 0 &&
           (instrumentsData.map((elem)=>{
+            let perticularInstrumentData = userInstrumentData.filter((subElem)=>{
+              return subElem.instrumentToken === elem.instrument_token
+            })
+            const id = elem.instrument_token;
             const date = new Date(elem.expiry);
             const day = date.getDate();
             const options = { month: 'short' };
@@ -250,6 +301,7 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
               const v = day % 100;
               return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
             } //justifyContent = "space-around" border= "1px solid grey"
+            const isAdded = buttonStates[id] || false;
             return(
               
               <>
@@ -280,8 +332,14 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
                     <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>B</MDButton></Grid>
                     <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>S</MDButton></Grid>
-                    <Grid><MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>+</MDButton></Grid>
+                    {perticularInstrumentData.length ?
+                    <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
+                    :
+                    <Grid lg={2.2}><MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton></Grid>
+                    }
                   </Grid>
+
+
                   
                 </Grid>
                 )}

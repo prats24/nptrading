@@ -76,6 +76,11 @@ const instrumentSchema = new mongoose.Schema({
     user_id: {
         type: String,
         required : true
+    },
+    isAddedWatchlist: {
+        type: Boolean,
+        required : true,
+        default: true
     }
 })
 

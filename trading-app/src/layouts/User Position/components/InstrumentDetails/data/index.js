@@ -39,7 +39,7 @@ export default function Data(reRender) {
   console.log(reRender)
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/readInstrumentDetails`,{
+    axios.get(`${baseUrl}api/v1/instrumentDetails`,{
       withCredentials: true,
       headers: {
           Accept: "application/json",

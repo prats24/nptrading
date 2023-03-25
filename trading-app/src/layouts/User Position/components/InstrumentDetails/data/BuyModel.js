@@ -28,7 +28,7 @@ import { borderBottom } from '@mui/system';
 
 const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render}) => {
 
-  console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
+  // console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;

@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs")
 const uniqid = require("uniqid");
+const { Schema } = mongoose;
+
 
 const userDetailSchema = new mongoose.Schema({
     status:{
@@ -138,13 +140,12 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         // required: true
     },
-    tokens: [
+    watchlistInstruments: [
         {
-            token: {
-                type: String,
-                // required: true
-            }
+            type: Schema.Types.ObjectId,
+            ref: "instruments-details"
         }
+        
     ],
     userId: {
         type: String,
@@ -190,10 +191,10 @@ userDetailSchema.methods.correctPassword = async function (
 userDetailSchema.methods.generateAuthToken = async function(){
     try{
         let token = jwt.sign({_id: this._id}, process.env.SECRET_KEY);
-        this.tokens = this.tokens.concat({token: token});
+        // this.tokens = this.tokens.concat({token: token});
         return token;
     } catch (err){
-        console.log("err in userDetailSchema");
+        console.log(err, "err in userDetailSchema");
     }
 }
 

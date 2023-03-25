@@ -78,12 +78,13 @@ function InstrumentDetails({socket, Render, handleClick}) {
     console.log("in remove")
     const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
       method: "PATCH",
+      credentials:"include",
       headers: {
           "Accept": "application/json",
           "content-type": "application/json"
       },
       body: JSON.stringify({
-          status: "Inactive"
+        isAddedWatchlist: false
       })
     });
 
@@ -99,8 +100,6 @@ function InstrumentDetails({socket, Render, handleClick}) {
         //console.log("Edit succesfull");
     }
     reRender ? setReRender(false) : setReRender(true);
-
-
   }
 
   let ltpArr = [];

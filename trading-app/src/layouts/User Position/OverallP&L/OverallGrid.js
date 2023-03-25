@@ -18,6 +18,8 @@ import MDTypography from '../../../components/MDTypography';
 import { userContext } from '../../../AuthContext';
 import MDButton from '../../../components/MDButton';
 import ExitPosition from './ExitPosition';
+import Buy from "../components/InstrumentDetails/data/BuyModel";
+import Sell from "../components/InstrumentDetails/data/SellModel"
 // import Button from '@mui/material/Button';
 
 function OverallGrid({socket, Render, handleClick}) {
@@ -34,6 +36,7 @@ function OverallGrid({socket, Render, handleClick}) {
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
   const [render, setRender] = useState(true);
+  const [instrumentData, setInstrumentData] = useState([]);
 
   let liveDetailsArr = [];
   let totalTransactionCost = 0;
@@ -56,24 +59,24 @@ function OverallGrid({socket, Render, handleClick}) {
            setMarketData(data);
       })();
 
-      // axios.get(`${baseUrl}api/v1/getliveprice`)
-      // .then((res) => {
-      //     //console.log("live price data", res)
-      //     setMarketData(res.data);
-      //     // setDetails.setMarketData(data);
-      // }).catch((err) => {
-      //     return new Error(err);
-      // })
-
-      socket.on("tick", (data) => {
-        setMarketData(prevInstruments => {
-          const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-          data.forEach(instrument => {
-            instrumentMap.set(instrument.instrument_token, instrument);
-          });
-          return Array.from(instrumentMap.values());
-        });
+      axios.get(`${baseUrl}api/v1/getInstrument/${getDetails.userDetails._id}`)
+      .then((res) => {
+          //console.log("live price data", res)
+          setInstrumentData(res.data);
+          // setDetails.setMarketData(data);
+      }).catch((err) => {
+          return new Error(err);
       })
+
+      // socket.on("tick", (data) => {
+      //   setMarketData(prevInstruments => {
+      //     const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+      //     data.forEach(instrument => {
+      //       instrumentMap.set(instrument.instrument_token, instrument);
+      //     });
+      //     return Array.from(instrumentMap.values());
+      //   });
+      // })
 
       return () => abortController.abort();
     }, [])
@@ -115,6 +118,7 @@ function OverallGrid({socket, Render, handleClick}) {
            setTradeData(data);
            data.map((elem)=>{
              marketData.map((subElem)=>{
+                  console.log(subElem.instrument_token , elem._id.instrumentToken)
                  if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
                      liveDetailsArr.push(subElem)
                  }
@@ -136,6 +140,7 @@ function OverallGrid({socket, Render, handleClick}) {
       }
     }, [])
 
+    console.log("tradeData", tradeData, instrumentData)
 
     tradeData.map((subelem, index)=>{
       let obj = {};
@@ -145,6 +150,11 @@ function OverallGrid({socket, Render, handleClick}) {
       totalGrossPnl += updatedValue;
 
       totalTransactionCost += Number(subelem.brokerage);
+
+      let perticularInstrumentData = instrumentData.filter((elem)=>{
+        console.log("elem", elem, subelem)
+        return subelem._id.instrumentToken == elem.instrumentToken;
+      })
 
       updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
       const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
@@ -213,6 +223,15 @@ function OverallGrid({socket, Render, handleClick}) {
       obj.exit = (
         < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
       );
+      obj.buy = (
+        <Buy Render={{ reRender, setReRender }} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+      );
+      
+      obj.sell = (
+        <Sell Render={{ reRender, setReRender }} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+      );
+
+
       //console.log(obj)
       rows.push(obj);
     })
