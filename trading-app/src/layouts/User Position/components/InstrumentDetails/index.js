@@ -7,9 +7,11 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { RiStockFill } from "react-icons/ri";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
+import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
@@ -21,6 +23,12 @@ import { useEffect } from "react";
 import axios from "axios";
 import BuyModel from "./data/BuyModel";
 import SellModel from "./data/SellModel";
+import { Typography } from "@mui/material";
+
+
+
+
+
 
 function InstrumentDetails({socket, Render}) {
 
@@ -68,6 +76,7 @@ function InstrumentDetails({socket, Render}) {
     console.log("in remove")
     const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
       method: "PATCH",
+      credentials:"include",
       headers: {
           "Accept": "application/json",
           "content-type": "application/json"
@@ -89,8 +98,6 @@ function InstrumentDetails({socket, Render}) {
         //console.log("Edit succesfull");
     }
     reRender ? setReRender(false) : setReRender(true);
-
-
   }
 
   let ltpArr = [];
@@ -174,33 +181,34 @@ function InstrumentDetails({socket, Render}) {
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <MDBox>
+        <MDBox display="flex">
           <MDTypography variant="h6" gutterBottom>
-            Instrument Details
+            Market Watchlist
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <CheckCircleIcon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
-              }}
-            >
-            
-            </CheckCircleIcon>
-            <MDTypography variant="button" fontWeight="regular" color={isAppLive ? "success" : "error"}>
-              &nbsp;<strong>{isAppLive ? "System Live" : "System Offline"}</strong>
-            </MDTypography>
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
+            <MDTypography 
+            p={1}
+            fontWeight="bold" 
+            variant="button" 
+            color={isAppLive ? "success" : "error"}
+            style={{borderRadius: '4px', border: '1px solid grey', animation: 'blinking 1s infinite'}}
+            >
+              {isAppLive ? "System Live" : "System Offline"}
+            </MDTypography>
         </MDBox>
-        {renderMenu}
       </MDBox>
-      <MDBox>
+      {rows.length === 0 ? (
+      <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
+        <RiStockFill style={{fontSize: '40px'}}/>
+        <Typography style={{fontSize: '25px'}}>Nothing here</Typography>
+        <Typography mb={2} fontSize={15}>Use the search bar to add instruments.</Typography>
+        <MDButton variant="outlined" color="info">Add Instrument</MDButton>
+      </MDBox>)
+      :
+      (<MDBox>
         <DataTable
           table={{ columns, rows }}
           showTotalEntries={false}
@@ -209,6 +217,7 @@ function InstrumentDetails({socket, Render}) {
           entriesPerPage={false}
         />
       </MDBox>
+      )}
     </Card>
   );
 }

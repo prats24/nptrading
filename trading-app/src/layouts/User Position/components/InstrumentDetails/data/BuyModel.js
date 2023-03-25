@@ -207,7 +207,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
   return (
     <div>
-      <MDButton variant="contained" color="info" onClick={handleClickOpen} fullWidth>
+      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} fullWidth>
         BUY
       </MDButton>
       <div>

@@ -13,6 +13,7 @@ import uniqid from "uniqid"
 import MDBox from "../../components/MDBox";
 import MDButton from "../../components/MDButton";
 import TextField from '@mui/material/TextField';
+import { createTheme } from '@mui/material/styles';
 
 
 
@@ -41,8 +42,24 @@ import OverallGrid from "./OverallP&L/OverallGrid";
 import MarginGrid from "./MarginDetails/MarginGrid";
 import TradableInstrument from "./components/TradableInstrument/TradableInstrument";
 import { userContext } from "../../AuthContext";
+import BuyModel from "./components/InstrumentDetails/data/BuyModel";
+import SellModel from "./components/InstrumentDetails/data/SellModel";
+
 
 function UserPosition() {
+  
+  const theme = createTheme({
+    components: {
+      MuiGrid: {
+        styleOverrides: {
+          root: {
+            color: 'white',
+          },
+        },
+      },
+    },
+  });
+
   const uId = uniqid();
   const getDetails = useContext(userContext);
   const [reRender, setReRender] = useState(true);
@@ -99,9 +116,6 @@ function UserPosition() {
   }
 
   function sendRequest(data){
-
-
-    // console.log("data", data.toUpperCase())
 
     if(data == ""){
       setInstrumentsData([])
@@ -167,6 +181,7 @@ function UserPosition() {
     } else{
       const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrument_token}`, {
         method: "PATCH",
+        credentials:"include",
         headers: {
             "Accept": "application/json",
             "content-type": "application/json"
@@ -189,9 +204,6 @@ function UserPosition() {
       }
     }
 
-
-
-  
     reRender ? setReRender(false) : setReRender(true);
   }
 
@@ -200,11 +212,11 @@ function UserPosition() {
       <DashboardNavbar />
       <MDBox py={1}>
 
-        <MDBox sx={{backgroundColor:"#C0C0C0", display:"flex", borderRadius:2, marginBottom:2}}>
+        <MDBox sx={{backgroundColor:"white", display:"flex", borderRadius:2, marginBottom:2}}>
         <MDBox display="flex" flexDirection="column" justifyContent="space-between" sx={{width:"100%"}}>
         <TextField
-          id="outlined-basic" label="Search Symbol and add them to start trading" variant="outlined" type="text"
-          sx={{margin: 0, padding : 1 ,width:"100%"}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
+          id="outlined-basic" label="Click here to search any symbol and add them in your watchlist to start trading" variant="outlined" type="text"
+          sx={{margin: 0, padding : 1 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{sendSearchReq(e.target.value.toUpperCase())}}/>
         <MDBox>
         { instrumentsData?.length > 0 &&
           (instrumentsData.map((elem)=>{
@@ -226,16 +238,41 @@ function UserPosition() {
             const isAdded = buttonStates[id] || false;
             return(
               <>
-                <Grid container lg={12} key={elem._id} sx={{fontSize:15}}  display="flex" gap="15px" alignItems="center" flexDirection="row" justifyContent="space-between" border="1px solid grey" padding="2px" >
-                  <Grid lg={2.2}>{elem.name}</Grid>
-                  <Grid lg={2.2}>{formattedDate}</Grid>
-                  <Grid lg={2.2}>{elem.tradingsymbol}</Grid>
-                  <Grid lg={2.2}>{elem.exchange}</Grid>
-                  {perticularInstrumentData.length ?
-                  <Grid lg={2.2}><MDButton size="small" onClick={()=>{subscribeInstrument(elem, "Remove")}}>Remove</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
-                  :
-                  <Grid lg={2.2}><MDButton size="small" onClick={()=>{subscribeInstrument(elem, "Add")}}>Add</MDButton></Grid>
+                <Grid container lg={12} key={elem._id}
+                sx={{
+                  fontSize:13,
+                  display:"flex",
+                  gap:"10px",
+                  alignItems:"center",
+                  flexDirection:"row",
+                  justifyContent:"space-between",
+                  border:"0.25px solid white",
+                  borderRadius:2,
+                  color:"white",
+                  padding:"0.5px",
+                  '&:hover': {
+                    backgroundColor: 'lightgray',
+                    cursor: 'pointer',
+                    fontWeight: 600
                   }
+                }}
+                >
+                  <Grid sx={{color:"white", textAlign:"center", display: { xs: 'none', lg: 'block' }}} xs={0} lg={2.2}>{elem.name}</Grid>
+                  <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{formattedDate}</Grid>
+                  <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
+                  <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
+                  <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
+                    <Grid><MDButton size="small" color="info" ml={1} onClick={()=>{subscribeInstrument(elem)}}>B</MDButton></Grid>
+                    <Grid><MDButton size="small" color="error" ml={1} onClick={()=>{subscribeInstrument(elem)}}>S</MDButton></Grid>
+                    {/* <Grid><MDButton size="small" color="warning" ml={1} onClick={()=>{subscribeInstrument(elem)}}>+</MDButton></Grid>  <BuyModel/>  <SellModel/> */}
+                    {perticularInstrumentData.length ?
+                    <Grid lg={2.2}><MDButton size="small" color="secondary" ml={1} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
+                    :
+                    <Grid lg={2.2}><MDButton size="small" color="warning" ml={1} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton></Grid>
+                    }
+                  </Grid>
+
+
                   
                 </Grid>
               </>
