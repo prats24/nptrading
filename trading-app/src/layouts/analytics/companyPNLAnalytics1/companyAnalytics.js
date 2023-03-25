@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, Component } from "react";
 import jsPDF from "jspdf";
 import HeatMap from "react-heatmap-grid";
 import Card from "@mui/material/Card";
@@ -10,12 +10,15 @@ import axios from "axios";
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import {useState, useContext, useEffect} from "react"
-import { ChartComponent, SeriesCollectionDirective, SeriesDirective, TrendlineDirective, TrendlinesDirective, Inject, Tooltip, LineSeries, ScatterSeries, SplineSeries, Trendlines, Category } from '@syncfusion/ej2-react-charts';
+import Chart from 'react-google-charts'
+import MockCompanyPNLTWiseData from "./data/pnldata";
+import MDTypography from "../../../components/MDTypography";
 
 function DayWiseTraderPNL() {
 
 // Display only even labels
-const [traderName, setTraderName] = useState('Praveen K');
+const [traderName, setTraderName] = useState('Total');
+const { columnsdata, rowsdata } = MockCompanyPNLTWiseData();
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 let valueInDate2 = Number(10)
 let valueInDate1 = Number(1)
@@ -31,7 +34,7 @@ useEffect(()=>{
       overallPnl = 0;
       axios.get(`${baseUrl}api/v1/getDayWiseTradersTradeDetailsCompanySide/${valueInDate1}/${valueInDate2}/${traderName}`)
         .then((res)=>{
-                  console.log(res.data);
+                  // console.log(res.data);
                   setTradersPNLData(res.data);
         }).catch((err)=>{
             window.alert("Error Fetching Day Wise PNL Details");
@@ -44,6 +47,9 @@ useEffect(()=>{
           let traderdata = data.filter((elem) => {
             return elem.designation === "Equity Trader"
         })
+                  let obj = {}
+                  obj.name = 'Total';
+                  traderdata.unshift(obj)
                   setTraders(traderdata);
         }).catch((err)=>{
             window.alert("Error Fetching Trader Details");
@@ -52,11 +58,12 @@ useEffect(()=>{
   // },[startDay,endDay,traderName])
 },[])
 
+
   function pnlCalculation(startDay, endDay, traderName){
-    console.log(Number(startDay), Number(endDay), traderName)
+    // console.log(Number(startDay), Number(endDay), traderName)
     axios.get(`${baseUrl}api/v1/getDayWiseTradersTradeDetailsCompanySide/${Number(startDay)}/${Number(endDay)}/${traderName}`)
         .then((res)=>{
-                  console.log(res.data);
+                  // console.log(res.data);
                   setTradersPNLData(res.data);
         }).catch((err)=>{
             window.alert("Error Fetching Day Wise PNL Details");
@@ -92,7 +99,7 @@ useEffect(()=>{
   function TraderName(e){
     e.preventDefault();
     setTraderName(e.target.value)
-    console.log("Changed Trader Name: ",e.target.value)
+    // console.log("Changed Trader Name: ",e.target.value)
     pnlCalculation(startDay, endDay,e.target.value)
     overallPnl = 0;
   }
@@ -106,35 +113,35 @@ tradersPNLData?.map((elem)=>{
     
 })
 
-console.log(daysdataarray);
+// console.log(daysdataarray);
 
 let xlabelvis = Math?.max(...daysdataarray)
-console.log("XLabel Visibility: ",xlabelvis)
+// console.log("XLabel Visibility: ",xlabelvis)
 
 let xlabelnumber = []
 for(let i = 1; i <= xlabelvis; i++)
 {
-    console.log(i)
+    // console.log(i)
     xlabelnumber.push(i);
-    console.log(xlabelnumber);
+    // console.log(xlabelnumber);
 }
 
 
-console.log("XLabel Numbers: ",xlabelnumber);
+// console.log("XLabel Numbers: ",xlabelnumber);
 
 
 let pnldata = []
 tradersPNLData?.map((elem)=>{
     pnldata.push([elem.pnl_by_day.day,elem.trader_name])
 })
-console.log(pnldata)
+// console.log(pnldata)
 
 const xLabelsVisibility = xlabelnumber;
 
 const yLabels = ['Gross P&L','Brokerage','Net P&L','# of Trades','Zerodha(Cost)', 'Zerodha(GST)', 'Zerodha(Total)','Exchange(Cost)']
-console.log(yLabels)
+// console.log(yLabels)
 const xLabels = xlabelnumber;
-console.log(xLabels)
+// console.log(xLabels)
 
 
 
@@ -282,7 +289,76 @@ if(tradersPNLData) {
       const marker = { visible: true };
       chartLoad();  
 
+      console.log(tradersPNLData)
+      const TrendData = []
+      TrendData.push(['day','gpnl'])
+      tradersPNLData.map((e)=>{
+        e.pnl_by_day.map((elem)=>{
+          TrendData.push([elem.serial_number,elem.gpnl])
+        })
+      });
+      console.log(TrendData)
 
+      const TrendOptions = {
+        title: 'Day wise gross p&l chart of traders',
+        hAxis: { title: 'Day' },
+        vAxis: { title: 'Gross P&L' },
+        legend: 'none',
+        trendlines: { 0: {} },
+      }
+
+      const TrendData1 = [
+        ['Diameter', 'Age'],
+        [8, 37],
+        [4, 19.5],
+        [11, 52],
+        [4, 22],
+        [3, 16.5],
+        [6.5, 32.8],
+        [14, 72],
+      ]
+      console.log(TrendData1)
+      console.log(traders)
+
+      
+
+      // tradersPNLData?.map((e)=>{
+      //   e.pnl_by_day.map((elem)=>{
+      //   let tpnl = {}
+      //   const gpnlcolor = (elem.gpnl) >= 0 ? "success" : "error"
+      //   //const statuscolor = elem.status == "COMPLETE" ? "success" : "error"
+      //   const npnlcolor = (elem.npnl) >= 0 ? "success" : "error"
+    
+      //   tpnl.trader = (
+      //     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+      //       {elem._id}
+      //     </MDTypography>
+      //   );
+      //   tpnl.gpnl = (
+      //       <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+      //         {(elem.gpnl) >= 0 ? "+₹" + (elem.gpnl).toFixed(0) : "-₹" + (-elem.gpnl).toFixed(0)}
+      //       </MDTypography>
+      //     );
+      //   tpnl.brokerage = (
+      //     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+      //       ₹{(elem.brokerage).toFixed(0)}
+      //     </MDTypography>
+      //   );
+      //   tpnl.npnl = (
+      //     <MDTypography component="a" variant="caption" color={npnlcolor} fontWeight="medium">
+      //       {(elem.npnl) >= 0 ? "+₹" + (elem.npnl).toFixed(0) : "-₹" + (-elem.npnl).toFixed(0)}
+      //     </MDTypography>
+      //   );
+      //   tpnl.trades = (
+      //     <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+      //       {elem.trades}
+      //     </MDTypography>
+      //   );
+    
+      //   rows.push(tpnl)
+      //   })
+    
+      //   })
 
 //export default function() {
   return (
@@ -378,46 +454,19 @@ if(tradersPNLData) {
         </Grid>
       </Grid>
       </Card>
-      <MDBox mt={2} mb={3} style={{ backgroundColor: '#FFF0AA' }}>
-      {/* <MDBox fontSize={20} mb={2} display="flex" justifyContent="center" style={{ backgroundColor: 'lightblue' }}>Trader Side Day Wise Net P&L</MDBox> */}
-      <HeatMap
-        xLabels={xLabels}
-        yLabels={yLabels}
-        xLabelsLocation={"top"}
-        xLabelsVisibility={xLabelsVisibility}
-        xLabelWidth={100}
-        yLabelWidth={115}
-        data={data}
-        rectangles
-        height={30}
-        width={30}
-        // onClick={(x, y) => alert(`${xlabelnumber[x]}` + " P&L for " + `${traderNameList[y]} is ${data[y][x] > 0 ? "+₹" +data[y][x] : data[y][x] == 0 ? "₹"+0 : "-₹"+(-data[y][x])}`)}
-        cellStyle={(background,value, min, max, data, x, y) => ({
-          //background: `rgb(0, 255, 0, ${1 - (max - value) / (max - min)}`,
-          background: `${value > 0 ? `rgb(0, 255, 0, ${1 - (max - value) / (max - min)})` : value == 0 ? "rgb(255, 255, 0)" :`rgb(255, 0, 0, ${1 - (max - (-value)) / (max - min)})`}`,
-          fontSize: "10px",
-          color: "white",
-        })}
-        // cellRender={value => value && <MDBox>{value > 0 ? "+₹"+value.toLocaleString() : value == 0 ? "₹0" : "-₹"+(-value).toLocaleString()}</MDBox>}
-         cellRender={value => value && <MDBox>{value.toLocaleString()}</MDBox>}
-        //ref={heatmapRef}
-      />
-    </MDBox>
 
-    <Card xs={12} md={6} lg={12}  sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
+    <Card xs={12} md={6} lg={12} style={{marginTop:12}}  sx={{display:"flex", flexDirection:"row", justifyContent:'center'}}>
 
     <Grid item xs={12} md={6} lg={12}>
-    <ChartComponent id='charts' primaryXAxis={primaryxAxis} primaryYAxis={primaryyAxis} tooltip={tooltip} chartArea={chartarea} title='Gross P&L Chart'>
-      <Inject services={[Category, Tooltip, ScatterSeries, SplineSeries, LineSeries, Trendlines]}/>
-      <SeriesCollectionDirective>
-        <SeriesDirective dataSource={series1} xName='x' yName='y' name='' type='Scatter' fill='#0066FF'>
-          <TrendlinesDirective>
-            <TrendlineDirective type='Linear' width={1} marker={marker}>
-            </TrendlineDirective>
-          </TrendlinesDirective>
-        </SeriesDirective>
-      </SeriesCollectionDirective>
-    </ChartComponent>
+        <Chart
+          // width={'600px'}
+          height={'550px'}
+          chartType="ScatterChart"
+          loader={<div>Loading Chart</div>}
+          data={TrendData}
+          options={TrendOptions}
+          rootProps={{ 'data-testid': '1' }}
+        />
     </Grid>
 
     </Card>

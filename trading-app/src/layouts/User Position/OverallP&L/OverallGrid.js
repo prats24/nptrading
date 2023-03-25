@@ -3,6 +3,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import Card from "@mui/material/Card";
 import axios from "axios";
 import { NetPnlContext } from '../../../PnlContext';
+import { Typography } from "@mui/material";
 // Material Dashboard 2 React components
 
 import { GrAnchor } from "react-icons/gr";
@@ -19,7 +20,7 @@ import MDButton from '../../../components/MDButton';
 import ExitPosition from './ExitPosition';
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket, Render}) {
+function OverallGrid({socket, Render, handleClick}) {
   const { netPnl, updateNetPnl } = useContext(NetPnlContext);
   const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
@@ -274,10 +275,10 @@ function OverallGrid({socket, Render}) {
       </MDBox>
       {rows.length === 1 ? (
       <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
-        <GrAnchor style={{fontSize: '40px'}}/>
-        <MDTypography style={{fontSize: '25px'}}>No open positions yet</MDTypography>
-        <MDTypography mb={2} fontSize={15}>Add instruments and start trading.</MDTypography>
-        <MDButton variant="outlined" color="info">Get Started</MDButton>
+        <GrAnchor style={{fontSize: '30px'}}/>
+        <Typography style={{fontSize: '20px', color:"grey"}}>No open positions yet</Typography>
+        <Typography mb={2} fontSize={15} color="grey">Add instruments and start trading.</Typography>
+        <MDButton variant="outlined" size="small" color="info" onClick={handleClick}>Get Started</MDButton>
       </MDBox>)
       :
       (<MDBox>
