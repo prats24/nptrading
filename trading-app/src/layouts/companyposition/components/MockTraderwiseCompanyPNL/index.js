@@ -9,6 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
+import { Typography } from "@mui/material";
+import { HiUserGroup } from "react-icons/hi";
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
@@ -267,10 +269,6 @@ finalTraderPnl.map((subelem, index)=>{
     <ViewOrderDetail userId={subelem.userId}/>
   );
 
-  // obj.realOrMock = (
-  //   <MockRealSwitch props={props} userId={subelem.userId} algoName={subelem.algoName} />
-  // );
-
   rows.push(obj);
 })
 
@@ -332,40 +330,54 @@ rows.push(obj);
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-        <MDBox>
+
+        <MDBox display="flex" justifyContent="space-between" alignItems="center" flexGrow={1}>
           <MDTypography variant="h6" gutterBottom>
-            Traderwise Company P&L(Mock)
+            Traders Company Position(Mock Trade)
           </MDTypography>
-          <MDBox display="flex" alignItems="center" lineHeight={0}>
+          <MDBox display="flex" alignItems="center" lineHeight={0} textAlign="right">
             <Icon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
+                mt: 0,
               }}
             >
-              done
+              {latestLive.tradeBy ? 'done' : 'stop'}
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
-            &nbsp;<strong>last trade</strong> {latestLive.tradeBy} {latestLive.tradeType === "BUY" ? "bought" : "sold"} {Math.abs(latestLive.tradeQuantity)} quantity of {latestLive.tradeSymbol} at {latestLive.tradeTime} - {latestLive.tradeStatus}
+            {latestLive.tradeBy ? 
+              <span>
+                <strong> last trade </strong>
+                {latestLive.tradeBy} {latestLive.tradeType === "BUY" ? "bought " : "sold "}  
+                {Math.abs(latestLive.tradeQuantity)} quantity of 
+                {latestLive.tradeSymbol} at {latestLive.tradeTime} - {latestLive.tradeStatus}
+              </span>
+              : "No trades today"
+            }
             </MDTypography>
           </MDBox>
         </MDBox>
-        <MDBox color="text" px={2}>
-          <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-            more_vert
-          </Icon>
-        </MDBox>
+
         {renderMenu}
       </MDBox>
-      <MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-        />
-      </MDBox>
+
+      {rows.length === 1 ? (
+      <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
+        <HiUserGroup style={{fontSize: '30px', color:"#1A73E8"}}/>
+        <Typography style={{fontSize: '20px',color:"grey"}}>Nothing here</Typography>
+        <Typography mb={2} fontSize={15} color="grey">Trader wise active mock trades will show up here.</Typography> 
+      </MDBox>)
+      :
+        (<MDBox>
+          <DataTable
+            table={{ columns, rows }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+          />
+        </MDBox>
+      )}
     </Card>
   );
             }

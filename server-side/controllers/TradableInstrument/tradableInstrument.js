@@ -55,7 +55,11 @@ exports.tradableInstrument = async () => {
                 // console.log("getting row before if", row)
                 // Insert the row into the MongoDB collection
                 if((row.name == "NIFTY" || row.name == "BANKNIFTY") && row.segment == "NFO-OPT"){
-                    console.log("getting row", row)
+                    console.log("getting row", row);
+                    if(row.name === "NIFTY"){
+                        row.name = row.name+"50"
+                    }
+                    
                     await TradableInstrument.create(row);
                 }
             })

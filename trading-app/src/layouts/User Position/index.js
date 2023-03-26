@@ -39,6 +39,8 @@ import { Typography } from "@mui/material";
 import { userContext } from "../../AuthContext";
 import BuyModel from "./components/InstrumentDetails/data/BuyModel";
 import SellModel from "./components/InstrumentDetails/data/SellModel";
+import MDSnackbar from "../../components/MDSnackbar";
+
 
 
 function UserPosition() {
@@ -85,6 +87,11 @@ function UserPosition() {
     })
   }, [reRender])
 
+  // const [buttonStates, setButtonStates] = useState({});
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = () => setSuccessSB(true);
+  const closeSuccessSB = () => setSuccessSB(false);
+  let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
 
 
   let timeoutId; // store the timeout id
@@ -145,6 +152,7 @@ function UserPosition() {
     const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
 
     if(addOrRemove === "Add"){
+      setAddOrRemoveCheck(true);
       console.log(instrumentData)
       const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
         method: "POST",
@@ -167,17 +175,20 @@ function UserPosition() {
   
         // this function is extracting data of user who is logged in
         // await userDetail();
+        openSuccessSB();
         console.log(data.message)
         
         
       }
-      const id = instrument_token;
-      const currentButtonState = buttonStates[id];
-      setButtonStates({
-        ...buttonStates,
-        [id]: !currentButtonState,
-      });
+      // const id = instrument_token;
+      // const currentButtonState = buttonStates[id];
+      // setButtonStates({
+      //   ...buttonStates,
+      //   [id]: !currentButtonState,
+      // });
+      
     } else{
+      setAddOrRemoveCheck(false);
       const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrument_token}`, {
         method: "PATCH",
         credentials:"include",
@@ -200,7 +211,9 @@ function UserPosition() {
           //console.log(permissionData);
           // window.alert("Edit succesfull");
           //console.log("Edit succesfull");
+          openSuccessSB();
       }
+      
     }
 
     reRender ? setReRender(false) : setReRender(true);
@@ -219,6 +232,22 @@ function UserPosition() {
 
   const darkTheme = createTheme({ palette: { mode: 'dark' } });
 const lightTheme = createTheme({ palette: { mode: 'light' } });
+  // let title = "App " + appstatus
+  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
+  let content = addOrRemoveCheck ? "Added" : "Removed"
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      // title={title}
+      content={content}
+      // dateTime={timestamp}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+    />
+  );
 
   return (
     <DashboardLayout>
@@ -300,8 +329,7 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
               const suffixes = ['th', 'st', 'nd', 'rd'];
               const v = day % 100;
               return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
-            } //justifyContent = "space-around" border= "1px solid grey"
-            const isAdded = buttonStates[id] || false;
+            } 
             return(
               
               <>
@@ -330,8 +358,12 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
                   <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
                   <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
-                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>B</MDButton></Grid>
-                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>S</MDButton></Grid>
+                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>
+                      B
+                    </MDButton></Grid>
+                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>
+                      S
+                    </MDButton></Grid>
                     {perticularInstrumentData.length ?
                     <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
                     :
@@ -343,11 +375,13 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
                   
                 </Grid>
                 )}
+                {renderSuccessSB}
               </>
             )
           }))
         }
         </MDBox>
+        {/* <TradableInstrument instrumentsData={instrumentsData} reRender={reRender} setReRender={setReRender} uId={uId} /> */}
         </MDBox>
         </MDBox>
 

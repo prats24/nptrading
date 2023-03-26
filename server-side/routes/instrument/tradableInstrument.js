@@ -5,7 +5,7 @@ const SearchInstrument = require("../../controllers/TradableInstrument/searchIns
 
 router.get("/tradableInstruments", async (req, res)=>{
     const input = req.query.search;
-    await SearchInstrument.search(input, res)
+    await SearchInstrument.search(input, res, req)
 })
 
 

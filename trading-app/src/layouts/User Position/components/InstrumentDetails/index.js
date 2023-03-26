@@ -18,6 +18,8 @@ import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
+import MDSnackbar from "../../../../components/MDSnackbar";
+
 
 // Data
 import data from "./data";
@@ -42,6 +44,10 @@ function InstrumentDetails({socket, Render, handleClick}) {
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = () => setSuccessSB(true);
+  const closeSuccessSB = () => setSuccessSB(false);
+
 
 
   useEffect(()=>{
@@ -98,11 +104,11 @@ function InstrumentDetails({socket, Render, handleClick}) {
         //console.log(permissionData);
         // window.alert("Edit succesfull");
         //console.log("Edit succesfull");
+        openSuccessSB();
     }
     reRender ? setReRender(false) : setReRender(true);
   }
 
-  let ltpArr = [];
   
   rows.map((elem)=>{
 
@@ -144,7 +150,9 @@ function InstrumentDetails({socket, Render, handleClick}) {
           );
 
           elem.remove = (
-            <RemoveCircleOutlineIcon onClick={()=>{removeInstrument(elem.instrumentToken.props.children)}} />
+            <MDButton size="small" color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken.props.children)}}>
+              <RemoveCircleOutlineIcon  />
+            </MDButton>
           );
 
       }
@@ -152,9 +160,6 @@ function InstrumentDetails({socket, Render, handleClick}) {
     // ltpArr.push(elem);
   })
 
-  console.log("rows ltpArr", rows)
-  // const newRows = rows.concat(ltpArr);
-  //console.log("row", rows, ltpArr, newRows)
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
@@ -178,6 +183,23 @@ function InstrumentDetails({socket, Render, handleClick}) {
       <MenuItem onClick={closeMenu}>Another action</MenuItem>
       <MenuItem onClick={closeMenu}>Something else</MenuItem>
     </Menu>
+  );
+
+    // let title = "App " + appstatus
+  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
+  let content = "Instrument Removed"
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      // title={title}
+      content={content}
+      // dateTime={timestamp}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+    />
   );
 
   return (
@@ -220,6 +242,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
         />
       </MDBox>
       )}
+      {renderSuccessSB}
     </Card>
   );
 }
