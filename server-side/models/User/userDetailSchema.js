@@ -126,6 +126,38 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    upiId:{
+        type: String,
+        // required: true
+    },
+    googlePay_number:{
+        type: String,
+        // required: true
+    },
+    payTM_number:{
+        type: String,
+        // required: true
+    },
+    phonePay_number:{
+        type: String,
+        // required: true
+    },
+    bankName:{
+        type: String,
+        // required: true
+    },
+    nameAsPerBankAccount:{
+        type: String,
+        // required: true
+    },
+    accountNumber:{
+        type: String,
+        // required: true
+    },
+    ifscCode:{
+        type: String,
+        // required: true
+    },
     password:{
         type: String,
         // required: true

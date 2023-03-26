@@ -142,11 +142,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
               Hello {getDetails.userDetails.name}!
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
-              {/* <Link to="/authentication/sign-in/basic">
+              <Link to="/profile">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
                   <Icon sx={iconsStyle}>account_circle</Icon>
                 </IconButton>
-              </Link> */}
+              </Link>
               <IconButton
                 size="small"
                 disableRipple

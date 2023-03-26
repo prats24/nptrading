@@ -69,16 +69,16 @@ function Overview() {
       <Header>
         <MDBox mt={5} mb={3}>
           <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={6}>
+            <Grid item xs={12} md={6} xl={12}>
               <PlatformSettings />
             </Grid>
-            <Grid item xs={12} md={6} xl={6} sx={{ display: "flex" }}>
-              {/* <Divider orientation="vertical" sx={{ ml: 20, mr: 10 }} /> */}
+            {/* <Grid item xs={12} md={6} xl={6} sx={{ display: "flex" }}>
+              <Divider orientation="vertical" sx={{ ml: 20, mr: 10 }} />
               <ProfileInfoCard
                 title="profile information"
                 // description="Profile Details"
                 info={{
-                  fullName: userDetail.name ? userDetail.name : "Data Not Available",
+                  fullName: userDetail.first_name ? userDetail.first_name + " " + userDetail.last_name : "Data Not Available",
                   EmployeeID: userDetail.employeeid ? userDetail.employeeid : "Data Not Available",
                   mobile: userDetail.mobile ? userDetail.mobile : "Data Not Available",
                   email: userDetail.email ? userDetail.email : "Data Not Available",
@@ -86,8 +86,6 @@ function Overview() {
                   degree: userDetail.degree ? userDetail.degree : "Data Not Available",
                   DOJ: userDetail.joining_date ? userDetail.joining_date : "Data Not Available",
                   DOB: userDetail.dob ? userDetail.dob : "Data Not Available",
-                  
-
                 }}
                 social={[
                   {
@@ -109,8 +107,8 @@ function Overview() {
                 action={{ route: "", tooltip: "Edit Profile" }}
                 shadow={false}
               />
-              {/* <Divider orientation="vertical" sx={{ mx: 0 }} /> */}
-            </Grid>
+              <Divider orientation="vertical" sx={{ mx: 0 }} />
+            </Grid> */}
             {/* <Grid item xs={12} xl={4}>
               <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
             </Grid> */}
@@ -125,8 +123,8 @@ function Overview() {
               Architects design houses
             </MDTypography>
           </MDBox>
-        </MDBox> */}
-        {/* <MDBox p={2}>
+        </MDBox>
+        <MDBox p={2}>
           <Grid container spacing={6}>
             <Grid item xs={12} md={6} xl={3}>
               <DefaultProjectCard
