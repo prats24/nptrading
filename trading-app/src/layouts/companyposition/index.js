@@ -81,7 +81,7 @@ function CompanyPosition() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox py={0}>
       <MDBox mt={1}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>

@@ -289,7 +289,7 @@ if(tradeData.length != 0){
                 {Math.abs(latestLive.tradeQuantity)} quantity of 
                 {latestLive.tradeSymbol} at {latestLive.tradeTime} - {latestLive.tradeStatus}
               </span>
-              : "No trades today"
+              : "No real trades today"
             }
             </MDTypography>
           </MDBox>

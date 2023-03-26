@@ -5,6 +5,16 @@ import Icon from "@mui/material/Icon";
 import Tooltip from "@mui/material/Tooltip";
 import MDAlert from "../../../../components/MDAlert";
 import MDSnackbar from "../../../../components/MDSnackbar";
+import dayjs from 'dayjs';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+
+import { MdModeEditOutline } from 'react-icons/md';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -22,6 +32,10 @@ import { userContext } from '../../../../AuthContext';
 
 function PlatformSettings() {
 
+  const [AppStartTime, setAppStartTime] = React.useState(dayjs('2018-01-01T00:00:00.000Z'));
+  const [AppEndTime, setAppEndTime] = React.useState(dayjs('2018-01-01T00:00:00.000Z'));
+  const [appLiveValue, setAppLiveValue] = useState();
+  const [editable, setEditable] = useState(false);
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
@@ -33,7 +47,7 @@ function PlatformSettings() {
   let modifiedOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
 
   const getDetails = useContext(userContext)
-  let modifiedBy = getDetails.userDetails.name;
+  let modifiedBy = getDetails.userDetails._id;
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   
@@ -42,6 +56,8 @@ function PlatformSettings() {
   axios.get(`${baseUrl}api/v1/readsetting`)
   .then((res)=>{
       setSettingData(res.data)
+      setAppStartTime(dayjs(res.data[0].AppStartTime))
+      setAppEndTime(dayjs(res.data[0].AppEndTime))
       console.log(res.data);
   }).catch((err)=>{
       //window.alert("Server Down");
@@ -49,14 +65,17 @@ function PlatformSettings() {
   })
   },[reRender])
 
+  function setAppLiveValueFun(appLiveValue){
+    if(appLiveValue){
+      appLiveValue = false
+  } else{
+    appLiveValue = true
+  }
+  }
 
 
-  async function isAppLiveFunc(id, appLive){
-      if(appLive){
-          appLive = false
-      } else{
-          appLive = true
-      }
+  async function setSettingsValue(id, value){
+    console.log("Value in setSettingsValue function: ",value)
       const res = await fetch(`${baseUrl}api/v1/applive/${id}`, {
           method: "PATCH",
           headers: {
@@ -64,7 +83,8 @@ function PlatformSettings() {
               "content-type": "application/json"
           },
           body: JSON.stringify({
-              isAppLive: appLive, modifiedBy, modifiedOn
+              // isAppLive: appLiveValue, modifiedBy, modifiedOn
+              ...value,modifiedBy,modifiedOn
           })
       }); 
       const dataResp = await res.json();
@@ -73,7 +93,8 @@ function PlatformSettings() {
           window.alert(dataResp.error);
           // console.log("Failed to Edit");
       } else {
-          if(appLive){
+          setEditable(false)
+          if(appLiveValue){
               //window.alert("Trading Enabled");
               openSuccessSB();
           } else{
@@ -85,7 +106,7 @@ function PlatformSettings() {
   }
 
 
-  console.log(settingData)
+  console.log(settingData,AppStartTime,AppEndTime)
   let appstatus = settingData[0]?.isAppLive === true ? "Online" : "Offline"
   let today = new Date();
   //let timestamp = (today.getHours())+":"+(today.getMinutes())+":"+(today.getSeconds())
@@ -106,21 +127,58 @@ function PlatformSettings() {
       bgWhite="info"
     />
   );
+
+  console.log("App Start Time: ",AppStartTime)
  
   return (
     <Card sx={{ boxShadow: "none" }}>
-      <MDBox p={2}>
+      <MDBox p={2} display="flex" justifyContent="space-between">
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">
-          Settings
+          Settings 
         </MDTypography>
+        <MDBox>
+          <MdModeEditOutline cursor="pointer" onClick={()=>{setEditable(true)}}/>
+        </MDBox>
       </MDBox>
       <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          App Settings
-        </MDTypography>
+
+        <MDBox>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Stack spacing={3} mt={2} mb={1}>
+            
+            <MobileTimePicker
+              label="Trading Start Time"
+              value={AppStartTime}
+              disabled={!editable}
+              onChange={(e) => {setAppStartTime(e)}}
+              onAccept={(e) => {setSettingsValue(settingData[0]._id,{AppStartTime: e})}}
+              renderInput={(params) => <TextField {...params} />}
+            />
+
+          </Stack>
+        </LocalizationProvider>
+        </MDBox>
+
+        <MDBox>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Stack spacing={3} mt={2} mb={1}>
+            
+            <MobileTimePicker
+              label="Trading End Time"
+              value={AppEndTime}
+              disabled={!editable}
+              onChange={(e) => {setAppEndTime(e)}}
+              onAccept={(e) => {setSettingsValue(settingData[0]._id,{AppEndTime: e})}}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            
+          </Stack>
+        </LocalizationProvider>
+        </MDBox>
+
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
-              <Switch checked={settingData[0]?.isAppLive} onChange={() => {isAppLiveFunc(settingData[0]._id, settingData[0].isAppLive)}}/>
+              <Switch checked={settingData[0]?.isAppLive} onChange={() => {setAppLiveValueFun(settingData[0].isAppLive); setSettingsValue(settingData[0]._id,{isAppLive: !settingData[0].isAppLive})}}/>
           </MDBox>
           <MDBox width="80%" ml={0.5}>
             <MDTypography variant="button" fontWeight="regular" color="dark">
@@ -129,6 +187,7 @@ function PlatformSettings() {
             {renderSuccessSB}
           </MDBox>
         </MDBox>
+
         <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
           <MDBox mt={0.5}>
               <Switch checked={true}/>

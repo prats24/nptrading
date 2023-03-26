@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Schema = mongoose;
 const settingSchema = new mongoose.Schema({
 
     modifiedOn:{
@@ -7,12 +7,21 @@ const settingSchema = new mongoose.Schema({
         required : true
     },
     modifiedBy:{
-        type: String,
-        required : true
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-details',
+        required : true,
     },
     isAppLive:{
         type: Boolean,
         required: true
+    },
+    AppStartTime:{
+        type: Date,
+        required: true,
+    },
+    AppEndTime:{
+        type: Date,
+        required: true,
     }
 })
 
