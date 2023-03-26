@@ -49,6 +49,7 @@ router.post("/addInstrument",authentication, async (req, res)=>{
                     
                 })
 
+                res.status(422).json({message : "Instrument Added"})
                 return;
             }
             const addingInstruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy: name, lotSize, instrumentToken, contractDate, maxLot, user_id: _id});
@@ -64,7 +65,7 @@ router.post("/addInstrument",authentication, async (req, res)=>{
                      }
                      
                  })
-                res.status(201).json({message : "data enter succesfully"});
+                res.status(201).json({message : "Instrument Added"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         }).catch(err => {console.log( "fail")});
 
@@ -96,9 +97,9 @@ router.patch("/inactiveInstrument/:instrumentToken", authentication, async (req,
             }
             
         })
-        console.log("removing", removing);
+        // console.log("removing", removing);
         // res.send(inactiveInstrument)
-        // res.status(201).json({massage : "data patch succesfully"});
+        res.status(201).json({message : "data patch succesfully"});
     } catch (e){
         console.log(e)
         res.status(500).json({error:"Failed to edit data"});
@@ -120,7 +121,7 @@ router.get("/instrumentDetails", authentication, async (req, res)=>{
         if (err) {
           console.log(err);
         } else {
-          console.log(instruments);
+        //   console.log(instruments);
           return res.status(200).send(instruments);
         }
     }).sort({$natural:-1});
@@ -134,7 +135,7 @@ router.get("/getInstrument/:_id", async (req, res)=>{
         if (err) {
           console.log(err);
         } else {
-          console.log(instruments);
+        //   console.log(instruments);
           return res.status(200).send(instruments);
         }
       }).sort({$natural:-1});
