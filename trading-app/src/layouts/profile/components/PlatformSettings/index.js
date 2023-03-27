@@ -10,7 +10,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Tooltip } from '@mui/material';
 import Icon from "@mui/material/Icon";
 import { userContext } from "../../../../AuthContext";
+import MDAvatar from "../../../../components/MDAvatar";
 import axios from "axios";
+import DashboardLayout from "../../../../examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "../../../../examples/Navbars/DashboardNavbar";
+import Header from "../Header";
 
 import { useState, useContext, useEffect } from "react";
 
@@ -30,8 +34,6 @@ function PlatformSettings() {
   const [followsMe, setFollowsMe] = useState(true);
   const [answersPost, setAnswersPost] = useState(false);
   const [mentionsMe, setMentionsMe] = useState(true);
-  const [userDetails, setNewLaunches] = useState(false);
-  const [productUpdate, setProductUpdate] = useState(true);
   const [newsletter, setNewsletter] = useState(false);
   const [editablePD, setEditablePD] = useState(false);
   const [editableBD, setEditableBD] = useState(false);
@@ -39,6 +41,9 @@ function PlatformSettings() {
   const [aadhaarFrontFileName,setAaadhaarFrontFileName] = useState(null);
   const [aadhaarFrontPreview, setAadhaarFrontPreview] = useState(null);
   const getDetails = useContext(userContext);
+
+  // const blankImageUrl = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='130px' %3E%3Crect width='100%' height='130px' fill='lightgrey'/%3E%3C/svg%3E`;
+  const blankImageUrl = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='130px'%3E%3Crect width='100%' height='130px' fill='lightgrey'/%3E%3Ctext x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='15px' fill='black'%3EDocument Preview%3C/text%3E%3C/svg%3E`;
 
   const [formStatePD,setFormStatePD] = React.useState(
     {
@@ -91,6 +96,8 @@ function PlatformSettings() {
       aadhaarCardBackPreview:"",
       panCardFrontPreview:"",
       passportPhotoPreview:"",
+      addressProofDocumentPreview:"",
+      KYCStatus:getDetails?.userDetails?.KYCStatus,
     }
   );
 
@@ -149,6 +156,12 @@ function PlatformSettings() {
             passportPhotoPreview: reader.result
           }))
         }
+        if(fieldName === "addressProofDocument"){
+          setFormStateKYC(prevState => ({
+            ...prevState,
+            addressProofDocument: reader.result
+          }))
+        }
         
         
       };
@@ -172,619 +185,57 @@ function PlatformSettings() {
     return new Blob([u8arr], { type: mime });
   }
 
-  console.log("Aadhar File Name",aadhaarFrontFileName)
-  // console.log("Aadhar Card File Preview: ",aadhaarFrontPreview)
+  function onRemove(fieldPreview){
+
+    if(fieldPreview === "profilePhoto"){
+      setFormStatePD(prevState => ({
+        ...prevState,
+        profilePhotoPreview: "",
+      }))
+    }
+    if(fieldPreview === "aadhaarCardFront"){
+      setFormStateKYC(prevState => ({
+        ...prevState,
+        aadhaarCardFrontPreview: "",
+      }))
+    }
+    if(fieldPreview === "aadhaarCardBack"){
+      setFormStateKYC(prevState => ({
+        ...prevState,
+        aadhaarCardBackPreview: "",
+      }))
+    }
+    if(fieldPreview === "panCardFront"){
+      setFormStateKYC(prevState => ({
+        ...prevState,
+        panCardFrontPreview: "",
+      }))
+    }
+    if(fieldPreview === "passportPhoto"){
+      setFormStateKYC(prevState => ({
+        ...prevState,
+        passportPhotoPreview: "",
+      }))
+    }
+    if(fieldPreview === "addressProofDocument"){
+      setFormStateKYC(prevState => ({
+        ...prevState,
+        addressProofDocument: "",
+      }))
+    }
+  }
+
 
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   return (
-    <Card sx={{ boxShadow: "none" }}>
-      <MDBox pl={2} pr={2}>
-        <MDBox display="flex" justifyContent="space-between" alignItems="center">
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Personal Details
-        </MDTypography>
-            {!editablePD ? <Tooltip title="Edit Personal Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditablePD(true)}}>
-                edit
-              </Icon>
-            </Tooltip>
-            :
-            <Tooltip title="Save Personal Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditablePD(false);formSubmit(formStatePD)}}>
-                done
-              </Icon>
-            </Tooltip>}
-        </MDBox>
-        <Grid container spacing={2} mt={0.5}>
-        <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Trader ID"
-                defaultValue={formStatePD.employeeid}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  employeeid: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="First Name"
-                defaultValue={formStatePD.first_name}
-                fullWidth
-                // onChange={(e) => {setFormStatePD({first_name: e.target.value})}}
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  first_name: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="Last Name"
-                defaultValue={formStatePD.last_name}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  last_name: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Email"
-                defaultValue={formStatePD.email}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  email: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Mobile No."
-                defaultValue={formStatePD.mobile}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  mobile: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="WhatsApp No."
-                defaultValue={formStatePD.whatsApp_number}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  whatsApp_number: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Gender"
-                defaultValue={formStatePD.gender}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  gender: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Designation"
-                defaultValue={formStatePD.designation}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  designation: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="Degree"
-                defaultValue={formStatePD.degree}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  degree: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="Last Occupation"
-                defaultValue={formStatePD.last_occupation}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  last_occupation: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={6}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="Address"
-                defaultValue={formStatePD.address}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  address: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="City"
-                defaultValue={formStatePD.city}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  city: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="Pin Code"
-                defaultValue={formStatePD.pincode}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  pincode: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="State"
-                defaultValue={formStatePD.state}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  state: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={!editablePD}
-                id="outlined-required"
-                label="Country"
-                defaultValue={formStatePD.country}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  country: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Family Yearly Income"
-                defaultValue={formStatePD.family_yearly_income}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  family_yearly_income: e.target.value
-                }))}}
-              />
-          </Grid>
-         
-          <Grid item xs={12} md={6} xl={3} mt={-1}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="Date of Birth"
-                  disabled={!editablePD}
-                  value={dayjs(formStatePD.dob)}
-                  // onChange={(e) => {setFormStatePD({dob: dayjs(e)})}}
-                  onChange={(e) => {setFormStatePD(prevState => ({
-                    ...prevState,
-                    dob: dayjs(e)
-                  }))}}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} md={6} xl={3} mt={-1}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['DatePicker']}>
-                  <DatePicker
-                    label="Joining Date"
-                    disabled={true}
-                    value={dayjs(formStatePD.joining_date)}
-                    onChange={(e) => {setFormStatePD(prevState => ({
-                      ...prevState,
-                      joining_date: dayjs(e)
-                    }))}}
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <MDButton variant="outlined" fullWidth color={!editablePD ? "secondary" : "success"} component="label">
-                Upload Profile Picture
-                <input 
-                hidden 
-                disabled={!editablePD}
-                accept="image/*" 
-                type="file" 
-                onChange={(e)=>{handleFileSelect(e,"profilePhoto");
-                  setFormStatePD(prevState => ({
-                    ...prevState,
-                    profilePhoto: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
-          </Grid>
-          </Grid>
-        </MDBox>
-
-      <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
-
-      <MDBox pl={2} pr={2}>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center">
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Bank Details
-        </MDTypography>
-            {!editableBD ? <Tooltip title="Edit Personal Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditableBD(true)}}>
-                edit
-              </Icon>
-            </Tooltip>
-            :
-            <Tooltip title="Save Personal Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditableBD(false);formSubmitBD(formStateBD)}}>
-                done
-              </Icon>
-            </Tooltip>}
-        </MDBox>
-        <Grid container spacing={2} mt={0.5}>
-        <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableBD}
-                id="outlined-required"
-                label="UPI ID"
-                defaultValue={formStateBD.upiId}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableBD}
-                id="outlined-required"
-                label="Google Pay Number"
-                defaultValue={formStateBD.googlePay_number}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableBD}
-                id="outlined-required"
-                label="PhonePe Number"
-                defaultValue={formStateBD.phonePe_number}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableBD}
-                id="outlined-required"
-                label="PayTM Number"
-                defaultValue={formStateBD.payTM_number}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                required
-                disabled={!editableBD}
-                id="outlined-required"
-                label="Your Name As per Bank Account"
-                defaultValue={formStateBD.googlePay_number}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                required
-                disabled={!editableBD}
-                id="outlined-required"
-                label="Bank Name"
-                defaultValue={formStateBD.bankName}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                required
-                disabled={!editableBD}
-                id="outlined-required"
-                label="Account Number"
-                defaultValue={formStateBD.accountNumber}
-                fullWidth
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                required
-                disabled={!editableBD}
-                id="outlined-required"
-                label="IFSC Code"
-                defaultValue={formStateBD.ifscCode}
-                fullWidth
-              />
-          </Grid>
-          </Grid>
-      </MDBox>
-
-      <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
-
-      <MDBox pl={2} pr={2}>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center">
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          KYC Details
-        </MDTypography>
-            {!editableKYC ? <Tooltip title="Edit KYC Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditableKYC(true)}}>
-                edit
-              </Icon>
-            </Tooltip>
-            :
-            <Tooltip title="Save KYC Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditableKYC(false);formSubmitKYC(formStateKYC)}}>
-                done
-              </Icon>
-            </Tooltip>}
-        </MDBox>
-        <Grid container spacing={2} mt={0.5}>
-        <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableKYC}
-                id="outlined-required"
-                label="Aadhaar Number"
-                defaultValue={formStateKYC.aadhaarNumber}
-                fullWidth
-                onChange={(e) => {setFormStateKYC(prevState => ({
-                  ...prevState,
-                  aadhaarNumber: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableKYC}
-                id="outlined-required"
-                label="PAN Number"
-                defaultValue={formStateKYC.panNumber}
-                fullWidth
-                onChange={(e) => {setFormStateKYC(prevState => ({
-                  ...prevState,
-                  panNumber: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableKYC}
-                id="outlined-required"
-                label="Passport Number"
-                defaultValue={formStateKYC.passportNumber}
-                fullWidth
-                onChange={(e) => {setFormStateKYC(prevState => ({
-                  ...prevState,
-                  passportNumber: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <TextField
-                disabled={!editableKYC}
-                id="outlined-required"
-                label="Driving License Number"
-                defaultValue={formStateKYC.drivingLicenseNumber}
-                fullWidth
-                onChange={(e) => {setFormStateKYC(prevState => ({
-                  ...prevState,
-                  drivingLicenseNumber: e.target.value
-                }))}}
-              />
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <MDButton variant="outlined" fullWidth color="success" component="label">
-                Upload Aadhaar Card Front
-                <input 
-                hidden 
-                accept="image/*" 
-                type="file" 
-                onChange={(e)=>{handleFileSelect(e,"aadhaarCardFront");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    aadhaarCardFrontImage: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <MDButton variant="outlined" fullWidth color="success" component="label">
-                Upload Aadhaar Card Back
-                <input 
-                hidden 
-                accept="image/*" 
-                type="file" 
-                onChange={(e)=>{handleFileSelect(e,"aadhaarCardBack");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    aadhaarCardBackImage: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <MDButton variant="outlined" fullWidth color="success" component="label">
-                Upload PAN Card Front
-                <input 
-                hidden 
-                accept="image/*" 
-                type="file" 
-                onChange={(e)=>{handleFileSelect(e,"panCardFront");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    panCardFrontImage: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              <MDButton variant="outlined" fullWidth color="success" component="label">
-                Upload Passport Size Photo
-                <input 
-                hidden 
-                accept="image/*" 
-                type="file" 
-                onChange={(e)=>{handleFileSelect(e,"passportPhoto");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    passportPhoto: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              {/* <MDBox> */}
-                {formStatePD.profilePhotoPreview && (
-                  <img style={{maxWidth:'100%',height:'auto'}} src={formStatePD.profilePhotoPreview} alt="Aadhaar Card Preview" />
-                )}
-              {/* </MDBox> */}
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              {/* <MDBox> */}
-                {aadhaarFrontPreview && (
-                  <img style={{maxWidth:'100%',height:'auto'}} src={aadhaarFrontPreview} alt="Aadhaar Card Preview" />
-                )}
-              {/* </MDBox> */}
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              {/* <MDBox> */}
-                {aadhaarFrontPreview && (
-                  <img style={{maxWidth:'100%',height:'auto'}} src={aadhaarFrontPreview} alt="Aadhaar Card Preview" />
-                )}
-              {/* </MDBox> */}
-          </Grid>
-          <Grid item xs={12} md={6} xl={3}>
-              {/* <MDBox> */}
-                {aadhaarFrontPreview && (
-                  <img style={{maxWidth:'100%',height:'auto'}} src={aadhaarFrontPreview} alt="Aadhaar Card Preview" />
-                )}
-              {/* </MDBox> */}
-          </Grid>
-          </Grid>
-      </MDBox>
-
-      <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
-
-      <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Email Settings
-        </MDTypography>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!followsMe} onChange={() => setFollowsMe(followsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my daily P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my weekly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!mentionsMe} onChange={() => setMentionsMe(mentionsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my monthly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-      </MDBox>
-    </Card>
-  );
+    <DashboardLayout>
+    <DashboardNavbar />
+    <MDBox mb={2} />
+    <Header/>
+    </DashboardLayout>
+    )
 }
 
 export default PlatformSettings;

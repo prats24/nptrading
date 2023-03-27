@@ -126,6 +126,10 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    pincode:{
+        type: String,
+        // required: true
+    },
     upiId:{
         type: String,
         // required: true
@@ -206,6 +210,11 @@ const userDetailSchema = new mongoose.Schema({
     },
     profilePhoto:{
         type: String,
+    },
+    KYCStatus:{
+        type: String,
+        enum: ['Not Initiated','Submitted','Approved','Rejected','Under Verification'],
+        default: 'Not Initiated',
     },
 })
 
