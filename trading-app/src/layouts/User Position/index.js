@@ -65,6 +65,9 @@ function UserPosition() {
   const uId = uniqid();
   const getDetails = useContext(userContext);
   const [reRender, setReRender] = useState(true);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -101,11 +104,13 @@ function UserPosition() {
   }, [reRender])
 
   const [instrumentsData, setInstrumentsData] = useState();
+
   // const [buttonStates, setButtonStates] = useState({});
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
+  const PAGE_SIZE = 10;
 
 
   let timeoutId; // store the timeout id
@@ -130,7 +135,7 @@ function UserPosition() {
     }
 
 
-    axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}`, {
+    axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}&page=${page}&size=${PAGE_SIZE}`, {
       withCredentials: true,
       headers: {
           Accept: "application/json",
@@ -220,6 +225,17 @@ function UserPosition() {
     reRender ? setReRender(false) : setReRender(true);
   }
 
+  function handleScroll() {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      setPage(page => page + 1);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // let title = "App " + appstatus
   // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
   let content = addOrRemoveCheck ? "Added" : "Removed"
@@ -304,7 +320,8 @@ function UserPosition() {
                     }
                   </Grid>
 
-
+                  {loading && <MDBox>Loading...</MDBox>}
+                  {error && <MDBox>Error!</MDBox>}
                   
                 </Grid>
                 {renderSuccessSB}
