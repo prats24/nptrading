@@ -59,6 +59,9 @@ function PlatformSettings() {
       country:getDetails?.userDetails?.country,
       dob:getDetails?.userDetails?.dob,
       joining_date:getDetails?.userDetails?.joining_date,
+      family_yearly_income:getDetails?.userDetails?.family_yearly_income,
+      profilePhoto:getDetails?.userDetails?.profilePhoto,
+      profilePhotoPreview:"",
     }
   );
 
@@ -84,6 +87,10 @@ function PlatformSettings() {
       panCardFrontImage:getDetails?.userDetails?.panCardFrontImage,
       passportPhoto:getDetails?.userDetails?.passportPhoto,
       addressProofDocument:getDetails?.userDetails?.addressProofDocument,
+      aadhaarCardFrontPreview:"",
+      aadhaarCardBackPreview:"",
+      panCardFrontPreview:"",
+      passportPhotoPreview:"",
     }
   );
 
@@ -99,7 +106,8 @@ function PlatformSettings() {
     console.log(id,data)
   }
 
-  const handleFileSelect = (event) => {
+  const handleFileSelect = (event,fieldName) => {
+    console.log(event)
     const selectedFile = event.target.files[0];
     console.log("Selected file:", selectedFile);
     
@@ -109,15 +117,48 @@ function PlatformSettings() {
         const fileDataUrl = reader.result;
         const fileBlob = dataURLtoBlob(fileDataUrl);
         const newFile = new File([fileBlob], selectedFile.name, { type: selectedFile.type });
-        console.log("New file object:", newFile);
-        setAaadhaarFrontFileName(selectedFile.name);
-        // setAaadhaarFrontFile(newFile);
-        setAadhaarFrontPreview(reader.result);
+        // console.log("New file object:", newFile);
+        console.log(reader.result);
+        if(fieldName === "profilePhoto"){
+          setFormStatePD(prevState => ({
+            ...prevState,
+            profilePhotoPreview: reader.result
+          }))
+        }
+        if(fieldName === "aadhaarCardFront"){
+          setFormStateKYC(prevState => ({
+            ...prevState,
+            aadhaarCardFrontPreview: reader.result
+          }))
+        }
+        if(fieldName === "aadhaarCardBack"){
+          setFormStateKYC(prevState => ({
+            ...prevState,
+            aadhaarCardBackPreview: reader.result
+          }))
+        }
+        if(fieldName === "panCardFront"){
+          setFormStateKYC(prevState => ({
+            ...prevState,
+            panCardFrontPreview: reader.result
+          }))
+        }
+        if(fieldName === "passportPhoto"){
+          setFormStateKYC(prevState => ({
+            ...prevState,
+            passportPhotoPreview: reader.result
+          }))
+        }
+        
+        
       };
       reader.readAsDataURL(selectedFile);
+      
     }
   };
   
+
+
   // Helper function to convert data URL to Blob object
   function dataURLtoBlob(dataUrl) {
     const arr = dataUrl.split(',');
@@ -131,18 +172,8 @@ function PlatformSettings() {
     return new Blob([u8arr], { type: mime });
   }
 
-  const handleInputSelect = (file) => {
-    if (file) {
-      console.log("File: ",file)
-      setFormStateKYC(prevState => ({
-        ...prevState,
-        aadhaarCardBackImage: file,
-      }));
-    }
-  };
-
   console.log("Aadhar File Name",aadhaarFrontFileName)
-  console.log("Aadhar Card File Preview: ",aadhaarFrontPreview)
+  // console.log("Aadhar Card File Preview: ",aadhaarFrontPreview)
 
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -378,6 +409,20 @@ function PlatformSettings() {
                 }))}}
               />
           </Grid>
+          <Grid item xs={12} md={6} xl={3}>
+            <TextField
+                required
+                disabled={true}
+                id="outlined-required"
+                label="Family Yearly Income"
+                defaultValue={formStatePD.family_yearly_income}
+                fullWidth
+                onChange={(e) => {setFormStatePD(prevState => ({
+                  ...prevState,
+                  family_yearly_income: e.target.value
+                }))}}
+              />
+          </Grid>
          
           <Grid item xs={12} md={6} xl={3} mt={-1}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -394,24 +439,42 @@ function PlatformSettings() {
                 />
               </DemoContainer>
             </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} md={6} xl={3} mt={-1}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="Joining Date"
-                  disabled={true}
-                  value={dayjs(formStatePD.joining_date)}
-                  onChange={(e) => {setFormStatePD(prevState => ({
-                    ...prevState,
-                    joining_date: dayjs(e)
-                  }))}}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-        </Grid>
           </Grid>
-      </MDBox>
+          <Grid item xs={12} md={6} xl={3} mt={-1}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']}>
+                  <DatePicker
+                    label="Joining Date"
+                    disabled={true}
+                    value={dayjs(formStatePD.joining_date)}
+                    onChange={(e) => {setFormStatePD(prevState => ({
+                      ...prevState,
+                      joining_date: dayjs(e)
+                    }))}}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} md={6} xl={3}>
+              <MDButton variant="outlined" fullWidth color={!editablePD ? "secondary" : "success"} component="label">
+                Upload Profile Picture
+                <input 
+                hidden 
+                disabled={!editablePD}
+                accept="image/*" 
+                type="file" 
+                onChange={(e)=>{handleFileSelect(e,"profilePhoto");
+                  setFormStatePD(prevState => ({
+                    ...prevState,
+                    profilePhoto: e.target.files[0]
+                  })
+                  )}
+                }
+                />
+              </MDButton>
+          </Grid>
+          </Grid>
+        </MDBox>
 
       <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
 
@@ -587,7 +650,18 @@ function PlatformSettings() {
           <Grid item xs={12} md={6} xl={3}>
               <MDButton variant="outlined" fullWidth color="success" component="label">
                 Upload Aadhaar Card Front
-                <input hidden accept="image/*" type="file" />
+                <input 
+                hidden 
+                accept="image/*" 
+                type="file" 
+                onChange={(e)=>{handleFileSelect(e,"aadhaarCardFront");
+                  setFormStateKYC(prevState => ({
+                    ...prevState,
+                    aadhaarCardFrontImage: e.target.files[0]
+                  })
+                  )}
+                }
+                />
               </MDButton>
           </Grid>
           <Grid item xs={12} md={6} xl={3}>
@@ -597,32 +671,54 @@ function PlatformSettings() {
                 hidden 
                 accept="image/*" 
                 type="file" 
-                // onChange={(e) => {setFormStateKYC(prevState => ({
-                //   ...prevState,
-                //   aadhaarCardBackImage: e.target.value
-                // }));
-                // handleFileSelect
-                // }}
-                onChange={handleFileSelect}
+                onChange={(e)=>{handleFileSelect(e,"aadhaarCardBack");
+                  setFormStateKYC(prevState => ({
+                    ...prevState,
+                    aadhaarCardBackImage: e.target.files[0]
+                  })
+                  )}
+                }
                 />
               </MDButton>
           </Grid>
           <Grid item xs={12} md={6} xl={3}>
               <MDButton variant="outlined" fullWidth color="success" component="label">
                 Upload PAN Card Front
-                <input hidden accept="image/*" type="file" />
+                <input 
+                hidden 
+                accept="image/*" 
+                type="file" 
+                onChange={(e)=>{handleFileSelect(e,"panCardFront");
+                  setFormStateKYC(prevState => ({
+                    ...prevState,
+                    panCardFrontImage: e.target.files[0]
+                  })
+                  )}
+                }
+                />
               </MDButton>
           </Grid>
           <Grid item xs={12} md={6} xl={3}>
               <MDButton variant="outlined" fullWidth color="success" component="label">
-                Upload Passport SIze Photo
-                <input hidden accept="image/*" type="file" />
+                Upload Passport Size Photo
+                <input 
+                hidden 
+                accept="image/*" 
+                type="file" 
+                onChange={(e)=>{handleFileSelect(e,"passportPhoto");
+                  setFormStateKYC(prevState => ({
+                    ...prevState,
+                    passportPhoto: e.target.files[0]
+                  })
+                  )}
+                }
+                />
               </MDButton>
           </Grid>
           <Grid item xs={12} md={6} xl={3}>
               {/* <MDBox> */}
-                {aadhaarFrontPreview && (
-                  <img style={{maxWidth:'100%',height:'auto'}} src={aadhaarFrontPreview} alt="Aadhaar Card Preview" />
+                {formStatePD.profilePhotoPreview && (
+                  <img style={{maxWidth:'100%',height:'auto'}} src={formStatePD.profilePhotoPreview} alt="Aadhaar Card Preview" />
                 )}
               {/* </MDBox> */}
           </Grid>

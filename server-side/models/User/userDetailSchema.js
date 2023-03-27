@@ -184,9 +184,29 @@ const userDetailSchema = new mongoose.Schema({
               
     },
     fund: {
-        type: Number,
-              
-    }
+        type: Number,      
+    },
+    aadhaarCardFrontImage:{
+        type: String,
+    },
+    aadhaarCardBackImage:{
+        type: String,
+    },
+    panCardFrontImage:{
+        type: String,
+    },
+    passportPhoto:{
+        type: String,
+    },
+    addressProofDocument:{
+        type: String,
+    },
+    incomeProofDocument:{
+        type: String,
+    },
+    profilePhoto:{
+        type: String,
+    },
 })
 
 //Adding the ninepointer id before saving
