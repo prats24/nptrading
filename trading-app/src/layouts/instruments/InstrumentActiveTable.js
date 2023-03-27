@@ -50,62 +50,39 @@ const InstrumentActiveTable = () => {
       const statuscolor = elem.status == "Active" ? "success" : "error"
       const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
   
-      activeinstruments.edit = (
-          <MDButton variant="Contained" color="info" fontWeight="medium">
-            <InstrumentEditModel data={activeData} id={elem._id} Render={{setReRender, reRender}}/>
-            
-          </MDButton>
-        );
       activeinstruments.instruments = (
-        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
+        <MDTypography component="a" variant="caption" color={instrumentcolor} fontWeight="medium">
           {elem.symbol}
         </MDTypography>
       );
       activeinstruments.contractdate = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {elem.contractDate}
         </MDTypography>
       );
       activeinstruments.exchange = (
-        <MDTypography component="a" href="#" variant="caption" color={exchangecolor} fontWeight="medium">
+        <MDTypography component="a" variant="caption" color={exchangecolor} fontWeight="medium">
           {elem.exchange}
         </MDTypography>
       );
       activeinstruments.lotsize = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {elem.lotSize}
         </MDTypography>
       );
       activeinstruments.maxquantity = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {elem.maxLot}
         </MDTypography>
       );
       activeinstruments.status = (
-        <MDTypography component="a" href="#" variant="caption" color={statuscolor} fontWeight="medium">
+        <MDTypography component="a" variant="caption" color={statuscolor} fontWeight="medium">
           {elem.status}
         </MDTypography>
       );
       activeinstruments.createdon = (
-        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
           {elem.createdOn}
-        </MDTypography>
-      );
-      activeinstruments.otm_p1 = (
-        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
-          {elem.otm_p1}
-        </MDTypography>
-      );
-
-      activeinstruments.otm_p2 = (
-        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
-          {elem.otm_p2}
-        </MDTypography>
-      );
-
-      activeinstruments.otm_p3 = (
-        <MDTypography component="a" href="#" variant="caption" color={instrumentcolor} fontWeight="medium">
-          {elem.otm_p3}
         </MDTypography>
       );
      
@@ -131,10 +108,9 @@ const InstrumentActiveTable = () => {
                                         justifyContent: "space-between",
                                       }}>
 
-                                    <MDTypography variant="h6" color="white" py={2.5}>
+                                    <MDTypography variant="h6" color="white" py={0}>
                                         Active Instruments
                                     </MDTypography>
-                                   <InstrumentModel Render={{reRender, setReRender}}/>
                                 </MDBox>
                                 <MDBox pt={3}>
                                     <DataTable

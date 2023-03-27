@@ -8,6 +8,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { RiStockFill } from "react-icons/ri";
+import { TiMediaRecord } from "react-icons/ti";
+
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
@@ -32,7 +34,7 @@ import { Typography } from "@mui/material";
 
 
 
-function InstrumentDetails({socket, Render}) {
+function InstrumentDetails({socket, Render, handleClick}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -202,7 +204,7 @@ function InstrumentDetails({socket, Render}) {
 
   return (
     <Card>
-      <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
+      <MDBox display="flex" justifyContent="space-between" alignItems="center" pl={2} pr={2} pt={2} pb={2}>
         <MDBox display="flex">
           <MDTypography variant="h6" gutterBottom>
             Market Watchlist
@@ -210,24 +212,24 @@ function InstrumentDetails({socket, Render}) {
           <MDBox display="flex" alignItems="center" lineHeight={0}>
           </MDBox>
         </MDBox>
-        <MDBox color="text" px={2}>
+        <MDBox color="text" px={0}>
             <MDTypography 
-            p={1}
+            p={0}
             fontWeight="bold" 
             variant="button" 
             color={isAppLive ? "success" : "error"}
-            style={{borderRadius: '4px', border: '1px solid grey', animation: 'blinking 1s infinite'}}
+            style={{display:"flex",alignItems:"center"}}
             >
-              {isAppLive ? "System Live" : "System Offline"}
+              <TiMediaRecord sx={{margin:10}}/> {isAppLive ? "System Live" : "System Offline"}
             </MDTypography>
         </MDBox>
       </MDBox>
       {rows.length === 0 ? (
       <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
-        <RiStockFill style={{fontSize: '40px'}}/>
-        <Typography style={{fontSize: '25px'}}>Nothing here</Typography>
-        <Typography mb={2} fontSize={15}>Use the search bar to add instruments.</Typography>
-        <MDButton variant="outlined" color="info">Add Instrument</MDButton>
+        <RiStockFill style={{fontSize: '30px'}}/>
+        <Typography style={{fontSize: '20px',color:"grey"}}>Nothing here</Typography>
+        <Typography mb={2} fontSize={15} color="grey">Use the search bar to add instruments.</Typography>
+        <MDButton variant="outlined" size="small" color="info" onClick={handleClick}>Add Instrument</MDButton>
       </MDBox>)
       :
       (<MDBox>

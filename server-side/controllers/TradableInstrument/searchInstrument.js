@@ -22,16 +22,16 @@ exports.search = async (searchString, res, req) => {
 const page = parseInt(req.query.page);
 const size = parseInt(req.query.size);
 
+console.log(page, size)
+
 try {
-//   const client = await MongoClient.connect(url);
-//   const db = client.db('mydb');
+
   const data = await TradableInstrument.find({
         $or: [
             { tradingsymbol: { $regex: searchString, $options: 'i' } },
             { name: { $regex: searchString, $options: 'i' } },
             { exchange: { $regex: searchString, $options: 'i' } }
           ]
-        // { tradingsymbol: { $regex: searchString }, $options: 'i' })
         })
     .skip((page - 1) * size)
     .limit(size)

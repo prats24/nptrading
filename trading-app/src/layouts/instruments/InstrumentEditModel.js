@@ -53,9 +53,6 @@ const InstrumentEditModel = ({Render, data, id}) => {
     const [lotSize, setlotSize] = useState();
     const [maxlot, setMaxlot] = useState();
     const [status, setStatus] = useState();
-    const [otmP1, setOtmP1] = useState();
-    const [otmP2, setOtmP2] = useState();
-    const [otmP3, setOtmP3] = useState();
 
     useEffect(() => {
         let updatedData = data.filter((elem) => {
@@ -64,6 +61,7 @@ const InstrumentEditModel = ({Render, data, id}) => {
         setEditData(updatedData)
     }, [])
 
+    let formattedDate;
     useEffect(() => {
         //console.log("edit data", editData);
 
@@ -74,9 +72,6 @@ const InstrumentEditModel = ({Render, data, id}) => {
         setlotSize(editData[0].lotSize);
         setMaxlot(editData[0].maxLot);
         setStatus(editData[0].status);
-        setOtmP1(editData[0].otm_p1)
-        setOtmP2(editData[0].otm_p2)
-        setOtmP3(editData[0].otm_p3)
 
     }, [editData, reRender])
 
@@ -89,9 +84,6 @@ const InstrumentEditModel = ({Render, data, id}) => {
         LotSize: "",
         maxLot:"",
         LastModifiedOn: "",
-        otm_p1: "",
-        otm_p2: "",
-        otm_p3: "",
     });
 // todo ---> patch req in user detail auth and put req anlso in instrument auth
     async function formbtn() {
@@ -103,14 +95,11 @@ const InstrumentEditModel = ({Render, data, id}) => {
         formstate.LotSize = lotSize;
         formstate.maxLot = maxlot;
         formstate.Status = status;
-        formstate.otm_p1 = otmP1;
-        formstate.otm_p2 = otmP2;
-        formstate.otm_p3 = otmP3;
         
         setformstate(formstate);
 
 
-        const { contract_Date,Instrument, Exchange, Symbole,LotSize,maxLot, Status, otm_p1, otm_p2, otm_p3 } = formstate;
+        const { contract_Date,Instrument, Exchange, Symbole,LotSize,maxLot, Status } = formstate;
 
         const res = await fetch(`${baseUrl}api/v1/readInstrumentDetails/${id}`, {
             method: "PUT",
@@ -119,7 +108,7 @@ const InstrumentEditModel = ({Render, data, id}) => {
                 "content-type": "application/json"
             },
             body: JSON.stringify({
-                contract_Date ,Instrument, Exchange, Symbole,LotSize, maxLot, Status, lastModified, otm_p1, otm_p2, otm_p3
+                contract_Date ,Instrument, Exchange, Symbole,LotSize, maxLot, Status, lastModified
             })
         });
         const dataResp = await res.json();
@@ -157,6 +146,19 @@ const InstrumentEditModel = ({Render, data, id}) => {
         reRender ? setReRender(false) : setReRender(true)
     }
 
+    function getFormattedDate(dateStr) {
+      if (!dateStr) return '';
+      const dateParts = dateStr.split('-');
+      if (dateParts.length !== 3) return '';
+      const day = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]) - 1;
+      const year = parseInt(dateParts[2]);
+      if (isNaN(year) || isNaN(month) || isNaN(day)) return '';
+      const dateObj = new Date(year, month, day);
+      const dateObjnew = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000))
+      return dateObjnew.toISOString().split('T')[0];
+    }
+
 
   
     return (
@@ -176,7 +178,7 @@ const InstrumentEditModel = ({Render, data, id}) => {
           <DialogContent>
             <DialogContentText sx={{display:"flex", flexDirection:"column"}}>
             <TextField
-            id="outlined-basic" label="Contract Date" variant="standard" value={contractDate}
+            id="outlined-basic" label="Contract Date" variant="standard" value={getFormattedDate(contractDate)}
              sx={{margin: 1, padding : 1, width:"300px"}} type="date" onChange={(e)=>{ setcontractDate( e.target.value)}}/>
             
              <TextField
@@ -198,19 +200,6 @@ const InstrumentEditModel = ({Render, data, id}) => {
              <TextField
             id="outlined-basic" label="Max Lot" variant="standard" value={maxlot}  type="number"
             sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setMaxlot( e.target.value)}}/>
-
-            <TextField
-            id="outlined-basic" label="OTM P1" variant="standard" value={otmP1} 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtmP1( e.target.value)}}/>
-
-            <TextField
-            id="outlined-basic" label="OTM P2" variant="standard" value={otmP2} 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtmP2( e.target.value)}}/>
-
-            <TextField
-            id="outlined-basic" label="OTM P3" variant="standard" value={otmP3} 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{ setOtmP3( e.target.value)}}/>
-
 
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const instrumentSchema = new mongoose.Schema({
     instrument:{
@@ -48,31 +49,7 @@ const instrumentSchema = new mongoose.Schema({
     maxLot:{
         type: Number,
         required : true
-    },
-    otm_p1:{
-        type: String,
-        // required : true
-    },
-    otm_p1_Token:{
-        type: Number,
-        // required : true
-    },
-    otm_p2:{
-        type: String,
-        // required : true
-    },
-    otm_p2_Token:{
-        type: Number,
-        // required : true
-    },
-    otm_p3:{
-        type: String,
-        // required : true
-    },
-    otm_p3_Token:{
-        type: Number,
-        // required : true
-    },
+    },  
     user_id: {
         type: String,
         required : true
@@ -81,7 +58,12 @@ const instrumentSchema = new mongoose.Schema({
         type: Boolean,
         required : true,
         default: true
-    }
+    },
+    createdByUserId:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-details',
+        required: true,
+    },
 })
 
 const instrumentDetail = mongoose.model("instrument-detail", instrumentSchema);

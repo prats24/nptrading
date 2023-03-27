@@ -3,6 +3,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import Card from "@mui/material/Card";
 import axios from "axios";
 import { NetPnlContext } from '../../../PnlContext';
+import { Typography } from "@mui/material";
 // Material Dashboard 2 React components
 
 import { GrAnchor } from "react-icons/gr";
@@ -21,7 +22,7 @@ import Buy from "../components/InstrumentDetails/data/BuyModel";
 import Sell from "../components/InstrumentDetails/data/SellModel"
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket, Render}) {
+function OverallGrid({socket, Render, handleClick}) {
   const { netPnl, updateNetPnl } = useContext(NetPnlContext);
   const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
@@ -139,6 +140,10 @@ function OverallGrid({socket, Render}) {
       }
     }, [])
 
+    useEffect(()=>{
+      updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
+    }, [totalGrossPnl, totalTransactionCost, totalRunningLots])
+
     console.log("tradeData", tradeData, instrumentData)
 
     tradeData.map((subelem, index)=>{
@@ -155,7 +160,7 @@ function OverallGrid({socket, Render}) {
         return subelem._id.instrumentToken == elem.instrumentToken;
       })
 
-      updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
+      
       const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
       const quantitycolor = subelem.lots >= 0 ? "success" : "error"
       const gpnlcolor = updatedValue >= 0 ? "success" : "error"
@@ -293,10 +298,10 @@ function OverallGrid({socket, Render}) {
       </MDBox>
       {rows.length === 1 ? (
       <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
-        <GrAnchor style={{fontSize: '40px'}}/>
-        <MDTypography style={{fontSize: '25px'}}>No open positions yet</MDTypography>
-        <MDTypography mb={2} fontSize={15}>Add instruments and start trading.</MDTypography>
-        <MDButton variant="outlined" color="info">Get Started</MDButton>
+        <GrAnchor style={{fontSize: '30px'}}/>
+        <Typography style={{fontSize: '20px', color:"grey"}}>No open positions yet</Typography>
+        <Typography mb={2} fontSize={15} color="grey">Add instruments and start trading.</Typography>
+        <MDButton variant="outlined" size="small" color="info" onClick={handleClick}>Get Started</MDButton>
       </MDBox>)
       :
       (<MDBox>

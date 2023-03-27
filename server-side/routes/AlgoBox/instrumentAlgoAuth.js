@@ -56,7 +56,8 @@ router.post("/instrumentAlgo", async (req, res)=>{
 
     } catch(err){
 
-        res.status(500).json({error:"Failed to enter data Check access token"});
+        // res.status(500).json({error:"Failed to enter data Check access token"});
+        res.status(500).json({error:err});
         return new Error(err);
 
     }

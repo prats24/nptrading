@@ -3,13 +3,14 @@ const router = express.Router();
 require("../../db/conn");
 const Setting = require("../../models/settings/setting");
 
-router.post("/settings", (req, res)=>{
-    const {modifiedOn, modifiedBy, isAppLive} = req.body;
-    //console.log(req.body)
-    if(!modifiedOn || !modifiedBy){
-        //console.log("data nhi h pura");
-        return res.status(422).json({error : "Please fill all the fields..."})
-    }
+// router.post("/settings", async (req, res)=>{
+//     const {modifiedOn, modifiedBy, isAppLive, AppStartDate, AppEndDate} = req.body;
+//     console.log(req.body)
+//     const id = req.params.id;
+//     if(!modifiedOn || !modifiedBy){
+//         //console.log("data nhi h pura");
+//         return res.status(422).json({error : "Please fill all the fields..."})
+//     }
 
     // Permission.findOne({_id})
     // .then((dateExist)=>{
@@ -17,12 +18,10 @@ router.post("/settings", (req, res)=>{
     //         //console.log("data already");
     //         return res.status(422).json({error : "date already exist..."})
     //     }
-        const setting = new Setting({modifiedOn, modifiedBy, isAppLive});
-        setting.save().then(()=>{
-            res.status(201).json({massage : "data enter succesfully"});
-        }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-    // }).catch(err => {//console.log(err, "fail")});
-})
+//         const setting = await new Setting.findByIdAndUpdate(id,
+//             {isAppLive,AppStartDate,AppEndDate,modifiedBy,modifiedOn})
+//         res.status(200).json({message:"Settings updated successfully"})
+// })
 
 router.get("/readsetting", (req, res)=>{
     Setting.find((err, data)=>{
@@ -72,7 +71,7 @@ router.get("/readsetting/:id", (req, res)=>{
 
 router.patch("/applive/:id", async (req, res)=>{
     //console.log(req.params)
-    //console.log("this is body", req.body);
+    console.log("this is body", req.body);
     try{ 
         const {id} = req.params
         const setting = await Setting.findOneAndUpdate({_id : id}, {
@@ -80,11 +79,13 @@ router.patch("/applive/:id", async (req, res)=>{
                 modifiedOn: req.body.modifiedOn,
                 modifiedBy: req.body.modifiedBy,
                 isAppLive: req.body.isAppLive,
+                AppStartTime: req.body.AppStartTime,
+                AppEndTime: req.body.AppEndTime,
             }
         })
         //console.log("this is role", setting);
         res.send(setting)
-        // res.status(201).json({massage : "data edit succesfully"});
+        // res.status(201).json({message : "data edit succesfully"});
     } catch (e){
         res.status(500).json({error:"Failed to edit data"});
     }

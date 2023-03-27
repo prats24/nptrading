@@ -9,6 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
+import { Typography } from "@mui/material";
+import { TbEqualNot } from "react-icons/tb";
 
 // Material Dashboard 2 React examples
 import DataTable from "../../../../examples/Tables/DataTable";
@@ -219,33 +221,26 @@ function MismatchDetails({socket}) {
           <MDTypography variant="h6" gutterBottom>
             Mismatch Details
           </MDTypography>
-          <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <CheckCircleIcon
-              sx={{
-                fontWeight: "bold",
-                color: ({ palette: { info } }) => info.main,
-                mt: -0.5,
-              }}
-            >
-            
-            </CheckCircleIcon>
-
-          </MDBox>
-        </MDBox>
-        <MDBox color="text" px={2}>
-
-          Available Margin: 
         </MDBox>
       </MDBox>
-      <MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
-      </MDBox>
+
+      {rows.length === 0 ? (
+      <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
+        <TbEqualNot style={{fontSize: '30px', color:"green"}}/>
+        <Typography style={{fontSize: '20px',color:"grey"}}>No open trades on Zerodha</Typography>
+        <Typography mb={2} fontSize={15} color="grey">This section shows mismatch of App and Zerodha trades</Typography> 
+      </MDBox>)
+      :
+        (<MDBox>
+          <DataTable
+            table={{ columns, rows }}
+            showTotalEntries={false}
+            isSorted={false}
+            noEndBorder
+            entriesPerPage={false}
+          />
+        </MDBox>
+      )}
     </Card>
   );
 }

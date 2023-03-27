@@ -31,9 +31,6 @@ const InstrumentModel = ({Render}) => {
       symbol: "",
       lotSize: "",
       maxLot: "",
-      otm_p1: "",
-      otm_p2: "",
-      otm_p3: "",
       status: ""
     });
 
@@ -47,6 +44,7 @@ const InstrumentModel = ({Render}) => {
     // let createdBy = "prateek"
     // console.log(getDetails)
     let createdBy = getDetails.userDetails.name
+    let createdByUserId = getDetails.userDetails._id
   
   
     const handleClickOpen = () => {
@@ -61,7 +59,7 @@ const InstrumentModel = ({Render}) => {
 
       setFormData(formData);
       console.log(formData)
-      const { contractDate, instrument, exchange, symbol, lotSize, maxLot, otm_p1, otm_p2, otm_p3, status } = formData;
+      const { contractDate, instrument, exchange, symbol, lotSize, maxLot, status } = formData;
          
       const res = await fetch(`${baseUrl}api/v1/instrument`, {
           method: "POST",
@@ -71,7 +69,7 @@ const InstrumentModel = ({Render}) => {
               "Access-Control-Allow-Credentials": true
           },
           body: JSON.stringify({
-              instrument, exchange, status, symbol, lotSize, lastModified, uId, createdBy, createdOn, contractDate, maxLot, otm_p1, otm_p2, otm_p3
+              instrument, exchange, status, symbol, lotSize, lastModified, uId, createdBy, createdByUserId,createdOn , contractDate, maxLot
           })
       });
 
@@ -128,19 +126,6 @@ const InstrumentModel = ({Render}) => {
             id="outlined-basic" label="Max Lot" variant="standard"  type="number"
             sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.maxLot = e.target.value}}/>
 
-            <TextField
-            id="outlined-basic" label="OTM P1" variant="standard" 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm_p1 = e.target.value}}/>
-
-            <TextField
-            id="outlined-basic" label="OTM P2" variant="standard" 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm_p2 = e.target.value}}/>
-
-            <TextField
-            id="outlined-basic" label="OTM P3" variant="standard" 
-            sx={{margin: 1, padding : 1, width:"300px"}} onChange={(e)=>{formData.otm_p3 = e.target.value}}/>
-
-
 
           <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
@@ -155,16 +140,6 @@ const InstrumentModel = ({Render}) => {
             <MenuItem value="inactive">Inactive</MenuItem>
           </Select>
         </FormControl>
-        {/* <TextField
-          id="outlined-select-currency"
-          select
-          label="Select"
-          defaultValue=""
-        >
-           <MenuItem value="none">Select</MenuItem>
-          <MenuItem value="active">Active</MenuItem>
-          <MenuItem value="inactive">Inctive</MenuItem>
-        </TextField> */}
 
             </DialogContentText>
           </DialogContent>

@@ -52,7 +52,7 @@ router.post("/addInstrument",authentication, async (req, res)=>{
                 res.status(422).json({message : "Instrument Added"})
                 return;
             }
-            const addingInstruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy: name, lotSize, instrumentToken, contractDate, maxLot, user_id: _id});
+            const addingInstruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy: name, createdByUserId: _id, lotSize, instrumentToken, contractDate, maxLot, user_id: _id});
             //console.log("instruments", instruments)
             addingInstruments.save().then(async()=>{
                  await subscribeTokens();
@@ -70,7 +70,8 @@ router.post("/addInstrument",authentication, async (req, res)=>{
         }).catch(err => {console.log( "fail")});
 
     } catch(err) {
-        res.status(500).json({error:"Failed to enter data Check access token"});
+        // res.status(500).json({error:"Failed to enter data Check access token"});
+        res.status(500).json({error:err});
         return new Error(err);
     }
 })
