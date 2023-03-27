@@ -46,13 +46,31 @@ io.on("connection", (socket) => {
 
       let tokens = await fetchData(data.getApiKey, data.getAccessToken);
   
-      subscribeTokens();
+      
       getTicks(socket, tokens);
       onError();
       onOrderUpdate();
 
     });
   });
+  subscribeTokens();
+
+  // socket.on('subscribeToken', async(data)=>{
+  //   console.log("in index.js ", data, socket.id)
+  //   socket.join("data")
+  //   console.log("rooms", io.sockets.adapter.rooms)
+  // })
+
+  socket.on('subscribeToken', async(data)=>{
+    console.log("in index.js ", data, socket.id)
+    socket.join(`instrument ${data}`)
+  
+    // socket.to("data").emit('tick', true);
+    console.log("rooms", io.sockets.adapter.rooms)
+  })
+
+  
+
 });
 
 io.on('disconnection', () => {disconnectTicker()});

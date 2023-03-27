@@ -52,16 +52,22 @@ function InstrumentDetails({socket, Render, handleClick}) {
 
   useEffect(()=>{
 
-    axios.get(`${baseUrl}api/v1/getliveprice`)
-    .then((res) => {
-        setMarketData(res.data);
-    }).catch((err) => {
-        return new Error(err);
+    // axios.get(`${baseUrl}api/v1/getliveprice`)
+    // .then((res) => {
+    //     setMarketData(res.data);
+    // }).catch((err) => {
+    //     return new Error(err);
+    // })
+    console.log("marketdata useeffect")
+
+    socket.on('check', (data)=>{
+      console.log("in marketdata check", data)
     })
 
     socket.on("tick", (data) => {
 
       // setMarketData(data);
+      console.log("marketdata", data)
       setMarketData(prevInstruments => {
         const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
         data.forEach(instrument => {
@@ -70,8 +76,9 @@ function InstrumentDetails({socket, Render, handleClick}) {
         return Array.from(instrumentMap.values());
       });
     })
-  }, [reRender])
+  }, [])
 
+  // console.log("marketData", marketData)
 
   useEffect(() => {
     axios.get(`${baseUrl}api/v1/readsetting`)

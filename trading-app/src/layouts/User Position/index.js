@@ -52,7 +52,7 @@ function UserPosition() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [instrumentsData, setInstrumentsData] = useState([]);
-  const [buttonStates, setButtonStates] = useState({});
+  const [scroll, setScroll] = useState(0);
   const [userInstrumentData, setUserInstrumentData] = useState([]);
   const [text,setText] = useState('');
 
@@ -108,23 +108,8 @@ function UserPosition() {
 
     // set a new timeout to send the request after 1 second
     timeoutId = setTimeout(() => {
-
-      // const intervalId = setInterval(() => {
-      //   if(PAGE_SIZE == page){
-      //     clearInterval(intervalId);
-      //   }
-        
-      //   setLoading(true);
-
         sendRequest(data)
-        
-      // }, 500);
-  
 
-      
-  
-
-      
     }, 1000);
   }
 
@@ -141,10 +126,11 @@ function UserPosition() {
 
   function sendRequest(data){
 
-    if(data == ""){
-      setInstrumentsData([])
-      return;
-    }
+    // if(data == ""){
+    //   setInstrumentsData([])
+    //   return;
+    // }
+
 
     axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}&page=${1}&size=${PAGE_SIZE}`, {
       withCredentials: true,
@@ -157,8 +143,8 @@ function UserPosition() {
     .then((res)=>{
       console.log("instrumentData", res.data)
       // setInstrumentsData(res.data)
-      setInstrumentsData(prevData => [...prevData, ...(res.data)]);
-      
+      setInstrumentsData((res.data));
+    
 
 
     }).catch((err)=>{
@@ -169,29 +155,36 @@ function UserPosition() {
 
   //--Scroll pagination code
 
+
   const handleScroll = () => {
+    console.log("in scroll function instrument data", instrumentsData)
 
-    console.log("in scroll function",  window.innerHeight + document.documentElement.scrollTop ,
-    document.documentElement.offsetHeight)
-    if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
-    ) {
-
+    console.log("in scroll function",  instrumentsData.length , scroll+400, document.documentElement.scrollTop)
+    // 
+    if(instrumentsData.length && scroll+400 > document.documentElement.scrollTop)
+    // if (
+    //   window.innerHeight + document.documentElement.scrollTop ===
+    //   document.documentElement.offsetHeight
+    // )
+     {
+      setScroll(document.documentElement.scrollTop)
       console.log("in scroll function page", page)
       setPage(prevPage => prevPage + 1);
     }
   };
 
   useEffect(() => {
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
+
+    console.log("in scroll function in useEffect")
     const fetchData = async () => {
       setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${"17000"}&page=${page+1}&size=${PAGE_SIZE}`);
+      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${"17000"}&page=${page}&size=${PAGE_SIZE}`);
       const newData = await response.json();
       setInstrumentsData(prevData => [...prevData, ...newData]);
       setLoading(false);
@@ -220,7 +213,7 @@ function UserPosition() {
             "Access-Control-Allow-Credentials": true
         },
         body: JSON.stringify({
-          instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: 1800
+          instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: lot_size*36
         })
       });
     
@@ -233,6 +226,10 @@ function UserPosition() {
   
         // this function is extracting data of user who is logged in
         // await userDetail();
+        // socket.on("subscribe", () => {
+          socket.emit("subscribeToken", instrument_token);
+          console.log("user joining room", instrument_token)
+        // })
         openSuccessSB();
         console.log(data.message)
         
