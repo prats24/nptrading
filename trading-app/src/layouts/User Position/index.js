@@ -228,7 +228,7 @@ function UserPosition() {
         // await userDetail();
         // socket.on("subscribe", () => {
           socket.emit("subscribeToken", instrument_token);
-          console.log("user joining room", instrument_token)
+          console.log("marketData instrument", instrument_token)
         // })
         openSuccessSB();
         console.log(data.message)

@@ -49,11 +49,12 @@ const getTicks = (socket, tokens) => {
         try{
           for(let tick of ticks){
 
-            await io.to(`instrument ${tick.instrument_token}`).emit("tick", tick);
-            await socket.broadcast.to(`instrument ${tick.instrument_token}`).emit("tick", tick);
+            console.log(typeof(tick.instrument_token))
+            // await socket.to((`instrument`).toString()).emit("tick", tick);
+            // await socket.broadcast.to(`instrument ${tick.instrument_token}`).emit("tick", tick);
 
             // socket.emit("tick", tick);
-            await socket.emit("check", "check in frontend");
+            // await socket.emit("check", "check in frontend");
             // console.log("socket rooms", socket.rooms)
             // console.log("sending ticks for", tick.instrument_token)
           }

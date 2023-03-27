@@ -41,6 +41,32 @@ getKiteCred.getAccess().then((data)=>{
 
 
 io.on("connection", (socket) => {
+
+  socket.on('subscribeToken', (data)=>{
+    console.log("in index.js ", data, socket.id)
+    // socket.join((`instrument ${data}`).toString())
+    socket.join(`instrument`)
+    // , ((err) => {
+    //   if (err) {
+    //       // do something here if the join fails
+    //       console.log(err);
+    //       return;
+    //   }
+      
+    //   // call this only after the join has completed
+    //   // io.to("instrument").emit('tick', {msg: 'Room Created'});
+    // }))
+    socket.emit("check", "check in frontend");
+  
+    socket.broadcast.to(`instrument`).emit('tick', true);
+
+    io.to('instrument').emit("hello", {
+      // room: user.room,
+      users: "getRoomUsers(user.room)",
+    });
+    // console.log("rooms", io.sockets.adapter.rooms)
+  })
+
   socket.on('hi', async (data) => {
     getKiteCred.getAccess().then(async (data)=>{
 
@@ -61,13 +87,6 @@ io.on("connection", (socket) => {
   //   console.log("rooms", io.sockets.adapter.rooms)
   // })
 
-  socket.on('subscribeToken', async(data)=>{
-    console.log("in index.js ", data, socket.id)
-    socket.join(`instrument ${data}`)
-  
-    // socket.to("data").emit('tick', true);
-    console.log("rooms", io.sockets.adapter.rooms)
-  })
 
   
 

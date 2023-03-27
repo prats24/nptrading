@@ -76,6 +76,9 @@ function InstrumentDetails({socket, Render, handleClick}) {
         return Array.from(instrumentMap.values());
       });
     })
+    socket.on("hello", (data)=>{
+      console.log("marketData hello socket", data)
+    })
   }, [])
 
   // console.log("marketData", marketData)
