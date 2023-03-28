@@ -221,6 +221,10 @@ const userDetailSchema = new mongoose.Schema({
     },
     referrerCode:{
         type: String,
+    },
+    referredBy:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-detail'
     }
 })
 
