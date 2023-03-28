@@ -36,6 +36,10 @@ import { Typography } from "@mui/material";
 
 function InstrumentDetails({socket, Render, handleClick}) {
 
+
+
+  // console.log("data from socket socket", socket)
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
@@ -61,12 +65,12 @@ function InstrumentDetails({socket, Render, handleClick}) {
     console.log("marketdata useeffect")
 
     socket.on('check', (data)=>{
-      console.log("in marketdata check", data)
+      console.log("data from socket check", data)
     })
 
     socket.on("tick", (data) => {
 
-      // setMarketData(data);
+      console.log('data from socket in instrument', data);
       console.log("marketdata", data)
       setMarketData(prevInstruments => {
         const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
@@ -76,10 +80,8 @@ function InstrumentDetails({socket, Render, handleClick}) {
         return Array.from(instrumentMap.values());
       });
     })
-    socket.on("hello", (data)=>{
-      console.log("marketData hello socket", data)
-    })
-  }, [])
+
+  }, [socket])
 
   // console.log("marketData", marketData)
 

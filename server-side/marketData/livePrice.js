@@ -33,6 +33,7 @@ router.get("/getliveprice", async (req, res)=>{
       return elem.status === 'Active'
     });
     
+    let addUrl;
     ans.forEach((elem, index) => {
       if (index === 0) {
         addUrl = ('i=' + elem.exchange + ':' + elem.symbol + '&i=' + elem.exchange + ':' + elem.otm);
@@ -41,10 +42,10 @@ router.get("/getliveprice", async (req, res)=>{
       }
     });
 
-    resp2.forEach((elem, index) => {
-      // console.log(addUrl)
-      addUrl += ('&i=' + elem.incomingInstrumentExchange + ':' + elem.InstrumentNameIncoming + '&i=' + elem.outgoingInstrumentExchange + ':' + elem.InstrumentNameOutgoing);
-    });
+    // resp2.forEach((elem, index) => {
+    //   // console.log(addUrl)
+    //   addUrl += ('&i=' + elem.incomingInstrumentExchange + ':' + elem.InstrumentNameIncoming + '&i=' + elem.outgoingInstrumentExchange + ':' + elem.InstrumentNameOutgoing);
+    // });
 
     let url = `https://api.kite.trade/quote?${addUrl}`;
     const api_key = getApiKey; 

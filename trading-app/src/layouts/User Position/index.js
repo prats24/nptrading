@@ -70,12 +70,6 @@ function UserPosition() {
     socket.on("connect", () => {
       socket.emit("hi", true)
     })
-    socket.on("noToken", (data) => {
-      window.alert(data);
-    })
-    socket.on("wrongToken", (data) => {
-      window.alert(data);
-    })
 
   }, []);
 
@@ -194,14 +188,13 @@ function UserPosition() {
   }, [page]);
 
 
-
-
-
-
-
   async function subscribeInstrument(instrumentData, addOrRemove){
+
     const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
 
+    // socket.emit("subscribeToken", instrument_token);
+    
+    
     if(addOrRemove === "Add"){
       setAddOrRemoveCheck(true);
       console.log(instrumentData)
@@ -221,26 +214,13 @@ function UserPosition() {
       //console.log(data);
       if(data.status === 422 || data.error || !data){
           window.alert(data.error);
-          // setInvalidDetail(`Email or Password is incorrect`);
       }else{
   
-        // this function is extracting data of user who is logged in
-        // await userDetail();
-        // socket.on("subscribe", () => {
-          socket.emit("subscribeToken", instrument_token);
-          console.log("marketData instrument", instrument_token)
-        // })
+        socket.emit("subscribeToken", instrument_token);
+        console.log("instrument_token data from socket", instrument_token)
         openSuccessSB();
         console.log(data.message)
-        
-        
       }
-      // const id = instrument_token;
-      // const currentButtonState = buttonStates[id];
-      // setButtonStates({
-      //   ...buttonStates,
-      //   [id]: !currentButtonState,
-      // });
       
     } else{
       setAddOrRemoveCheck(false);
@@ -262,17 +242,23 @@ function UserPosition() {
           window.alert(permissionData.error);
           //console.log("Failed to Edit");
       }else {
-        // window.alert(permissionData.massage);
-          //console.log(permissionData);
-          // window.alert("Edit succesfull");
-          //console.log("Edit succesfull");
           openSuccessSB();
       }
       
     }
 
     reRender ? setReRender(false) : setReRender(true);
+    
+   
   }
+
+  // socket.on('tick', (data)=>{
+  //   console.log('tick data from socket', data);
+  // })
+
+  // socket.on('check', (data)=>{
+  //   console.log('check data from socket', data);
+  // })
 
 
   const Item = styled(Paper)(({ theme }) => ({
@@ -304,6 +290,9 @@ function UserPosition() {
       bgWhite="info"
     />
   );
+
+  // console.log("data from socket socket in userposition", socket)
+
 
   return (
     <DashboardLayout>

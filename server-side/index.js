@@ -44,8 +44,8 @@ io.on("connection", (socket) => {
 
   socket.on('subscribeToken', (data)=>{
     console.log("in index.js ", data, socket.id)
-    // socket.join((`instrument ${data}`).toString())
-    socket.join(`instrument`)
+    socket.join(`instrument ${data}`)
+    // socket.join(`instrument`)
     // , ((err) => {
     //   if (err) {
     //       // do something here if the join fails
@@ -58,12 +58,12 @@ io.on("connection", (socket) => {
     // }))
     socket.emit("check", "check in frontend");
   
-    socket.broadcast.to(`instrument`).emit('tick', true);
+    // io.to(`instrument`).emit('tick', true);
 
-    io.to('instrument').emit("hello", {
-      // room: user.room,
-      users: "getRoomUsers(user.room)",
-    });
+    // io.to('instrument').emit("hello", {
+    //   // room: user.room,
+    //   users: "getRoomUsers(user.room)",
+    // });
     // console.log("rooms", io.sockets.adapter.rooms)
   })
 
