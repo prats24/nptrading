@@ -258,5 +258,3 @@ function InstrumentDetails({socket, Render, handleClick}) {
 }
 
 export default InstrumentDetails;
-
-
