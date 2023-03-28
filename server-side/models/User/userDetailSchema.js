@@ -142,7 +142,7 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         // required: true
     },
-    phonePay_number:{
+    phonePe_number:{
         type: String,
         // required: true
     },

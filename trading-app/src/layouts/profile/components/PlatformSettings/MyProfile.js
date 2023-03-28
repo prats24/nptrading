@@ -11,6 +11,7 @@ import { Tooltip } from '@mui/material';
 import Icon from "@mui/material/Icon";
 import { userContext } from "../../../../AuthContext";
 import MDAvatar from "../../../../components/MDAvatar";
+import MDSnackbar from "../../../../components/MDSnackbar";
 import axios from "axios";
 
 import { useState, useContext, useEffect } from "react";
@@ -96,60 +97,42 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
     }
   );
 
-  console.log(formStatePD)
-  console.log(formStateBD)
-  console.log(formStateKYC)
+  // console.log(formStatePD)
+  // console.log(formStateBD)
+  // console.log(formStateKYC)
 
-  async function formSubmit(data){
+  async function formSubmit(data,section){
     console.log(data)
     try{
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
-        // if(key!='profilePhoto'
-        //  || key!='aadhaarCardFrontImage' || key!='aadhaarCardBackImage' || 
-        // key!='panCardFrontImage' || key!='passportPhoto' || key!='addressProofDocument'
-        // )
+       if(key!="KYCStatus")
         formData.append(key, data[key])
       });
-      // console.log(data.profilePhoto)
-      // if(data.profilePhoto)formData.append('profilePhoto', data.profilePhoto);
-      // if(data.aadhaarCardFrontImage)formData.append('aadhaarCardFrontImage', data.aadhaarCardFrontImage);
-      // if(data.aadhaarCardBackImage)formData.append('aadhaarCardBackImage', data.aadhaarCardBackImage);
-      // if(data.aadhaarCardBackImage)formData.append('aadhaarCardBackImage', data.aadhaarCardBackImage);
-      // if(data.panCardFrontImage)formData.append('panCardFrontImage', data.panCardFrontImage);
-      // if(data.passportPhoto)formData.append('passportPhoto', data.passportPhoto);
-      // if(data.addressProofDocument)formData.append('addressProofDocument', data.addressProofDocument);
+      if(section==="KYC Details"){
+        formData.append("KYCStatus","Pending Approval")
+        setFormStateKYC(formStateKYC.KYCStatus,"Pending Approval")
+      }
 
       const res = await fetch(`${baseUrl}api/v1/userdetail/me`, {
       
         method: "PATCH",
         credentials:"include",
         headers: {
-            // "content-type" : "application/json",
             "Access-Control-Allow-Credentials": true
         },
-        // body: JSON.stringify({
-        //   formData 
-        // })
         body: formData 
     });
       let response = await res.json()
       console.log('response', response);
       if(response.status === 'success'){
-        window.alert("Personal Details Updated")
+        openSuccessSB(section)
+        // window.alert("Personal Details Updated")
       }
       
     }catch(e){
       console.log(e);
     }
-  }
-
-  async function formSubmitBD(id,data){
-    console.log(id,data)
-  }
-
-  async function formSubmitKYC(id,data){
-    console.log(id,data)
   }
 
   const handleFileSelect = (event,fieldName) => {
@@ -278,6 +261,42 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
+  const [title,setTitle] = useState('')
+  const [content,setContent] = useState('')
+ 
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = (value) => {
+    if(value === "Personal Details"){
+        setTitle("Personal Details");
+        setContent("Your personal details are updated now.");
+    };
+    if(value === "Bank Details"){
+      setTitle("Bank Details");
+      setContent("Your bank details are updated now.");
+    };
+    if(value === "KYC Details"){
+      setTitle("KYC Details");
+      setContent("Your KYC details are submitted for approval.");
+    };
+    setSuccessSB(true);
+  }
+  const closeSuccessSB = () => setSuccessSB(false);
+  // console.log("Title, Content, Time: ",title,content,time)
+
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color="success"
+      icon="check"
+      title={title}
+      content={content}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+    />
+  );
+
   return (
     <Card lg={12} sx={{ boxShadow: "none" }}>
 
@@ -295,7 +314,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
             </Tooltip>
             :
             <Tooltip title="Save Personal Details" placement="top">
-              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditablePD(false);formSubmit(formStatePD)}}>
+              <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditablePD(false);formSubmit(formStatePD,"Personal Details")}}>
                 done
               </Icon>
             </Tooltip>}
@@ -647,7 +666,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
               </Typography>
               <Icon
                 fontSize="small"
-                onClick={()=>{setEditableBD(false);formSubmit(formStateBD)}}
+                onClick={()=>{setEditableBD(false);formSubmit(formStateBD,"Bank Details")}}
               >
                 done
               </Icon>
@@ -723,11 +742,11 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 disabled={!editableBD}
                 id="outlined-required"
                 label="Your Name As per Bank Account"
-                defaultValue={formStateBD.googlePay_number}
+                defaultValue={formStateBD.nameAsPerBankAccount}
                 fullWidth
                 onChange={(e) => {setFormStateBD(prevState => ({
                   ...prevState,
-                  googlePay_number: e.target.value
+                  nameAsPerBankAccount: e.target.value
                 }))}}
               />
           </Grid>
@@ -841,7 +860,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                         ? 'white!important'
                         : formStateKYC.KYCStatus === 'Under Verification'
                         ? 'black!important'
-                        : 'blue!important'
+                        : 'white!important'
                     }`,
                   }}
                 >
@@ -888,7 +907,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                   fontSize="small"
                   onClick={() => {
                     setEditableKYC(false);
-                    formSubmit(formStateKYC);
+                    formSubmit(formStateKYC,"KYC Details");
                   }}
                 >
                   done
@@ -1270,6 +1289,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           </MDBox>
         </MDBox>
       </MDBox>
+      {renderSuccessSB}
     </Card>
   );
 }

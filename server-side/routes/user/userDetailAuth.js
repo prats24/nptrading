@@ -26,7 +26,7 @@ const upload = multer({ storage, fileFilter
   }).single("profilePhoto");
 const uploadMultiple = multer({ storage, fileFilter,
   limits: {
-    fileSize: 1024 * 1024 * 10000, // 1000MB maximum file size
+    fieldSize: 1024 * 1024 * 10, // 10MB maximum file size
   }
 }).fields([{ name: 'profilePhoto', maxCount: 1 }, 
 { name: 'aadhaarCardFrontImage', maxCount: 1 }, { name: 'aadhaarCardBackImage', maxCount: 1 }, 
@@ -487,8 +487,8 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
     
         const filteredBody = filterObj(req.body, 'name', 'first_name', 'lastName', 'email', 'mobile', 
         'whatsApp_number', 'dob', 'address', 'city', 'state', 'country', 'last_occupation', 'family_yearly_income',
-        'employeed', 'upiId','googlePay_number','payTM_number','phonePay_number','bankName','nameAsPerBankAccount','accountNumber',
-        'ifscCode','profilePhoto','aadhaarNumber','panNumber','passportNumber','drivingLicenseNumber',
+        'employeed', 'upiId','googlePay_number','payTM_number','phonePe_number','bankName','nameAsPerBankAccount','accountNumber',
+        'ifscCode','profilePhoto','aadhaarNumber','degree','panNumber','passportNumber','drivingLicenseNumber','pincode','KYCStatus'
         );
 
         filteredBody.lastModifiedBy = req.user._id;
