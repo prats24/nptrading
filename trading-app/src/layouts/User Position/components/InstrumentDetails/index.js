@@ -81,10 +81,6 @@ function InstrumentDetails({socket, Render, handleClick}) {
       });
     })
 
-
-
-    // setInstrumentTokenArr(tempinstrumentTokenArr)
-
   }, [socket])
 
 

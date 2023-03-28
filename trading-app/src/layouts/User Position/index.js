@@ -17,6 +17,8 @@ import TextField from '@mui/material/TextField';
 import { RxCross2 } from 'react-icons/rx';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { debounce } from 'lodash';
+
 
 
 
@@ -94,48 +96,35 @@ function UserPosition() {
     }
   }, [])
 
-  // scroll pagination useEffect's
-  // useEffect(() => {
-  //   window.addEventListener('scroll', handleScroll);
-  //   return () => window.removeEventListener('scroll', handleScroll);
-  // }, [instrumentsData]);
-
-  // useEffect(() => {
-
-  //   console.log("in scroll function in useEffect")
-  //   const fetchData = async () => {
-  //     setLoading(true);
-  //     const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${inputValue}&page=${page}&size=${PAGE_SIZE}`);
-  //     const newData = await response.json();
-  //     setInstrumentsData(prevData => [...prevData, ...newData]);
-  //     setLoading(false);
-  //   };
-
-  //   fetchData();
-  // }, [page]);
-
-
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
+  const [timeoutId, setTimeoutId] = useState(null);
   const PAGE_SIZE = 50;
 
 
-  let timeoutId; // store the timeout id
+  // let timeoutId; // store the timeout id
 
-  function sendSearchReq(data) {
+  // function sendSearchReq(e) {
+  //   const value = e.target.value.trim();
+  //   // setInputValue(value);
+  //   sendRequest(value);
+  // }
+
+  function sendSearchReq(e) {
+    // let newData += data
     // clear previous timeout if there is one
-    setInputValue(data);
+    const value = e.target.value;
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
-    // set a new timeout to send the request after 1 second
-    timeoutId = setTimeout(() => {
-        sendRequest(data)
-
-    }, 1500);
+    setTimeoutId(
+      setTimeout(() => {
+        sendRequest(value);
+      }, 1000)
+    );
   }
 
   let textRef = useRef(null);
@@ -151,10 +140,10 @@ function UserPosition() {
 
   function sendRequest(data){
 
+
+    console.log("input value", data)
     if(data == ""){
-      setInstrumentsData([]);
-      setScroll(0);
-      setPage(1);
+      setInstrumentsData([])
       return;
     }
 
@@ -169,28 +158,14 @@ function UserPosition() {
     })
     .then((res)=>{
       console.log("instrumentData", res.data)
-      setInstrumentsData((res.data));
+      setInstrumentsData(res.data)
+
+
     }).catch((err)=>{
       console.log(err);
-    }).finally(() => setLoading(false));
-
+    })
   }
 
-  //--Scroll pagination code
-
-
-  const handleScroll = () => {
-    console.log("in scroll function instrument data", instrumentsData)
-
-    console.log("in scroll function",  instrumentsData.length , scroll+500, document.documentElement.scrollTop, topScroll)
-    // 
-    if(instrumentsData.length && scroll+500 > document.documentElement.scrollTop && scroll+500 > topScroll){
-      setScroll(document.documentElement.scrollTop)
-      console.log("in scroll function page", page)
-      setPage(page++);
-      setTopScroll(document.documentElement.scrollTop)
-    }
-  };
 
   async function subscribeInstrument(instrumentData, addOrRemove){
 
@@ -354,7 +329,7 @@ function UserPosition() {
               <>{<AiOutlineSearch/>}</>
             ),
           }}
-          sx={{margin: 0, background:"white",padding : 0, borderRadius:2 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{setText(e.target.value);sendSearchReq(e.target.value.toUpperCase())}}
+          sx={{margin: 0, background:"white",padding : 0, borderRadius:2 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{setText(e.target.value);sendSearchReq(e)}} //e.target.value.toUpperCase()
           />
         <MDBox>
         { instrumentsData?.length > 0 &&
@@ -456,3 +431,5 @@ function UserPosition() {
 }
 
 export default UserPosition;
+
+

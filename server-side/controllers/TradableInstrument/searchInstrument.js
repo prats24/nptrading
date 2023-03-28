@@ -38,10 +38,10 @@ try {
     .exec();
 
   res.json(data);
-} catch (error) {
-  console.log(error);
-  res.status(500).json({ error: 'Internal Server Error' });
-}
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 
 }
 
