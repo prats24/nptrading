@@ -95,31 +95,31 @@ function UserPosition() {
   }, [])
 
   // scroll pagination useEffect's
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [instrumentsData]);
+  // useEffect(() => {
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => window.removeEventListener('scroll', handleScroll);
+  // }, [instrumentsData]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    console.log("in scroll function in useEffect")
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${inputValue}&page=${page}&size=${PAGE_SIZE}`);
-      const newData = await response.json();
-      setInstrumentsData(prevData => [...prevData, ...newData]);
-      setLoading(false);
-    };
+  //   console.log("in scroll function in useEffect")
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${inputValue}&page=${page}&size=${PAGE_SIZE}`);
+  //     const newData = await response.json();
+  //     setInstrumentsData(prevData => [...prevData, ...newData]);
+  //     setLoading(false);
+  //   };
 
-    fetchData();
-  }, [page]);
+  //   fetchData();
+  // }, [page]);
 
 
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 50;
 
 
   let timeoutId; // store the timeout id
@@ -135,7 +135,7 @@ function UserPosition() {
     timeoutId = setTimeout(() => {
         sendRequest(data)
 
-    }, 1000);
+    }, 1500);
   }
 
   let textRef = useRef(null);
