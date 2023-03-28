@@ -136,6 +136,7 @@ function UserPosition() {
 
   function handleClear() {
     setText('');
+    setInstrumentsData([])
   }
 
   function sendRequest(data){
@@ -220,7 +221,6 @@ function UserPosition() {
       console.log("remove", permissionData)
       if (permissionData.status === 422 || permissionData.error || !permissionData) {
           window.alert(permissionData.error);
-          //console.log("Failed to Edit");
       }else {
           let instrumentTokenArr = [];
           instrumentTokenArr.push(instrument_token)
@@ -250,6 +250,7 @@ function UserPosition() {
   const lightTheme = createTheme({ palette: { mode: 'light' } });
   // let title = "App " + appstatus
   // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
+
   let content = addOrRemoveCheck ? "Added" : "Removed"
   const renderSuccessSB = (
     <MDSnackbar
