@@ -31,12 +31,9 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   const [followsMe, setFollowsMe] = useState(true);
   const [answersPost, setAnswersPost] = useState(false);
   const [mentionsMe, setMentionsMe] = useState(true);
-  const [newsletter, setNewsletter] = useState(false);
   const [editablePD, setEditablePD] = useState(false);
   const [editableBD, setEditableBD] = useState(false);
   const [editableKYC, setEditableKYC] = useState(false);
-  const [aadhaarFrontFileName,setAaadhaarFrontFileName] = useState(null);
-  const [aadhaarFrontPreview, setAadhaarFrontPreview] = useState(null);
   const getDetails = useContext(userContext);
 
   const blankImageUrl = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='130px'%3E%3Crect width='100%' height='130px' fill='lightgrey'/%3E%3Ctext x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='15px' fill='black'%3EDocument Preview%3C/text%3E%3C/svg%3E`;
@@ -505,6 +502,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                     ...prevState,
                     dob: dayjs(e)
                   }))}}
+                  sx={{ width: '100%' }}
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -521,12 +519,13 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                       ...prevState,
                       joining_date: dayjs(e)
                     }))}}
+                    sx={{ width: '100%' }}
                   />
                 </DemoContainer>
               </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12} md={6} xl={3}>
+          <Grid item xs={12} md={6} xl={3} mt={-2}>
               <MDButton variant="outlined" fullWidth color={!editablePD ? "secondary" : "success"} component="label">
                 Upload Profile Picture
                 <input 

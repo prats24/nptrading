@@ -57,11 +57,11 @@ const userDetailSchema = new mongoose.Schema({
     },
     whatsApp_number:{
         type: String,
-        required: true
+        // required: true
     },
     degree:{
         type: String,
-        required: true
+        // required: true
     },
     dob:{
         type: String,
@@ -73,7 +73,7 @@ const userDetailSchema = new mongoose.Schema({
     },
     address:{
         type: String,
-        required: true
+        // required: true
     },
     trading_exp:{
         type: String,
@@ -97,11 +97,11 @@ const userDetailSchema = new mongoose.Schema({
     },
     last_occupation:{
         type: String,
-        required: true
+        // required: true
     },
     family_yearly_income:{
         type: String,
-        require: true,
+        // require: true,
     },
     joining_date:{
         type: String,
@@ -216,6 +216,12 @@ const userDetailSchema = new mongoose.Schema({
         enum: ['Not Initiated','Submitted','Approved','Rejected','Under Verification'],
         default: 'Not Initiated',
     },
+    myReferralCode:{
+        type: String,
+    },
+    referrerCode:{
+        type: String,
+    }
 })
 
 //Adding the ninepointer id before saving

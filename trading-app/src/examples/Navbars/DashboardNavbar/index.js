@@ -139,7 +139,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox pr={1}>
-              Hello {getDetails.userDetails.name}!
+              Hello {getDetails.userDetails.first_name}!
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/profile">

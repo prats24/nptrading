@@ -28,14 +28,6 @@ const signedUpUserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    watsApp_number:{
-        type: String,
-        required: true
-    },
-    degree:{
-        type: String,
-        required: true
-    },
     dob:{
         type: String,
         required: true
@@ -49,10 +41,6 @@ const signedUpUserSchema = new mongoose.Schema({
         required: true
     },
     trading_exp:{
-        type: Number,
-        required: true
-    },
-    address:{
         type: String,
         required: true
     },
@@ -68,17 +56,9 @@ const signedUpUserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    last_occupation:{
-        type: String,
-        required: true
-    },
     employeed:{
         type: Boolean,
         default: false,
-        required: true,
-    },
-    applying_for:{
-        type: String,
         required: true,
     },
     mobile_otp:{
@@ -88,10 +68,6 @@ const signedUpUserSchema = new mongoose.Schema({
     email_otp:{
         type: String,
         // required: true
-    },
-    family_yearly_income:{
-        type: String,
-        required: true
     },
     terms_and_condition:{
         type: Boolean,
@@ -108,6 +84,9 @@ const signedUpUserSchema = new mongoose.Schema({
         enum: ['Zerodha','Upstox','PayTM Money','Trading View','Groww','I don\'t have any trading account','Other'],
         // default:'OTP Verification Pending'
     },
+    referrerCode:{
+        type: String,
+    }
   
 })
 

@@ -13,9 +13,12 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
+import { IoLogoWhatsapp } from 'react-icons/io';
+
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
+import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 import MDAvatar from "../../../../components/MDAvatar";
 import MyProfile from "../PlatformSettings/MyProfile"
@@ -111,9 +114,24 @@ function Header({ children }) {
               <MDTypography variant="h5" fontWeight="medium">
                 {userDetail.first_name} {userDetail.last_name}
               </MDTypography>
-              <MDTypography variant="button" color="text" fontWeight="regular">
-                {userDetail.designation}
-              </MDTypography>
+              <MDBox display="flex" flexDirection="row" style={{ alignItems: "center" }}>
+                <MDTypography variant="button" color="info" fontWeight="regular">
+                  Your Referral Code : {userDetail.myReferralCode}
+                </MDTypography>
+                <a 
+                 href={`https://web.whatsapp.com/send?text=Hey,
+                 %0A%0AJoin me at ninepointer - India's First Social Options Trading Investment Platform 🤝
+                 %0A%0A👉 Pick the right contract in your portfolio and win real money awards 🤑
+                 %0A%0A👉 Join the community of ace traders 👫
+                 %0A%0A📲 Visit https://www.ninepointer.in
+                 %0A%0AUse my below invitation code 👇 and get INR ₹1,00,000 in your wallet snd start trading
+                 %0A%0A*${userDetail.myReferralCode}*`}
+                  target="_blank">
+                  <MDButton variant="contained" mt={2} startIcon={<IoLogoWhatsapp color="green" />}>
+                    Share on WhatsApp
+                  </MDButton>
+                </a>
+              </MDBox>
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={12} sx={{ ml: "auto" }}>
