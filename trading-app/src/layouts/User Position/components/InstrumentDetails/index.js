@@ -43,16 +43,16 @@ function InstrumentDetails({socket, Render, handleClick}) {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
-  let { columns, rows, instrumentData } = data(reRender);
+  let { columns, rows, instrumentData } = data(reRender, socket);
   console.log("rows", rows)
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
+  // const [instrumentTokenArr, setInstrumentTokenArr] = useState([]);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
-
-
+  // let instrumentTokenArr = [];
 
   useEffect(()=>{
 
@@ -81,9 +81,12 @@ function InstrumentDetails({socket, Render, handleClick}) {
       });
     })
 
+
+
+    // setInstrumentTokenArr(tempinstrumentTokenArr)
+
   }, [socket])
 
-  // console.log("marketData", marketData)
 
   useEffect(() => {
     axios.get(`${baseUrl}api/v1/readsetting`)
@@ -91,6 +94,32 @@ function InstrumentDetails({socket, Render, handleClick}) {
         setisAppLive(res.data[0].isAppLive);
       });
   }, [reRender]);
+
+  // const [instrumentTokenArr, setInstrumentTokenArr] = useState([]);
+
+  // rows.map((elem)=>{
+  //   setInstrumentTokenArr(prevArr => [...prevArr, elem.instrumentToken.props.children]);
+  // });
+  const instrumentTokenArr = rows.map((elem) => {
+    console.log("unmount", elem.instrumentToken.props.children)
+    return elem.instrumentToken.props.children
+  });
+  
+  useEffect(() => {
+
+    // console.log("unmount instrument without", instrumentTokenArr);
+    
+    return () => {
+      // console.log("unmount instrument", instrumentTokenArr);
+        
+      // if(instrumentTokenArr.length > 0){
+      //   console.log("unmount instrument in if");
+      //   socket.emit("unSubscribeToken", instrumentTokenArr);
+      // }
+      
+      socket.close();
+    }
+  }, []);
 
   async function removeInstrument(instrumentToken){
     console.log("in remove")
@@ -112,10 +141,9 @@ function InstrumentDetails({socket, Render, handleClick}) {
         window.alert(permissionData.error);
         //console.log("Failed to Edit");
     }else {
-      // window.alert(permissionData.massage);
-        //console.log(permissionData);
-        // window.alert("Edit succesfull");
-        //console.log("Edit succesfull");
+        let instrumentTokenArr = [];
+        instrumentTokenArr.push(instrumentToken)
+        socket.emit("unSubscribeToken", instrumentTokenArr);
         openSuccessSB();
     }
     reRender ? setReRender(false) : setReRender(true);

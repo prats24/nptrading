@@ -250,7 +250,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
                     {/* <MenuItem value="100">100</MenuItem>
                     <MenuItem value="150">150</MenuItem> */}
                     {optionData.map((elem)=>{
-                      console.log("optionData", elem)
+                      // console.log("optionData", elem)
                         return(
                             <MenuItem value={elem.props.value}>
                             {elem.props.children}

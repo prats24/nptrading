@@ -71,6 +71,7 @@ function UserPosition() {
       socket.emit("hi", true)
     })
 
+
   }, []);
 
   useEffect(()=>{
@@ -84,12 +85,39 @@ function UserPosition() {
     })
   }, [reRender])
 
-  // const [buttonStates, setButtonStates] = useState({});
+  // unmount and socket disconnect
+  useEffect(() => {
+    return () => {
+        socket.close();
+    }
+  }, [])
+
+  // scroll pagination useEffect's
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [instrumentsData]);
+
+  useEffect(() => {
+
+    console.log("in scroll function in useEffect")
+    const fetchData = async () => {
+      setLoading(true);
+      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${"17000"}&page=${page}&size=${PAGE_SIZE}`);
+      const newData = await response.json();
+      setInstrumentsData(prevData => [...prevData, ...newData]);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [page]);
+
+
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 20;
 
 
   let timeoutId; // store the timeout id
@@ -120,10 +148,10 @@ function UserPosition() {
 
   function sendRequest(data){
 
-    // if(data == ""){
-    //   setInstrumentsData([])
-    //   return;
-    // }
+    if(data == ""){
+      setInstrumentsData([])
+      return;
+    }
 
 
     axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}&page=${1}&size=${PAGE_SIZE}`, {
@@ -136,11 +164,7 @@ function UserPosition() {
     })
     .then((res)=>{
       console.log("instrumentData", res.data)
-      // setInstrumentsData(res.data)
       setInstrumentsData((res.data));
-    
-
-
     }).catch((err)=>{
       console.log(err);
     }).finally(() => setLoading(false));
@@ -166,27 +190,6 @@ function UserPosition() {
       setPage(prevPage => prevPage + 1);
     }
   };
-
-  useEffect(() => {
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-
-    console.log("in scroll function in useEffect")
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${"17000"}&page=${page}&size=${PAGE_SIZE}`);
-      const newData = await response.json();
-      setInstrumentsData(prevData => [...prevData, ...newData]);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [page]);
-
 
   async function subscribeInstrument(instrumentData, addOrRemove){
 
@@ -215,8 +218,9 @@ function UserPosition() {
       if(data.status === 422 || data.error || !data){
           window.alert(data.error);
       }else{
-  
-        socket.emit("subscribeToken", instrument_token);
+        let instrumentTokenArr = [];
+        instrumentTokenArr.push(instrument_token)
+        socket.emit("subscribeToken", instrumentTokenArr);
         console.log("instrument_token data from socket", instrument_token)
         openSuccessSB();
         console.log(data.message)
@@ -242,6 +246,9 @@ function UserPosition() {
           window.alert(permissionData.error);
           //console.log("Failed to Edit");
       }else {
+          let instrumentTokenArr = [];
+          instrumentTokenArr.push(instrument_token)
+          socket.emit("unSubscribeToken", instrumentTokenArr);
           openSuccessSB();
       }
       
@@ -251,15 +258,6 @@ function UserPosition() {
     
    
   }
-
-  // socket.on('tick', (data)=>{
-  //   console.log('tick data from socket', data);
-  // })
-
-  // socket.on('check', (data)=>{
-  //   console.log('check data from socket', data);
-  // })
-
 
   const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,

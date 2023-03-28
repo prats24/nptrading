@@ -43,28 +43,31 @@ getKiteCred.getAccess().then((data)=>{
 io.on("connection", (socket) => {
 
   socket.on('subscribeToken', (data)=>{
-    console.log("in index.js ", data, socket.id)
-    socket.join(`instrument ${data}`)
-    // socket.join(`instrument`)
-    // , ((err) => {
-    //   if (err) {
-    //       // do something here if the join fails
-    //       console.log(err);
-    //       return;
-    //   }
-      
-    //   // call this only after the join has completed
-    //   // io.to("instrument").emit('tick', {msg: 'Room Created'});
-    // }))
-    socket.emit("check", "check in frontend");
-  
-    // io.to(`instrument`).emit('tick', true);
 
-    // io.to('instrument').emit("hello", {
-    //   // room: user.room,
-    //   users: "getRoomUsers(user.room)",
-    // });
-    // console.log("rooms", io.sockets.adapter.rooms)
+    data.map((elem)=>{
+      console.log("in index.js ", elem, socket.id)
+      socket.join(`instrument ${elem}`)
+    })
+  })
+
+  socket.on('unSubscribeToken', (data)=>{
+
+    data.map((elem)=>{
+      console.log("in index.js  unSubscribeToken", elem, socket.id)
+      console.log("rooms before", socket.rooms)
+      socket.leave(`instrument ${elem}`)
+      console.log("rooms after", socket.rooms)
+    })
+  })
+
+  socket.on('disconnect', ()=>{
+
+    // data.map((elem)=>{
+    //   console.log("in index.js  unSubscribeToken", elem, socket.id)
+      console.log("rooms before", socket.rooms)
+      // socket.leave(`instrument ${elem}`)
+      // console.log("rooms after", socket.rooms)
+    // })
   })
 
   socket.on('hi', async (data) => {
@@ -80,15 +83,6 @@ io.on("connection", (socket) => {
     });
   });
   subscribeTokens();
-
-  // socket.on('subscribeToken', async(data)=>{
-  //   console.log("in index.js ", data, socket.id)
-  //   socket.join("data")
-  //   console.log("rooms", io.sockets.adapter.rooms)
-  // })
-
-
-  
 
 });
 
@@ -166,45 +160,6 @@ let weekDay = date.getDay();
     }
 
   }
-
-
-//------------------------------------------------------------------------------------------
-// async function backupDatabase(sourceUri, targetUri) {
-//   try {
-//     const sourceClient = await MongoClient.connect(sourceUri, { useUnifiedTopology: true });
-//     const targetClient = await MongoClient.connect(targetUri, { useUnifiedTopology: true });
-
-//     const sourceDb = sourceClient.db();
-//     const targetDb = targetClient.db();
-
-//     const collections = await sourceDb.collections();
-
-//     for (const collection of collections) {
-//       let i = 0;
-//       const documents = await collection.find({}).toArray();
-//       for (const document of documents) {
-//         console.log(`Backing up document ${i++} from collection ${collection.collectionName}`);
-//         await targetDb.collection(collection.collectionName).updateOne({ _id: document._id }, { $set: document }, { upsert: true });
-//       }
-//     }
-
-//     sourceClient.close();
-//     targetClient.close();
-//   } catch (error) {
-//     console.error(`Error while backing up the database: ${error.message}`);
-//   }
-// }
-
-// const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
-// const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
-
-// backupDatabase(sourceUri, targetUri);
-
-
-
-
-
-
 
 
 const PORT = process.env.PORT;

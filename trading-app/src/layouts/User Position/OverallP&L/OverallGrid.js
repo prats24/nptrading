@@ -68,15 +68,15 @@ function OverallGrid({socket, Render, handleClick}) {
           return new Error(err);
       })
 
-      // socket.on("tick", (data) => {
-      //   setMarketData(prevInstruments => {
-      //     const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-      //     data.forEach(instrument => {
-      //       instrumentMap.set(instrument.instrument_token, instrument);
-      //     });
-      //     return Array.from(instrumentMap.values());
-      //   });
-      // })
+      socket.on("tick", (data) => {
+        setMarketData(prevInstruments => {
+          const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+          data.forEach(instrument => {
+            instrumentMap.set(instrument.instrument_token, instrument);
+          });
+          return Array.from(instrumentMap.values());
+        });
+      })
 
       return () => abortController.abort();
     }, [])
@@ -84,25 +84,6 @@ function OverallGrid({socket, Render, handleClick}) {
 
 
     useEffect(()=>{
-
-      // axios.get(`${baseUrl}api/v1/getoverallpnlmocktradeparticularusertoday/${getDetails.userDetails.email}`)
-      // .then((res) => {
-      //     setTradeData(res.data);
-      //     res.data.map((elem)=>{
-      //       marketData.map((subElem)=>{
-      //           if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
-      //               liveDetailsArr.push(subElem)
-      //           }
-      //       })
-      //     })
-
-      //   setLiveDetail(liveDetailsArr);
-
-                 
-
-      // }).catch((err) => {
-      //     return new Error(err);
-      // })
 
       let abortController;
       (async () => {
@@ -140,11 +121,6 @@ function OverallGrid({socket, Render, handleClick}) {
       }
     }, [])
 
-    useEffect(()=>{
-      updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
-    }, [totalGrossPnl, totalTransactionCost, totalRunningLots])
-
-    console.log("tradeData", tradeData, instrumentData)
 
     tradeData.map((subelem, index)=>{
       let obj = {};
@@ -155,6 +131,7 @@ function OverallGrid({socket, Render, handleClick}) {
 
       totalTransactionCost += Number(subelem.brokerage);
 
+      updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
       let perticularInstrumentData = instrumentData.filter((elem)=>{
         console.log("elem", elem, subelem)
         return subelem._id.instrumentToken == elem.instrumentToken;

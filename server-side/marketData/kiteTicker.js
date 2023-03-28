@@ -45,24 +45,18 @@ const unSubscribeTokens = async(token) => {
 const getTicks = (socket, tokens) => {
     ticker.on('ticks', async (ticks) => {
       // if(ticks.length == tokens.length){
-        // console.log('sending ticks', ticks);
+        // socket.emit('tick', ticks);
         try{
           for(let tick of ticks){
-            // console.log(tick.instrument_token)
             let ticksArr = []
             ticksArr.push(tick);
             io.to(`instrument ${tick.instrument_token}`).emit('tick', ticksArr);
-            // io.to(`instrument`).emit('tick', tick);
-            // console.log("socket rooms", socket.rooms)
-            // console.log("sending ticks for", tick.instrument_token)
           }
 
         } catch( error){
           console.log(error)
         }
 
-        // socket.emit('tick', ticks); 
-      // }
     });
 }
 
@@ -125,10 +119,6 @@ const onOrderUpdate = ()=>{
 
   });
 }
-//       async function orderUpdateFunc() {
-//         // console.log("updated order", orderUpdate)
-//       }
-
 
 
 const getTicker = () => ticker;
