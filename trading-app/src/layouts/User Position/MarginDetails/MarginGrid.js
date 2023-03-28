@@ -150,7 +150,7 @@ const MarginGrid = () => {
                 </Grid> */}
                 <Grid item xs={16} md={6} xl={2.4}>
                   <DefaultInfoCard
-                    icon={<CreditCardIcon/>}
+                    // icon={<CreditCardIcon/>}
                     title="total credit"
                     description="Total funds added by ninepointer"
                     value={totalCreditString}
@@ -158,7 +158,7 @@ const MarginGrid = () => {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon={<AvailableIcon/>}
+                    // icon={<AvailableIcon/>}
                     title="available margin"
                     description="Funds that you can used to trade today"
                     value={availableMarginpnlstring}
@@ -166,7 +166,7 @@ const MarginGrid = () => {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon={<ShoppingCartIcon/>}
+                    // icon={<ShoppingCartIcon/>}
                     title="used margin"
                     description="Net funds utilized for your executed trades"
                     value={usedMarginString}
@@ -174,7 +174,7 @@ const MarginGrid = () => {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon={<CurrencyRupeeIcon/>}
+                    // icon={<CurrencyRupeeIcon/>}
                     title="Payin"
                     description="Funds added in your trading account today"
                     value={payInString}
@@ -182,7 +182,7 @@ const MarginGrid = () => {
                 </Grid>
                 <Grid item xs={16} md={8} xl={2.4}>
                   <DefaultInfoCard
-                    icon={<AccountBalanceWalletIcon/>}
+                    // icon={<AccountBalanceWalletIcon/>}
                     title="opening balance"
                     description="Cash available at the beginning of the day"
                     value={openingBalanceString}

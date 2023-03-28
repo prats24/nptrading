@@ -156,7 +156,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           position="absolute"
           top={0}
           right={0}
-          // p={1.625}
+          p={1.625}
           onClick={closeSidenav}
           sx={{ cursor: "pointer" }}
         >

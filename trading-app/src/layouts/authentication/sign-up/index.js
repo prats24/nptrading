@@ -351,6 +351,7 @@ function Cover() {
                         disabled={showEmailOTP}
                         id="outlined-required"
                         label="Email"
+                        type="email"
                         fullWidth
                         onChange={(e)=>{formstate.email = e.target.value}}
                       />

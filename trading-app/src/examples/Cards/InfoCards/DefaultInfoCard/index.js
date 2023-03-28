@@ -29,7 +29,7 @@ function DefaultInfoCard({ color, icon, title, description, value }) {
   return (
     <Card>
       <MDBox p={2} mx={3} display="flex" justifyContent="center">
-        <MDBox
+        {/* <MDBox
           display="grid"
           justifyContent="center"
           alignItems="center"
@@ -42,7 +42,7 @@ function DefaultInfoCard({ color, icon, title, description, value }) {
           variant="gradient"
         >
           <Icon fontSize="default">{icon}</Icon>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
       <MDBox pb={2} px={2} textAlign="center" lineHeight={1.25}>
         <MDTypography variant="h6" fontWeight="medium" textTransform="capitalize">

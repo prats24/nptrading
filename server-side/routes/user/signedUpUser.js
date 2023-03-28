@@ -36,7 +36,75 @@ router.post("/signup", (req, res)=>{
             res.status(201).json({message : "Data enter succesfully", status: 201});
             let email = signedUser.email;
             let subject = "OTP from ninepointer";
-            let message = `Your OTP for email verification is: ${email_otp}`
+            let message = 
+            `
+            <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Email OTP</title>
+                    <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        font-size: 16px;
+                        line-height: 1.5;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        border: 1px solid #ccc;
+                    }
+
+                    h1 {
+                        font-size: 24px;
+                        margin-bottom: 20px;
+                    }
+
+                    p {
+                        margin: 0 0 20px;
+                    }
+
+                    .otp-code {
+                        display: inline-block;
+                        background-color: #f5f5f5;
+                        padding: 10px;
+                        font-size: 20px;
+                        font-weight: bold;
+                        border-radius: 5px;
+                        margin-right: 10px;
+                    }
+
+                    .cta-button {
+                        display: inline-block;
+                        background-color: #007bff;
+                        color: #fff;
+                        padding: 10px 20px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+
+                    .cta-button:hover {
+                        background-color: #0069d9;
+                    }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                    <h1>Email OTP</h1>
+                    <p>Hello ${first_name},</p>
+                    <p>Your OTP code is: <span class="otp-code">${email_otp}</span></p>
+                    <p>Please use this code to verify your email address and complete your registration.</p>
+                    <p>If you did not request this OTP, please ignore this email.</p>
+                    </div>
+                </body>
+                </html>
+            `;
             emailService(email,subject,message);
         }).catch((err)=> res.status(500).json({error: err}));
     }).catch(err => {console.log(err)});
@@ -132,12 +200,98 @@ router.patch("/verifyotp", async (req, res)=>{
             name: first_name + ' ' + last_name.substring(0,1), createdOn: user.last_modifiedOn, 
             lastModified: user.last_modifiedOn, password: 'np' + last_name + '@123', status: 'Active', 
             employeeid: userId,fund: 0, location: city, creationProcess: 'Auto SignUp',
-            joining_date:user.last_modifiedOn,myReferralCode:(await myReferralCode).toString(), pincode:pincode, referrerCode:referrerCode,
+            joining_date:user.last_modifiedOn,myReferralCode:(await myReferralCode).toString(), 
+            pincode:pincode, referrerCode:referrerCode,
         });
 
         if(!newuser) return next(console.log('Couldn\'t create user', 400));
 
         res.status(201).json({status: "Success", data:newuser, message:"Account Created"});
+            // let email = newuser.email;
+            let subject = "Account Created - ninepointer";
+            let message = 
+            `
+            <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Account Created</title>
+                    <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        font-size: 16px;
+                        line-height: 1.5;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        border: 1px solid #ccc;
+                    }
+
+                    h1 {
+                        font-size: 24px;
+                        margin-bottom: 20px;
+                    }
+
+                    p {
+                        margin: 0 0 20px;
+                    }
+
+                    .userid {
+                        display: inline-block;
+                        background-color: #f5f5f5;
+                        padding: 10px;
+                        font-size: 15px;
+                        font-weight: bold;
+                        border-radius: 5px;
+                        margin-right: 10px;
+                    }
+
+                    .password {
+                        display: inline-block;
+                        background-color: #f5f5f5;
+                        padding: 10px;
+                        font-size: 15px;
+                        font-weight: bold;
+                        border-radius: 5px;
+                        margin-right: 10px;
+                    }
+
+                    .login-button {
+                        display: inline-block;
+                        background-color: #007bff;
+                        color: #fff;
+                        padding: 10px 20px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    }
+
+                    .login-button:hover {
+                        background-color: #0069d9;
+                    }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                    <h1>Account Created</h1>
+                    <p>Hello ${newuser.first_name},</p>
+                    <p>Your login details are:</p>
+                    <p>User ID: <span class="userid">${newuser.email}</span></p>
+                    <p>Password: <span class="password">np${last_name}@123</span></p>
+                    <p>Please use these credentials to log in to our website:</p>
+                    <a href="https://www.ninepointer.in/" class="login-button">Log In</a>
+                    </div>
+                </body>
+                </html>
+
+            `
+            emailService(newuser.email,subject,message);
         }
         catch(error){
             throw new Error(error);
