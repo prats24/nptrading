@@ -40,7 +40,7 @@ import { controllers } from "chart.js";
 
 function Cover() {
 
-  console.log("Inside Sign UP")
+  // console.log("Inside Sign UP")
 
   const navigate = useNavigate();
   const [dateValue,setDateValue] = useState(dayjs('01/24/2000'))
@@ -98,7 +98,7 @@ function Cover() {
 
     if(!formstate.terms_and_conditions)
     {
-      return window.alert("Please accept the terms and conditions to proceed")
+      return openInfoSB("Terms & Conditions","Please accept the terms and conditions to proceed")
     }
 
     const { 
@@ -156,7 +156,7 @@ function Cover() {
         setResendTimer(30); 
         openSuccessSB("OTP Sent");  
     }else{
-        console.log("openInfoBS Called")
+        // console.log("openInfoBS Called")
         openInfoSB(data.error,"You have already signed Up")
     }
 }
@@ -194,10 +194,10 @@ function Cover() {
 
 
   const data = await res.json();
-  console.log(data);
+  // console.log(data);
   if(data.status === 422 || data.error || !data){ 
       // window.alert(data.error);
-      console.log("Invalid Entry");
+      // console.log("Invalid Entry");
   }else{
       setShowConfirmation(false)
       console.log("Going to call Open Success SB")
@@ -244,7 +244,7 @@ function Cover() {
  
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = (value) => {
-    console.log("Value: ",value)
+    // console.log("Value: ",value)
     if(value === "OTP Sent"){
         setTitle("OTP Sent");
         setContent("Please check your email");
@@ -256,7 +256,7 @@ function Cover() {
     setSuccessSB(true);
   }
   const closeSuccessSB = () => setSuccessSB(false);
-  console.log("Title, Content, Time: ",title,content,time)
+  // console.log("Title, Content, Time: ",title,content,time)
 
 
   const renderSuccessSB = (
@@ -294,6 +294,7 @@ function Cover() {
 
 
   return (
+
     <CoverLayout image={bgImage}>
       <Card>
         <MDBox
@@ -372,8 +373,9 @@ function Cover() {
                           <DatePicker
                             label="Date of Birth"
                             disabled={showEmailOTP}
+                            required
                             fullWidth
-                            value={dayjs(formstate.dob)}
+                            value={dayjs(formstate.dob || "01/01/1991")}
                             onChange={(e) => {setformstate(prevState => ({
                               ...prevState,
                               dob: dayjs(e)
@@ -386,11 +388,12 @@ function Cover() {
 
                   <Grid item xs={12} md={6} xl={3}>
                     <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Gender</InputLabel>
+                      <InputLabel id="demo-simple-select-autowidth-label">Gender *</InputLabel>
                       <Select
                         labelId="demo-simple-select-autowidth-label"
                         id="demo-simple-select-autowidth"
                         value={formstate.gender}
+                        required
                         onChange={(e) => {setformstate(prevState => ({
                           ...prevState,
                           gender: e.target.value
@@ -407,11 +410,12 @@ function Cover() {
 
                   <Grid item xs={12} md={6} xl={3}>
                     <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Prior Options Trading Experience</InputLabel>
+                      <InputLabel id="demo-simple-select-autowidth-label">Prior Options Trading Experience *</InputLabel>
                       <Select
                         labelId="demo-simple-select-autowidth-label"
                         id="demo-simple-select-autowidth"
                         value={formstate.trading_exp}
+                        required
                         onChange={(e) => {setformstate(prevState => ({
                           ...prevState,
                           trading_exp: e.target.value
@@ -471,11 +475,12 @@ function Cover() {
 
                   <Grid item xs={12} md={6} xl={3}>
                     <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Purpose of Joining</InputLabel>
+                      <InputLabel id="demo-simple-select-autowidth-label">Purpose of Joining *</InputLabel>
                       <Select
                         labelId="demo-simple-select-autowidth-label"
                         id="demo-simple-select-autowidth"
                         value={formstate.purpose_of_joining}
+                        required
                         onChange={(e) => {setformstate(prevState => ({
                           ...prevState,
                           purpose_of_joining: e.target.value
@@ -493,11 +498,12 @@ function Cover() {
 
                   <Grid item xs={12} md={6} xl={3}>
                     <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Trading App you are using currently</InputLabel>
+                      <InputLabel id="demo-simple-select-autowidth-label">Trading App you are using currently *</InputLabel>
                       <Select
                         labelId="demo-simple-select-autowidth-label"
                         id="demo-simple-select-autowidth"
                         value={formstate.trading_account}
+                        required
                         onChange={(e) => {setformstate(prevState => ({
                           ...prevState,
                           trading_account: e.target.value
@@ -528,11 +534,12 @@ function Cover() {
 
                   <Grid item xs={12} md={6} xl={3}>
                     <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Are you currenlty employeed?</InputLabel>
+                      <InputLabel id="demo-simple-select-autowidth-label">Are you currenlty employeed? *</InputLabel>
                       <Select
                         labelId="demo-simple-select-autowidth-label"
                         id="demo-simple-select-autowidth"
                         value={formstate.employeed}
+                        required
                         onChange={(e) => {setformstate(prevState => ({
                           ...prevState,
                           employeed: e.target.value
