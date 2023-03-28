@@ -193,6 +193,18 @@ const userDetailSchema = new mongoose.Schema({
     aadhaarCardFrontImage:{
         type: String,
     },
+    aadhaarNumber:{
+        type: String,
+    },
+    panNumber:{
+        type: String,
+    },
+    drivingLicenseNumber:{
+        type: String,
+    },
+    passportNumber:{
+        type: String,
+    },
     aadhaarCardBackImage:{
         type: String,
     },
@@ -221,6 +233,10 @@ const userDetailSchema = new mongoose.Schema({
     },
     referrerCode:{
         type: String,
+    },
+    referredBy:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-detail'
     }
 })
 

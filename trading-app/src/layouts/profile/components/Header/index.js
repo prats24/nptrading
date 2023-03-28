@@ -107,7 +107,9 @@ function Header({ children }) {
       >
         <Grid container spacing={3}>
           <Grid item>
-            <MDAvatar src={!profilePhoto ? getDetails.userDetails.profilePhoto : profilePhoto} alt="profile-image" size="xl" shadow="sm" />
+            <MDAvatar 
+            src={!profilePhoto ? getDetails.userDetails.profilePhoto : profilePhoto} 
+            alt="profile-image" size="xl" shadow="sm" />
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0} lineHeight={1}>
