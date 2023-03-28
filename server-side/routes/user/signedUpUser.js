@@ -5,6 +5,7 @@ const router = express.Router();
 require("../../db/conn");
 const SignedUpUser = require("../../models/User/signedUpUser");
 const User = require("../../models/User/userDetailSchema");
+const userPersonalDetail = require("../../models/User/userDetailSchema");
 
 router.post("/signup", (req, res)=>{
     console.log("Inside SignUp Routes")
@@ -94,6 +95,19 @@ router.patch("/verifyotp", async (req, res)=>{
             return res.status(422).json({error : "Already a User"})
         }
 
+        //Check for referrer code
+
+        if(!referrerCode){
+            return res.status(404).json({error : "No referrer code. Please enter your referrer code"});
+        }
+
+        const referrerCodeMatch = await User.findOne({myReferralCode: referrerCode});
+
+        if(!referrerCodeMatch){
+            return res.status(404).json({error : "No such referrer code. Please enter a valid referrer code"});
+        }
+
+        const referredBy = referrerCodeMatch._id;
             async function generateUniqueReferralCode() {
             const length = 8; // change this to modify the length of the referral code
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -133,6 +147,7 @@ router.patch("/verifyotp", async (req, res)=>{
             lastModified: user.last_modifiedOn, password: 'np' + last_name + '@123', status: 'Active', 
             employeeid: userId,fund: 0, location: city, creationProcess: 'Auto SignUp',
             joining_date:user.last_modifiedOn,myReferralCode:(await myReferralCode).toString(), pincode:pincode, referrerCode:referrerCode,
+            referredBy: referredBy
         });
 
         if(!newuser) return next(console.log('Couldn\'t create user', 400));
