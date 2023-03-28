@@ -45,12 +45,12 @@ const unSubscribeTokens = async(token) => {
 const getTicks = (socket, tokens) => {
     ticker.on('ticks', async (ticks) => {
       // if(ticks.length == tokens.length){
-        // socket.emit('tick', ticks);
+        socket.emit('tick', ticks);
         try{
           for(let tick of ticks){
             let ticksArr = []
             ticksArr.push(tick);
-            io.to(`instrument ${tick.instrument_token}`).emit('tick', ticksArr);
+            io.to(`instrument ${tick.instrument_token}`).emit('tick-room', ticksArr);
           }
 
         } catch( error){

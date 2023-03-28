@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
   socket.on('subscribeToken', (data)=>{
 
     data.map((elem)=>{
-      console.log("in index.js ", elem, socket.id)
+      // console.log("in index.js ", elem, socket.id)
       socket.join(`instrument ${elem}`)
     })
   })
@@ -53,10 +53,10 @@ io.on("connection", (socket) => {
   socket.on('unSubscribeToken', (data)=>{
 
     data.map((elem)=>{
-      console.log("in index.js  unSubscribeToken", elem, socket.id)
-      console.log("rooms before", socket.rooms)
+      // console.log("in index.js  unSubscribeToken", elem, socket.id)
+      // console.log("rooms before", socket.rooms)
       socket.leave(`instrument ${elem}`)
-      console.log("rooms after", socket.rooms)
+      // console.log("rooms after", socket.rooms)
     })
   })
 
@@ -64,7 +64,7 @@ io.on("connection", (socket) => {
 
     // data.map((elem)=>{
     //   console.log("in index.js  unSubscribeToken", elem, socket.id)
-      console.log("rooms before", socket.rooms)
+      // console.log("rooms before", socket.rooms)
       // socket.leave(`instrument ${elem}`)
       // console.log("rooms after", socket.rooms)
     // })

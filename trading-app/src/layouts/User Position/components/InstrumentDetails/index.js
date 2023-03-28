@@ -68,7 +68,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
       console.log("data from socket check", data)
     })
 
-    socket.on("tick", (data) => {
+    socket.on("tick-room", (data) => {
 
       console.log('data from socket in instrument', data);
       console.log("marketdata", data)

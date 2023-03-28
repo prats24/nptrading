@@ -55,6 +55,8 @@ function UserPosition() {
   const [scroll, setScroll] = useState(0);
   const [userInstrumentData, setUserInstrumentData] = useState([]);
   const [text,setText] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [topScroll, setTopScroll] = useState(0);
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -103,7 +105,7 @@ function UserPosition() {
     console.log("in scroll function in useEffect")
     const fetchData = async () => {
       setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${"17000"}&page=${page}&size=${PAGE_SIZE}`);
+      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${inputValue}&page=${page}&size=${PAGE_SIZE}`);
       const newData = await response.json();
       setInstrumentsData(prevData => [...prevData, ...newData]);
       setLoading(false);
@@ -117,13 +119,14 @@ function UserPosition() {
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
-  const PAGE_SIZE = 20;
+  const PAGE_SIZE = 10;
 
 
   let timeoutId; // store the timeout id
 
   function sendSearchReq(data) {
     // clear previous timeout if there is one
+    setInputValue(data);
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
@@ -149,7 +152,9 @@ function UserPosition() {
   function sendRequest(data){
 
     if(data == ""){
-      setInstrumentsData([])
+      setInstrumentsData([]);
+      setScroll(0);
+      setPage(1);
       return;
     }
 
@@ -177,17 +182,13 @@ function UserPosition() {
   const handleScroll = () => {
     console.log("in scroll function instrument data", instrumentsData)
 
-    console.log("in scroll function",  instrumentsData.length , scroll+400, document.documentElement.scrollTop)
+    console.log("in scroll function",  instrumentsData.length , scroll+500, document.documentElement.scrollTop, topScroll)
     // 
-    if(instrumentsData.length && scroll+400 > document.documentElement.scrollTop)
-    // if (
-    //   window.innerHeight + document.documentElement.scrollTop ===
-    //   document.documentElement.offsetHeight
-    // )
-     {
+    if(instrumentsData.length && scroll+500 > document.documentElement.scrollTop && scroll+500 > topScroll){
       setScroll(document.documentElement.scrollTop)
       console.log("in scroll function page", page)
-      setPage(prevPage => prevPage + 1);
+      setPage(page++);
+      setTopScroll(document.documentElement.scrollTop)
     }
   };
 
