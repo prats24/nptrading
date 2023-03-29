@@ -106,6 +106,7 @@ app.use(express.json({limit: "20kb"}));
 
 
 app.use('/api/v1', require("./routes/OpenPositions/openPositionsAuth"))
+app.use('/api/v1', require("./routes/StockIndex/addStockIndex"))
 app.use('/api/v1', require("./routes/expense/expenseAuth"))
 app.use('/api/v1', require("./routes/user/signedUpUser"))
 app.use('/api/v1', require("./routes/expense/categoryAuth"))
