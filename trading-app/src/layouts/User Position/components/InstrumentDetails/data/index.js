@@ -7,7 +7,7 @@ import MDTypography from "../../../../../components/MDTypography";
 import MDAvatar from "../../../../../components/MDAvatar";
 import MDProgress from "../../../../../components/MDProgress";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import axios from "axios";
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
@@ -15,7 +15,9 @@ import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 
-export default function Data(reRender, socket) {
+function Data(reRender, socket) {
+
+  console.log("user position rendering in data")
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
@@ -136,3 +138,5 @@ export default function Data(reRender, socket) {
     instrumentData: instrumentData
   };
 }
+
+export default Data;

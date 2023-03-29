@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -34,8 +34,9 @@ import { Typography } from "@mui/material";
 
 
 
-function InstrumentDetails({socket, Render, handleClick}) {
+function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition}) {
 
+  console.log("user position rendering instruemt")
 
 
   // console.log("data from socket socket", socket)
@@ -44,7 +45,12 @@ function InstrumentDetails({socket, Render, handleClick}) {
 
   const { reRender, setReRender } = Render;
   let { columns, rows, instrumentData } = data(reRender, socket);
-  console.log("rows", rows)
+  // let { columns, rows, instrumentData } = memo(() => {
+  //   console.log("user position rendering inside usecallback hook")
+  //   return data(reRender, socket);
+  // }, [reRender, socket]);
+
+  console.log("inside usememo hoook rows", rows)
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
@@ -79,6 +85,14 @@ function InstrumentDetails({socket, Render, handleClick}) {
         });
         return Array.from(instrumentMap.values());
       });
+
+      setMarketDataInPosition(prevInstruments => {
+        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+        data.forEach(instrument => {
+          instrumentMap.set(instrument.instrument_token, instrument);
+        });
+        return Array.from(instrumentMap.values());
+      });
     })
 
   }, [socket])
@@ -91,15 +105,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
       });
   }, [reRender]);
 
-  // const [instrumentTokenArr, setInstrumentTokenArr] = useState([]);
 
-  // rows.map((elem)=>{
-  //   setInstrumentTokenArr(prevArr => [...prevArr, elem.instrumentToken.props.children]);
-  // });
-  const instrumentTokenArr = rows.map((elem) => {
-    console.log("unmount", elem.instrumentToken.props.children)
-    return elem.instrumentToken.props.children
-  });
   
   useEffect(() => {
 
@@ -146,11 +152,11 @@ function InstrumentDetails({socket, Render, handleClick}) {
   }
 
   
-  rows.map((elem)=>{
+  rows?.map((elem)=>{
 
     console.log("rows elem", elem)
     let ltpObj = {};
-    let pericularInstrument = instrumentData.filter((element)=>{
+    let pericularInstrument = instrumentData?.filter((element)=>{
       return elem.instrumentToken.props.children == element.instrumentToken
     })
     marketData.map((subelem)=>{
@@ -260,7 +266,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
             </MDTypography>
         </MDBox>
       </MDBox>
-      {rows.length === 0 ? (
+      {rows?.length === 0 ? (
       <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
         <RiStockFill style={{fontSize: '30px'}}/>
         <Typography style={{fontSize: '20px',color:"grey"}}>Nothing here</Typography>
@@ -269,13 +275,13 @@ function InstrumentDetails({socket, Render, handleClick}) {
       </MDBox>)
       :
       (<MDBox>
-        <DataTable
+        {/* <DataTable
           table={{ columns, rows }}
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
           entriesPerPage={false}
-        />
+        /> */}
       </MDBox>
       )}
       {renderSuccessSB}
@@ -284,3 +290,19 @@ function InstrumentDetails({socket, Render, handleClick}) {
 }
 
 export default InstrumentDetails;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
