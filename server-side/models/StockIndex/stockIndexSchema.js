@@ -34,12 +34,12 @@ const stockIndexSchema = new mongoose.Schema({
     },
     createdBy:{
         type: Schema.Types.ObjectId,
-        ref: 'user-personal-details',
+        ref: 'user-personal-detail',
         // required : true
     },
     lastModifiedBy:{
         type: Schema.Types.ObjectId,
-        ref: 'user-personal-details',
+        ref: 'user-personal-detail',
         // required : true
     },
 })

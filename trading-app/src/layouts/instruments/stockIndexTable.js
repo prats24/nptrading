@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, createFactory} from 'react';
 import axios from "axios";
 import Box from '@mui/material/Box';
 import DataTable from "../../examples/Tables/DataTable";
@@ -7,6 +7,9 @@ import MDBox from "../../components/MDBox"
 import MDTypography from "../../components/MDTypography"
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import { GrFormView } from 'react-icons/gr';
+import { CircularProgress } from "@mui/material";
+
 
 import indicesData from "./data/indicesData";
 import CreateIndexForm from "./createIndex"
@@ -17,6 +20,7 @@ const StockIndex = () => {
     const [createIndexForm,setCreateIndexForm] = useState(false);
     const [stockIndices,setStockIndices] = useState([]);
     const { columns, rows } = indicesData();
+    const [id,setId] = useState();
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -29,15 +33,15 @@ const StockIndex = () => {
         }).catch((err)=>{
           return new Error(err);
       })
-  },[reRender,stockIndices])
+  },[createIndexForm])
 
   stockIndices.map((elem)=>{
     let stockindex = {}
 
     stockindex.view = (
-      <MDButton variant="outlined" color="info" size="small" sx={{fontSize:10}} fontWeight="medium">
-        view
-      </MDButton>
+      // <MDButton variant="text" color="info" size="small" sx={{fontSize:10}} fontWeight="medium">
+        <GrFormView onClick={()=>{setCreateIndexForm(true);setId(elem._id)}}/>
+      // </MDButton>
     );
     stockindex.displayName = (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -107,7 +111,9 @@ const StockIndex = () => {
       </Grid> 
   </MDBox> 
       :
-      <CreateIndexForm createIndexForm={createIndexForm} setCreateIndexForm={setCreateIndexForm} />
+      <>
+        <CreateIndexForm createIndexForm={createIndexForm} setCreateIndexForm={setCreateIndexForm} id={id}/>
+      </>
       }
       </>
     );
