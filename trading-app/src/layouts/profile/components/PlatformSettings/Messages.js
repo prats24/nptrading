@@ -1,9 +1,13 @@
-import React from 'react'
+import React from 'react';
+import MDBox from "../../../../components/MDBox";
+import MDTypography from "../../../../components/MDTypography";
 
-const Messages = () => {
+function Message() {
   return (
-    <div>Messages</div>
-  )
+    <MDBox>
+      <MDTypography>No messages to display</MDTypography>
+    </MDBox>
+  );
 }
 
-export default Messages
+export default Message;
