@@ -1,37 +1,34 @@
 
 import {memo} from 'react';
 
-function InstrumentComponent({elem}) {
+function InstrumentComponent({last_price, change, contractDate, symbol, instrument}) {
 
     let styleTD = {
         textAlign: "center",
         fontSize: "15px",
         fontColor: "grey"
       }
-    console.log('Instrument rendering for', elem.symbol.props.children);
-    console.log('Instrument rendering elem', elem);
+    console.log('Instrument rendering for', symbol);
+    // console.log('Instrument rendering elem', elem);
   return (
     <>
         {/* {data.map((elem)=>{
             return( */}
-                <tr
+                {/* <tr
                 style={{borderBottom: "1px solid grey"}}
     
-                // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-                <td style={styleTD} >
-                {elem.contractDate.props.children}
-                </td>
-                <td style={styleTD} >{elem.symbol.props.children}</td>
-                <td style={styleTD} >{elem.instrument.props.children}</td>
-                <td style={styleTD} >{elem.last_price.props.children}</td>
-                <td style={styleTD} >{elem.change.props.children}</td>
-                <td style={styleTD} >{elem.chart.props.children}</td>
-                <td style={styleTD} >{elem.buy}</td>
+            > */}
+                <td style={styleTD} >{contractDate}</td>
+                <td style={styleTD} >{symbol}</td>
+                <td style={styleTD} >{instrument}</td>
+                <td style={styleTD} >{last_price}</td>
+                <td style={styleTD} >{change}</td>
+                {/* <td style={styleTD} >{chart}</td> */}
+                {/* <td style={styleTD} >{elem.buy}</td>
                 <td style={styleTD} >{elem.sell}</td>
-                <td style={styleTD} >{elem.remove}</td>
+                <td style={styleTD} >{elem.remove}</td> */}
     
-            </tr>
+            {/* </tr> */}
             {/* )
         })} */}
 

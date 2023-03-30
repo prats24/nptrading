@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import axios from "axios"
 import uniqid from "uniqid"
 import { userContext } from "../../../../../AuthContext";
@@ -25,13 +25,18 @@ import FormLabel from '@mui/material/FormLabel';
 import { Box, Typography } from '@mui/material';
 import MDBox from '../../../../../components/MDBox';
 import { borderBottom } from '@mui/system';
+import { marketDataContext } from "../../../../../MarketDataContext";
 
-const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render, fromUserPos, socket}) => {
+const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos}) => {
+
+  console.log("rendering in userPosition: buyModel")
+
+  // const marketDetails = useContext(marketDataContext)
 
   // console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const { reRender, setReRender } = Render;
+  // const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -162,13 +167,13 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     })
   }, [getDetails, ltp])
 
-  useEffect(() => {
-    return () => {
-      if(socket){
-        socket.close();
-      }
-    }
-  }, [])
+  // useEffect(() => {
+  //   return () => {
+  //     if(marketDetails){
+  //       marketDetails.socket.close();
+  //     }
+  //   }
+  // }, [])
 
 
 
@@ -387,4 +392,4 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   );
 }
 
-export default BuyModel;
+export default memo(BuyModel);

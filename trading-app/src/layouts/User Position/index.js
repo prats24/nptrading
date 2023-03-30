@@ -42,6 +42,7 @@ import { userContext } from "../../AuthContext";
 import BuyModel from "./components/InstrumentDetails/data/BuyModel";
 import SellModel from "./components/InstrumentDetails/data/SellModel";
 import MDSnackbar from "../../components/MDSnackbar";
+import { marketDataContext } from "../../MarketDataContext";
 
 
 
@@ -61,9 +62,12 @@ function UserPosition() {
   const [text,setText] = useState('');
   const [inputValue, setInputValue] = useState("");
   const [topScroll, setTopScroll] = useState(0);
-  const [marketDataInPosition, setMarketDataInPosition] = useState([]);
+  // const [marketDataInPosition, setMarketDataInPosition] = useState([]);
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  const marketDetails = useContext(marketDataContext)
+
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
 
   let socket;
@@ -77,10 +81,6 @@ function UserPosition() {
     socket.on("connect", () => {
       socket.emit("hi", true)
     })
-
-
-
-
   }, []);
 
   useEffect(()=>{
@@ -283,11 +283,6 @@ function UserPosition() {
     />
   );
 
-  // console.log("data from socket socket in userposition", socket)
-
-  const MemoizedInstrumentDetails = useMemo(() => {
-    return React.memo(InstrumentDetails);
-  }, []);
 
   async function subscribeInstrumentFromBuySell(elem){
     const {instrument_token, exchange} = elem
@@ -389,7 +384,7 @@ function UserPosition() {
               return subElem.instrumentToken === elem.instrument_token
             })
 
-            let perticularMarketData = marketDataInPosition.filter((subElem)=>{
+            let perticularMarketData = marketDetails.marketData.filter((subElem)=>{
               return subElem.instrument_token === elem.instrument_token
             })
             console.log("perticularMarketData", perticularMarketData)
@@ -434,10 +429,10 @@ function UserPosition() {
                   <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
                     <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
-                      <BuyModel Render={{ reRender, setReRender }} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
+                      <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
                     </MDButton></Grid>
                     <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} >
-                      <SellModel Render={{ reRender, setReRender }} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
+                      <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
                     </MDButton></Grid>
                     {perticularInstrumentData.length ?
                     <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
@@ -468,7 +463,7 @@ function UserPosition() {
                 handleClick={writeText}
                 setMarketDataInPosition={setMarketDataInPosition}
               /> */}
-              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} setMarketDataInPosition={setMarketDataInPosition}/>
+              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} />
             </Grid>
           </Grid>
         </MDBox>

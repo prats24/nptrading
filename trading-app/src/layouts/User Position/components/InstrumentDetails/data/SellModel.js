@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import axios from "axios"
 import uniqid from "uniqid"
 import { userContext } from "../../../../../AuthContext";
@@ -24,11 +24,17 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import MDBox from '../../../../../components/MDBox';
 import { Box, Typography } from '@mui/material';
+import { marketDataContext } from "../../../../../MarketDataContext";
 
-const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render, fromUserPos, socket}) => {
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
-  const { reRender, setReRender } = Render;
+const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos}) => {
+  console.log("rendering in userPosition: sellModel")
+
+  // const marketDetails = useContext(marketDataContext)
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+
+  // const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -114,7 +120,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
       }else{
         let instrumentTokenArr = [];
         instrumentTokenArr.push(instrumentToken)
-        socket.emit("subscribeToken", instrumentTokenArr);
+        // marketDetails.socket.emit("subscribeToken", instrumentTokenArr);
         console.log("instrumentToken data from socket", instrumentToken)
         // openSuccessSB();
         console.log(data.message)
@@ -164,13 +170,13 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
   }, [getDetails])
 
-useEffect(() => {
-  return () => {
-    if(socket){
-      socket.close();
-    }
-  }
-}, [])
+// useEffect(() => {
+//   return () => {
+//     if(marketDetails){
+//       marketDetails.socket.close();
+//     }
+//   }
+// }, [])
 
 
 
@@ -379,4 +385,4 @@ useEffect(() => {
   );
 }
 
-export default SellModel
+export default memo(SellModel)

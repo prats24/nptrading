@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -38,15 +38,15 @@ import BuyModel from "./data/BuyModel";
 import SellModel from "./data/SellModel";
 import { Typography } from "@mui/material";
 import InstrumentComponent from "./InstrumentComponent";
+import { marketDataContext } from "../../../../MarketDataContext";
 
 
 
 
 
 function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition}) {
-
-  console.log("user position rendering instruemt")
-
+  const marketDetails = useContext(marketDataContext)
+  
   let styleTD = {
     textAlign: "center",
     fontSize: "15px",
@@ -55,24 +55,11 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
   // console.log("data from socket socket", socket)
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
-  // let { columns, rows, instrumentData } = data(reRender, socket);
-  // let { columns, rows, instrumentData } = memo(() => {
-  //   console.log("user position rendering inside usecallback hook")
-  //   return data(reRender, socket);
-  // }, [reRender, socket]);
-  // const memoizedData = useCallback(() => {
-  //   console.log("user position rendering inside usecallback hook");
-  //   return data(reRender);
-  // }, [reRender]);
-  
-  // const { columns, rows, instrumentData } = memoizedData();
-
-  // console.log("inside usememo hoook rows", rows)
   const [menu, setMenu] = useState(null);
-  const [marketData, setMarketData] = useState([]);
+  // const [marketDetails.marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
   // const [instrumentTokenArr, setInstrumentTokenArr] = useState([]);
@@ -97,7 +84,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
       console.log('data from socket in instrument', data);
       console.log("marketdata", data)
-      setMarketData(prevInstruments => {
+      marketDetails.setMarketData(prevInstruments => {
         const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
         data.forEach(instrument => {
           instrumentMap.set(instrument.instrument_token, instrument);
@@ -105,53 +92,18 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
         return Array.from(instrumentMap.values());
       });
 
-      setMarketDataInPosition(prevInstruments => {
-        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-        data.forEach(instrument => {
-          instrumentMap.set(instrument.instrument_token, instrument);
-        });
-        return Array.from(instrumentMap.values());
-      });
+      // setMarketDataInPosition(prevInstruments => {
+      //   const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+      //   data.forEach(instrument => {
+      //     instrumentMap.set(instrument.instrument_token, instrument);
+      //   });
+      //   return Array.from(instrumentMap.values());
+      // });
     })
 
   }, [])
-  // const handleTickRoom = (data) => {
-  //   console.log('data from socket in instrument', data);
-  //   console.log("marketdata", data)
-  //   setMarketData(prevInstruments => {
-  //     const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-  //     data.forEach(instrument => {
-  //       instrumentMap.set(instrument.instrument_token, instrument);
-  //     });
-  //     return Array.from(instrumentMap.values());
-  //   });
 
-  //   setMarketDataInPosition(prevInstruments => {
-  //     const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-  //     data.forEach(instrument => {
-  //       instrumentMap.set(instrument.instrument_token, instrument);
-  //     });
-  //     return Array.from(instrumentMap.values());
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   console.log("in socket useeffect")
-  
-  //   // const handleCheck = (data) => {
-  //   //   console.log("data from socket check", data)
-  //   // };
-  
- 
-  
-  //   // socket.on('check', handleCheck);
-  //   socket.on('tick-room', handleTickRoom);
-  
-  //   // return () => {
-
-  //   // };
-  // }, [socket]);
-
+  console.log("rendering in userPosition: instruemntGrid", marketDetails)
 
 
   useEffect(() => {
@@ -168,7 +120,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
   }, []);
 
   const [instrumentData, setInstrumentData] = useState([]);
-  // // const [marketData, setMarketData] = useState([]);
+  // // const [marketDetails.marketData, setMarketData] = useState([]);
   // // const [livedata, setLiveData] = useState([]);
 
   // // const Company = ({ image, name }) => (
@@ -213,11 +165,11 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     instrumentData.map((elem)=>{
       let instrumentDetailObj = {}
 
-      console.log("inside of instruemt memo", marketData)
+      console.log("inside of instruemt memo", marketDetails.marketData)
 
       const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
       // const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
-      let perticularInstrumentMarketData = marketData.filter((subelem)=>{
+      let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
         return elem.instrumentToken === subelem.instrument_token
       })
 
@@ -266,11 +218,11 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       }
 
       instrumentDetailObj.buy = (
-        <BuyModel Render={{ reRender, setReRender }} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
       );
       
       instrumentDetailObj.sell = (
-        <SellModel Render={{ reRender, setReRender }} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
       );
 
       instrumentDetailObj.remove = (
@@ -295,7 +247,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
     console.log("arr in memo")
     return arr;
-  }, [reRender, marketData, socket]);
+  }, [reRender, marketDetails.marketData, socket]);
 
   console.log("instrumentDetailArr", instrumentDetailArr)
 
@@ -433,8 +385,36 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
               {instrumentDetailArr.map((elem)=>{
                 return(
                   // {memoizedInstrumentComponent}
-                  <InstrumentComponent elem={elem}/>
+                  
                   // {<InstrumentComponent data={elem}/> }
+
+              <tr
+              style={{borderBottom: "1px solid grey"}}
+              >
+                  {/* <td style={styleTD} >
+                  {elem.contractDate.props.children}
+                  </td>
+                  <td style={styleTD} >{elem.symbol.props.children}</td>
+                  <td style={styleTD} >{elem.instrument.props.children}</td>
+                  <td style={styleTD} >{elem.last_price.props.children}</td>
+                  <td style={styleTD} >{elem.change.props.children}</td>
+                  <td style={styleTD} >{elem.chart.props.children}</td> */}
+                  <InstrumentComponent 
+                    contractDate={elem.contractDate.props.children}
+                    symbol={elem.symbol.props.children}
+                    instrument={elem.instrument.props.children}
+                    last_price={elem.last_price.props.children}
+                    change={elem.change.props.children}
+                    // chart={elem.chart.props.children}
+                    // data={elem}
+                  />
+                  <td style={styleTD} >{elem.chart.props.children}</td>
+                  <td style={styleTD} >{elem.buy}</td>
+                  <td style={styleTD} >{elem.sell}</td>
+                  <td style={styleTD} >{elem.remove}</td>
+      
+              </tr>
+
                 )
               })}
             </tbody>

@@ -17,9 +17,9 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 function Data(reRender, socket) {
 
-  console.log("user position rendering in data")
+  console.log("rendering in userPosition: data")
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [instrumentData, setInstrumentData] = useState([]);
   // const [marketData, setMarketData] = useState([]);
