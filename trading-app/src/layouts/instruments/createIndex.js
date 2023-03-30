@@ -31,6 +31,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
     const [editing,setEditing] = useState(false)
     const [saving,setSaving] = useState(false)
     const [creating,setCreating] = useState(false)
+    const [newObjectId,setNewObjectId] = useState()
     
     React.useEffect(()=>{
 
@@ -57,9 +58,10 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             return new Error(err);
         })
 
-    },[saving,editing,creating,isSubmitted])
+    },[])
 
-        async function onEdit(formState){
+        async function onEdit(e,formState){
+            e.preventDefault()
             setSaving(true)
             console.log(formState)
             if(!formState?.displayName || !formState?.instrumentSymbol || !formState?.exchange || !formState?.status){
@@ -68,7 +70,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             }
             const { displayName, instrumentSymbol, exchange, status } = formState;
     
-            const res = await fetch(`${baseUrl}api/v1/stockindex/${id}`, {
+            const res = await fetch(`${baseUrl}api/v1/stockindex/${id ? id : newObjectId}`, {
                 method: "PUT",
                 credentials:"include",
                 headers: {
@@ -93,7 +95,8 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
     
 
 
-    async function onSubmit(formState){
+    async function onSubmit(e,formState){
+        e.preventDefault()
         setCreating(true)
         console.log(formState)
         
@@ -122,6 +125,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             console.log("invalid entry");
         } else {
             openSuccessSB("Index Created",data.status)
+            setNewObjectId(data.data)
             setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
         }
       }
@@ -180,6 +184,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
 
     console.log("Saving: ",saving)
     console.log("Editing: ",editing)
+    console.log("Id:",id)
 
     return (
     <>
@@ -200,12 +205,12 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
         <Grid container spacing={1} mt={0.5} mb={0}>
           <Grid item xs={12} md={6} xl={3}>
             <TextField
-                disabled={isSubmitted || (id && (!editing || saving))}
+                disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label='Display Name *'
                 fullWidth
-                defaultValue={indexData?.displayName}
-                // value={formState?.displayName}
+                // defaultValue={indexData?.displayName}
+                value={formState?.displayName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
                     displayName: e.target.value
@@ -215,7 +220,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
 
           <Grid item xs={12} md={6} xl={3}>
             <TextField
-                disabled={isSubmitted || (id && (!editing || saving))}
+                disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label='Instrument Symbol *'
                 defaultValue={indexData?.instrumentSymbol}
@@ -229,7 +234,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
 
           <Grid item xs={12} md={6} xl={3}>
             <TextField
-                disabled={isSubmitted || (id && (!editing || saving))}
+                disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label="Exchange *"
                 defaultValue={formState?.exchange}
@@ -248,7 +253,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
                 defaultValue={indexData?.status}
-                disabled={isSubmitted || (id && (!editing || saving))}
+                disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
                     status: e.target.value
@@ -280,7 +285,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
           <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={6}>
                 {!isSubmitted && !isObjectNew && (
                 <>
-                <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={()=>{onSubmit(formState)}}>
+                <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={(e)=>{onSubmit(e,formState)}}>
                     {creating ? <CircularProgress size={20} color="inherit" /> : "Save"}
                 </MDButton>
                 <MDButton variant="contained" color="error" size="small" disabled={creating} onClick={()=>{setCreateIndexForm(false)}}>
@@ -300,7 +305,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 )}
                 {(isSubmitted || isObjectNew) && editing && (
                 <>
-                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} onClick={()=>{onEdit(formState)}}>
+                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} onClick={(e)=>{onEdit(e,formState)}}>
                     {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
                 </MDButton>
                 <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setCreateIndexForm(false)}}>

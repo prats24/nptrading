@@ -17,6 +17,8 @@ router.post("/stockindex",authentication, async (req, res)=>{
 
     try{
         let {displayName, exchange, instrumentSymbol, status} = req.body;
+        console.log(req.body)
+        const id = req.user._id;
         let instrumentToken = await fetchToken(exchange, instrumentSymbol);
         console.log("Instrument Token: ",instrumentToken)
 
@@ -37,11 +39,11 @@ router.post("/stockindex",authentication, async (req, res)=>{
             }
             const index = new StockIndex({displayName, exchange, instrumentSymbol, status, instrumentToken, createdBy : id, lastModifiedBy : id});
             // console.log("instruments Symbol", instrumentSymbol)
-            index.save().then(async()=>{
+            index.save().then(async(data)=>{
                  await subscribeSingleToken(instrumentToken);
-                res.status(201).json({message : "Index Added"});
+                res.status(201).json({message : "Index Added",data : data._id});
             }).catch((err)=> res.status(500).json({error:err}));
-        }).catch(err => {console.log( "Data entry failed")});
+        }).catch(err => {console.log(err)});
 
     } catch(err) {
         // res.status(500).json({error:"Failed to enter data Check access token"});
@@ -60,10 +62,10 @@ router.get("/stockindex", (req, res)=>{
     }).sort({$natural:-1})
 })
 
-router.put("/stockindex/:id", (req, res)=>{
+router.put("/stockindex/:id",authentication, (req, res)=>{
     const {id} = req.params;
     let {displayName, exchange, instrumentSymbol, status} = req.body;
-    const modifiedBy = req.user;
+    const modifiedBy = req.user._id;
     const modifiedOn = new Date();
     // console.log(displayName, exchange, instrumentSymbol, status)
 
@@ -74,6 +76,7 @@ router.put("/stockindex/:id", (req, res)=>{
         return res.status(200).send(data);
     })
     .catch((err)=>{
+        console.log(err)
         return res.status(422).json({error : "data not found"})
     })
 })

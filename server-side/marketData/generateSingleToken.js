@@ -5,6 +5,7 @@ async function fetchToken (exchange, symbol){
     let getAccessToken;
     let getApiKey;
     let instrumentToken ;
+    // console.log("Exchange & Symbol: ",exchange,symbol)
 
     let accessTokenResp = await axios.get(`${baseUrl}api/v1/readRequestToken`)
     let apiKeyResp = await axios.get(`${baseUrl}api/v1/readAccountDetails`)
@@ -19,8 +20,9 @@ async function fetchToken (exchange, symbol){
     }
     const addUrl = 'i=' + exchange + ':' + symbol;
     const url = `https://api.kite.trade/quote?${addUrl}`
-
+    // console.log("URL: ",url)
     let auth = 'token' + getApiKey + ':' + getAccessToken;
+    // console.log("Auth: ",auth,getApiKey,getAccessToken)
     
     let authOptions = {
         headers: {
@@ -28,11 +30,20 @@ async function fetchToken (exchange, symbol){
             Authorization: auth,
         },
     };
+
+    // console.log(authOptions)
+    try{
     const resp = await axios.get(url, authOptions);
+    // console.log(resp)
     for (let elem in resp.data.data) {
         instrumentToken = (resp.data.data[elem].instrument_token);
+        console.log(instrumentToken)
     }
     return instrumentToken;
+    }
+    catch(err){
+        return console.log(err)
+    }
 }
 
 module.exports = fetchToken;
