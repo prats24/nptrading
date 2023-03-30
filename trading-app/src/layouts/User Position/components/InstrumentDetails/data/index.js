@@ -60,7 +60,7 @@ export default function Data(reRender, socket) {
     }).catch((err) => {
         return new Error(err);
     })
-  }, [reRender, socket])
+  }, [reRender])
 
     let instrumentDetailArr = [];
     console.log("rows data", instrumentData, reRender)

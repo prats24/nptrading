@@ -123,7 +123,7 @@ function UserPosition() {
     setTimeoutId(
       setTimeout(() => {
         sendRequest(value);
-      }, 1000)
+      }, 400)
     );
   }
 
@@ -136,6 +136,7 @@ function UserPosition() {
 
   function handleClear() {
     setText('');
+    setInstrumentsData([]);
   }
 
   function sendRequest(data){
