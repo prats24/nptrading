@@ -66,6 +66,11 @@ const contestSchema = new mongoose.Schema({
         type:Number,
         required: true
     },
+    status:{
+        type:String,
+        required: true,
+        enum: ['Live','Not Live','Cancelled']
+    },
     createdOn:{
         type: Date,
         required : true,

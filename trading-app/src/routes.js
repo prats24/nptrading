@@ -5,6 +5,7 @@ import AdminDashboard from "./layouts/admindashboard";
 import TraderDashboard from "./layouts/traderdashboard";
 import Orders from "./layouts/orders";
 import Instruments from "./layouts/instruments";
+import Contests from "./layouts/contests";
 import TradingAccount from "./layouts/trading-account";
 import Users from "./layouts/users";
 import AlgoBox from "./layouts/algobox";
@@ -119,6 +120,14 @@ const routes = [
     icon: <WalletIcon/>,
     route: "/tradersMarginAllocation",
     component: <TradersMarginAllocation />,
+  },
+  {
+    type: "collapse",
+    name: "Contests",
+    key: "contests",
+    icon: <WalletIcon/>,
+    route: "/contests",
+    component: <Contests />,
   },
 
   {
