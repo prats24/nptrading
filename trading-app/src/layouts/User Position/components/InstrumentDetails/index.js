@@ -45,8 +45,9 @@ import { marketDataContext } from "../../../../MarketDataContext";
 
 
 function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition}) {
-  const marketDetails = useContext(marketDataContext)
-  
+  // const marketDetails = useContext(marketDataContext)
+  console.log("socket print", socket)
+
   let styleTD = {
     textAlign: "center",
     fontSize: "15px",
@@ -80,17 +81,18 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       console.log("data from socket check", data)
     })
 
-    socket.on("tick-room", (data) => {
+    // socket.on("tick", (data) => {
+      socket.on("tick-room", (data) => {
 
-      console.log('data from socket in instrument', data);
-      console.log("marketdata", data)
-      marketDetails.setMarketData(prevInstruments => {
-        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-        data.forEach(instrument => {
-          instrumentMap.set(instrument.instrument_token, instrument);
-        });
-        return Array.from(instrumentMap.values());
-      });
+      console.log('data from socket in instrument in parent', data);
+      // console.log("marketdata", data)
+      // marketDetails.setMarketData(prevInstruments => {
+      //   const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+      //   data.forEach(instrument => {
+      //     instrumentMap.set(instrument.instrument_token, instrument);
+      //   });
+      //   return Array.from(instrumentMap.values());
+      // });
 
       // setMarketDataInPosition(prevInstruments => {
       //   const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
@@ -103,7 +105,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
   }, [])
 
-  console.log("rendering in userPosition: instruemntGrid", marketDetails)
+  console.log("rendering in userPosition: instruemntGrid")
 
 
   useEffect(() => {
@@ -113,11 +115,11 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       });
   }, [reRender]);
 
-  useEffect(() => {    
-    return () => {
-      socket.close();
-    }
-  }, []);
+  // useEffect(() => {    
+  //   return () => {
+  //     socket.close();
+  //   }
+  // }, []);
 
   const [instrumentData, setInstrumentData] = useState([]);
   // // const [marketDetails.marketData, setMarketData] = useState([]);
@@ -165,16 +167,16 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     instrumentData.map((elem)=>{
       let instrumentDetailObj = {}
 
-      console.log("inside of instruemt memo", marketDetails.marketData)
+      // console.log("inside of instruemt memo", marketDetails.marketData)
 
       const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
       // const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
-      let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
-        return elem.instrumentToken === subelem.instrument_token
-      })
+      // let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
+      //   return elem.instrumentToken === subelem.instrument_token
+      // })
 
-      const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
-      const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
+      // const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
+      // const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
 
 
       instrumentDetailObj.instrument = (
@@ -198,31 +200,32 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
         </MDTypography>
       );
 
-      instrumentDetailObj.last_price = (
-        <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-          {"₹"+(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}
-        </MDTypography>
-      );
-      if(perticularInstrumentMarketData[0]?.change !== undefined){
-        instrumentDetailObj.change = (
-          <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-            {perticularInstrumentMarketData[0]?.change >= 0 ? "+" + ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%" : ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%"}
-          </MDTypography>
-        );
-      } else{
-        instrumentDetailObj.change = (
-          <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
-            {(((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "+" + (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%" : (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%"}
-          </MDTypography>
-        );
-      }
+      // instrumentDetailObj.last_price = (
+      //   <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+      //     {"₹"+(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}
+      //   </MDTypography>
+      // );
+      // if(perticularInstrumentMarketData[0]?.change !== undefined){
+      //   instrumentDetailObj.change = (
+      //     <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
+      //       {perticularInstrumentMarketData[0]?.change >= 0 ? "+" + ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%" : ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%"}
+      //     </MDTypography>
+      //   );ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)
+// ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)
+      // } else{
+      //   instrumentDetailObj.change = (
+      //     <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
+      //       {(((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "+" + (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%" : (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%"}
+      //     </MDTypography>
+      //   );
+      // }
 
       instrumentDetailObj.buy = (
-        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} /> 
       );
       
       instrumentDetailObj.sell = (
-        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} />
       );
 
       instrumentDetailObj.remove = (
@@ -247,7 +250,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
     console.log("arr in memo")
     return arr;
-  }, [reRender, marketDetails.marketData, socket]);
+  }, [reRender, socket]);
 
   console.log("instrumentDetailArr", instrumentDetailArr)
 
@@ -403,10 +406,12 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
                     contractDate={elem.contractDate.props.children}
                     symbol={elem.symbol.props.children}
                     instrument={elem.instrument.props.children}
-                    last_price={elem.last_price.props.children}
-                    change={elem.change.props.children}
+                    // last_price={elem.last_price.props.children}
+                    // change={elem.change.props.children}
+                    instrumentToken={elem.instrumentToken.props.children}
                     // chart={elem.chart.props.children}
                     // data={elem}
+                    socket={socket}
                   />
                   <td style={styleTD} >{elem.chart.props.children}</td>
                   <td style={styleTD} >{elem.buy}</td>

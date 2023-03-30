@@ -54,8 +54,9 @@ const getTicks = (socket, tokens) => {
           for(let tick of ticks){
             let ticksArr = []
             ticksArr.push(tick);
-            // console.log(tick)
-            io.to(`instrument ${tick.instrument_token}`).emit('tick-room', ticksArr);
+            console.log(tick)
+            socket.emit('check', true)
+            io.to(`instrument ${tick.instrument_token}`).emit('tick-room1', ticksArr);
           }
 
         } catch( error){

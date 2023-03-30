@@ -42,13 +42,18 @@ getKiteCred.getAccess().then((data)=>{
 
 io.on("connection", (socket) => {
 
+  console.log("in index.js ", socket.id)
+
   socket.on('subscribeToken', (data)=>{
 
     data.map((elem)=>{
-      // console.log("in index.js ", elem, socket.id)
       socket.join(`instrument ${elem}`)
     })
+
+   
   })
+
+   socket.emit('check', true)
 
   socket.on('unSubscribeToken', (data)=>{
 

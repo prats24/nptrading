@@ -95,11 +95,11 @@ function UserPosition() {
   }, [reRender])
 
   // unmount and socket disconnect
-  useEffect(() => {
-    return () => {
-        socket.close();
-    }
-  }, [])
+  // useEffect(() => {
+  //   return () => {
+  //       socket.close();
+  //   }
+  // }, [])
   // useEffect(() => {
   //   const handleBeforeUnload = () => {
   //     socket.close();

@@ -4,7 +4,7 @@ export const marketDataContext = React.createContext();
 
 export default function MarketDataContext({children}) {
     const [marketData, setMarketData] = useState([]);
-
+  
   
   return (
       <marketDataContext.Provider value={{marketData, setMarketData}}>
