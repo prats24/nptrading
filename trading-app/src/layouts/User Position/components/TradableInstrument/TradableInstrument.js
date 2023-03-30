@@ -31,7 +31,7 @@ function TradableInstrument({instrumentsData, reRender, setReRender, uId}) {
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   const [userInstrumentData, setUserInstrumentData] = useState([]);
 
   useEffect(()=>{

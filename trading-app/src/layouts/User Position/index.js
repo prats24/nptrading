@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef,useContext } from "react";
+import React, { useEffect, useState, useRef,useContext, useMemo } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 // @mui material components
@@ -45,8 +45,10 @@ import MDSnackbar from "../../components/MDSnackbar";
 
 
 
+
 function UserPosition() {
 
+  console.log("user position rendering")
   const uId = uniqid();
   const getDetails = useContext(userContext);
   const [reRender, setReRender] = useState(true);
@@ -59,8 +61,9 @@ function UserPosition() {
   const [text,setText] = useState('');
   const [inputValue, setInputValue] = useState("");
   const [topScroll, setTopScroll] = useState(0);
+  const [marketDataInPosition, setMarketDataInPosition] = useState([]);
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
 
   let socket;
@@ -74,6 +77,8 @@ function UserPosition() {
     socket.on("connect", () => {
       socket.emit("hi", true)
     })
+
+
 
 
   }, []);
@@ -95,6 +100,18 @@ function UserPosition() {
         socket.close();
     }
   }, [])
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     socket.close();
+  //   };
+  
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //     socket.close();
+  //   };
+  // }, []);
 
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
@@ -136,7 +153,7 @@ function UserPosition() {
 
   function handleClear() {
     setText('');
-    setInstrumentsData([]);
+    setInstrumentsData([])
   }
 
   function sendRequest(data){
@@ -221,7 +238,6 @@ function UserPosition() {
       console.log("remove", permissionData)
       if (permissionData.status === 422 || permissionData.error || !permissionData) {
           window.alert(permissionData.error);
-          //console.log("Failed to Edit");
       }else {
           let instrumentTokenArr = [];
           instrumentTokenArr.push(instrument_token)
@@ -251,6 +267,7 @@ function UserPosition() {
   const lightTheme = createTheme({ palette: { mode: 'light' } });
   // let title = "App " + appstatus
   // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
+
   let content = addOrRemoveCheck ? "Added" : "Removed"
   const renderSuccessSB = (
     <MDSnackbar
@@ -268,6 +285,39 @@ function UserPosition() {
 
   // console.log("data from socket socket in userposition", socket)
 
+  const MemoizedInstrumentDetails = useMemo(() => {
+    return React.memo(InstrumentDetails);
+  }, []);
+
+  async function subscribeInstrumentFromBuySell(elem){
+    const {instrument_token, exchange} = elem
+
+    const res = await fetch(`${baseUrl}api/v1/subscribeInstrument`, {
+      method: "POST",
+      credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+      body: JSON.stringify({
+        instrumentToken: instrument_token, exchange
+      })
+    });
+  
+    const data = await res.json();
+    //console.log(data);
+    if(data.status === 422 || data.error || !data){
+        window.alert(data.error);
+    }else{
+      let instrumentTokenArr = [];
+      instrumentTokenArr.push(instrument_token)
+      socket.emit("subscribeToken", instrumentTokenArr);
+      console.log("instrument_token data from socket", instrument_token)
+      // openSuccessSB();
+      console.log(data.message)
+    }
+
+  }
 
   return (
     <DashboardLayout>
@@ -338,6 +388,11 @@ function UserPosition() {
             let perticularInstrumentData = userInstrumentData.filter((subElem)=>{
               return subElem.instrumentToken === elem.instrument_token
             })
+
+            let perticularMarketData = marketDataInPosition.filter((subElem)=>{
+              return subElem.instrument_token === elem.instrument_token
+            })
+            console.log("perticularMarketData", perticularMarketData)
             const id = elem.instrument_token;
             const date = new Date(elem.expiry);
             const day = date.getDate();
@@ -378,11 +433,11 @@ function UserPosition() {
                   <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
                   <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
-                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>
-                      B
+                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
+                      <BuyModel Render={{ reRender, setReRender }} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
                     </MDButton></Grid>
-                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem)}}>
-                      S
+                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} >
+                      <SellModel Render={{ reRender, setReRender }} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
                     </MDButton></Grid>
                     {perticularInstrumentData.length ?
                     <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
@@ -407,7 +462,13 @@ function UserPosition() {
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} />
+            {/* <MemoizedInstrumentDetails
+                socket={socket}
+                Render={{ reRender, setReRender }}
+                handleClick={writeText}
+                setMarketDataInPosition={setMarketDataInPosition}
+              /> */}
+              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} setMarketDataInPosition={setMarketDataInPosition}/>
             </Grid>
           </Grid>
         </MDBox>
@@ -432,5 +493,8 @@ function UserPosition() {
 }
 
 export default UserPosition;
+
+
+
 
 

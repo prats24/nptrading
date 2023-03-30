@@ -28,7 +28,7 @@ router.post("/mocktradeuser", async (req, res)=>{
         Quantity = "-"+Quantity;
     }
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
     let originalLastPrice;
     let a;
     try{

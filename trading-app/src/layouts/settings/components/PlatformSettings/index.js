@@ -10,8 +10,6 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DesktopTimePicker } from '@mui/x-date-pickers/DesktopTimePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
 import { MdModeEditOutline } from 'react-icons/md';
@@ -49,7 +47,7 @@ function PlatformSettings() {
   const getDetails = useContext(userContext)
   let modifiedBy = getDetails.userDetails._id;
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   
 
   useEffect(()=>{
@@ -127,8 +125,6 @@ function PlatformSettings() {
       bgWhite="info"
     />
   );
-
-  console.log("App Start Time: ",AppStartTime)
  
   return (
     <Card sx={{ boxShadow: "none" }}>

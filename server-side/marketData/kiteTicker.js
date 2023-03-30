@@ -35,6 +35,10 @@ const subscribeSingleToken = async(instrumentToken) => {
   ticker.subscribe(instrumentToken);
 }
 
+// const unSubscribeSingleToken = async(instrumentToken) => {
+//   ticker.unsubscribe(instrumentToken);
+// }
+
 const unSubscribeTokens = async(token) => {
     let tokens = [];
     tokens.push(token)

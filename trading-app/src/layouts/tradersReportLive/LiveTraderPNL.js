@@ -19,7 +19,7 @@ import MockTraderPNLData from "./data/MockTraderPNLData";
 
 const TableOne = () => {
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
     const [traderpnldata, setTraderPNLData] = useState([]);
     const { columns, rows } = MockTraderPNLData();

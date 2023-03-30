@@ -8,7 +8,7 @@ function BatchWiseTradersHeatMap() {
 
 // Display only even labels
 let date = new Date();
-let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 const [batchData, setBatchData] = useState([]);
 
 

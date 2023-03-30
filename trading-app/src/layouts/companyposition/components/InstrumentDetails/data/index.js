@@ -7,7 +7,7 @@ import axios from "axios";
 
 export default function Data() {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
     
   const [instrumentData, setInstrumentData] = useState([]);
 

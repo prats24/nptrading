@@ -20,7 +20,7 @@ function DayWiseTraderPNL() {
 const [selectedWeek, setSelectedWeek] = useState(1);
 const weekNumbers = Array.from({ length: 52 }, (_, i) => i + 1);
 let date = new Date();
-let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 let valueInDate2 = Number(10)
 let valueInDate1 = Number(1)
 const [startDay, setStartDay] = useState(1);
