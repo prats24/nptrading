@@ -24,10 +24,6 @@ function Data(reRender, socket) {
   const [instrumentData, setInstrumentData] = useState([]);
   // const [marketData, setMarketData] = useState([]);
   // const [livedata, setLiveData] = useState([]);
-  let date = new Date();
-  let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-
-  console.log("rows re rendering data")
 
   // const Company = ({ image, name }) => (
   //   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -41,6 +37,8 @@ function Data(reRender, socket) {
   console.log(reRender)
 
   useEffect(()=>{
+    console.log("user position rendering in data in useEffect")
+
     axios.get(`${baseUrl}api/v1/instrumentDetails`,{
       withCredentials: true,
       headers: {
@@ -119,7 +117,7 @@ function Data(reRender, socket) {
     //console.log(typeof(instrumentDetailObj));
     //console.log(instrumentDetailObj)
     instrumentDetailArr.push(instrumentDetailObj)
-  })
+    })
 
   return {
     columns: [

@@ -9,6 +9,15 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { RiStockFill } from "react-icons/ri";
 import { TiMediaRecord } from "react-icons/ti";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+// import td from '@mui/material/td';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+
 
 
 // Material Dashboard 2 React components
@@ -22,13 +31,13 @@ import MDSnackbar from "../../../../components/MDSnackbar";
 
 
 // Data
-import data from "./data";
-import { useEffect } from "react";
+// import data from "./data";
+import { useEffect, useMemo } from "react";
 import axios from "axios";
 import BuyModel from "./data/BuyModel";
 import SellModel from "./data/SellModel";
 import { Typography } from "@mui/material";
-
+import InstrumentComponent from "./InstrumentComponent";
 
 
 
@@ -38,19 +47,30 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
   console.log("user position rendering instruemt")
 
+  let styleTD = {
+    textAlign: "center",
+    fontSize: "15px",
+    fontColor: "grey"
+  }
 
   // console.log("data from socket socket", socket)
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
-  let { columns, rows, instrumentData } = data(reRender, socket);
+  // let { columns, rows, instrumentData } = data(reRender, socket);
   // let { columns, rows, instrumentData } = memo(() => {
   //   console.log("user position rendering inside usecallback hook")
   //   return data(reRender, socket);
   // }, [reRender, socket]);
+  // const memoizedData = useCallback(() => {
+  //   console.log("user position rendering inside usecallback hook");
+  //   return data(reRender);
+  // }, [reRender]);
+  
+  // const { columns, rows, instrumentData } = memoizedData();
 
-  console.log("inside usememo hoook rows", rows)
+  // console.log("inside usememo hoook rows", rows)
   const [menu, setMenu] = useState(null);
   const [marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
@@ -62,14 +82,13 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
   useEffect(()=>{
 
-    // axios.get(`${baseUrl}api/v1/getliveprice`)
-    // .then((res) => {
-    //     setMarketData(res.data);
-    // }).catch((err) => {
-    //     return new Error(err);
-    // })
-    console.log("marketdata useeffect")
-
+    console.log("in socket useeffect")
+    axios.get(`${baseUrl}api/v1/getliveprice`)
+    .then((res) => {
+        setMarketData(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
     socket.on('check', (data)=>{
       console.log("data from socket check", data)
     })
@@ -95,7 +114,44 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       });
     })
 
-  }, [socket])
+  }, [])
+  // const handleTickRoom = (data) => {
+  //   console.log('data from socket in instrument', data);
+  //   console.log("marketdata", data)
+  //   setMarketData(prevInstruments => {
+  //     const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+  //     data.forEach(instrument => {
+  //       instrumentMap.set(instrument.instrument_token, instrument);
+  //     });
+  //     return Array.from(instrumentMap.values());
+  //   });
+
+  //   setMarketDataInPosition(prevInstruments => {
+  //     const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+  //     data.forEach(instrument => {
+  //       instrumentMap.set(instrument.instrument_token, instrument);
+  //     });
+  //     return Array.from(instrumentMap.values());
+  //   });
+  // };
+
+  // useEffect(() => {
+  //   console.log("in socket useeffect")
+  
+  //   // const handleCheck = (data) => {
+  //   //   console.log("data from socket check", data)
+  //   // };
+  
+ 
+  
+  //   // socket.on('check', handleCheck);
+  //   socket.on('tick-room', handleTickRoom);
+  
+  //   // return () => {
+
+  //   // };
+  // }, [socket]);
+
 
 
   useEffect(() => {
@@ -105,23 +161,145 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       });
   }, [reRender]);
 
-
-  
-  useEffect(() => {
-
-    // console.log("unmount instrument without", instrumentTokenArr);
-    
+  useEffect(() => {    
     return () => {
-      // console.log("unmount instrument", instrumentTokenArr);
-        
-      // if(instrumentTokenArr.length > 0){
-      //   console.log("unmount instrument in if");
-      //   socket.emit("unSubscribeToken", instrumentTokenArr);
-      // }
-      
       socket.close();
     }
   }, []);
+
+  const [instrumentData, setInstrumentData] = useState([]);
+  // // const [marketData, setMarketData] = useState([]);
+  // // const [livedata, setLiveData] = useState([]);
+
+  // // const Company = ({ image, name }) => (
+  // //   <MDBox display="flex" alignItems="center" lineHeight={1}>
+  // //     <MDAvatar src={image} name={name} size="sm" />
+  // //     <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+  // //       {name}
+  // //     </MDTypography>
+  // //   </MDBox>
+  // // );
+
+  // console.log(reRender)
+
+  useEffect(()=>{
+    axios.get(`${baseUrl}api/v1/instrumentDetails`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+    })
+    .then((res) => {
+
+        console.log("inside of", res.data)
+        let instrumentTokenArr = [];
+        (res.data).map((elem)=>{
+          instrumentTokenArr.push(elem.instrumentToken)
+        })
+
+        socket.emit("subscribeToken", instrumentTokenArr);
+        setInstrumentData(res.data)
+    }).catch((err) => {
+        return new Error(err);
+    })
+  }, [reRender])
+
+
+
+  const instrumentDetailArr = useMemo(() => {
+    const arr = [];
+    instrumentData.map((elem)=>{
+      let instrumentDetailObj = {}
+
+      console.log("inside of instruemt memo", marketData)
+
+      const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
+      // const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
+      let perticularInstrumentMarketData = marketData.filter((subelem)=>{
+        return elem.instrumentToken === subelem.instrument_token
+      })
+
+      const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
+      const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
+
+
+      instrumentDetailObj.instrument = (
+        <MDTypography variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.instrument}
+        </MDTypography>
+      );
+      instrumentDetailObj.symbol = (
+        <MDTypography variant="caption" color={instrumentcolor} fontWeight="medium">
+          {elem.symbol}
+        </MDTypography>
+      );
+      instrumentDetailObj.quantity = (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {elem.Quantity}
+        </MDTypography>
+      );
+      instrumentDetailObj.contractDate = (
+        <MDTypography variant="caption" color="text" fontWeight="medium">
+          {elem.contractDate}
+        </MDTypography>
+      );
+
+      instrumentDetailObj.last_price = (
+        <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+          {"₹"+(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}
+        </MDTypography>
+      );
+      if(perticularInstrumentMarketData[0]?.change !== undefined){
+        instrumentDetailObj.change = (
+          <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
+            {perticularInstrumentMarketData[0]?.change >= 0 ? "+" + ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%" : ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%"}
+          </MDTypography>
+        );
+      } else{
+        instrumentDetailObj.change = (
+          <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
+            {(((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "+" + (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%" : (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%"}
+          </MDTypography>
+        );
+      }
+
+      instrumentDetailObj.buy = (
+        <BuyModel Render={{ reRender, setReRender }} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+      );
+      
+      instrumentDetailObj.sell = (
+        <SellModel Render={{ reRender, setReRender }} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+      );
+
+      instrumentDetailObj.remove = (
+        <MDButton size="small" color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken)}}>
+          <RemoveCircleOutlineIcon  />
+        </MDButton>
+      );
+
+      instrumentDetailObj.instrumentToken = (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {elem.instrumentToken}
+        </MDTypography>
+      );
+      instrumentDetailObj.chart = (
+        <MDTypography component="a" href="https://in.investing.com/indices/s-p-cnx-nifty-chart" target="_blank" variant="caption" color="text" fontWeight="medium">
+          <TrendingUpIcon fontSize="medium"/>
+        </MDTypography>
+      );
+
+      arr.push(instrumentDetailObj)
+    })
+
+    console.log("arr in memo")
+    return arr;
+  }, [reRender, marketData, socket]);
+
+  console.log("instrumentDetailArr", instrumentDetailArr)
+
+
 
   async function removeInstrument(instrumentToken){
     console.log("in remove")
@@ -150,57 +328,6 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     }
     reRender ? setReRender(false) : setReRender(true);
   }
-
-  
-  rows?.map((elem)=>{
-
-    console.log("rows elem", elem)
-    let ltpObj = {};
-    let pericularInstrument = instrumentData?.filter((element)=>{
-      return elem.instrumentToken.props.children == element.instrumentToken
-    })
-    marketData.map((subelem)=>{
-      const percentagechangecolor = subelem.change >= 0 ? "success" : "error"
-      const percentagechangecolor1 = (((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "success" : "error"
-      if(elem.instrumentToken.props.children === subelem.instrument_token){
-        console.log("rows ltp", elem.symbol.props.children, subelem.last_price)
-        elem.last_price = (
-            <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-              {"₹"+(subelem.last_price).toFixed(2)}
-            </MDTypography>
-          );
-          if(subelem.change){
-            elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-                {subelem.change >= 0 ? "+" + ((subelem.change).toFixed(2))+"%" : ((subelem.change).toFixed(2))+"%"}
-              </MDTypography>
-            );
-          } else{
-            elem.change = (
-              <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
-                {(((subelem.last_price - subelem.average_price) / subelem.average_price)*100) >= 0 ? "+" + (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%" : (((subelem.last_price - subelem.average_price) / subelem.average_price)*100).toFixed(2)+"%"}
-              </MDTypography>
-            );
-          }
-
-          elem.buy = (
-            <BuyModel Render={{ reRender, setReRender }} symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
-          );
-          
-          elem.sell = (
-            <SellModel Render={{ reRender, setReRender }} symbol={pericularInstrument[0].symbol} exchange={pericularInstrument[0].exchange} instrumentToken={pericularInstrument[0].instrumentToken} symbolName={pericularInstrument[0].instrument} lotSize={pericularInstrument[0].lotSize} maxLot={pericularInstrument[0].maxLot} ltp={(subelem.last_price).toFixed(2)}/>
-          );
-
-          elem.remove = (
-            <MDButton size="small" color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken.props.children)}}>
-              <RemoveCircleOutlineIcon  />
-            </MDButton>
-          );
-
-      }
-    })
-    // ltpArr.push(elem);
-  })
 
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
@@ -244,6 +371,10 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     />
   );
 
+  const memoizedInstrumentComponent = useMemo(() => (
+    <InstrumentComponent data={instrumentDetailArr}/>
+  ), [ instrumentDetailArr]);
+
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pl={2} pr={2} pt={2} pb={2}>
@@ -266,7 +397,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
             </MDTypography>
         </MDBox>
       </MDBox>
-      {rows?.length === 0 ? (
+      {instrumentDetailArr?.length === 0 ? (
       <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
         <RiStockFill style={{fontSize: '30px'}}/>
         <Typography style={{fontSize: '20px',color:"grey"}}>Nothing here</Typography>
@@ -282,6 +413,33 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
           noEndBorder
           entriesPerPage={false}
         /> */}
+        <TableContainer component={Paper}>
+          <table style={{borderCollapse: "collapse", width: "auto"}}>
+            <thead>
+              <tr style={{borderBottom: "1px solid grey"}}>
+                <td style={styleTD}>CONTRACT DATE</td>
+                <td style={styleTD} >SYMBOL</td>
+                <td style={styleTD} >INSTRUMENT</td>
+                <td style={styleTD} >LTP</td>
+                <td style={styleTD} >CHANGE(%)</td>
+                <td style={styleTD} >CHART</td>
+                <td style={styleTD} >BUY</td>
+                <td style={styleTD} >SELL</td>
+                <td style={styleTD} >REMOVE</td>
+              </tr>
+            </thead>
+            <tbody>
+
+              {/* {instrumentDetailArr.map((elem)=>{
+                return( */}
+                  {memoizedInstrumentComponent}
+                  {/* <InstrumentComponent data={elem}/> */}
+                {/* )
+              })} */}
+            </tbody>
+          </table>
+        </TableContainer>
+
       </MDBox>
       )}
       {renderSuccessSB}

@@ -100,6 +100,18 @@ function UserPosition() {
         socket.close();
     }
   }, [])
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     socket.close();
+  //   };
+  
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //     socket.close();
+  //   };
+  // }, []);
 
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
@@ -450,13 +462,13 @@ function UserPosition() {
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-            <MemoizedInstrumentDetails
+            {/* <MemoizedInstrumentDetails
                 socket={socket}
                 Render={{ reRender, setReRender }}
                 handleClick={writeText}
                 setMarketDataInPosition={setMarketDataInPosition}
-              />
-              {/* <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} /> */}
+              /> */}
+              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} setMarketDataInPosition={setMarketDataInPosition}/>
             </Grid>
           </Grid>
         </MDBox>

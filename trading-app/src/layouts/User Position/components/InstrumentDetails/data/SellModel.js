@@ -162,7 +162,15 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         return new Error(err);
     })
 
-}, [getDetails])
+  }, [getDetails])
+
+useEffect(() => {
+  return () => {
+    if(socket){
+      socket.close();
+    }
+  }
+}, [])
 
 
 

@@ -162,6 +162,14 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     })
   }, [getDetails, ltp])
 
+  useEffect(() => {
+    return () => {
+      if(socket){
+        socket.close();
+      }
+    }
+  }, [])
+
 
 
 
