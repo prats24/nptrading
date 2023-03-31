@@ -161,12 +161,12 @@ router.get("/instrumentDetails", authentication, async (req, res)=>{
 router.get("/getInstrument/:_id", async (req, res)=>{
     const {_id} = req.params
     const user = await User.findOne({_id: _id});
-
+    console.log("User: ",user)
     Instrument.find({ _id: { $in: user.watchlistInstruments } }, (err, instruments) => {
         if (err) {
           console.log(err);
         } else {
-        //   console.log(instruments);
+         console.log("User Instruments: ",instruments);
           return res.status(200).send(instruments);
         }
       }).sort({$natural:-1});

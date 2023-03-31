@@ -265,9 +265,6 @@ function UserPosition() {
 
   const darkTheme = createTheme({ palette: { mode: 'dark' } });
   const lightTheme = createTheme({ palette: { mode: 'light' } });
-  // let title = "App " + appstatus
-  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
-
   let content = addOrRemoveCheck ? "Added" : "Removed"
   const renderSuccessSB = (
     <MDSnackbar

@@ -22,6 +22,7 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import backgroundImage from "../../../assets/images/trading.jpg";
 import InstrumentActiveTable from "../InstrumentActiveTable";
 import InstrumentInactiveTable from "../InstrumentInactiveTable";
+import StockIndexTable from "../stockIndexTable"
 
 
 function Header({ children }) {
@@ -101,12 +102,20 @@ function Header({ children }) {
                     
                   }
                 />
+                 <Tab
+                  label="Indices"
+                  icon={
+                    <CandlestickChartIcon fontSize="small" sx={{ mt: -0.25 }}/>
+                    
+                  }
+                />
                 
                 
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><InstrumentActiveTable/> </TabPanel>
             <TabPanel value={tabValue} index={1}><InstrumentInactiveTable/> </TabPanel>
+            <TabPanel value={tabValue} index={2}><StockIndexTable/> </TabPanel>
             {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
