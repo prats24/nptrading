@@ -214,4 +214,7 @@ const uploadToS3 = async (req, res, next) => {
     }
   };
 
-router.route('/').post(Authenticate, uploadArray, resizePhoto, uploadToS3, createContest).get(getContests).patch(editContest);
+router.route('/').post(Authenticate, uploadArray, resizePhoto, uploadToS3, createContest).get(getContests).
+patch(Authenticate, editContest);
+
+module.exports = router;
