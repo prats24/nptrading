@@ -9,7 +9,8 @@ const Account = require("../../models/Trading Account/accountSchema");
 const {subscribeTokens, unSubscribeTokens, subscribeSingleToken, unSubscribeSingleToken} = require('../../marketData/kiteTicker');
 const authentication = require("../../authentication/authentication")
 const User = require("../../models/User/userDetailSchema")
-
+const client = require("../../marketData/redisClient");
+const ObjectId = require('mongodb').ObjectId;
 
 router.post("/addInstrument",authentication, async (req, res)=>{
 
@@ -48,13 +49,29 @@ router.post("/addInstrument",authentication, async (req, res)=>{
                     }
                     
                 })
-
+                try{
+                    console.log((_id).toString(), instrumentToken)
+                    const redisClient = await client.LPUSH((_id).toString(), (instrumentToken).toString());
+                    console.log("this is redis client", redisClient)
+    
+                } catch(err){
+                    console.log(err)
+                }
                 res.status(422).json({message : "Instrument Added"})
                 return;
             }
             const addingInstruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy: name, createdByUserId: _id, lotSize, instrumentToken, contractDate, maxLot, user_id: _id});
             //console.log("instruments", instruments)
             addingInstruments.save().then(async()=>{
+
+                try{
+                    console.log((_id).toString(), instrumentToken)
+                 const redisClient = await client.LPUSH((_id).toString(), (instrumentToken).toString());
+                 console.log("this is redis client", redisClient)
+
+                } catch(err){
+                    console.log(err)
+                }
                  await subscribeSingleToken(instrumentToken);
                  let getInstruments = await User.findOne({_id : _id});
                  getInstruments.watchlistInstruments.push(addingInstruments._id)
@@ -66,7 +83,7 @@ router.post("/addInstrument",authentication, async (req, res)=>{
                      
                  })
                 res.status(201).json({message : "Instrument Added"});
-            }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
+            }).catch((err)=> res.status(500).json({err: err, error:"Failed to enter data"}));
         }).catch(err => {console.log( "fail")});
 
     } catch(err) {
@@ -119,6 +136,7 @@ router.patch("/inactiveInstrument/:instrumentToken", authentication, async (req,
         let index = user.watchlistInstruments.indexOf(removeFromWatchlist._id); // find the index of 3 in the array
         if (index !== -1) {
             user.watchlistInstruments.splice(index, 1); // remove the element at the index
+            // client.LREM(_id, 1, instrumentToken);
         }
 
         const removing = await User.findOneAndUpdate({_id: _id}, {
@@ -159,24 +177,24 @@ router.get("/instrumentDetails", authentication, async (req, res)=>{
 })
 
 router.get("/getInstrument/:_id", async (req, res)=>{
-    const {_id} = req.params
-    const user = await User.findOne({_id: _id});
-    console.log("User: ",user)
-    Instrument.find({ _id: { $in: user.watchlistInstruments } }, (err, instruments) => {
-        if (err) {
-          console.log(err);
-        } else {
-         console.log("User Instruments: ",instruments);
-          return res.status(200).send(instruments);
-        }
-      }).sort({$natural:-1});
-    // Instrument.find({user_id: _id, isAddedWatchlist: true}, (err, data)=>{
-    //     if(err){
-    //         return res.status(500).send(err);
-    //     }else{
-    //         return res.status(200).send(data);
-    //     }
-    // }).sort({$natural:-1})
+
+    const {_id} = req.params;
+    const user = await User.aggregate([
+        { $match: { _id: _id } },
+        {
+          $lookup: {
+            from: "instrument-details",
+            localField: "watchlistInstruments",
+            foreignField: "_id",
+            as: "watchlistInstruments"
+          }
+        },
+        { $unwind: "$watchlistInstruments" },
+        { $match: { "watchlistInstruments.status": "Active" } },
+        { $sort: { _id: -1 } }
+      ]);
+      
+      return res.status(200).send(user);
 })
 
 

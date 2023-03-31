@@ -39,13 +39,14 @@ import SellModel from "./data/SellModel";
 import { Typography } from "@mui/material";
 import InstrumentComponent from "./InstrumentComponent";
 import { marketDataContext } from "../../../../MarketDataContext";
+import { userContext } from "../../../../AuthContext";
 
 
 
 
 
-function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition}) {
-  // const marketDetails = useContext(marketDataContext)
+function InstrumentDetails({socket, Render, handleClick}) {
+  const marketDetails = useContext(marketDataContext)
   console.log("socket print", socket)
 
   let styleTD = {
@@ -94,13 +95,6 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       //   return Array.from(instrumentMap.values());
       // });
 
-      // setMarketDataInPosition(prevInstruments => {
-      //   const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-      //   data.forEach(instrument => {
-      //     instrumentMap.set(instrument.instrument_token, instrument);
-      //   });
-      //   return Array.from(instrumentMap.values());
-      // });
     })
 
   }, [])
@@ -122,19 +116,6 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
   // }, []);
 
   const [instrumentData, setInstrumentData] = useState([]);
-  // // const [marketDetails.marketData, setMarketData] = useState([]);
-  // // const [livedata, setLiveData] = useState([]);
-
-  // // const Company = ({ image, name }) => (
-  // //   <MDBox display="flex" alignItems="center" lineHeight={1}>
-  // //     <MDAvatar src={image} name={name} size="sm" />
-  // //     <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-  // //       {name}
-  // //     </MDTypography>
-  // //   </MDBox>
-  // // );
-
-  // console.log(reRender)
 
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/instrumentDetails`,{
@@ -148,22 +129,22 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     .then((res) => {
 
         console.log("inside of", res.data)
-        let instrumentTokenArr = [];
-        (res.data).map((elem)=>{
-          instrumentTokenArr.push(elem.instrumentToken)
-        })
+        // let instrumentTokenArr = [];
+        // (res.data).map((elem)=>{
+        //   instrumentTokenArr.push(elem.instrumentToken)
+        // })
 
-        socket.emit("subscribeToken", instrumentTokenArr);
+        // socket.emit("subscribeToken", instrumentTokenArr);
         setInstrumentData(res.data)
     }).catch((err) => {
         return new Error(err);
     })
-  }, [reRender])
+  }, [reRender, socket])
 
 
 
-  const instrumentDetailArr = useMemo(() => {
-    const arr = [];
+  // const instrumentDetailArr = useMemo(() => {
+    const instrumentDetailArr = [];
     instrumentData.map((elem)=>{
       let instrumentDetailObj = {}
 
@@ -245,14 +226,14 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
         </MDTypography>
       );
 
-      arr.push(instrumentDetailObj)
+      instrumentDetailArr.push(instrumentDetailObj)
     })
 
-    console.log("arr in memo")
-    return arr;
-  }, [reRender, socket]);
+    // console.log("arr in memo")
+    // return arr;
+  // }, [reRender, socket]);
 
-  console.log("instrumentDetailArr", instrumentDetailArr)
+  console.log("instrumentDetailArr", instrumentDetailArr, instrumentData)
 
 
 
@@ -326,9 +307,9 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     />
   );
 
-  const memoizedInstrumentComponent = useMemo(() => (
-    <InstrumentComponent data={instrumentDetailArr}/>
-  ), [ instrumentDetailArr]);
+  // const memoizedInstrumentComponent = useMemo(() => (
+  //   <InstrumentComponent data={instrumentDetailArr}/>
+  // ), [ instrumentDetailArr]);
 
   return (
     <Card>
