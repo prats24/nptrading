@@ -1,28 +1,41 @@
 import React, {useState, useEffect} from 'react'
 import Grid from "@mui/material/Grid";
-
+import axios from "axios";
 // Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
+import MDButton from "../../components/MDButton";
 import Paper from '@mui/material/Paper';
 import MDTypography from "../../components/MDTypography";
 import ContestIcon from "../../assets/images/contest.png";
+import ContestDetailsForm from './CreateContest'
 
 
 const ContestCard = () => {
-   
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const [contestData,setContestData] = useState([]);
+  const [contestDetailsForm,setContestDetailsForm] = useState(false)
+  const [objectId,setObjectId] = useState('')
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-    const contests = [
-      {contestName: 'Friday Fun', minParticipants: 100, maxParticipants: 1000},
-      {contestName: 'D Day', minParticipants: 100, maxParticipants: 1000},
-      {contestName: 'New Era', minParticipants: 100, maxParticipants: 1000},
-    ]
+    useEffect(()=>{
+  
+      axios.get(`${baseUrl}api/v1/contest`)
+      .then((res)=>{
+                setContestData(res.data.data);
+                console.log(res.data.data)
+        }).catch((err)=>{
+          return new Error(err);
+      })
+  },[])
 
-      console.log(contests)
+
+      console.log("Contest Data: ",contestData)
 
     return (
-      <>     
-                    {contests?.map(e=>(
+      <>
+      {     
+      !contestDetailsForm ?
+      <>
+                    {contestData?.map(e=>(
                     <Grid item xs={12} md={12} lg={4}>
                       <MDBox
                           sx={{
@@ -44,7 +57,8 @@ const ContestCard = () => {
                             }}
                           >
                             <MDBox>
-                              <MDTypography padding={2} color="white">{e.contestName}</MDTypography>
+                              <MDTypography padding={2} color="white">{e?.contestName}</MDTypography>
+                              <MDButton padding={2} color="white" onClick={()=>{setObjectId(e._id);setContestDetailsForm(true)}}>View Details</MDButton>
                             </MDBox>
                             <MDBox style={{
                               backgroundImage: `url(${ContestIcon})`,
@@ -64,6 +78,12 @@ const ContestCard = () => {
                         </MDBox>
                     </Grid>
                     ))}
+                    </>
+                    :
+                    <>
+                    <ContestDetailsForm oldObjectId={objectId} setOldObjectId={setObjectId}/>
+                    </>
+                    }
                     </>
 )}
 

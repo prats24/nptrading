@@ -48,7 +48,7 @@ React.useEffect(()=>{
     axios.get(`${baseUrl}api/v1/contestrule/${id}`)
     .then((res)=>{
             setRuleData(res.data[0]);
-            console.log(res.data[0])
+            console.log("Contest Rule Object: ",res.data[0])
             setId(res.data[0]._id)
             setFormState({
             ruleName: res.data[0]?.ruleName || '',
@@ -68,44 +68,7 @@ React.useEffect(()=>{
         return new Error(err);
     })
 
-},[])
-
-async function onAdd(e,childFormState,setChildFormState){
-    e.preventDefault()
-    setSaving(true)
-    console.log(childFormState)
-    console.log(newObjectId)
-    if(!childFormState?.orderNo || !childFormState?.rule){
-    
-        setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-        return openErrorSB("Missing Field","Please fill all the mandatory fields")
-    
-    }
-    const {orderNo,rule} = childFormState;
-
-    const res = await fetch(`${baseUrl}api/v1/contestrule/${newObjectId}`, {
-        method: "PUT",
-        credentials:"include",
-        headers: {
-            "content-type" : "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-        body: JSON.stringify({
-          contestRules:{orderNo,rule}
-        })
-    });
-
-    const data = await res.json();
-    console.log(data);
-    if (data.status === 422 || data.error || !data) {
-        openErrorSB("Error","data.error")
-    } else {
-        openSuccessSB("New Rule Added","New Rule line item has been added in the contest rule")
-        setTimeout(()=>{setSaving(false);setEditing(false)},500)
-        setAddRuleObject(!addRuleObject);
-        console.log("Entry Succesfull");
-    }
-  }
+},[formState])
 
 async function onNext(e,formState){
 e.preventDefault()
@@ -144,6 +107,44 @@ if (data.status === 422 || data.error || !data) {
     setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
 }
 }
+
+async function onAdd(e,childFormState,setChildFormState){
+    e.preventDefault()
+    setSaving(true)
+    console.log("Rule Child Form State: ",childFormState)
+    console.log("New Rule Object Id: ",newObjectId)
+    if(!childFormState?.orderNo || !childFormState?.rule){
+    
+        setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+        return openErrorSB("Missing Field","Please fill all the mandatory fields")
+    
+    }
+    const {orderNo,rule} = childFormState;
+
+    const res = await fetch(`${baseUrl}api/v1/contestrule/${newObjectId}`, {
+        method: "PUT",
+        credentials:"include",
+        headers: {
+            "content-type" : "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+        body: JSON.stringify({
+          contestRules:{orderNo,rule}
+        })
+    });
+
+    const data = await res.json();
+    console.log(data);
+    if (data.status === 422 || data.error || !data) {
+        openErrorSB("Error","data.error")
+    } else {
+        openSuccessSB("New Rule Added","New Rule line item has been added in the contest rule")
+        setTimeout(()=>{setSaving(false);setEditing(false)},500)
+        setAddRuleObject(!addRuleObject);
+        console.log("Entry Succesfull");
+    }
+  }
+  
 const date = new Date(ruleData.lastModifiedOn);
 
 const formattedLastModifiedOn = `${date.getUTCDate()}/${date.toLocaleString('default', { month: 'short' })}/${String(date.getUTCFullYear())} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')}`;

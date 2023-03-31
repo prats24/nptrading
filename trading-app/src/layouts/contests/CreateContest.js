@@ -1,10 +1,7 @@
 import * as React from 'react';
 import {useContext, useState} from "react";
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Grid from "@mui/material/Grid";
-import Icon from "@mui/material/Icon";
-import { Tooltip } from '@mui/material';
 import MDTypography from "../../components/MDTypography";
 import MDBox from "../../components/MDBox";
 import MDButton from "../../components/MDButton"
@@ -17,52 +14,114 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
+import { IoMdAddCircle } from 'react-icons/io';
+import { useTheme } from '@mui/material/styles';
+import OutlinedInput from '@mui/material/OutlinedInput';
+
+
 import CreateRewardForm from './CreateRewards'
+import RewardsData from './data/rewardsData'
+import Stack from '@mui/material/Stack';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
+const ITEM_HEIGHT = 30;
+const ITEM_PADDING_TOP = 10;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
+const names = [
+  'Oliver Hansen',
+  'Van Henry',
+  'April Tucker',
+  'Ralph Hubbard',
+  'Omar Alexander',
+  'Carlos Abbott',
+  'Miriam Wagner',
+  'Bradley Wilkerson',
+  'Virginia Andrews',
+  'Kelly Snyder',
+];
 
-function CreateContest({createContestForm, setCreateContestForm, id}) {
-const [isSubmitted,setIsSubmitted] = useState(false);
-const getDetails = useContext(userContext);
-const [indexData,setContestData] = useState([]);
-const [formState,setFormState] = useState();
-const [isObjectNew,setIsObjectNew] = useState(id ? true : false)
-const [isLoading,setIsLoading] = useState(id ? true : false)
-const [editing,setEditing] = useState(false)
-const [saving,setSaving] = useState(false)
-const [creating,setCreating] = useState(false)
-const [newObjectId,setNewObjectId] = useState()
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
+
+function CreateContest({createContestForm, setCreateContestForm, oldObjectId, setOldObjectId}) {
+  console.log("Old Object Id: ",oldObjectId)
+  const [isSubmitted,setIsSubmitted] = useState(false);
+  const getDetails = useContext(userContext);
+  const [contestData,setContestData] = useState([]);
+  const [formState,setFormState] = useState();
+  const [id,setId] = useState(oldObjectId ? oldObjectId : '');
+  const [isObjectNew,setIsObjectNew] = useState(id ? true : false)
+  const [isLoading,setIsLoading] = useState(id ? true : false)
+  const [editing,setEditing] = useState(false)
+  const [saving,setSaving] = useState(false)
+  const [creating,setCreating] = useState(false)
+  const [newObjectId,setNewObjectId] = useState()
+  const [contestRules,setContestRules] = useState([])
+  const [contestRuleNames,setContestRuleNames] = useState([])
+  const [addRewardObject,setAddRewardObject] = useState(false);
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-React.useEffect(()=>{
+const theme = useTheme();
+  const [ruleName, setRuleName] = React.useState([]);
 
-    axios.get(`${baseUrl}api/v1/contest/${id}`)
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setRuleName(value)
+    setFormState(prevState => ({
+      ...prevState,
+      contestRule: value
+    }))
+  };
+
+React.useEffect(()=>{
+    console.log("Inside Use Effect")
+    axios.get(`${baseUrl}api/v1/contest/${id ? id : oldObjectId}`)
     .then((res)=>{
-        setContestData(res.data[0]);
-        // console.log(res.data[0])
+        setContestData(res?.data);
+        console.log(res?.data)
+        setId(res?.data?.data._id)
         setFormState({
-            contestName: res.data[0]?.contestName || '',
-            maxParticipants: res.data[0]?.maxParticipants || '',
-            minParticipants: res.data[0]?.minParticipants || '',
-            stockType: res.data[0]?.stockType || '',
-            contestOn: res.data[0]?.contestOn || '',
-            contestStartDate: res.data[0]?.contestStartDate || '',
-            contestEndDate: res.data[0]?.contestEndDate || '',
-            entryOpeningDate: res.data[0]?.entryOpeningDate || '',
-            entryClosingDate: res.data[0]?.entryClosingDate || '',
+            contestName: res.data.data?.contestName || '',
+            maxParticipants: res.data.data?.maxParticipants || '',
+            minParticipants: res.data.data?.minParticipants || '',
+            stockType: res.data.data?.stockType || 'Options',
+            contestOn: res.data.data?.contestOn || '',
+            contestStartDate: res.data.data?.contestStartDate || '',
+            contestEndDate: res.data.data?.contestEndDate || '',
+            entryOpeningDate: res.data.data?.entryOpeningDate || '',
+            entryClosingDate: res.data.data?.entryClosingDate || '',
             entryFee:{
-                amount : res.data[0]?.entryFee?.amount || '',
-                currency: res.data[0]?.entryFee?.currency || ''
+                amount : res.data.data?.entryFee?.amount || '',
+                currency: res.data.data?.entryFee?.currency || ''
             },
-            status: res.data[0]?.status || '',
-            createdBy: res.data[0]?.createdBy || '',
-            lastModifiedBy: res.data[0]?.lastModifiedBy || '',
-            lastModifiedOn: res.data[0]?.lastModifiedOn || '',
+            contestRule: res.data.data?.contestRule || '',
+            status: res.data.data?.status || 'Live',
+            createdBy: res.data.data?.createdBy || '',
+            lastModifiedBy: res.data.data?.lastModifiedBy || '',
+            lastModifiedOn: res.data.data?.lastModifiedOn || '',
           });
             setTimeout(()=>{setIsLoading(false)},500) 
         // setIsLoading(false)
@@ -73,56 +132,25 @@ React.useEffect(()=>{
 
 },[])
 
-async function onEdit(e,formState){
-    e.preventDefault()
-    setSaving(true)
-    console.log(formState)
-    if(
-        !formState?.contestName || !formState?.maxParticipants || !formState?.minParticipants || 
-        !formState?.stockType || !formState?.contestOn || !formState?.contestStartDate || 
-        !formState?.contestEndDate || !formState?.entryOpeningDate || 
-        !formState?.entryClosingDate || !formState?.entryFee?.amount || 
-        !formState?.entryFee?.currency || !formState?.status){
-    
-        setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-        return openErrorSB("Missing Field","Please fill all the mandatory fields")
-    
-    }
-    const { contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status} = formState;
-
-    const res = await fetch(`${baseUrl}api/v1/contest/${id ? id : newObjectId}`, {
-        method: "PUT",
-        credentials:"include",
-        headers: {
-            "content-type" : "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-        body: JSON.stringify({
-            contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
-        })
-    });
-
-    const data = await res.json();
-    console.log(data);
-    if (data.status === 422 || data.error || !data) {
-        openErrorSB("Error","data.error")
-    } else {
-        openSuccessSB("Index Edited",data.contestName + " | " + data.minParticipants + " | " + data.maxParticipants + " | " + data.status)
-        setTimeout(()=>{setSaving(false);setEditing(false)},500)
-        console.log("entry succesfull");
-    }
-  }
-
+React.useEffect(()=>{
+  axios.get(`${baseUrl}api/v1/contestrule`)
+  .then((res)=>{
+    setContestRules(res.data);
+  }).catch((err)=>{
+      return new Error(err)
+  })
+},[])
 
 
 async function onSubmit(e,formState){
 e.preventDefault()
 setCreating(true)
 console.log(formState)
+console.log("New Object Id: ",newObjectId)
 
 if(
     !formState?.contestName || !formState?.maxParticipants || !formState?.minParticipants || 
-    !formState?.stockType || !formState?.contestOn || !formState?.contestStartDate || 
+    !formState?.stockType || !formState?.contestOn || !formState.contestRule || !formState?.contestStartDate || 
     !formState?.contestEndDate || !formState?.entryOpeningDate || 
     !formState?.entryClosingDate || !formState?.entryFee?.amount || 
     !formState?.entryFee?.currency || !formState?.status){
@@ -131,35 +159,70 @@ if(
     return openErrorSB("Missing Field","Please fill all the mandatory fields")
 
 }
+// console.log("Is Submitted before State Update: ",isSubmitted)
 setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-const { contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status} = formState;
-// const res = await fetch(`${baseUrl}api/v1/contest`, {
-//     method: "POST",
-//     credentials:"include",
-//     headers: {
-//         "content-type" : "application/json",
-//         "Access-Control-Allow-Credentials": true
-//     },
-//     body: JSON.stringify({
-//         contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
-//     })
-// });
+const { contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status} = formState;
+const res = await fetch(`${baseUrl}api/v1/contest`, {
+    method: "POST",
+    credentials:"include",
+    headers: {
+        "content-type" : "application/json",
+        "Access-Control-Allow-Credentials": true
+    },
+    body: JSON.stringify({
+        contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
+    })
+});
 
-// const data = await res.json();
-// console.log(data);
-// if (data.status === 422 || data.error || !data) {
-//     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-//     console.log("invalid entry");
-// } else {
-//     openSuccessSB("Contest Created",data.status)
-//     setNewObjectId(data.data)
-//     setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-// }
+
+const data = await res.json();
+console.log(data);
+if (data.status === 422 || data.error || !data) {
+    setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+    console.log("invalid entry");
+} else {
+    openSuccessSB("Contest Created",data.message)
+    setNewObjectId(data.data)
+    setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
 }
-const date = new Date(indexData.lastModifiedOn);
+}
 
-const formattedLastModifiedOn = `${date.getUTCDate()}/${date.toLocaleString('default', { month: 'short' })}/${String(date.getUTCFullYear())} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')}`;
+async function onAddReward(e,childFormState,setChildFormState){
+  e.preventDefault()
+  setSaving(true)
+  console.log("Reward Child Form State: ",childFormState)
+  console.log("New Object Id in Add Reward Function: ",newObjectId)
+  if(!childFormState?.rankStart || !childFormState?.rankEnd || !childFormState?.reward 
+    || !childFormState?.currency
+    )
+  {
+      setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+      return openErrorSB("Missing Field","Please fill all the mandatory fields")
+  }
+  const {rankStart, rankEnd, reward, currency} = childFormState;
 
+  const res = await fetch(`${baseUrl}api/v1/contest/${newObjectId}`, {
+      method: "PATCH",
+      credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+      body: JSON.stringify({
+        rewards:{rankStart, rankEnd, reward, currency}
+      })
+  });
+  const data = await res.json();
+  console.log(data);
+  if (data.status === 422 || data.error || !data) {
+      openErrorSB("Error","data.error")
+  } else {
+      openSuccessSB("New Reward Added","New Reward line item has been added in the contest")
+      setTimeout(()=>{setSaving(false);setEditing(false)},500)
+      setAddRewardObject(!addRewardObject);
+      console.log("Entry Succesfull");
+  }
+}
 
 
 const [title,setTitle] = useState('')
@@ -211,7 +274,9 @@ const renderErrorSB = (
 
 console.log("Saving: ",saving)
 console.log("Editing: ",editing)
-console.log("Id:",id)
+console.log("Id:",newObjectId)
+console.log("Is Submitted after State Update: ",isSubmitted)
+console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
 
     return (
     <>
@@ -229,15 +294,15 @@ console.log("Id:",id)
         </MDTypography>
         </MDBox>
 
-        <Grid container spacing={1} mt={0.5} mb={0}>
+        <Grid container spacing={1} mt={0.5}>
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label='Contest Name *'
                 fullWidth
-                // defaultValue={indexData?.displayName}
-                value={formState?.contestName}
+                // defaultValue={contestData?.displayName}
+                defaultValue={oldObjectId ? contestData.contestName : formState?.contestName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
                     contestName: e.target.value
@@ -250,7 +315,7 @@ console.log("Id:",id)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label='Max. No. Participants *'
-                defaultValue={formState?.maxParticipants}
+                defaultValue={oldObjectId ? contestData.maxParticipants : formState?.maxParticipants}
                 fullWidth
                 type="number"
                 onChange={(e) => {setFormState(prevState => ({
@@ -265,7 +330,7 @@ console.log("Id:",id)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label="Min. No. Participants *"
-                defaultValue={formState?.minParticipants}
+                defaultValue={oldObjectId ? contestData.minParticipants :formState?.minParticipants}
                 fullWidth
                 type="number"
                 onChange={(e) => {setFormState(prevState => ({
@@ -281,7 +346,7 @@ console.log("Id:",id)
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                defaultValue={formState?.stockType}
+                defaultValue={oldObjectId ? contestData.stockType :formState?.stockType}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -305,7 +370,7 @@ console.log("Id:",id)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label="Contest On *"
-                defaultValue={formState?.contestOn}
+                defaultValue={oldObjectId ? contestData.contestOn : formState?.contestOn}
                 fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -319,7 +384,7 @@ console.log("Id:",id)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label="Entry Fee Amount *"
-                defaultValue={formState?.entryFee?.amount}
+                defaultValue={oldObjectId ? contestData.entryFee.amount :formState?.entryFee?.amount}
                 fullWidth
                 type="number"
                 onChange={(e) => {setFormState(prevState => ({
@@ -338,7 +403,7 @@ console.log("Id:",id)
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={formState?.entryFee?.currency}
+                value={oldObjectId ? contestData.entryFee.currency : formState?.entryFee?.currency}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -362,7 +427,7 @@ console.log("Id:",id)
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={formState?.status}
+                value={oldObjectId ? contestData.status : formState?.status}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -379,74 +444,115 @@ console.log("Id:",id)
           </Grid>
 
           <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="Contest Start Date"
-                  disabled={((isSubmitted || id) && (!editing || saving))}
-                  value={dayjs(setFormState.contestStartDate)}
-                  onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    contestStartDate: dayjs(e)
-                  }))}}
-                  sx={{ width: '100%' }}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['MobileDateTimePicker']}>
+                  <DemoItem>
+                    <MobileDateTimePicker 
+                      label="Contest Start Date"
+                      disabled={((isSubmitted || id) && (!editing || saving))}
+                      defaultValue={dayjs(oldObjectId ? contestData.contestStartDate : setFormState?.contestStartDate)}
+                      onChange={(e) => {
+                        setFormState(prevState => ({
+                          ...prevState,
+                          contestStartDate: dayjs(e)
+                        }))
+                      }}
+                      minDateTime={null}
+                      sx={{ width: '100%' }}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
           </Grid>
 
           <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="Contest End Date"
-                  disabled={((isSubmitted || id) && (!editing || saving))}
-                  value={dayjs(setFormState.contestEndDate)}
-                  onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    contestEndDate: dayjs(e)
-                  }))}}
-                  sx={{ width: '100%' }}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['MobileDateTimePicker']}>
+                  <DemoItem>
+                    <MobileDateTimePicker 
+                      label="Contest End Date"
+                      disabled={((isSubmitted || id) && (!editing || saving))}
+                      defaultValue={dayjs(oldObjectId ? contestData.contestEndDate : setFormState?.contestEndDate)}
+                      onChange={(e) => {setFormState(prevState => ({
+                        ...prevState,
+                        contestEndDate: dayjs(e)
+                      }))}}
+                      sx={{ width: '100%' }}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
           </Grid>
 
           <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="Entry Opening Date"
-                  disabled={((isSubmitted || id) && (!editing || saving))}
-                  value={dayjs(setFormState.entryOpeningDate)}
-                  onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    entryOpeningDate: dayjs(e)
-                  }))}}
-                  sx={{ width: '100%' }}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['MobileDateTimePicker']}>
+                  <DemoItem>
+                    <MobileDateTimePicker 
+                      label="Entry Open Date"
+                      disabled={((isSubmitted || id) && (!editing || saving))}
+                      defaultValue={dayjs(oldObjectId ? contestData.entryOpeningDate : setFormState?.entryOpeningDate)}
+                      onChange={(e) => {setFormState(prevState => ({
+                        ...prevState,
+                        entryOpeningDate: dayjs(e)
+                      }))}}
+                      sx={{ width: '100%' }}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label="Entry Closing Date"
-                  disabled={((isSubmitted || id) && (!editing || saving))}
-                  value={dayjs(setFormState.entryClosingDate)}
-                  onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    entryClosingDate: dayjs(e)
-                  }))}} 
-                  sx={{ width: '100%' }}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+          <Grid item xs={12} md={6} xl={3} mt={-1}>
+            
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['MobileDateTimePicker']}>
+                  <DemoItem>
+                    <MobileDateTimePicker 
+                      label="Entry Close Date"
+                      disabled={((isSubmitted || id) && (!editing || saving))}
+                      defaultValue={dayjs(oldObjectId ? contestData.entryClosingDate : setFormState?.entryClosingDate)}
+                      onChange={(e) => {setFormState(prevState => ({
+                        ...prevState,
+                        entryClosingDate: dayjs(e)
+                      }))}}
+                      sx={{ width: '100%' }}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
+
+          </Grid>
+                
+          <Grid item xs={12} md={3} xl={6} mb={-3}>
+                <FormControl sx={{ minHeight:10, minWidth:245 }}>
+                  <InputLabel id="demo-multiple-name-label">Contest Rule</InputLabel>
+                  <Select
+                    labelId="demo-multiple-name-label"
+                    id="demo-multiple-name"
+                    disabled={((isSubmitted || id) && (!editing || saving))}
+                    value={oldObjectId ? contestData?.contestRule : ruleName}
+                    defaultValue={oldObjectId ? contestData?.contestRule?.ruleName : ruleName}
+                    onChange={handleChange}
+                    input={<OutlinedInput label="Contest Rule" />}
+                    sx={{minHeight:45}}
+                    MenuProps={MenuProps}
+                  >
+                    {contestRules?.map((rule) => (
+                      <MenuItem
+                        key={rule?.ruleName}
+                        value={rule?._id}
+                        // style={getStyles(rule, ruleName, theme)}
+                      >
+                        {rule.ruleName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+            </FormControl>
           </Grid>
 
-          <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={12}>
+
+          <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={6}>
                 {!isSubmitted && !isObjectNew && (
                 <>
                 <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={(e)=>{onSubmit(e,formState)}}>
@@ -459,8 +565,90 @@ console.log("Id:",id)
                 )}
           </Grid>
 
-          {isSubmitted && <Grid item xs={12} md={6} xl={12} mt={2} mb={2.5}>
-            <CreateRewardForm />
+          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+                
+                <Grid container spacing={1}>
+
+                <Grid item xs={12} md={6} xl={12} mt={-3} mb={-1}>
+                <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
+                  Fill in the rank detail and click add
+                </MDTypography>
+                </Grid>
+                
+                <Grid item xs={12} md={1.35} xl={2.7}>
+                    <TextField
+                        id="outlined-required"
+                        label='Rank Start *'
+                        fullWidth
+                        type="number"
+                        value={formState?.rewards?.rankStart}
+                        onChange={(e) => {setFormState(prevState => ({
+                            ...prevState,
+                            rankStart: e.target.value
+                        }))}}
+                    />
+                </Grid>
+    
+                <Grid item xs={12} md={1.35} xl={2.7}>
+                    <TextField
+                        id="outlined-required"
+                        label='Rank End *'
+                        fullWidth
+                        type="number"
+                        value={formState?.rewards?.rankEnd}
+                        onChange={(e) => {setFormState(prevState => ({
+                            ...prevState,
+                            rankEnd: e.target.value
+                        }))}}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={1.35} xl={2.7}>
+                    <TextField
+                        id="outlined-required"
+                        label='Reward *'
+                        fullWidth
+                        type="number"
+                        value={formState?.rewards?.reward}
+                        onChange={(e) => {setFormState(prevState => ({
+                            ...prevState,
+                            reward: e.target.value
+                        }))}}
+                    />
+                </Grid>
+
+                <Grid item xs={12} md={1.35} xl={2.7}>
+                  <FormControl sx={{width: "100%" }}>
+                    <InputLabel id="demo-simple-select-autowidth-label">Currency *</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-autowidth-label"
+                    id="demo-simple-select-autowidth"
+                    value={formState?.currency}
+                    onChange={(e) => {setFormState(prevState => ({
+                      ...prevState,
+                      currency: e.target.value
+                    }))}}
+                    label="Currency"
+                    sx={{ minHeight:43 }}
+                    >
+                    <MenuItem value="INR">INR</MenuItem>
+                    <MenuItem value="CREDOS">CREDOS</MenuItem>
+                    </Select>
+                  </FormControl>
+              </Grid>
+    
+                <Grid item xs={12} md={0.6} xl={1.2} mt={-0.7}>
+                    <IoMdAddCircle cursor="pointer" onClick={(e)=>{onAddReward(e,formState,setFormState)}}/>
+                </Grid>
+    
+                </Grid>
+    
+                </Grid>}
+
+          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+                <MDBox>
+                    <RewardsData id={newObjectId} addRewardObject={addRewardObject} setAddRewardObject={setAddRewardObject}/>
+                </MDBox>
           </Grid>}
             
           </Grid>
