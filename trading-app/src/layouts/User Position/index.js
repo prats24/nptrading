@@ -230,20 +230,9 @@ function UserPosition() {
           window.alert(data.error);
           // setInvalidDetail(`Email or Password is incorrect`);
       }else{
-  
-        // this function is extracting data of user who is logged in
-        // await userDetail();
         openSuccessSB();
-        console.log(data.message)
-        
-        
+        console.log(data.message) 
       }
-      // const id = instrument_token;
-      // const currentButtonState = buttonStates[id];
-      // setButtonStates({
-      //   ...buttonStates,
-      //   [id]: !currentButtonState,
-      // });
       
     } else{
       setAddOrRemoveCheck(false);
@@ -263,12 +252,7 @@ function UserPosition() {
       console.log("remove", permissionData)
       if (permissionData.status === 422 || permissionData.error || !permissionData) {
           window.alert(permissionData.error);
-          //console.log("Failed to Edit");
       }else {
-        // window.alert(permissionData.massage);
-          //console.log(permissionData);
-          // window.alert("Edit succesfull");
-          //console.log("Edit succesfull");
           openSuccessSB();
       }
       
@@ -291,8 +275,6 @@ function UserPosition() {
 
   const darkTheme = createTheme({ palette: { mode: 'dark' } });
   const lightTheme = createTheme({ palette: { mode: 'light' } });
-  // let title = "App " + appstatus
-  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
   let content = addOrRemoveCheck ? "Added" : "Removed"
   const renderSuccessSB = (
     <MDSnackbar

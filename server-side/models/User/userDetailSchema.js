@@ -57,11 +57,11 @@ const userDetailSchema = new mongoose.Schema({
     },
     whatsApp_number:{
         type: String,
-        required: true
+        // required: true
     },
     degree:{
         type: String,
-        required: true
+        // required: true
     },
     dob:{
         type: String,
@@ -73,7 +73,7 @@ const userDetailSchema = new mongoose.Schema({
     },
     address:{
         type: String,
-        required: true
+        // required: true
     },
     trading_exp:{
         type: String,
@@ -97,11 +97,11 @@ const userDetailSchema = new mongoose.Schema({
     },
     last_occupation:{
         type: String,
-        required: true
+        // required: true
     },
     family_yearly_income:{
         type: String,
-        require: true,
+        // require: true,
     },
     joining_date:{
         type: String,
@@ -126,6 +126,10 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    pincode:{
+        type: String,
+        // required: true
+    },
     upiId:{
         type: String,
         // required: true
@@ -138,7 +142,7 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         // required: true
     },
-    phonePay_number:{
+    phonePe_number:{
         type: String,
         // required: true
     },
@@ -184,8 +188,55 @@ const userDetailSchema = new mongoose.Schema({
               
     },
     fund: {
-        type: Number,
-              
+        type: Number,      
+    },
+    aadhaarCardFrontImage:{
+        type: String,
+    },
+    aadhaarNumber:{
+        type: String,
+    },
+    panNumber:{
+        type: String,
+    },
+    drivingLicenseNumber:{
+        type: String,
+    },
+    passportNumber:{
+        type: String,
+    },
+    aadhaarCardBackImage:{
+        type: String,
+    },
+    panCardFrontImage:{
+        type: String,
+    },
+    passportPhoto:{
+        type: String,
+    },
+    addressProofDocument:{
+        type: String,
+    },
+    incomeProofDocument:{
+        type: String,
+    },
+    profilePhoto:{
+        type: String,
+    },
+    KYCStatus:{
+        type: String,
+        enum: ['Not Initiated','Submitted','Approved','Rejected','Under Verification'],
+        default: 'Not Initiated',
+    },
+    myReferralCode:{
+        type: String,
+    },
+    referrerCode:{
+        type: String,
+    },
+    referredBy:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-detail'
     }
 })
 
