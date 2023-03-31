@@ -69,7 +69,7 @@ export default function App() {
   const { pathname } = useLocation();
   let noCookie = false;
 
-  console.log("pathname", pathname)
+  // console.log("pathname", pathname)
 
   //get userdetail who is loggedin
   const setDetails = useContext(userContext);

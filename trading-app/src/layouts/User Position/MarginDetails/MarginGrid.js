@@ -1,27 +1,16 @@
 import React from 'react'
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import {useState, useContext, useEffect} from "react"
+import {useState, useContext, useEffect, memo} from "react"
 import axios from "axios";
 import { userContext } from "../../../AuthContext";
 import { NetPnlContext } from '../../../PnlContext';
-
-// Data
-
-import DataTable from '../../../examples/Tables/DataTable';
 import MDBox from '../../../components/MDBox';
-import MDTypography from '../../../components/MDTypography';
 import MarginDetails from './MarginDetails';
 import DefaultInfoCard from "../../../examples/Cards/InfoCards/DefaultInfoCard";
-import AvailableIcon from '@mui/icons-material/Savings';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 
 const MarginGrid = () => {
 
+  console.log("rendering in userPosition: marginGrid")
   const { netPnl, totalRunningLots } = useContext(NetPnlContext);
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [marginDetails, setMarginDetails] = useState([]);
@@ -32,44 +21,7 @@ const MarginGrid = () => {
   const [payIn, setPayIn] = useState([]);
   const getDetails = useContext(userContext);
 
-  // useEffect(()=>{
 
-  //   let abortController;
-  //   (async () => {
-  //        abortController = new AbortController();
-  //        let signal = abortController.signal;    
-
-  //        // the signal is passed into the request(s) we want to abort using this controller
-  //        const { data1 } = await axios.get(
-  //         `${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`,
-  //            { signal: signal }
-  //        );
-  //        setMarginDetails(data1);
-
-  //        const { data2 } = await axios.get(
-  //         `${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`,
-  //            { signal: signal }
-  //        );
-         
-  //        setLifetimePNL(data2);
-
-  //        const { data3 } = await axios.get(
-  //         `${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`,
-  //           { signal: signal }
-  //        );
-  //        setAvailableMarginPNL(data3);
-
-  //        const { data4 } = await axios.get(
-  //         `${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`,
-  //            { signal: signal }
-  //        );
-  //        setPayIn(data4);
-
-  //   })();
-
-  //   return () => abortController.abort();
-
-  // },[netPnl,totalRunningLots])
 
   useEffect(() => {
     let abortController;
@@ -197,4 +149,4 @@ const MarginGrid = () => {
     )
 }
 
-export default MarginGrid;
+export default memo(MarginGrid);

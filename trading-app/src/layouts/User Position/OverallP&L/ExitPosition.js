@@ -28,6 +28,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
 function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
+  console.log("rendering in userPosition/overall: exitPosition")
 
     let checkBuyOrSell ;
     if(quantity > 0){

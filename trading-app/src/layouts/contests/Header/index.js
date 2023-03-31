@@ -23,6 +23,7 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 // Images
 import backgroundImage from "../../../assets/images/trading.jpg";
 import UpcomingContests from "../UpcomingContests";
+import ContestRules from "../ContestRules";
 // import InstrumentInactiveTable from "../InstrumentInactiveTable";
 // import StockIndexTable from "../stockIndexTable"
 
@@ -98,17 +99,15 @@ function Header({ children }) {
                   }
                 />
                 <Tab
-                  label="Open Contests"
+                  label="Contest Rules"
                   icon={
                     <CandlestickChartIcon fontSize="small" sx={{ mt: -0.25 }}/>
-                    
                   }
                 />
                  <Tab
                   label="Expired Contests"
                   icon={
                     <CandlestickChartIcon fontSize="small" sx={{ mt: -0.25 }}/>
-                    
                   }
                 />
                 
@@ -116,7 +115,7 @@ function Header({ children }) {
               </Tabs>
             </AppBar>
             <TabPanel value={tabValue} index={0}><UpcomingContests/> </TabPanel>
-            {/* <TabPanel value={tabValue} index={1}><InstrumentInactiveTable/> </TabPanel> */}
+            <TabPanel value={tabValue} index={1}><ContestRules/> </TabPanel>
             {/* <TabPanel value={tabValue} index={2}><StockIndexTable/> </TabPanel> */}
             {/* <TabPaneltwo/> */}
           </Grid>

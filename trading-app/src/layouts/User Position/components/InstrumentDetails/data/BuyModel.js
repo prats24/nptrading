@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useEffect } from 'react';
+import { useEffect, memo } from 'react';
 import axios from "axios"
 import uniqid from "uniqid"
 import { userContext } from "../../../../../AuthContext";
@@ -25,13 +25,18 @@ import FormLabel from '@mui/material/FormLabel';
 import { Box, Typography } from '@mui/material';
 import MDBox from '../../../../../components/MDBox';
 import { borderBottom } from '@mui/system';
+import { marketDataContext } from "../../../../../MarketDataContext";
 
-const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, Render}) => {
+const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos}) => {
+
+  console.log("rendering in userPosition: buyModel")
+
+  // const marketDetails = useContext(marketDataContext)
 
   // console.log("data from props", exchange, symbol, instrumentToken, symbolName, lotSize, maxLot)
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const { reRender, setReRender } = Render;
+  // const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);
   let uId = uniqid();
   let date = new Date();
@@ -96,15 +101,59 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     buyFormDetails.validity = event.target.value;
   };
 
-  const handleClickOpen = () => {
-
-
+  const handleClickOpen = async () => {
+    // if(fromUserPos){
+    //   const res = await fetch(`${baseUrl}api/v1/subscribeInstrument`, {
+    //     method: "POST",
+    //     credentials:"include",
+    //     headers: {
+    //         "content-type" : "application/json",
+    //         "Access-Control-Allow-Credentials": true
+    //     },
+    //     body: JSON.stringify({
+    //       instrumentToken
+    //     })
+    //   });
+    
+    //   const data = await res.json();
+    //   //console.log(data);
+    //   if(data.status === 422 || data.error || !data){
+    //       window.alert(data.error);
+    //   }else{
+    //     let instrumentTokenArr = [];
+    //     instrumentTokenArr.push(instrumentToken)
+    //     socket.emit("subscribeToken", instrumentTokenArr);
+    //     console.log("instrumentToken data from socket", instrumentToken)
+    //     // openSuccessSB();
+    //     console.log(data.message)
+    //   }
+    // }
     setOpen(true);
-
-
   }; 
 
-  const handleClose = (e) => {
+  const handleClose = async (e) => {
+    console.log("in close")
+    if(fromUserPos){
+      const res = await fetch(`${baseUrl}api/v1/unsubscribeInstrument`, {
+        method: "POST",
+        credentials:"include",
+        headers: {
+            "content-type" : "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+        body: JSON.stringify({
+          instrumentToken
+        })
+      });
+    
+      const data = await res.json();
+      //console.log(data);
+      if(data.status === 422 || data.error || !data){
+      }else{
+        // socket.emit("subscribeToken", instrumentTokenArr);
+        console.log(data.message)
+      }
+    }
     setOpen(false);
   };
 
@@ -116,7 +165,15 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     }).catch((err) => {
         return new Error(err);
     })
-  }, [getDetails])
+  }, [getDetails, ltp])
+
+  // useEffect(() => {
+  //   return () => {
+  //     if(marketDetails){
+  //       marketDetails.socket.close();
+  //     }
+  //   }
+  // }, [])
 
 
 
@@ -203,13 +260,18 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     }
   }
 
-
+//size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} 
 
   return (
     <div>
+      {fromUserPos ? 
+      <MDBox color="light" onClick={handleClickOpen}>
+        B
+      </MDBox>
+      : 
       <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} fullWidth>
-        BUY
-      </MDButton>
+        {"BUY"}
+      </MDButton>}
       <div>
         <Dialog
           fullScreen={fullScreen}
@@ -330,4 +392,4 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   );
 }
 
-export default BuyModel;
+export default memo(BuyModel);

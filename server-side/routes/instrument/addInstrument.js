@@ -6,7 +6,7 @@ const axios = require('axios');
 const fetchToken = require("../../marketData/generateSingleToken");
 const RequestToken = require("../../models/Trading Account/requestTokenSchema");
 const Account = require("../../models/Trading Account/accountSchema");
-const {subscribeTokens, unSubscribeTokens, subscribeSingleToken} = require('../../marketData/kiteTicker');
+const {subscribeTokens, unSubscribeTokens, subscribeSingleToken, unSubscribeSingleToken} = require('../../marketData/kiteTicker');
 const authentication = require("../../authentication/authentication")
 const User = require("../../models/User/userDetailSchema")
 
@@ -72,6 +72,36 @@ router.post("/addInstrument",authentication, async (req, res)=>{
     } catch(err) {
         // res.status(500).json({error:"Failed to enter data Check access token"});
         res.status(500).json({error:err});
+        return new Error(err);
+    }
+})
+
+router.post("/subscribeInstrument",authentication, async (req, res)=>{
+
+    const {instrumentToken} = req.body;
+
+    try{
+        await subscribeSingleToken(instrumentToken);
+        console.log("subscribed", instrumentToken)
+        res.status(200).json({message: "subscribed"});
+    } catch(err) {
+        // res.status(500).json({error:"Failed to enter data Check access token"});
+        // res.status(500).json({error:err});
+        return new Error(err);
+    }
+})
+
+router.post("/unsubscribeInstrument",authentication, async (req, res)=>{
+
+    const {instrumentToken} = req.body;
+
+    try{
+        await unSubscribeTokens(instrumentToken);
+        console.log("unsubscribed", instrumentToken)
+        res.status(200).json({message: "unSubscribed"});
+    } catch(err) {
+        // res.status(500).json({error:"Failed to enter data Check access token"});
+        // res.status(500).json({error:err});
         return new Error(err);
     }
 })

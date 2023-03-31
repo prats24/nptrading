@@ -8,15 +8,18 @@ import App from "./App";
 import { MaterialUIControllerProvider } from "./context";
 import AuthContext, { userContext } from "./AuthContext";
 import {NetPnlProvider} from './PnlContext';
+import MarketDataContext from './MarketDataContext'
 
 ReactDOM.render(
   <AuthContext>
     <NetPnlProvider>
-    <BrowserRouter>
-      <MaterialUIControllerProvider>
-        <App />
-      </MaterialUIControllerProvider>
-    </BrowserRouter>
+      <MarketDataContext>
+        <BrowserRouter>
+          <MaterialUIControllerProvider>
+            <App />
+          </MaterialUIControllerProvider>
+        </BrowserRouter>
+      </MarketDataContext>
     </NetPnlProvider>
   </AuthContext>,
   document.getElementById("root")

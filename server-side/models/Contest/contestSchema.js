@@ -31,10 +31,6 @@ const contestSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    contestRules:{
-        type:[{orderNo:Number,rule:String}],
-        required:true,
-    },
     rewards:{
         type:[{rankStart:Number,rankEnd:Number,rankIcon:String,reward:Number,currency:String}],
         required:true

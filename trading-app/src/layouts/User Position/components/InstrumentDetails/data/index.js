@@ -7,7 +7,7 @@ import MDTypography from "../../../../../components/MDTypography";
 import MDAvatar from "../../../../../components/MDAvatar";
 import MDProgress from "../../../../../components/MDProgress";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import axios from "axios";
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
@@ -15,17 +15,15 @@ import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 
-export default function Data(reRender, socket) {
+function Data(reRender, socket) {
+
+  console.log("rendering in userPosition: data")
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
   const [instrumentData, setInstrumentData] = useState([]);
   // const [marketData, setMarketData] = useState([]);
   // const [livedata, setLiveData] = useState([]);
-  let date = new Date();
-  let todayDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`
-
-  console.log("rows re rendering data")
 
   // const Company = ({ image, name }) => (
   //   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -39,6 +37,8 @@ export default function Data(reRender, socket) {
   console.log(reRender)
 
   useEffect(()=>{
+    console.log("user position rendering in data in useEffect")
+
     axios.get(`${baseUrl}api/v1/instrumentDetails`,{
       withCredentials: true,
       headers: {
@@ -117,7 +117,7 @@ export default function Data(reRender, socket) {
     //console.log(typeof(instrumentDetailObj));
     //console.log(instrumentDetailObj)
     instrumentDetailArr.push(instrumentDetailObj)
-  })
+    })
 
   return {
     columns: [
@@ -136,3 +136,5 @@ export default function Data(reRender, socket) {
     instrumentData: instrumentData
   };
 }
+
+export default Data;

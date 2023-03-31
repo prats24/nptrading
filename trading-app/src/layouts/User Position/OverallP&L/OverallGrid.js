@@ -23,6 +23,8 @@ import Sell from "../components/InstrumentDetails/data/SellModel"
 // import Button from '@mui/material/Button';
 
 function OverallGrid({socket, Render, handleClick}) {
+  console.log("rendering in userPosition: overallPnl")
+
   const { netPnl, updateNetPnl } = useContext(NetPnlContext);
   const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
@@ -205,11 +207,11 @@ function OverallGrid({socket, Render, handleClick}) {
         < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
       );
       obj.buy = (
-        <Buy Render={{ reRender, setReRender }} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
       );
       
       obj.sell = (
-        <Sell Render={{ reRender, setReRender }} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
       );
 
 
