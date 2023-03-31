@@ -3,6 +3,8 @@ const fetchData = require('./fetchToken');
 const getKiteCred = require('./getKiteCred'); 
 const RetreiveOrder = require("../models/TradeDetails/retreiveOrder")
 const RetreiveTrade = require("../models/TradeDetails/retireivingTrade")
+const io = require('../marketData/socketio');
+
 
 
 let ticker;
@@ -29,6 +31,10 @@ const subscribeTokens = async() => {
   });
 }
 
+const subscribeSingleToken = async(instrumentToken) => {
+  ticker.subscribe(instrumentToken);
+}
+
 const unSubscribeTokens = async(token) => {
     let tokens = [];
     tokens.push(token)
@@ -37,11 +43,21 @@ const unSubscribeTokens = async(token) => {
 }
 
 const getTicks = (socket, tokens) => {
-    ticker.on('ticks', (ticks) => {
+    ticker.on('ticks', async (ticks) => {
       // if(ticks.length == tokens.length){
-        // console.log('sending ticks', ticks);
-        socket.emit('tick', ticks); 
-      // }
+        socket.emit('tick', ticks);
+        try{
+          for(let tick of ticks){
+            let ticksArr = []
+            ticksArr.push(tick);
+            // console.log(tick)
+            io.to(`instrument ${tick.instrument_token}`).emit('tick-room', ticksArr);
+          }
+
+        } catch( error){
+          console.log(error)
+        }
+
     });
 }
 
@@ -104,14 +120,10 @@ const onOrderUpdate = ()=>{
 
   });
 }
-//       async function orderUpdateFunc() {
-//         // console.log("updated order", orderUpdate)
-//       }
-
 
 
 const getTicker = () => ticker;
-module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens, onOrderUpdate };
+module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens, onOrderUpdate, subscribeSingleToken };
 
 
 

@@ -15,7 +15,7 @@ import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 
-export default function Data(reRender) {
+export default function Data(reRender, socket) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     
@@ -50,7 +50,12 @@ export default function Data(reRender) {
     .then((res) => {
 
         console.log("rows data inside", res.data)
+        let instrumentTokenArr = [];
+        (res.data).map((elem)=>{
+          instrumentTokenArr.push(elem.instrumentToken)
+        })
 
+        socket.emit("subscribeToken", instrumentTokenArr);
         setInstrumentData(res.data)
     }).catch((err) => {
         return new Error(err);

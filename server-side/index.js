@@ -41,18 +41,49 @@ getKiteCred.getAccess().then((data)=>{
 
 
 io.on("connection", (socket) => {
+
+  socket.on('subscribeToken', (data)=>{
+
+    data.map((elem)=>{
+      // console.log("in index.js ", elem, socket.id)
+      socket.join(`instrument ${elem}`)
+    })
+  })
+
+  socket.on('unSubscribeToken', (data)=>{
+
+    data.map((elem)=>{
+      // console.log("in index.js  unSubscribeToken", elem, socket.id)
+      // console.log("rooms before", socket.rooms)
+      socket.leave(`instrument ${elem}`)
+      // console.log("rooms after", socket.rooms)
+    })
+  })
+
+  socket.on('disconnect', ()=>{
+
+    // data.map((elem)=>{
+    //   console.log("in index.js  unSubscribeToken", elem, socket.id)
+      // console.log("rooms before", socket.rooms)
+      // socket.leave(`instrument ${elem}`)
+      // console.log("rooms after", socket.rooms)
+    // })
+  })
+
   socket.on('hi', async (data) => {
     getKiteCred.getAccess().then(async (data)=>{
 
       let tokens = await fetchData(data.getApiKey, data.getAccessToken);
   
-      subscribeTokens();
+      
       getTicks(socket, tokens);
       onError();
       onOrderUpdate();
 
     });
   });
+  subscribeTokens();
+
 });
 
 io.on('disconnection', () => {disconnectTicker()});
@@ -75,6 +106,7 @@ app.use(express.json({limit: "20kb"}));
 
 
 app.use('/api/v1', require("./routes/OpenPositions/openPositionsAuth"))
+app.use('/api/v1', require("./routes/StockIndex/addStockIndex"))
 app.use('/api/v1', require("./routes/expense/expenseAuth"))
 app.use('/api/v1', require("./routes/user/signedUpUser"))
 app.use('/api/v1', require("./routes/expense/categoryAuth"))
@@ -129,45 +161,6 @@ let weekDay = date.getDay();
     }
 
   }
-
-
-//------------------------------------------------------------------------------------------
-// async function backupDatabase(sourceUri, targetUri) {
-//   try {
-//     const sourceClient = await MongoClient.connect(sourceUri, { useUnifiedTopology: true });
-//     const targetClient = await MongoClient.connect(targetUri, { useUnifiedTopology: true });
-
-//     const sourceDb = sourceClient.db();
-//     const targetDb = targetClient.db();
-
-//     const collections = await sourceDb.collections();
-
-//     for (const collection of collections) {
-//       let i = 0;
-//       const documents = await collection.find({}).toArray();
-//       for (const document of documents) {
-//         console.log(`Backing up document ${i++} from collection ${collection.collectionName}`);
-//         await targetDb.collection(collection.collectionName).updateOne({ _id: document._id }, { $set: document }, { upsert: true });
-//       }
-//     }
-
-//     sourceClient.close();
-//     targetClient.close();
-//   } catch (error) {
-//     console.error(`Error while backing up the database: ${error.message}`);
-//   }
-// }
-
-// const sourceUri = "mongodb+srv://vvv201214:vvv201214@development.tqykp6n.mongodb.net/?retryWrites=true&w=majority"
-// const targetUri = "mongodb+srv://anshuman:ninepointerdev@cluster1.iwqmp4g.mongodb.net/?retryWrites=true&w=majority";
-
-// backupDatabase(sourceUri, targetUri);
-
-
-
-
-
-
 
 
 const PORT = process.env.PORT;

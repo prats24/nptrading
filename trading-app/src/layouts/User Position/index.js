@@ -17,6 +17,8 @@ import TextField from '@mui/material/TextField';
 import { RxCross2 } from 'react-icons/rx';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { debounce } from 'lodash';
+
 
 
 
@@ -52,9 +54,11 @@ function UserPosition() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [instrumentsData, setInstrumentsData] = useState([]);
-  const [buttonStates, setButtonStates] = useState({});
+  const [scroll, setScroll] = useState(0);
   const [userInstrumentData, setUserInstrumentData] = useState([]);
   const [text,setText] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [topScroll, setTopScroll] = useState(0);
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -70,12 +74,7 @@ function UserPosition() {
     socket.on("connect", () => {
       socket.emit("hi", true)
     })
-    socket.on("noToken", (data) => {
-      window.alert(data);
-    })
-    socket.on("wrongToken", (data) => {
-      window.alert(data);
-    })
+
 
   }, []);
 
@@ -90,42 +89,42 @@ function UserPosition() {
     })
   }, [reRender])
 
-  // const [buttonStates, setButtonStates] = useState({});
+  // unmount and socket disconnect
+  useEffect(() => {
+    return () => {
+        socket.close();
+    }
+  }, [])
+
   const [successSB, setSuccessSB] = useState(false);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
   let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
-  const PAGE_SIZE = 10;
+  const [timeoutId, setTimeoutId] = useState(null);
+  const PAGE_SIZE = 50;
 
 
-  let timeoutId; // store the timeout id
+  // let timeoutId; // store the timeout id
 
-  function sendSearchReq(data) {
+  // function sendSearchReq(e) {
+  //   const value = e.target.value.trim();
+  //   // setInputValue(value);
+  //   sendRequest(value);
+  // }
+
+  function sendSearchReq(e) {
+    // let newData += data
     // clear previous timeout if there is one
+    const value = e.target.value;
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
 
-    // set a new timeout to send the request after 1 second
-    timeoutId = setTimeout(() => {
-
-      // const intervalId = setInterval(() => {
-      //   if(PAGE_SIZE == page){
-      //     clearInterval(intervalId);
-      //   }
-        
-      //   setLoading(true);
-
-        sendRequest(data)
-        
-      // }, 500);
-  
-
-      
-  
-
-      
-    }, 1000);
+    setTimeoutId(
+      setTimeout(() => {
+        sendRequest(value);
+      }, 1000)
+    );
   }
 
   let textRef = useRef(null);
@@ -137,14 +136,18 @@ function UserPosition() {
 
   function handleClear() {
     setText('');
+    setInstrumentsData([])
   }
 
   function sendRequest(data){
 
+
+    console.log("input value", data)
     if(data == ""){
       setInstrumentsData([])
       return;
     }
+
 
     axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}&page=${1}&size=${PAGE_SIZE}`, {
       withCredentials: true,
@@ -156,59 +159,22 @@ function UserPosition() {
     })
     .then((res)=>{
       console.log("instrumentData", res.data)
-      // setInstrumentsData(res.data)
-      setInstrumentsData(prevData => [...prevData, ...(res.data)]);
-      
+      setInstrumentsData(res.data)
 
 
     }).catch((err)=>{
       console.log(err);
-    }).finally(() => setLoading(false));
-
+    })
   }
-
-  //--Scroll pagination code
-
-  const handleScroll = () => {
-
-    console.log("in scroll function",  window.innerHeight + document.documentElement.scrollTop ,
-    document.documentElement.offsetHeight)
-    if (
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight
-    ) {
-
-      console.log("in scroll function page", page)
-      setPage(prevPage => prevPage + 1);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const response = await fetch(`${baseUrl}api/v1/tradableInstruments?search=${"17000"}&page=${page+1}&size=${PAGE_SIZE}`);
-      const newData = await response.json();
-      setInstrumentsData(prevData => [...prevData, ...newData]);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [page]);
-
-
-
-
-
 
 
   async function subscribeInstrument(instrumentData, addOrRemove){
+
     const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
 
+    // socket.emit("subscribeToken", instrument_token);
+    
+    
     if(addOrRemove === "Add"){
       setAddOrRemoveCheck(true);
       console.log(instrumentData)
@@ -220,7 +186,7 @@ function UserPosition() {
             "Access-Control-Allow-Credentials": true
         },
         body: JSON.stringify({
-          instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: 1800
+          instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: lot_size*36
         })
       });
     
@@ -228,10 +194,13 @@ function UserPosition() {
       //console.log(data);
       if(data.status === 422 || data.error || !data){
           window.alert(data.error);
-          // setInvalidDetail(`Email or Password is incorrect`);
       }else{
+        let instrumentTokenArr = [];
+        instrumentTokenArr.push(instrument_token)
+        socket.emit("subscribeToken", instrumentTokenArr);
+        console.log("instrument_token data from socket", instrument_token)
         openSuccessSB();
-        console.log(data.message) 
+        console.log(data.message)
       }
       
     } else{
@@ -253,14 +222,18 @@ function UserPosition() {
       if (permissionData.status === 422 || permissionData.error || !permissionData) {
           window.alert(permissionData.error);
       }else {
+          let instrumentTokenArr = [];
+          instrumentTokenArr.push(instrument_token)
+          socket.emit("unSubscribeToken", instrumentTokenArr);
           openSuccessSB();
       }
       
     }
 
     reRender ? setReRender(false) : setReRender(true);
+    
+   
   }
-
 
   const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -289,6 +262,9 @@ function UserPosition() {
       bgWhite="info"
     />
   );
+
+  // console.log("data from socket socket in userposition", socket)
+
 
   return (
     <DashboardLayout>
@@ -351,7 +327,7 @@ function UserPosition() {
               <>{<AiOutlineSearch/>}</>
             ),
           }}
-          sx={{margin: 0, background:"white",padding : 0, borderRadius:2 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{setText(e.target.value);sendSearchReq(e.target.value.toUpperCase())}}
+          sx={{margin: 0, background:"white",padding : 0, borderRadius:2 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{setText(e.target.value);sendSearchReq(e)}} //e.target.value.toUpperCase()
           />
         <MDBox>
         { instrumentsData?.length > 0 &&
@@ -453,3 +429,5 @@ function UserPosition() {
 }
 
 export default UserPosition;
+
+

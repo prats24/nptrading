@@ -6,7 +6,7 @@ const axios = require('axios');
 const fetchToken = require("../../marketData/generateSingleToken");
 const RequestToken = require("../../models/Trading Account/requestTokenSchema");
 const Account = require("../../models/Trading Account/accountSchema");
-const {subscribeTokens, unSubscribeTokens} = require('../../marketData/kiteTicker');
+const {subscribeTokens, unSubscribeTokens, subscribeSingleToken} = require('../../marketData/kiteTicker');
 const authentication = require("../../authentication/authentication")
 const User = require("../../models/User/userDetailSchema")
 
@@ -55,7 +55,7 @@ router.post("/addInstrument",authentication, async (req, res)=>{
             const addingInstruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy: name, createdByUserId: _id, lotSize, instrumentToken, contractDate, maxLot, user_id: _id});
             //console.log("instruments", instruments)
             addingInstruments.save().then(async()=>{
-                 await subscribeTokens();
+                 await subscribeSingleToken(instrumentToken);
                  let getInstruments = await User.findOne({_id : _id});
                  getInstruments.watchlistInstruments.push(addingInstruments._id)
                  const updateInstrument = await User.findOneAndUpdate({_id : _id}, {
@@ -131,12 +131,12 @@ router.get("/instrumentDetails", authentication, async (req, res)=>{
 router.get("/getInstrument/:_id", async (req, res)=>{
     const {_id} = req.params
     const user = await User.findOne({_id: _id});
-
+    console.log("User: ",user)
     Instrument.find({ _id: { $in: user.watchlistInstruments } }, (err, instruments) => {
         if (err) {
           console.log(err);
         } else {
-        //   console.log(instruments);
+         console.log("User Instruments: ",instruments);
           return res.status(200).send(instruments);
         }
       }).sort({$natural:-1});
