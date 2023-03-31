@@ -21,6 +21,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import CreateRewardForm from './CreateRewards'
 
 
 
@@ -56,7 +57,7 @@ React.useEffect(()=>{
             entryClosingDate: res.data[0]?.entryClosingDate || '',
             entryFee:{
                 amount : res.data[0]?.entryFee?.amount || '',
-                currency: res.data[0]?.entryFee?.amcurrencyount || ''
+                currency: res.data[0]?.entryFee?.currency || ''
             },
             status: res.data[0]?.status || '',
             createdBy: res.data[0]?.createdBy || '',
@@ -130,29 +131,30 @@ if(
     return openErrorSB("Missing Field","Please fill all the mandatory fields")
 
 }
+setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
 const { contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status} = formState;
-const res = await fetch(`${baseUrl}api/v1/contest`, {
-    method: "POST",
-    credentials:"include",
-    headers: {
-        "content-type" : "application/json",
-        "Access-Control-Allow-Credentials": true
-    },
-    body: JSON.stringify({
-        contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
-    })
-});
+// const res = await fetch(`${baseUrl}api/v1/contest`, {
+//     method: "POST",
+//     credentials:"include",
+//     headers: {
+//         "content-type" : "application/json",
+//         "Access-Control-Allow-Credentials": true
+//     },
+//     body: JSON.stringify({
+//         contestName, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
+//     })
+// });
 
-const data = await res.json();
-console.log(data);
-if (data.status === 422 || data.error || !data) {
-    setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-    console.log("invalid entry");
-} else {
-    openSuccessSB("Contest Created",data.status)
-    setNewObjectId(data.data)
-    setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-}
+// const data = await res.json();
+// console.log(data);
+// if (data.status === 422 || data.error || !data) {
+//     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+//     console.log("invalid entry");
+// } else {
+//     openSuccessSB("Contest Created",data.status)
+//     setNewObjectId(data.data)
+//     setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
+// }
 }
 const date = new Date(indexData.lastModifiedOn);
 
@@ -283,7 +285,7 @@ console.log("Id:",id)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    status: e.target.value
+                    stockType: e.target.value
                 }))}}
                 label="Status"
                 sx={{ minHeight:43 }}
@@ -437,60 +439,29 @@ console.log("Id:",id)
                   onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
                     entryClosingDate: dayjs(e)
-                  }))}}
+                  }))}} 
                   sx={{ width: '100%' }}
                 />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
 
-          {/* <Grid item xs={12} md={6} xl={3}></Grid>
-          <Grid item xs={12} md={6} xl={3}></Grid> */}
-          <Grid item xs={12} md={6} xl={6}>
-            {isObjectNew &&
-            <>
-            <MDBox style={{fontSize:10}}>
-                Last Modified By: {indexData?.lastModifiedBy?.first_name} {indexData?.lastModifiedBy?.last_name}
-            </MDBox>
-            <MDBox style={{fontSize:10}}>
-                Last Modified On: {formattedLastModifiedOn}
-            </MDBox>
-            </>}
-          </Grid>
-          
-
-          <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={6}>
+          <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={12}>
                 {!isSubmitted && !isObjectNew && (
                 <>
                 <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={(e)=>{onSubmit(e,formState)}}>
-                    {creating ? <CircularProgress size={20} color="inherit" /> : "Save"}
+                    {creating ? <CircularProgress size={20} color="inherit" /> : "Next"}
                 </MDButton>
                 <MDButton variant="contained" color="error" size="small" disabled={creating} onClick={()=>{setCreateContestForm(false)}}>
                     Cancel
                 </MDButton>
                 </>
                 )}
-                {(isSubmitted || isObjectNew) && !editing && (
-                <>
-                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} onClick={()=>{setEditing(true)}}>
-                    Edit
-                </MDButton>
-                <MDButton variant="contained" color="info" size="small" onClick={()=>{setCreateContestForm(false)}}>
-                    Back
-                </MDButton>
-                </>
-                )}
-                {(isSubmitted || isObjectNew) && editing && (
-                <>
-                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} onClick={(e)=>{onEdit(e,formState)}}>
-                    {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
-                </MDButton>
-                <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setCreateContestForm(false)}}>
-                    Cancel
-                </MDButton>
-                </>
-                )}
           </Grid>
+
+          {isSubmitted && <Grid item xs={12} md={6} xl={12} mt={2} mb={2.5}>
+            <CreateRewardForm />
+          </Grid>}
             
           </Grid>
           {renderSuccessSB}

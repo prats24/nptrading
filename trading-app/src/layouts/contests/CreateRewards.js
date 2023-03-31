@@ -7,14 +7,20 @@ import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import MDSnackbar from "../../components/MDSnackbar";
 import { IoMdAddCircle } from 'react-icons/io';
+import MenuItem from '@mui/material/MenuItem';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 
-
-function CreateRule({onAdd}) {
+function CreateReward() {
 
 const [formState,setFormState] = useState({
-    orderNo: '',
-    rule: '',
+    rankStart: '',
+    rankEnd: '',
+    rankIcon: '',
+    reward: '',
+    currency: '',
 });
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -69,40 +75,68 @@ const renderErrorSB = (
     return (
     <> 
         <MDBox mt={-3.5}>
-        {/* <MDBox display="flex" justifyContent="space-between" alignItems="center">
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Add Rules Here
-        </MDTypography>
-        </MDBox> */}
         <Grid container spacing={1} mt={0.5} mb={0}>
-          <Grid item xs={12} md={6} xl={1.5}>
+          <Grid item xs={12} md={6} xl={2.5}>
             <TextField
                 id="outlined-required"
-                label='Rule No *'
+                label='Rank Start *'
                 fullWidth
                 type="number"
-                value={formState?.orderNo}
+                value={formState?.rankStart}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    orderNo: e.target.value
+                    rankStart: e.target.value
                   }))}}
               />
           </Grid>
 
-          <Grid item xs={12} md={6} xl={9.5}>
+          <Grid item xs={12} md={6} xl={2.5}>
             <TextField
                 id="outlined-required"
-                label='Add rule here *'
-                defaultValue={formState?.rule}
+                label='Rank End *'
+                defaultValue={formState?.rankEnd}
                 fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    rule: e.target.value
+                    rankEnd: e.target.value
                   }))}}
               />
           </Grid>
 
-          <Grid item xs={12} md={6} xl={1} mt={-0.7}>
+          <Grid item xs={12} md={6} xl={2.5}>
+            <TextField
+                id="outlined-required"
+                label='Reward *'
+                defaultValue={formState?.reward}
+                fullWidth
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    rankEnd: e.target.value
+                  }))}}
+              />
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={2.5}>
+              <FormControl sx={{width: "100%" }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Currency *</InputLabel>
+                <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                value={formState?.currency}
+                onChange={(e) => {setFormState(prevState => ({
+                  ...prevState,
+                  currency: e.target.value
+                }))}}
+                label="Currency"
+                sx={{ minHeight:43 }}
+                >
+                <MenuItem value="INR">INR</MenuItem>
+                <MenuItem value="CREDOS">CREDOS</MenuItem>
+                </Select>
+              </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={2} mt={-0.7}>
             <IoMdAddCircle cursor="pointer" />
           </Grid>
 
@@ -114,4 +148,4 @@ const renderErrorSB = (
     </>
     )
 }
-export default CreateRule;
+export default CreateReward;

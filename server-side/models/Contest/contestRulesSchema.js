@@ -7,7 +7,14 @@ const contestRulesSchema = new mongoose.Schema({
         required: true
     },
     contestRules:{
-        type:[{orderNo:Number,rule:String}],
+        type:[
+            {orderNo:Number,
+             rule:String,
+             _id: {
+                type: mongoose.Schema.Types.ObjectId,
+                default: mongoose.Types.ObjectId
+              }
+            }],
         required:true,
     },
     status:{
@@ -37,5 +44,5 @@ const contestRulesSchema = new mongoose.Schema({
     },
 })
 
-const contestRulesData = mongoose.model("contest", contestRulesSchema);
+const contestRulesData = mongoose.model("contest-rule", contestRulesSchema);
 module.exports = contestRulesData;

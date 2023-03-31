@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router({mergeParams: true});
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const sharp = require('sharp');
 const axios = require('axios');
 const Contest = require('../../models/Contest/contestSchema');
 const {createContest, getContests, editContest} = require('../../controllers/contestController');

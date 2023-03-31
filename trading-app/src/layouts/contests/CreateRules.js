@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import CreateContestRule from './createContestRule'
+import { IoMdAddCircle } from 'react-icons/io';
 
 //Icons
 
@@ -24,20 +24,22 @@ import RuleData from './data/ruleData'
 
 
 
-function CreateContest({createRuleForm, setCreateRuleForm, id}) {
+function CreateContest({createRuleForm, setCreateRuleForm}) {
 
 const [isSubmitted,setIsSubmitted] = useState(false);
 const getDetails = useContext(userContext);
 const [ruleData,setRuleData] = useState([]);
 const [formState,setFormState] = useState();
+const [id,setId] = useState();
 const [isObjectNew,setIsObjectNew] = useState(id ? true : false)
 const [isLoading,setIsLoading] = useState(id ? true : false)
 const [editing,setEditing] = useState(false)
 const [saving,setSaving] = useState(false)
 const [creating,setCreating] = useState(false)
 const [newObjectId,setNewObjectId] = useState()
-const [rules,setRules] = useState([]);
-const [rulesArray,setRulesArray] = useState([])
+const [addRuleObject,setAddRuleObject] = useState(false);
+
+
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -45,9 +47,10 @@ React.useEffect(()=>{
 
     axios.get(`${baseUrl}api/v1/contestrule/${id}`)
     .then((res)=>{
-        setRuleData(res.data[0]);
-        // console.log(res.data[0])
-        setFormState({
+            setRuleData(res.data[0]);
+            console.log(res.data[0])
+            setId(res.data[0]._id)
+            setFormState({
             ruleName: res.data[0]?.ruleName || '',
             contestRules:[{
                 orderNo : res.data[0]?.contestRules?.orderNo || '',
@@ -67,21 +70,20 @@ React.useEffect(()=>{
 
 },[])
 
-async function onEdit(e,formState){
+async function onAdd(e,childFormState,setChildFormState){
     e.preventDefault()
     setSaving(true)
-    console.log(formState)
-    if(
-        !formState?.ruleName || !formState?.contestRules?.orderNo || 
-        !formState?.contestRules?.rule){
+    console.log(childFormState)
+    console.log(newObjectId)
+    if(!childFormState?.orderNo || !childFormState?.rule){
     
         setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
         return openErrorSB("Missing Field","Please fill all the mandatory fields")
     
     }
-    const { ruleName, contestRules:{orderNo,rule}, status} = formState;
+    const {orderNo,rule} = childFormState;
 
-    const res = await fetch(`${baseUrl}api/v1/contestrules/${id ? id : newObjectId}`, {
+    const res = await fetch(`${baseUrl}api/v1/contestrule/${newObjectId}`, {
         method: "PUT",
         credentials:"include",
         headers: {
@@ -89,7 +91,7 @@ async function onEdit(e,formState){
             "Access-Control-Allow-Credentials": true
         },
         body: JSON.stringify({
-          ruleName, contestRules:{orderNo,rule}, status
+          contestRules:{orderNo,rule}
         })
     });
 
@@ -98,24 +100,17 @@ async function onEdit(e,formState){
     if (data.status === 422 || data.error || !data) {
         openErrorSB("Error","data.error")
     } else {
-        openSuccessSB("Index Edited",data.ruleName + " rule is created with status " + data.status)
+        openSuccessSB("New Rule Added","New Rule line item has been added in the contest rule")
         setTimeout(()=>{setSaving(false);setEditing(false)},500)
+        setAddRuleObject(!addRuleObject);
         console.log("Entry Succesfull");
     }
   }
 
-function pushToArray(e){
-    setRulesArray(prevState => ([
-        ...prevState,
-        e
-    ]))
-    window.alert("Added")
-}
-
 async function onNext(e,formState){
 e.preventDefault()
 setCreating(true)
-console.log(formState)
+console.log("Rule Form State: ",formState)
 
 if(
   !formState?.ruleName || !formState?.status){
@@ -125,31 +120,29 @@ if(
 
 }
 
-setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
+const {ruleName, status} = formState;
+const res = await fetch(`${baseUrl}api/v1/contestrule`, {
+    method: "POST",
+    credentials:"include",
+    headers: {
+        "content-type" : "application/json",
+        "Access-Control-Allow-Credentials": true
+    },
+    body: JSON.stringify({
+      ruleName, status
+    })
+});
 
-// const {ruleName, status} = formState;
-// const res = await fetch(`${baseUrl}api/v1/contestrule`, {
-//     method: "POST",
-//     credentials:"include",
-//     headers: {
-//         "content-type" : "application/json",
-//         "Access-Control-Allow-Credentials": true
-//     },
-//     body: JSON.stringify({
-//       ruleName, status
-//     })
-// });
-
-// const data = await res.json();
-// console.log(data);
-// if (data.status === 422 || data.error || !data) {
-//     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-//     console.log("Invalid Entry");
-// } else {
-//     openSuccessSB("Contest Created",data.status)
-//     setNewObjectId(data.data)
-//     setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-// }
+const data = await res.json();
+console.log(data);
+if (data.status === 422 || data.error || !data) {
+    setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+    console.log("Invalid Entry");
+} else {
+    openSuccessSB("Contest Created",data.status)
+    setNewObjectId(data.data)
+    setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
+}
 }
 const date = new Date(ruleData.lastModifiedOn);
 
@@ -203,10 +196,6 @@ const renderErrorSB = (
     bgWhite
 />
 );
-
-
-
-console.log(rulesArray)
 
 
     return (
@@ -267,14 +256,48 @@ console.log(rulesArray)
             <GrFormNextLink cursor="pointer" onClick={(e)=>{onNext(e,formState)}}/>
           </Grid>}
 
-          {isSubmitted && <Grid item xs={12} mt={2} md={6} xl={12}>
-                <CreateContestRule rulesArray={rulesArray} setRulesArray={setRulesArray}/>
-          </Grid>}
+          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+                
+            <Grid container spacing={1} mt={0.5} mb={0}>
+            <Grid item xs={12} md={6} xl={1.5}>
+                <TextField
+                    id="outlined-required"
+                    label='Rule No *'
+                    fullWidth
+                    type="number"
+                    value={formState?.contestRules?.orderNo}
+                    onChange={(e) => {setFormState(prevState => ({
+                        ...prevState,
+                        orderNo: e.target.value
+                    }))}}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6} xl={9.5}>
+                <TextField
+                    id="outlined-required"
+                    label='Add rule here *'
+                    defaultValue={formState?.contestRules?.rule}
+                    fullWidth
+                    onChange={(e) => {setFormState(prevState => ({
+                        ...prevState,
+                        rule: e.target.value
+                    }))}}
+                />
+            </Grid>
+
+            <Grid item xs={12} md={6} xl={1} mt={-0.7}>
+                <IoMdAddCircle cursor="pointer" onClick={(e)=>{onAdd(e,formState,setFormState)}}/>
+            </Grid>
+
+            </Grid>
+
+            </Grid>}
 
           {isSubmitted && <Grid item xs={12} md={6} xl={12}>
                 {/* <MDTypography>Added Rules will show up here</MDTypography> */}
                 <MDBox>
-                    <RuleData />
+                    <RuleData id={newObjectId} addRuleObject={addRuleObject} setAddRuleObject={setAddRuleObject}/>
                 </MDBox>
           </Grid>}
 

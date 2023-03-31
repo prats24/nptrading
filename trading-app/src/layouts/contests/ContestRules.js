@@ -26,7 +26,7 @@ const ContestRules = () => {
 
     useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/contestrules`)
+      axios.get(`${baseUrl}api/v1/contestrule`)
       .then((res)=>{
                 setContestRules(res.data);
                 console.log(res.data)
