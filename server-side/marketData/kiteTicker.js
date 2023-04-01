@@ -54,7 +54,7 @@ const getTicks = (socket, tokens) => {
     let userId = await client.get(socket.id)
     let instruments = await client.LRANGE(userId, 0, -1)
     let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
-    let filteredTicks = ticks.filter(tick => instrumentTokenArr.has(tick.instrument_token));
+    let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
 
     console.log(filteredTicks);
     socket.emit('tick', ticks);

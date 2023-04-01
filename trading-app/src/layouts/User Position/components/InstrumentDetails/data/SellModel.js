@@ -267,7 +267,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
         S
       </MDBox>
       : 
-      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} fullWidth>
+      <MDButton size="small" variant="contained" color="error" onClick={handleClickOpen} sx={{margin: "5px"}}>
         {"SELL"}
       </MDButton>}
       <Dialog

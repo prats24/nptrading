@@ -136,6 +136,12 @@ router.patch("/inactiveInstrument/:instrumentToken", authentication, async (req,
         let index = user.watchlistInstruments.indexOf(removeFromWatchlist._id); // find the index of 3 in the array
         if (index !== -1) {
             user.watchlistInstruments.splice(index, 1); // remove the element at the index
+            try{
+             const redisClient = await client.LREM((_id).toString(), 1, (instrumentToken).toString());
+
+            } catch(err){
+                console.log(err)
+            }
             // client.LREM(_id, 1, instrumentToken);
         }
 

@@ -67,12 +67,12 @@ function reducer(state, action) {
 }
 
 
-function TradableInstrument({socket, reRender, setReRender, instrumentData}) {
+function TradableInstrument({socket, reRender, setReRender}) {
 
   console.log("rendering in userPosition: TradableInstrument")
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let textRef = useRef(null);
-  const PAGE_SIZE = 50;
+  const PAGE_SIZE = 20;
   // const getDetails = useContext(userContext);
   const marketDetails = useContext(marketDataContext)
   const [timeoutId, setTimeoutId] = useState(null);
@@ -356,8 +356,6 @@ function TradableInstrument({socket, reRender, setReRender, instrumentData}) {
                     <Grid lg={2.2}><MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton></Grid>
                     }
                   </Grid>
-
-                  
                 </Grid>
                 )}
                 {renderSuccessSB}

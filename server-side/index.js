@@ -83,7 +83,6 @@ io.on("connection", (socket) => {
     socket.join(`${data}`)
     console.log("in index.js ", socket.id, data)
     await client.set(socket.id, data);
-    await client.LPUSH(data, '1234');
   })
 
    socket.emit('check', true)

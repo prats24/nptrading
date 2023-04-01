@@ -87,13 +87,13 @@ function InstrumentDetails({socket, Render, handleClick}) {
 
       console.log('data from socket in instrument in parent', data);
       // console.log("marketdata", data)
-      // marketDetails.setMarketData(prevInstruments => {
-      //   const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-      //   data.forEach(instrument => {
-      //     instrumentMap.set(instrument.instrument_token, instrument);
-      //   });
-      //   return Array.from(instrumentMap.values());
-      // });
+      marketDetails.setMarketData(prevInstruments => {
+        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+        data.forEach(instrument => {
+          instrumentMap.set(instrument.instrument_token, instrument);
+        });
+        return Array.from(instrumentMap.values());
+      });
 
     })
 
@@ -151,13 +151,12 @@ function InstrumentDetails({socket, Render, handleClick}) {
       // console.log("inside of instruemt memo", marketDetails.marketData)
 
       const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
-      // const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
-      // let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
-      //   return elem.instrumentToken === subelem.instrument_token
-      // })
+      let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
+        return elem.instrumentToken === subelem.instrument_token
+      })
 
-      // const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
-      // const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
+      const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
+      const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
 
 
       instrumentDetailObj.instrument = (
@@ -181,32 +180,31 @@ function InstrumentDetails({socket, Render, handleClick}) {
         </MDTypography>
       );
 
-      // instrumentDetailObj.last_price = (
-      //   <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
-      //     {"₹"+(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}
-      //   </MDTypography>
-      // );
-      // if(perticularInstrumentMarketData[0]?.change !== undefined){
-      //   instrumentDetailObj.change = (
-      //     <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
-      //       {perticularInstrumentMarketData[0]?.change >= 0 ? "+" + ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%" : ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%"}
-      //     </MDTypography>
-      //   );ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)
-// ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)
-      // } else{
-      //   instrumentDetailObj.change = (
-      //     <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
-      //       {(((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "+" + (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%" : (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%"}
-      //     </MDTypography>
-      //   );
-      // }
+      instrumentDetailObj.last_price = (
+        <MDTypography component="a" href="#" variant="caption" color="dark" fontWeight="medium">
+          {"₹"+(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}
+        </MDTypography>
+      );
+      if(perticularInstrumentMarketData[0]?.change !== undefined){
+        instrumentDetailObj.change = (
+          <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor} fontWeight="medium">
+            {perticularInstrumentMarketData[0]?.change >= 0 ? "+" + ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%" : ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%"}
+          </MDTypography>
+        );
+      } else{
+        instrumentDetailObj.change = (
+          <MDTypography component="a" href="#" variant="caption" color={percentagechangecolor1} fontWeight="medium">
+            {(((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "+" + (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%" : (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%"}
+          </MDTypography>
+        );
+      }
 
       instrumentDetailObj.buy = (
-        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} /> 
+        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/> 
       );
       
       instrumentDetailObj.sell = (
-        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} />
+        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
       );
 
       instrumentDetailObj.remove = (
@@ -233,7 +231,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
     // return arr;
   // }, [reRender, socket]);
 
-  console.log("instrumentDetailArr", instrumentDetailArr, instrumentData)
+  console.log("instrumentDetailArr", instrumentDetailArr, marketDetails.marketData)
 
 
 
@@ -307,9 +305,6 @@ function InstrumentDetails({socket, Render, handleClick}) {
     />
   );
 
-  // const memoizedInstrumentComponent = useMemo(() => (
-  //   <InstrumentComponent data={instrumentDetailArr}/>
-  // ), [ instrumentDetailArr]);
 
   return (
     <Card>
@@ -350,7 +345,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
           entriesPerPage={false}
         /> */}
         <TableContainer component={Paper}>
-          <table style={{borderCollapse: "collapse", width: "auto"}}>
+          <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
             <thead>
               <tr style={{borderBottom: "1px solid grey"}}>
                 <td style={styleTD}>CONTRACT DATE</td>
@@ -373,7 +368,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
                   // {<InstrumentComponent data={elem}/> }
 
               <tr
-              style={{borderBottom: "1px solid grey"}}
+              style={{borderBottom: "1px solid grey"}} key={elem.instrumentToken.props.children}
               >
                   {/* <td style={styleTD} >
                   {elem.contractDate.props.children}
@@ -387,12 +382,13 @@ function InstrumentDetails({socket, Render, handleClick}) {
                     contractDate={elem.contractDate.props.children}
                     symbol={elem.symbol.props.children}
                     instrument={elem.instrument.props.children}
-                    // last_price={elem.last_price.props.children}
-                    // change={elem.change.props.children}
-                    instrumentToken={elem.instrumentToken.props.children}
+                    last_price={elem.last_price.props.children}
+                    change={elem.change.props.children}
+                    // instrumentToken={elem.instrumentToken.props.children}
                     // chart={elem.chart.props.children}
                     // data={elem}
-                    socket={socket}
+                    // socket={socket}
+                    // elem={elem}
                   />
                   <td style={styleTD} >{elem.chart.props.children}</td>
                   <td style={styleTD} >{elem.buy}</td>
