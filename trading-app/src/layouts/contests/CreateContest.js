@@ -27,6 +27,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 
 import CreateRewardForm from './CreateRewards'
 import RewardsData from './data/rewardsData'
+import LinkedContestRuleData from './data/contestLinkedRuleData'
 import Stack from '@mui/material/Stack';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
@@ -41,33 +42,13 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 
 function CreateContest({createContestForm, setCreateContestForm, oldObjectId, setOldObjectId}) {
-  console.log("Old Object Id: ",oldObjectId)
+  // console.log("Old Object Id: ",oldObjectId)
   const [isSubmitted,setIsSubmitted] = useState(false);
   const getDetails = useContext(userContext);
   const [contestData,setContestData] = useState([]);
+  const [linkedContestRule,setLinkedContestRule] = useState();
   const [formState,setFormState] = useState();
   const [id,setId] = useState(oldObjectId ? oldObjectId : '');
   const [isObjectNew,setIsObjectNew] = useState(id ? true : false)
@@ -77,7 +58,6 @@ function CreateContest({createContestForm, setCreateContestForm, oldObjectId, se
   const [creating,setCreating] = useState(false)
   const [newObjectId,setNewObjectId] = useState()
   const [contestRules,setContestRules] = useState([])
-  const [contestRuleNames,setContestRuleNames] = useState([])
   const [addRewardObject,setAddRewardObject] = useState(false);
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -97,31 +77,33 @@ const theme = useTheme();
   };
 
 React.useEffect(()=>{
-    console.log("Inside Use Effect")
-    axios.get(`${baseUrl}api/v1/contest/${id ? id : oldObjectId}`)
+    // console.log("Inside Use Effect")
+    // console.log("Inside Use Effect Id & Old Object Id: ",id,oldObjectId)
+    axios.get(`${baseUrl}api/v1/contest/${id}`)
     .then((res)=>{
-        setContestData(res?.data);
-        console.log(res?.data)
-        setId(res?.data?.data._id)
+        setContestData(res?.data?.data);
+        console.log("Contest Data in Create Contest Form: ",res?.data?.data)
+        setLinkedContestRule(res?.data?.data?.contestRule._id)
+        // setId(res?.data?.data._id)
         setFormState({
             contestName: res.data.data?.contestName || '',
             maxParticipants: res.data.data?.maxParticipants || '',
             minParticipants: res.data.data?.minParticipants || '',
             stockType: res.data.data?.stockType || 'Options',
             contestOn: res.data.data?.contestOn || '',
-            contestStartDate: res.data.data?.contestStartDate || '',
-            contestEndDate: res.data.data?.contestEndDate || '',
-            entryOpeningDate: res.data.data?.entryOpeningDate || '',
-            entryClosingDate: res.data.data?.entryClosingDate || '',
+            contestStartDate: res.data?.data?.contestStartDate || '',
+            contestEndDate: res.data?.data?.contestEndDate || '',
+            entryOpeningDate: res.data?.data?.entryOpeningDate || '',
+            entryClosingDate: res.data?.data?.entryClosingDate || '',
             entryFee:{
-                amount : res.data.data?.entryFee?.amount || '',
-                currency: res.data.data?.entryFee?.currency || ''
+                amount : res.data?.data?.entryFee?.amount || '',
+                currency: res.data?.data?.entryFee?.currency || ''
             },
-            contestRule: res.data.data?.contestRule || '',
-            status: res.data.data?.status || 'Live',
-            createdBy: res.data.data?.createdBy || '',
-            lastModifiedBy: res.data.data?.lastModifiedBy || '',
-            lastModifiedOn: res.data.data?.lastModifiedOn || '',
+            contestRule: res.data?.data?.contestRule || '',
+            status: res.data?.data?.status || 'Live',
+            createdBy: res.data?.data?.createdBy || '',
+            lastModifiedBy: res.data?.data?.lastModifiedBy || '',
+            lastModifiedOn: res.data?.data?.lastModifiedOn || '',
           });
             setTimeout(()=>{setIsLoading(false)},500) 
         // setIsLoading(false)
@@ -130,7 +112,7 @@ React.useEffect(()=>{
         return new Error(err);
     })
 
-},[])
+},[id,isSubmitted])
 
 React.useEffect(()=>{
   axios.get(`${baseUrl}api/v1/contestrule`)
@@ -139,14 +121,22 @@ React.useEffect(()=>{
   }).catch((err)=>{
       return new Error(err)
   })
-},[])
+
+  axios.get(`${baseUrl}api/v1/contestrule/${id}`)
+  .then((res)=>{
+    setContestRules(res.data);
+  }).catch((err)=>{
+      return new Error(err)
+  })
+},[isSubmitted])
+
 
 
 async function onSubmit(e,formState){
 e.preventDefault()
 setCreating(true)
-console.log(formState)
-console.log("New Object Id: ",newObjectId)
+// console.log(formState)
+// console.log("New Object Id: ",newObjectId)
 
 if(
     !formState?.contestName || !formState?.maxParticipants || !formState?.minParticipants || 
@@ -176,13 +166,18 @@ const res = await fetch(`${baseUrl}api/v1/contest`, {
 
 
 const data = await res.json();
-console.log(data);
+// console.log(data);
 if (data.status === 422 || data.error || !data) {
     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-    console.log("invalid entry");
+    // console.log("invalid entry");
 } else {
     openSuccessSB("Contest Created",data.message)
-    setNewObjectId(data.data)
+    setNewObjectId(data.data._id)
+    setIsSubmitted(true)
+    console.log("setting linked contest rule to: ",data.data.contestRule)
+    setLinkedContestRule(data?.data?.contestRule)
+    // console.log(data.data)
+    setContestData(data.data)
     setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
 }
 }
@@ -190,8 +185,8 @@ if (data.status === 422 || data.error || !data) {
 async function onAddReward(e,childFormState,setChildFormState){
   e.preventDefault()
   setSaving(true)
-  console.log("Reward Child Form State: ",childFormState)
-  console.log("New Object Id in Add Reward Function: ",newObjectId)
+  // console.log("Reward Child Form State: ",childFormState)
+  // console.log("New Object Id in Add Reward Function: ",newObjectId)
   if(!childFormState?.rankStart || !childFormState?.rankEnd || !childFormState?.reward 
     || !childFormState?.currency
     )
@@ -213,14 +208,14 @@ async function onAddReward(e,childFormState,setChildFormState){
       })
   });
   const data = await res.json();
-  console.log(data);
+  // console.log(data);
   if (data.status === 422 || data.error || !data) {
       openErrorSB("Error","data.error")
   } else {
       openSuccessSB("New Reward Added","New Reward line item has been added in the contest")
       setTimeout(()=>{setSaving(false);setEditing(false)},500)
       setAddRewardObject(!addRewardObject);
-      console.log("Entry Succesfull");
+      // console.log("Entry Succesfull");
   }
 }
 
@@ -272,22 +267,24 @@ const renderErrorSB = (
 />
 );
 
-console.log("Saving: ",saving)
-console.log("Editing: ",editing)
-console.log("Id:",newObjectId)
-console.log("Is Submitted after State Update: ",isSubmitted)
-console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
+// console.log("Saving: ",saving)
+// console.log("Editing: ",editing)
+// console.log("Id:",newObjectId)
+console.log("Old Object Id: ",oldObjectId)
+// console.log("Is Submitted after State Update: ",isSubmitted)
+console.log("Linked Contest Rule Id: ",linkedContestRule)
+console.log("Rule Name: ",contestData?.contestRule?.ruleName)
 
     return (
     <>
     {isLoading ? (
-        <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
-        <CircularProgress color="info" />
+        <MDBox mt={10} mb={10} display="flex" width="100%" justifyContent="center" alignItems="center">
+          <CircularProgress color="info" />
         </MDBox>
-    )
+      )
         :
       ( 
-        <MDBox pl={2} pr={2} mt={4}>
+        <MDBox pl={2} pr={2} mt={6}>
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
           Contest Details
@@ -302,7 +299,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                 label='Contest Name *'
                 fullWidth
                 // defaultValue={contestData?.displayName}
-                defaultValue={oldObjectId ? contestData.contestName : formState?.contestName}
+                defaultValue={oldObjectId ? contestData?.contestName : formState?.contestName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
                     contestName: e.target.value
@@ -370,7 +367,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label="Contest On *"
-                defaultValue={oldObjectId ? contestData.contestOn : formState?.contestOn}
+                defaultValue={oldObjectId ? contestData?.contestOn : formState?.contestOn}
                 fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -384,7 +381,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
                 label="Entry Fee Amount *"
-                defaultValue={oldObjectId ? contestData.entryFee.amount :formState?.entryFee?.amount}
+                defaultValue={oldObjectId ? contestData?.entryFee?.amount :formState?.entryFee?.amount}
                 fullWidth
                 type="number"
                 onChange={(e) => {setFormState(prevState => ({
@@ -403,7 +400,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={oldObjectId ? contestData.entryFee.currency : formState?.entryFee?.currency}
+                value={oldObjectId ? contestData?.entryFee?.currency : formState?.entryFee?.currency}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -427,7 +424,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={oldObjectId ? contestData.status : formState?.status}
+                value={oldObjectId ? contestData?.status : formState?.status}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -450,7 +447,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                     <MobileDateTimePicker 
                       label="Contest Start Date"
                       disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData.contestStartDate : setFormState?.contestStartDate)}
+                      defaultValue={dayjs(oldObjectId ? contestData?.contestStartDate : setFormState?.contestStartDate)}
                       onChange={(e) => {
                         setFormState(prevState => ({
                           ...prevState,
@@ -472,7 +469,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                     <MobileDateTimePicker 
                       label="Contest End Date"
                       disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData.contestEndDate : setFormState?.contestEndDate)}
+                      defaultValue={dayjs(oldObjectId ? contestData?.contestEndDate : setFormState?.contestEndDate)}
                       onChange={(e) => {setFormState(prevState => ({
                         ...prevState,
                         contestEndDate: dayjs(e)
@@ -491,7 +488,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                     <MobileDateTimePicker 
                       label="Entry Open Date"
                       disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData.entryOpeningDate : setFormState?.entryOpeningDate)}
+                      defaultValue={dayjs(oldObjectId ? contestData?.entryOpeningDate : setFormState?.entryOpeningDate)}
                       onChange={(e) => {setFormState(prevState => ({
                         ...prevState,
                         entryOpeningDate: dayjs(e)
@@ -511,7 +508,7 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                     <MobileDateTimePicker 
                       label="Entry Close Date"
                       disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData.entryClosingDate : setFormState?.entryClosingDate)}
+                      defaultValue={dayjs(oldObjectId ? contestData?.entryClosingDate : setFormState?.entryClosingDate)}
                       onChange={(e) => {setFormState(prevState => ({
                         ...prevState,
                         entryClosingDate: dayjs(e)
@@ -531,7 +528,6 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                     labelId="demo-multiple-name-label"
                     id="demo-multiple-name"
                     disabled={((isSubmitted || id) && (!editing || saving))}
-                    value={oldObjectId ? contestData?.contestRule : ruleName}
                     defaultValue={oldObjectId ? contestData?.contestRule?.ruleName : ruleName}
                     onChange={handleChange}
                     input={<OutlinedInput label="Contest Rule" />}
@@ -559,6 +555,28 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
                     {creating ? <CircularProgress size={20} color="inherit" /> : "Next"}
                 </MDButton>
                 <MDButton variant="contained" color="error" size="small" disabled={creating} onClick={()=>{setCreateContestForm(false)}}>
+                    Cancel
+                </MDButton>
+                </>
+                )}
+                {(isSubmitted || isObjectNew) && !editing && (
+                <>
+                <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={editing} onClick={(e)=>{setEditing(true)}}>
+                    {editing ? <CircularProgress size={20} color="inherit" /> : "Edit"}
+                </MDButton>
+                <MDButton variant="contained" color="error" size="small" disabled={editing} onClick={()=>{setCreateContestForm(false)}}>
+                    Back
+                </MDButton>
+                </>
+                )}
+                {(isSubmitted || isObjectNew) && editing && (
+                <>
+                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} 
+                // onClick={(e)=>{onEdit(e,formState)}}
+                >
+                    {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
+                </MDButton>
+                <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setCreateContestForm(false)}}>
                     Cancel
                 </MDButton>
                 </>
@@ -645,9 +663,15 @@ console.log("Contest Rule: ",contestData?.contestRule?.ruleName)
     
                 </Grid>}
 
-          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+          {(isSubmitted || oldObjectId) && <Grid item xs={12} md={12} xl={12} mt={2}>
                 <MDBox>
-                    <RewardsData id={newObjectId} addRewardObject={addRewardObject} setAddRewardObject={setAddRewardObject}/>
+                    <RewardsData id={newObjectId} oldObjectId={oldObjectId} addRewardObject={addRewardObject} setAddRewardObject={setAddRewardObject}/>
+                </MDBox>
+          </Grid>}
+
+          {(isSubmitted || oldObjectId) && <Grid item xs={12} md={12} xl={12} mt={2}>
+                <MDBox>
+                    <LinkedContestRuleData linkedRuleId={linkedContestRule} setLinkedRuleId={setLinkedContestRule} isSubmitted={isSubmitted} setIsSubmitted={setIsSubmitted}/>
                 </MDBox>
           </Grid>}
             

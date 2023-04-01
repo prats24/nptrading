@@ -24,7 +24,7 @@ exports.createContest = async(req, res, next)=>{
         stockType, contestOn, contestRule, rewards, entryFee, instruments, maxParticipants, 
         minParticipants, createdBy: req.user._id, lastModifiedBy: req.user._id,status});
     
-    res.status(201).json({message: 'Contest successfully created.', data:contest._id});    
+    res.status(201).json({message: 'Contest successfully created.', data:contest});    
         
 
 }

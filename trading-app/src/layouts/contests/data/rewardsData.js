@@ -10,24 +10,24 @@ import Card from "@mui/material/Card";
 
 import ContestRewardData from '../data/contestRewardsData'
 
-export default function ContestRewards({id, addRewardObject, setAddRewardObject}) {
+export default function ContestRewards({id, oldObjectId, addRewardObject, setAddRewardObject}) {
 
-console.log("Rewards Data rending...")
-console.log(id,addRewardObject)
+// console.log("Rewards Data rending...")
+// console.log(id,addRewardObject)
 const { columns, rows } = ContestRewardData();
 const [contestData,setContestData] = useState();
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 React.useEffect(()=>{
 
-  axios.get(`${baseUrl}api/v1/contest/${id}`)
+  axios.get(`${baseUrl}api/v1/contest/${id ? id : oldObjectId}`)
   .then((res)=>{
-          setContestData(res.data.data);
-          console.log("Contest Data in Rewards Dat File: ",res.data.data)
+          setContestData(res.data?.data);
+          // console.log("Contest Data in Rewards Dat File: ",res.data?.data)
   }).catch((err)=>{
       return new Error(err);
   })
 
-},[addRewardObject])
+},[addRewardObject,oldObjectId])
 
 contestData?.rewards.map((elem)=>{
   let contestReward = {}
@@ -66,21 +66,21 @@ contestData?.rewards.map((elem)=>{
   rows.push(contestReward)
 })
 
-    console.log(rows)
+    // console.log(rows)
 
-console.log(contestData)
-console.log("Reward Rows: ",rows)
+// console.log(contestData)
+// console.log("Reward Rows: ",rows)
 
   return (
     <Card>
       <MDBox display="flex" justifyContent="space-between" alignItems="center">
-        <MDBox width="100%" display="flex" justifyContent="center" alignItems="center">
-          <MDTypography variant="text" fontSize={12} p={1} gutterBottom>
+        <MDBox width="100%" display="flex" justifyContent="center" alignItems="center" sx={{backgroundColor:"lightgrey",borderRadius:"2px"}}>
+          <MDTypography variant="text" fontSize={12} color="black" mt={0.7} alignItems="center" gutterBottom>
             Ranks added to the contest will show up here!
           </MDTypography>
         </MDBox>
       </MDBox>
-      <MDBox>
+      <MDBox mt={1}>
         <DataTable
           table={{ columns, rows }}
           showTotalEntries={false}
