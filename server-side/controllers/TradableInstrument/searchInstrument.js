@@ -26,8 +26,9 @@ console.log(page, size)
 
 try {
 
-  const today = new Date(); // get current date
-
+  let date = new Date();
+  let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+  console.log(todayDate)
   const data = await TradableInstrument.find({
     $or: [
       { tradingsymbol: { $regex: searchString, $options: 'i' } },
@@ -35,11 +36,11 @@ try {
       { exchange: { $regex: searchString, $options: 'i' } }
     ],
     expiry: {
-      $gte: today, // expiry is greater than or equal to today's date
+      $gte: todayDate, // expiry is greater than or equal to today's date
       // $gt: new Date(today.getFullYear(), today.getMonth(), today.getDate()) // expiry is greater than today's date
     }
   })
-  .sort({ expiry_date: 1 })
+  .sort({ expiry: 1 })
   .limit(2)
   .exec();
 
