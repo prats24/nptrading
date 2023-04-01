@@ -45,7 +45,7 @@ import { userContext } from "../../../../AuthContext";
 
 
 
-function InstrumentDetails({socket, Render, handleClick}) {
+function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   const marketDetails = useContext(marketDataContext)
   console.log("socket print", socket)
 
@@ -72,12 +72,12 @@ function InstrumentDetails({socket, Render, handleClick}) {
   useEffect(()=>{
 
     // console.log("in socket useeffect")
-    // axios.get(`${baseUrl}api/v1/getliveprice`)
-    // .then((res) => {
-    //     setMarketData(res.data);
-    // }).catch((err) => {
-    //     return new Error(err);
-    // })
+    axios.get(`${baseUrl}api/v1/getliveprice`)
+    .then((res) => {
+      marketDetails.setMarketData(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
     socket.on('check', (data)=>{
       console.log("data from socket check", data)
     })
@@ -227,12 +227,11 @@ function InstrumentDetails({socket, Render, handleClick}) {
       instrumentDetailArr.push(instrumentDetailObj)
     })
 
-    // console.log("arr in memo")
-    // return arr;
-  // }, [reRender, socket]);
+  //   console.log("arr in memo")
+  //   return arr;
+  // }, [reRender, socket, marketDetails.marketData]);
 
   console.log("instrumentDetailArr", instrumentDetailArr, marketDetails.marketData)
-
 
 
   async function removeInstrument(instrumentToken){
@@ -333,7 +332,7 @@ function InstrumentDetails({socket, Render, handleClick}) {
         <RiStockFill style={{fontSize: '30px'}}/>
         <Typography style={{fontSize: '20px',color:"grey"}}>Nothing here</Typography>
         <Typography mb={2} fontSize={15} color="grey">Use the search bar to add instruments.</Typography>
-        <MDButton variant="outlined" size="small" color="info" onClick={handleClick}>Add Instrument</MDButton>
+        <MDButton variant="outlined" size="small" color="info" onClick={()=>{setIsGetStartedClicked(true)}}>Add Instrument</MDButton>
       </MDBox>)
       :
       (<MDBox>

@@ -22,7 +22,7 @@ import Buy from "../components/InstrumentDetails/data/BuyModel";
 import Sell from "../components/InstrumentDetails/data/SellModel"
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket, Render, handleClick}) {
+function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   console.log("rendering in userPosition: overallPnl")
 
   const { netPnl, updateNetPnl } = useContext(NetPnlContext);
@@ -61,7 +61,14 @@ function OverallGrid({socket, Render, handleClick}) {
            setMarketData(data);
       })();
 
-      axios.get(`${baseUrl}api/v1/getInstrument/${getDetails.userDetails._id}`)
+      axios.get(`${baseUrl}api/v1/instrumentDetails`,{
+        withCredentials: true,
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+      })
       .then((res) => {
           //console.log("live price data", res)
           setInstrumentData(res.data);
@@ -280,7 +287,7 @@ function OverallGrid({socket, Render, handleClick}) {
         <GrAnchor style={{fontSize: '30px'}}/>
         <Typography style={{fontSize: '20px', color:"grey"}}>No open positions yet</Typography>
         <Typography mb={2} fontSize={15} color="grey">Add instruments and start trading.</Typography>
-        <MDButton variant="outlined" size="small" color="info" onClick={handleClick}>Get Started</MDButton>
+        <MDButton variant="outlined" size="small" color="info" onClick={()=>{setIsGetStartedClicked(true)}}>Get Started</MDButton>
       </MDBox>)
       :
       (<MDBox>

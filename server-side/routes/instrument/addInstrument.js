@@ -182,26 +182,26 @@ router.get("/instrumentDetails", authentication, async (req, res)=>{
     }).sort({$natural:-1});
 })
 
-router.get("/getInstrument/:_id", async (req, res)=>{
+// router.get("/getInstrument/:_id", async (req, res)=>{
 
-    const {_id} = req.params;
-    const user = await User.aggregate([
-        { $match: { _id: _id } },
-        {
-          $lookup: {
-            from: "instrument-details",
-            localField: "watchlistInstruments",
-            foreignField: "_id",
-            as: "watchlistInstruments"
-          }
-        },
-        { $unwind: "$watchlistInstruments" },
-        { $match: { "watchlistInstruments.status": "Active" } },
-        { $sort: { _id: -1 } }
-      ]);
+//     const {_id} = req.params;
+//     const user = await User.aggregate([
+//         { $match: { _id: _id } },
+//         {
+//           $lookup: {
+//             from: "instrument-details",
+//             localField: "watchlistInstruments",
+//             foreignField: "_id",
+//             as: "watchlistInstruments"
+//           }
+//         },
+//         { $unwind: "$watchlistInstruments" },
+//         { $match: { "watchlistInstruments.status": "Active" } },
+//         { $sort: { _id: -1 } }
+//       ]);
       
-      return res.status(200).send(user);
-})
+//       return res.status(200).send(user);
+// })
 
 
 module.exports = router;

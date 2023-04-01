@@ -54,6 +54,8 @@ function reducer(state, action) {
       return { ...state, text: action.payload };
     case 'setEmptyText':
       return { ...state, text: action.payload };
+    case 'setValueInText':
+      return { ...state, text: action.payload };
     case 'setAddOrRemoveCheckFalse':
       return { ...state, addOrRemoveCheck: action.payload };
     case 'setAddOrRemoveCheckTrue':
@@ -67,7 +69,7 @@ function reducer(state, action) {
 }
 
 
-function TradableInstrument({socket, reRender, setReRender}) {
+function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked, setIsGetStartedClicked}) {
 
   console.log("rendering in userPosition: TradableInstrument")
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -85,6 +87,16 @@ function TradableInstrument({socket, reRender, setReRender}) {
     return dispatch({ type: 'closeSuccess', payload: false });
   }
 
+  useEffect(()=>{
+    if(isGetStartedClicked){
+      textRef.current.focus();
+      // setValueInText
+      dispatch({ type: 'setValueInText', payload: 'NIFTY' });
+      // setText('17300CE');
+      sendSearchReq('NIFTY');
+      setIsGetStartedClicked(false)
+    }
+  })
 
 
   useEffect(()=>{
@@ -106,11 +118,19 @@ function TradableInstrument({socket, reRender, setReRender}) {
     })
   }, [reRender])
 
+  // let writeText = () => {
+
+
+  // }
+  // function writeText() {
+
+  // }
+
 
   function sendSearchReq(e) {
     // let newData += data
     // clear previous timeout if there is one
-    const value = e.target.value;
+    const value = e?.target?.value ? e.target.value : e;
     if (timeoutId) {
       clearTimeout(timeoutId);
     }

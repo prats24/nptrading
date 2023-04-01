@@ -23,6 +23,7 @@ function UserPosition() {
   const [reRender, setReRender] = useState(true);
   const [text,setText] = useState('');
   const getDetails = useContext(userContext);
+  const [isGetStartedClicked, setIsGetStartedClicked] = useState(false);
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
 
   let socket;
@@ -59,12 +60,9 @@ function UserPosition() {
     );
   }
 
-  let textRef = useRef(null);
-  function writeText() {
-    textRef.current.focus();
-    setText('17300CE');
-    sendSearchReq('17300CE');
-  }
+  // let textRef = useRef(null);
+
+  let writeText ;
 
   return (
     <DashboardLayout>
@@ -74,13 +72,13 @@ function UserPosition() {
         <StockIndex/>
 
         {/* <MemoizedTradableInstrument /> */}
-        <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} />
+        <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/>
 
 
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} />
+              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked} />
             </Grid>
           </Grid>
         </MDBox>
@@ -88,7 +86,7 @@ function UserPosition() {
         <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-             <OverallGrid socket={socket} Render={{ reRender, setReRender }} handleClick={writeText}/>
+             <OverallGrid socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked}/>
             </Grid>
           </Grid>
         </MDBox>
