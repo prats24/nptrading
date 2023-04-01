@@ -1,20 +1,11 @@
-import { useCallback, useContext, useState } from "react";
+import {useContext, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { RiStockFill } from "react-icons/ri";
 import { TiMediaRecord } from "react-icons/ti";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-// import td from '@mui/material/td';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
@@ -26,20 +17,15 @@ import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
-import DataTable from "../../../../examples/Tables/DataTable";
 import MDSnackbar from "../../../../components/MDSnackbar";
 
-
-// Data
-// import data from "./data";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import BuyModel from "./data/BuyModel";
 import SellModel from "./data/SellModel";
 import { Typography } from "@mui/material";
 import InstrumentComponent from "./InstrumentComponent";
 import { marketDataContext } from "../../../../MarketDataContext";
-import { userContext } from "../../../../AuthContext";
 
 
 
@@ -51,23 +37,20 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
 
   let styleTD = {
     textAlign: "center",
-    fontSize: "15px",
-    fontColor: "grey"
+    fontSize: "11px",
+    fontWeight: "900",
+    color: "#7b809a",
+    opacity: 0.7
   }
-
-  // console.log("data from socket socket", socket)
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
   const [menu, setMenu] = useState(null);
-  // const [marketDetails.marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
-  // const [instrumentTokenArr, setInstrumentTokenArr] = useState([]);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
-  // let instrumentTokenArr = [];
 
   useEffect(()=>{
 
@@ -109,11 +92,11 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       });
   }, [reRender]);
 
-  // useEffect(() => {    
-  //   return () => {
-  //     socket.close();
-  //   }
-  // }, []);
+  useEffect(() => {    
+    return () => {
+      socket.close();
+    }
+  }, []);
 
   const [instrumentData, setInstrumentData] = useState([]);
 
@@ -127,14 +110,6 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       },
     })
     .then((res) => {
-
-        console.log("inside of", res.data)
-        // let instrumentTokenArr = [];
-        // (res.data).map((elem)=>{
-        //   instrumentTokenArr.push(elem.instrumentToken)
-        // })
-
-        // socket.emit("subscribeToken", instrumentTokenArr);
         setInstrumentData(res.data)
     }).catch((err) => {
         return new Error(err);
@@ -147,9 +122,6 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
     const instrumentDetailArr = [];
     instrumentData.map((elem)=>{
       let instrumentDetailObj = {}
-
-      // console.log("inside of instruemt memo", marketDetails.marketData)
-
       const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
       let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
         return elem.instrumentToken === subelem.instrument_token
@@ -231,8 +203,6 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   //   return arr;
   // }, [reRender, socket, marketDetails.marketData]);
 
-  console.log("instrumentDetailArr", instrumentDetailArr, marketDetails.marketData)
-
 
   async function removeInstrument(instrumentToken){
     console.log("in remove")
@@ -263,32 +233,6 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   }
 
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
-
-    // let title = "App " + appstatus
-  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
   let content = "Instrument Removed"
   const renderSuccessSB = (
     <MDSnackbar
@@ -336,13 +280,6 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       </MDBox>)
       :
       (<MDBox>
-        {/* <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        /> */}
         <TableContainer component={Paper}>
           <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
             <thead>
@@ -362,37 +299,20 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
 
               {instrumentDetailArr.map((elem)=>{
                 return(
-                  // {memoizedInstrumentComponent}
-                  
-                  // {<InstrumentComponent data={elem}/> }
-
               <tr
               style={{borderBottom: "1px solid grey"}} key={elem.instrumentToken.props.children}
               >
-                  {/* <td style={styleTD} >
-                  {elem.contractDate.props.children}
-                  </td>
-                  <td style={styleTD} >{elem.symbol.props.children}</td>
-                  <td style={styleTD} >{elem.instrument.props.children}</td>
-                  <td style={styleTD} >{elem.last_price.props.children}</td>
-                  <td style={styleTD} >{elem.change.props.children}</td>
-                  <td style={styleTD} >{elem.chart.props.children}</td> */}
                   <InstrumentComponent 
                     contractDate={elem.contractDate.props.children}
                     symbol={elem.symbol.props.children}
                     instrument={elem.instrument.props.children}
                     last_price={elem.last_price.props.children}
                     change={elem.change.props.children}
-                    // instrumentToken={elem.instrumentToken.props.children}
-                    // chart={elem.chart.props.children}
-                    // data={elem}
-                    // socket={socket}
-                    // elem={elem}
                   />
                   <td style={styleTD} >{elem.chart.props.children}</td>
-                  <td style={styleTD} >{elem.buy}</td>
-                  <td style={styleTD} >{elem.sell}</td>
-                  <td style={styleTD} >{elem.remove}</td>
+                  <td style={{textAlign: "center"}} >{elem.buy}</td>
+                  <td style={{textAlign: "center"}} >{elem.sell}</td>
+                  <td style={{textAlign: "center"}} >{elem.remove}</td>
       
               </tr>
 

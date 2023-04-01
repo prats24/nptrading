@@ -38,7 +38,7 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
   const [render, setRender] = useState(true);
-  const [instrumentData, setInstrumentData] = useState([]);
+  // const [instrumentData, setInstrumentData] = useState([]);
 
   let liveDetailsArr = [];
   let totalTransactionCost = 0;
@@ -61,21 +61,21 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
            setMarketData(data);
       })();
 
-      axios.get(`${baseUrl}api/v1/instrumentDetails`,{
-        withCredentials: true,
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-      })
-      .then((res) => {
-          //console.log("live price data", res)
-          setInstrumentData(res.data);
-          // setDetails.setMarketData(data);
-      }).catch((err) => {
-          return new Error(err);
-      })
+      // axios.get(`${baseUrl}api/v1/instrumentDetails`,{
+      //   withCredentials: true,
+      //   headers: {
+      //       Accept: "application/json",
+      //       "Content-Type": "application/json",
+      //       "Access-Control-Allow-Credentials": true
+      //   },
+      // })
+      // .then((res) => {
+      //     //console.log("live price data", res)
+      //     setInstrumentData(res.data);
+      //     // setDetails.setMarketData(data);
+      // }).catch((err) => {
+      //     return new Error(err);
+      // })
 
       socket.on("tick", (data) => {
         setMarketData(prevInstruments => {
@@ -139,12 +139,12 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
       totalGrossPnl += updatedValue;
 
       totalTransactionCost += Number(subelem.brokerage);
-
+      let lotSize = (subelem._id.symbol).includes("BANKNIFTY") ? 25 : 50
       updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
-      let perticularInstrumentData = instrumentData.filter((elem)=>{
-        console.log("elem", elem, subelem)
-        return subelem._id.instrumentToken == elem.instrumentToken;
-      })
+      // let perticularInstrumentData = instrumentData.filter((elem)=>{
+      //   console.log("elem", elem, subelem)
+      //   return subelem._id.instrumentToken == elem.instrumentToken;
+      // })
 
       
       const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
@@ -214,11 +214,11 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
       );
       obj.buy = (
-        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
       );
       
       obj.sell = (
-        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={perticularInstrumentData[0]?.instrument} lotSize={perticularInstrumentData[0]?.lotSize} maxLot={perticularInstrumentData[0]?.maxLot} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
       );
 
 

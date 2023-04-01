@@ -6,8 +6,10 @@ function InstrumentComponent({last_price, change, contractDate, symbol, instrume
 
     let styleTD = {
         textAlign: "center",
-        fontSize: "15px",
-        fontColor: "grey"
+        fontSize: ".75rem",
+        fontColor: "grey",
+        color: "#7b809a",
+        fontWeight: "600"
       }
 
   return (
