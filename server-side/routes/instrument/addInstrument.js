@@ -132,8 +132,9 @@ router.patch("/inactiveInstrument/:instrumentToken", authentication, async (req,
         const {_id} = req.user;
         console.log("in removing", instrumentToken, _id);
         const user = await User.findOne({_id: _id});
-        const removeFromWatchlist = await Instrument.findOne({instrumentToken : instrumentToken})
+        const removeFromWatchlist = await Instrument.findOne({instrumentToken : instrumentToken, status: "Active"})
         let index = user.watchlistInstruments.indexOf(removeFromWatchlist._id); // find the index of 3 in the array
+        console.log("index", index)
         if (index !== -1) {
             user.watchlistInstruments.splice(index, 1); // remove the element at the index
             try{

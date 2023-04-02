@@ -66,11 +66,25 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
     })
 
     // socket.on("tick", (data) => {
-      socket.on("tick-room", (data) => {
+    socket.on("tick-room", (data) => {
 
       console.log('data from socket in instrument in parent', data);
       // console.log("marketdata", data)
       marketDetails.setMarketData(prevInstruments => {
+        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+        data.forEach(instrument => {
+          instrumentMap.set(instrument.instrument_token, instrument);
+        });
+        return Array.from(instrumentMap.values());
+      });
+
+    })
+
+    socket.on("index-tick", (data) => {
+
+      console.log('data from socket in of index in parent', data);
+      // console.log("marketdata", data)
+      marketDetails.setIndexLiveData(prevInstruments => {
         const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
         data.forEach(instrument => {
           instrumentMap.set(instrument.instrument_token, instrument);
