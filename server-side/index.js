@@ -15,6 +15,12 @@ const helmet = require("helmet");
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require("xss-clean");
+const client = require("./marketData/redisClient");
+// import * as ioredis from 'ioredis';
+
+// const redis = require('redis');
+// client = redis.createClient();
+
 const hpp = require("hpp")
 const limiter = rateLimit({
 	windowMs: 1 * 60 * 1000, // 1 minutes
@@ -40,15 +46,46 @@ getKiteCred.getAccess().then((data)=>{
 });
 
 
+client.connect();
+
+
+
+
+
+// Get a value by key
+async function check(){
+  // client.LREM("id", 1, '15');
+  client.set("id", '15');
+  // client.LPUSH("id", ['13', '15', '17']);
+  // let result = await client.LRANGE('id', 0, -1)
+  // console.log("my result", result);
+  // const keys = await redis.collection
+  // .keys('*');
+  // console.log(keys)
+  // get all keys
+  // client.KEYS("name", function (err, keys) {
+  //   if (err) return console.log(err);
+  
+  //   // print keys
+  //   console.log("keys", keys)
+  //   keys.forEach(function (key, i) {
+  //     console.log(i + 1 + ") " + key);
+  //   });
+  
+  //   // quit Redis client
+  // });
+}
+// check();
+
+
 io.on("connection", (socket) => {
-
-  socket.on('subscribeToken', (data)=>{
-
-    data.map((elem)=>{
-      // console.log("in index.js ", elem, socket.id)
-      socket.join(`instrument ${elem}`)
-    })
+  socket.on('userId', async (data)=>{
+    socket.join(`${data}`)
+    console.log("in index.js ", socket.id, data)
+    await client.set(socket.id, data);
   })
+
+   socket.emit('check', true)
 
   socket.on('unSubscribeToken', (data)=>{
 
@@ -143,7 +180,7 @@ app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));
 app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
 app.use('/api/v1', require("./routes/marginAllocation/marginAllocationAuth"));
-app.use('/api/v1', require("./routes/contest/contestRoutes"));
+app.use('/api/v1/contest', require("./routes/contest/contestRoutes"));
 app.use('/api/v1', require("./routes/contest/contestRuleRoute"));
 app.use('/api/v1', require("./routes/dbEntry/dbEntryRoute"));
 app.use('/api/v1', require("./PlaceOrder/main"));

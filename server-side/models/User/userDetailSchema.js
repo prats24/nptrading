@@ -65,11 +65,11 @@ const userDetailSchema = new mongoose.Schema({
     },
     dob:{
         type: String,
-        required: true
+        // required: true
     },
     gender:{
         type: String,
-        required: true
+        // required: true
     },
     address:{
         type: String,
@@ -77,7 +77,7 @@ const userDetailSchema = new mongoose.Schema({
     },
     trading_exp:{
         type: String,
-        required: true
+        // required: true
     },
     location:{
         type: String,
@@ -85,15 +85,15 @@ const userDetailSchema = new mongoose.Schema({
     },
     city:{
         type: String,
-        required: true
+        // required: true
     },
     state:{
         type: String,
-        required: true
+        // required: true
     },
     country:{
         type: String,
-        required: true
+        // required: true
     },
     last_occupation:{
         type: String,
@@ -111,7 +111,7 @@ const userDetailSchema = new mongoose.Schema({
     },
     employeed:{
         type: Boolean,
-        required: true,
+        // required: true,
     },
     role:{
         type: String,
@@ -243,11 +243,15 @@ const userDetailSchema = new mongoose.Schema({
 //Adding the ninepointer id before saving
 userDetailSchema.pre('save', async function(next){
     console.log("inside employee id generator code")
-    if(!this.employeeid|| this.isNew){
+    if(!this.employeeid || this.isNew){
         const count = await this.constructor.countDocuments();
         console.log("Count of Documents: ",count)
-        const userId = "NP" + (count + 1).toString().padStart(8, "0");
-        console.log("ninepointer Id: ",userId)
+        const userId = this.email.split('@')[0]
+        const userIds = await userPersonalDetail.find({employeeid:userId})
+        if(userIds.length > 0)
+        {
+             userId = userId.toString()+(userIds.length+1).toString()
+        }
         this.employeeid = userId;
         next();
     } else {

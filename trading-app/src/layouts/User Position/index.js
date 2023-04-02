@@ -1,48 +1,18 @@
-import React, { useEffect, useState, useRef,useContext, useMemo } from "react";
-import axios from "axios";
+import React, { useEffect, useState, useRef,useContext, useMemo, useReducer, useCallback } from "react";
 import { io } from "socket.io-client";
 // @mui material components
 import { Chart } from 'chart.js/auto';
 // Chart.register(...registerables);
 import Grid from "@mui/material/Grid";
-import uniqid from "uniqid"
-// import Input from "@mui/material/Input";
-
-// Material Dashboard 2 React components
 import MDBox from "../../components/MDBox";
-import Paper from '@mui/material/Paper';
-import MDButton from "../../components/MDButton";
-import TextField from '@mui/material/TextField';
-// import { createTheme } from '@mui/material/styles';
-import { RxCross2 } from 'react-icons/rx';
-import { AiOutlineSearch } from 'react-icons/ai';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-import { debounce } from 'lodash';
-
-
-
-
-
-
-// Material Dashboard 2 React example components
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
-import MDTypography from "../../components/MDTypography";
-import DataTable from "../../examples/Tables/DataTable";
-
-// Dashboard components
-
 import InstrumentDetails from "./components/InstrumentDetails";
-import OverallPL from "./OverallP&L/Overall P&L";
 import OverallGrid from "./OverallP&L/OverallGrid";
 import MarginGrid from "./MarginDetails/MarginGrid";
 import TradableInstrument from "./components/TradableInstrument/TradableInstrument";
-import { Typography } from "@mui/material";
+import StockIndex from "./components/StockIndex/StockIndex";
 import { userContext } from "../../AuthContext";
-import BuyModel from "./components/InstrumentDetails/data/BuyModel";
-import SellModel from "./components/InstrumentDetails/data/SellModel";
-import MDSnackbar from "../../components/MDSnackbar";
-import { marketDataContext } from "../../MarketDataContext";
 
 
 
@@ -50,24 +20,9 @@ import { marketDataContext } from "../../MarketDataContext";
 function UserPosition() {
 
   console.log("user position rendering")
-  const uId = uniqid();
-  const getDetails = useContext(userContext);
   const [reRender, setReRender] = useState(true);
-  let [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [instrumentsData, setInstrumentsData] = useState([]);
-  const [scroll, setScroll] = useState(0);
-  const [userInstrumentData, setUserInstrumentData] = useState([]);
-  const [text,setText] = useState('');
-  const [inputValue, setInputValue] = useState("");
-  const [topScroll, setTopScroll] = useState(0);
-  // const [marketDataInPosition, setMarketDataInPosition] = useState([]);
-
-  const marketDetails = useContext(marketDataContext)
-
-
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const getDetails = useContext(userContext);
+  const [isGetStartedClicked, setIsGetStartedClicked] = useState(false);
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
 
   let socket;
@@ -77,393 +32,32 @@ function UserPosition() {
     throw new Error(err);
   }
 
+
   useEffect(() => {
     socket.on("connect", () => {
       socket.emit("hi", true)
+      socket.emit('userId', getDetails.userDetails._id)
     })
   }, []);
 
-  useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/getInstrument/${getDetails.userDetails._id}`)
-    .then((res) => {
-        //console.log("live price data", res)
-        setUserInstrumentData(res.data);
-        // setDetails.setMarketData(data);
-    }).catch((err) => {
-        return new Error(err);
-    })
-  }, [reRender])
 
-  // unmount and socket disconnect
-  useEffect(() => {
-    return () => {
-        socket.close();
-    }
-  }, [])
-  // useEffect(() => {
-  //   const handleBeforeUnload = () => {
-  //     socket.close();
-  //   };
-  
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-  
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //     socket.close();
-  //   };
-  // }, []);
-
-  const [successSB, setSuccessSB] = useState(false);
-  const openSuccessSB = () => setSuccessSB(true);
-  const closeSuccessSB = () => setSuccessSB(false);
-  let [addOrRemoveCheck, setAddOrRemoveCheck]  = useState();
-  const [timeoutId, setTimeoutId] = useState(null);
-  const PAGE_SIZE = 50;
-
-
-  // let timeoutId; // store the timeout id
-
-  // function sendSearchReq(e) {
-  //   const value = e.target.value.trim();
-  //   // setInputValue(value);
-  //   sendRequest(value);
-  // }
-
-  function sendSearchReq(e) {
-    // let newData += data
-    // clear previous timeout if there is one
-    const value = e.target.value;
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    setTimeoutId(
-      setTimeout(() => {
-        sendRequest(value);
-      }, 400)
-    );
-  }
-
-  let textRef = useRef(null);
-  function writeText() {
-    textRef.current.focus();
-    setText('17300CE');
-    sendSearchReq('17300CE');
-  }
-
-  function handleClear() {
-    setText('');
-    setInstrumentsData([])
-  }
-
-  function sendRequest(data){
-
-
-    console.log("input value", data)
-    if(data == ""){
-      setInstrumentsData([])
-      return;
-    }
-
-
-    axios.get(`${baseUrl}api/v1/tradableInstruments?search=${data}&page=${1}&size=${PAGE_SIZE}`, {
-      withCredentials: true,
-      headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Credentials": true
-      },
-    })
-    .then((res)=>{
-      console.log("instrumentData", res.data)
-      setInstrumentsData(res.data)
-
-
-    }).catch((err)=>{
-      console.log(err);
-    })
-  }
-
-
-  async function subscribeInstrument(instrumentData, addOrRemove){
-
-    const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
-
-    // socket.emit("subscribeToken", instrument_token);
-    
-    
-    if(addOrRemove === "Add"){
-      setAddOrRemoveCheck(true);
-      console.log(instrumentData)
-      const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
-        method: "POST",
-        credentials:"include",
-        headers: {
-            "content-type" : "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-        body: JSON.stringify({
-          instrument: `${strike} ${instrument_type}`, exchange, status: "Active", symbol: tradingsymbol, lotSize: lot_size, instrumentToken: instrument_token, uId, contractDate: expiry, maxLot: lot_size*36
-        })
-      });
-    
-      const data = await res.json();
-      //console.log(data);
-      if(data.status === 422 || data.error || !data){
-          window.alert(data.error);
-      }else{
-        let instrumentTokenArr = [];
-        instrumentTokenArr.push(instrument_token)
-        socket.emit("subscribeToken", instrumentTokenArr);
-        console.log("instrument_token data from socket", instrument_token)
-        openSuccessSB();
-        console.log(data.message)
-      }
-      
-    } else{
-      setAddOrRemoveCheck(false);
-      const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrument_token}`, {
-        method: "PATCH",
-        credentials:"include",
-        headers: {
-            "Accept": "application/json",
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({
-          isAddedWatchlist: false
-        })
-      });
-  
-      const permissionData = await response.json();
-      console.log("remove", permissionData)
-      if (permissionData.status === 422 || permissionData.error || !permissionData) {
-          window.alert(permissionData.error);
-      }else {
-          let instrumentTokenArr = [];
-          instrumentTokenArr.push(instrument_token)
-          socket.emit("unSubscribeToken", instrumentTokenArr);
-          openSuccessSB();
-      }
-      
-    }
-
-    reRender ? setReRender(false) : setReRender(true);
-    
-   
-  }
-
-  const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    height: 40,
-    lineHeight: '60px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-
-  const darkTheme = createTheme({ palette: { mode: 'dark' } });
-  const lightTheme = createTheme({ palette: { mode: 'light' } });
-  // let title = "App " + appstatus
-  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
-
-  let content = addOrRemoveCheck ? "Added" : "Removed"
-  const renderSuccessSB = (
-    <MDSnackbar
-      color="success"
-      icon="check"
-      // title={title}
-      content={content}
-      // dateTime={timestamp}
-      open={successSB}
-      onClose={closeSuccessSB}
-      close={closeSuccessSB}
-      bgWhite="info"
-    />
-  );
-
-
-  async function subscribeInstrumentFromBuySell(elem){
-    const {instrument_token, exchange} = elem
-
-    const res = await fetch(`${baseUrl}api/v1/subscribeInstrument`, {
-      method: "POST",
-      credentials:"include",
-      headers: {
-          "content-type" : "application/json",
-          "Access-Control-Allow-Credentials": true
-      },
-      body: JSON.stringify({
-        instrumentToken: instrument_token, exchange
-      })
-    });
-  
-    const data = await res.json();
-    //console.log(data);
-    if(data.status === 422 || data.error || !data){
-        window.alert(data.error);
-    }else{
-      let instrumentTokenArr = [];
-      instrumentTokenArr.push(instrument_token)
-      socket.emit("subscribeToken", instrumentTokenArr);
-      console.log("instrument_token data from socket", instrument_token)
-      // openSuccessSB();
-      console.log(data.message)
-    }
-
-  }
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={0}>
 
-        <MDBox mb={0} mt={0}>
-        <Grid container spacing={3}>
-          {[lightTheme].map((theme, index) => (
-            <Grid item xs={12} key={index} >
-              <ThemeProvider theme={theme}>
-                <MDBox
-                  sx={{
-                    p: 1,
-                    pb:2,
-                    // bgcolor: 'background.default',
-                    bgcolor: 'none',
-                    display: 'grid',
-                    gridTemplateColumns: { md: '1fr 1fr 1fr' },
-                    gap: 3,
-                  }}
-                >
-                  {[{elevation:2,instrument:'NIFTY 50',ltp:16000,percentageChange:20,valueChange:120},{elevation:2,instrument:'BANKNIFTY',ltp:38000,percentageChange:-25,valueChange:-134}].map((e) => (
-                    <Item key={e.elevation} elevation={e.elevation}>           
-                      <MDBox m={0.5} fontWeight={700}>{e.instrument}</MDBox>
-                      <MDBox m={0.5} fontWeight={700}>{e.ltp}</MDBox>
-                      <MDBox ml={0.5} fontWeight={700} mr={0.5} mt={0.5} mb={0.2} fontSize={10} color={e.valueChange > 0 ? "success" : "error"}>{e.valueChange>0 ? '+' : ''}{e.valueChange}</MDBox>
-                      <MDBox ml={0.5} fontWeight={700} mr={0.5} mt={0.5} mb={0.2} fontSize={10} color={e.percentageChange > 0 ? "success" : "error"}>({e.percentageChange>0 ? '+' : ''}{e.percentageChange}%)</MDBox>
-                    </Item>
-                  ))}
-                    <Item elevation={2}>           
-                      <MDBox m={0.5} fontWeight={700}>P&L:</MDBox>
-                      <MDBox m={0.5} fontWeight={700}>+12,300</MDBox>
-                    </Item>
-                </MDBox>
-              </ThemeProvider>
-            </Grid>
-          ))}
+        {/* <StockIndex /> */}
+        <StockIndex socket={socket}/>
 
-        </Grid>
+        {/* <MemoizedTradableInstrument /> */}
+        <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/>
 
-        </MDBox>
-
-        <MDBox sx={{backgroundColor:"white", display:"flex", borderRadius:2, marginBottom:2}}>
-        <MDBox display="flex" flexDirection="column" justifyContent="space-between" sx={{width:"100%"}}>
-        <TextField
-          id="outlined-basic" 
-          // label="Click here to search any symbol and add them in your watchlist to start trading" 
-          variant="outlined" 
-          type="text"
-          placeholder="Click here to search any symbol and add them in your watchlist to start trading"
-          value={text}
-          inputRef={textRef}
-          InputProps={{
-            onFocus: () => textRef.current.select(),
-            endAdornment: (
-              <MDButton variant="text" color="dark" onClick={handleClear}>{text && <RxCross2/>}</MDButton>
-            ),
-            startAdornment: (
-              <>{<AiOutlineSearch/>}</>
-            ),
-          }}
-          sx={{margin: 0, background:"white",padding : 0, borderRadius:2 ,width:"100%",'& label': { color: '#49a3f1', fontSize:20, padding:0.4 }}} onChange={(e)=>{setText(e.target.value);sendSearchReq(e)}} //e.target.value.toUpperCase()
-          />
-        <MDBox>
-        { instrumentsData?.length > 0 &&
-          (instrumentsData.map((elem)=>{
-            let perticularInstrumentData = userInstrumentData.filter((subElem)=>{
-              return subElem.instrumentToken === elem.instrument_token
-            })
-
-            let perticularMarketData = marketDetails.marketData.filter((subElem)=>{
-              return subElem.instrument_token === elem.instrument_token
-            })
-            console.log("perticularMarketData", perticularMarketData)
-            const id = elem.instrument_token;
-            const date = new Date(elem.expiry);
-            const day = date.getDate();
-            const options = { month: 'short' };
-            const month = new Intl.DateTimeFormat('en-US', options).format(date);
-            const formattedDate = `${day}${getOrdinalSuffix(day)} ${month}`;
-
-            function getOrdinalSuffix(day) {
-              const suffixes = ['th', 'st', 'nd', 'rd'];
-              const v = day % 100;
-              return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
-            } 
-            return(
-              
-              <>
-              {text && (
-                <Grid container lg={12} key={elem._id}
-                sx={{
-                  fontSize:13,
-                  display:"flex",
-                  gap:"10px",
-                  alignItems:"center",
-                  flexDirection:"row",
-                  justifyContent:"space-between",
-                  border:"0.25px solid white",
-                  borderRadius:2,
-                  color:"white",
-                  padding:"0.5px",
-                  '&:hover': {
-                    backgroundColor: 'lightgray',
-                    cursor: 'pointer',
-                    fontWeight: 600
-                  }
-                }}
-                >
-                  <Grid sx={{color:"white", textAlign:"center", display: { xs: 'none', lg: 'block' }}} xs={0} lg={2.2}>{elem.name}</Grid>
-                  <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{formattedDate}</Grid>
-                  <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
-                  <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
-                  <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
-                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
-                      <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                    </MDButton></Grid>
-                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} >
-                      <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                    </MDButton></Grid>
-                    {perticularInstrumentData.length ?
-                    <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
-                    :
-                    <Grid lg={2.2}><MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton></Grid>
-                    }
-                  </Grid>
-
-                  
-                </Grid>
-                )}
-                {renderSuccessSB}
-              </>
-            )
-          }))
-        }
-        </MDBox>
-        {/* <TradableInstrument instrumentsData={instrumentsData} reRender={reRender} setReRender={setReRender} uId={uId} /> */}
-        </MDBox>
-        </MDBox>
 
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-            {/* <MemoizedInstrumentDetails
-                socket={socket}
-                Render={{ reRender, setReRender }}
-                handleClick={writeText}
-                setMarketDataInPosition={setMarketDataInPosition}
-              /> */}
-              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} handleClick={writeText} />
+              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked} />
             </Grid>
           </Grid>
         </MDBox>
@@ -471,7 +65,7 @@ function UserPosition() {
         <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-             <OverallGrid socket={socket} Render={{ reRender, setReRender }} handleClick={writeText}/>
+             <OverallGrid socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked}/>
             </Grid>
           </Grid>
         </MDBox>

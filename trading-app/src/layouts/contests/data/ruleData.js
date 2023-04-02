@@ -32,18 +32,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-function createData(orderNo, rule) {
-
-  return { orderNo, rule };
-}
-
-const rows = [
-  createData(1, 'In case the number of participants are less than the minimum number of participants, the contest will get cancelled'),
-  createData(2, 'In case the number of participants are less than the minimum number of participants, the contest will get cancelled'),
-  createData(3, 'In case the number of participants are less than the minimum number of participants, the contest will get cancelled'),
-  createData(4, 'In case the number of participants are less than the minimum number of participants, the contest will get cancelled'),
-  createData(5, 'In case the number of participants are less than the minimum number of participants, the contest will get cancelled'),
-];
 
 
 

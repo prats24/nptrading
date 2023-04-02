@@ -25,13 +25,13 @@ router.post("/contestrule",authentication, async (req, res)=>{
         .then(async (dataExist)=>{
             if(dataExist){
                 console.log("This rule name already exists");
-                res.status(422).json({message : "This rule name already exists"})
+                res.status(422).json({error : "This rule name already exists"})
                 return;
             }
             const rule = new ContestRule({ruleName, status, createdBy : id, lastModifiedBy : id});
             console.log("Rule: ",ruleName,status)
             rule.save().then(async(data)=>{
-                res.status(201).json({message : "Contest Rule Created",data : data._id});
+                res.status(201).json({message : "Contest Rule Created", data: rule});
             }).catch((err)=> res.status(500).json({error:err}));
         }).catch(err => {console.log(err)});
 

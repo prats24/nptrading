@@ -95,7 +95,7 @@ export default function App() {
           console.log("Fail to fetch data of user");
           noCookie = true;
           console.log(err);
-          navigate("/");
+          pathname === '/signup' ? navigate("/signup") : navigate("/");
         })
                 
   }, [])

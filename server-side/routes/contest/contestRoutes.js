@@ -5,7 +5,7 @@ const AWS = require('aws-sdk');
 const sharp = require('sharp');
 const axios = require('axios');
 const Contest = require('../../models/Contest/contestSchema');
-const {createContest, getContests, editContest} = require('../../controllers/contestController');
+const {createContest, getContests, editContest, getContest} = require('../../controllers/contestController');
 const Authenticate = require('../../authentication/authentication');
 
 
@@ -100,5 +100,5 @@ const uploadToS3 = async (req, res, next) => {
 
 router.route('/').post(Authenticate, uploadArray, resizePhoto, uploadToS3, createContest).get(getContests).
 patch(Authenticate, editContest);
-
+router.route('/:id').patch(Authenticate, editContest).get(getContest)
 module.exports = router;

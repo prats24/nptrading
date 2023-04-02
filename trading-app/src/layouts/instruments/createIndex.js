@@ -20,7 +20,7 @@ import FormControl from '@mui/material/FormControl';
 
 
 function Index({createIndexForm, setCreateIndexForm, id}) {
-    // console.log("Create Index Form: ",createIndexForm,setCreateIndexForm,id)
+
     const [isSubmitted,setIsSubmitted] = useState(false);
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const getDetails = useContext(userContext);

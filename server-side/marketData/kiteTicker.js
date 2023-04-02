@@ -2,8 +2,9 @@ const kiteTicker = require('kiteconnect').KiteTicker;
 const fetchData = require('./fetchToken');
 const getKiteCred = require('./getKiteCred'); 
 const RetreiveOrder = require("../models/TradeDetails/retreiveOrder")
-const RetreiveTrade = require("../models/TradeDetails/retireivingTrade")
+const StockIndex = require("../models/StockIndex/stockIndexSchema");
 const io = require('../marketData/socketio');
+const client = require("./redisClient");
 
 
 
@@ -46,23 +47,37 @@ const unSubscribeTokens = async(token) => {
   //  console.log("unsubscribed token", x, tokens);
 }
 
-const getTicks = (socket, tokens) => {
-    ticker.on('ticks', async (ticks) => {
-      // if(ticks.length == tokens.length){
-        socket.emit('tick', ticks);
-        try{
-          for(let tick of ticks){
-            let ticksArr = []
-            ticksArr.push(tick);
-            // console.log(tick)
-            io.to(`instrument ${tick.instrument_token}`).emit('tick-room', ticksArr);
-          }
+const getTicks = async (socket, tokens) => {
+  const indecies = await StockIndex.find({status: "Active"});
+  ticker.on('ticks', async (ticks) => {
+    let indexObj = {};
 
-        } catch( error){
-          console.log(error)
-        }
+    // populate hash table with indexObj from indecies
+    for (let i = 0; i < indecies.length; i++) {
+      indexObj[indecies[i].instrumentToken] = true;
+    }
 
+    // filter ticks using hash table lookups
+    let indexData = ticks.filter(function(item) {
+      return indexObj[item.instrument_token];
     });
+
+    try{
+      let userId = await client.get(socket.id)
+      let instruments = await client.LRANGE(userId, 0, -1)
+      let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
+      let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+  
+      console.log("indexData", indexData);
+      socket.emit('index-tick', indexData)
+      socket.emit('tick', ticks);
+      io.to(`${userId}`).emit('tick-room', filteredTicks);
+    } catch (err){
+      // console.log(err)
+    }
+
+
+  });
 }
 
 const onError = ()=>{

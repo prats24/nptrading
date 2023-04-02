@@ -13,18 +13,21 @@ import { userContext } from "../../../../AuthContext";
 import MDAvatar from "../../../../components/MDAvatar";
 import MDSnackbar from "../../../../components/MDSnackbar";
 import axios from "axios";
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 import { useState, useContext, useEffect } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-import { MdModeEditOutline } from 'react-icons/md';
+
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
-import Button from '@mui/material/Button';
 import MDTypography from "../../../../components/MDTypography";
 import { Divider, Typography } from '@mui/material';
 
@@ -47,7 +50,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       email:getDetails?.userDetails?.email || '',
       mobile:getDetails?.userDetails?.mobile || '',
       whatsApp_number:getDetails?.userDetails?.whatsApp_number || '',
-      gender:getDetails?.userDetails?.gender,
+      gender:getDetails?.userDetails?.gender || '',
       designation:getDetails?.userDetails?.designation || '',
       degree:getDetails?.userDetails?.degree || '',
       last_occupation:getDetails?.userDetails?.last_occupation || '',
@@ -415,26 +418,34 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Gender"
-                defaultValue={formStatePD.gender}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  gender: e.target.value
-                }))}}
-              />
-          </Grid>
+                    <FormControl sx={{width: "100%" }}>
+                      <InputLabel id="demo-simple-select-autowidth-label">Gender *</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={formStatePD?.gender}
+                        disabled={!editablePD}
+                        required
+                        onChange={(e) => {setFormStatePD(prevState => ({
+                          ...prevState,
+                          gender: e.target.value
+                        }))}}
+                        label="Gender"
+                        sx={{ minHeight:43 }}
+                      >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 required
                 disabled={true}
                 id="outlined-required"
-                label="Designation"
+                label="Position"
                 defaultValue={formStatePD.designation}
                 fullWidth
                 onChange={(e) => {setFormStatePD(prevState => ({
@@ -552,7 +563,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 required
-                disabled={true}
+                disabled={!editablePD}
                 id="outlined-required"
                 label="Family Yearly Income"
                 defaultValue={formStatePD.family_yearly_income}
@@ -1254,41 +1265,6 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
       <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
 
-      <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Email Settings
-        </MDTypography>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!followsMe} onChange={() => setFollowsMe(followsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my daily P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my weekly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!mentionsMe} onChange={() => setMentionsMe(mentionsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my monthly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-      </MDBox>
       {renderSuccessSB}
     </Card>
   );
