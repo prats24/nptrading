@@ -497,14 +497,23 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
         if((req).aadhaarCardBackImageUrl) filteredBody.aadhaarCardBackImage = (req).aadhaarCardBackImageUrl;
         if((req).panCardFrontImageUrl) filteredBody.panCardFrontImage = (req).panCardFrontImageUrl;
         if((req).passportPhotoUrl) filteredBody.passportPhoto = (req).passportPhotoUrl;
-        if((req).addressProofDocumentUrl) filteredBody.addressProofDocument = (req).addressProofDocumentUrl;
+        // if((req).addressProofDocumentUrl) filteredBody.addressProofDocument.url = (req).addressProofDocumentUrl;
+        if (req.addressProofDocumentUrl) {
+          if (!filteredBody.addressProofDocument) {
+            filteredBody.addressProofDocument = {};
+          }
+          filteredBody.addressProofDocument.url = req.addressProofDocumentUrl;
+          filteredBody.addressProofDocument.name = (req.files).addressProofDocument[0].originalname;
+        }
+        // if((req).addressProofDocumentUrl) filteredBody.addressProofDocument.name = (req.files).addressProofDocument[0].originalname;
         if((req).incomeProofDocumentUrl) filteredBody.incomeProofDocument = (req).incomeProofDocumentUrl;
         console.log(filteredBody)
-        await UserDetail.findByIdAndUpdate(user._id, filteredBody);
+        const userData = await UserDetail.findByIdAndUpdate(user._id, filteredBody);
     
-        res.status(200).json({message:'Edit successful',status:'success'});
+        res.status(200).json({message:'Edit successful',status:'success',data: userData});
 
     }catch(e){
+        console.log(e)
         res.status(500).json({
             message: 'Something went wrong. Try again.'
         })
