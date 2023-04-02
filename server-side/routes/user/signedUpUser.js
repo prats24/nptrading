@@ -23,6 +23,9 @@ router.post("/signup", async (req, res)=>{
     if(signedupuser)
     {
         signedupuser.email_otp = email_otp;
+        signedupuser.first_name = first_name;
+        signedupuser.last_name = last_name;
+        signedupuser.mobile = mobile;
         await signedupuser.save({validateBeforeSave:false})
     }
     else{

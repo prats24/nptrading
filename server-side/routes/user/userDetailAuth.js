@@ -485,7 +485,7 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
     
         if(!user) return res.status(404).json({message: 'No such user found.'});
     
-        const filteredBody = filterObj(req.body, 'name', 'first_name', 'lastName', 'email', 'mobile', 
+        const filteredBody = filterObj(req.body, 'name', 'first_name', 'lastName', 'email', 'mobile','gender', 
         'whatsApp_number', 'dob', 'address', 'city', 'state', 'country', 'last_occupation', 'family_yearly_income',
         'employeed', 'upiId','googlePay_number','payTM_number','phonePe_number','bankName','nameAsPerBankAccount','accountNumber',
         'ifscCode','profilePhoto','aadhaarNumber','degree','panNumber','passportNumber','drivingLicenseNumber','pincode','KYCStatus'

@@ -13,6 +13,10 @@ import { userContext } from "../../../../AuthContext";
 import MDAvatar from "../../../../components/MDAvatar";
 import MDSnackbar from "../../../../components/MDSnackbar";
 import axios from "axios";
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 import { useState, useContext, useEffect } from "react";
 
@@ -46,7 +50,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       email:getDetails?.userDetails?.email || '',
       mobile:getDetails?.userDetails?.mobile || '',
       whatsApp_number:getDetails?.userDetails?.whatsApp_number || '',
-      gender:getDetails?.userDetails?.gender,
+      gender:getDetails?.userDetails?.gender || '',
       designation:getDetails?.userDetails?.designation || '',
       degree:getDetails?.userDetails?.degree || '',
       last_occupation:getDetails?.userDetails?.last_occupation || '',
@@ -414,26 +418,34 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Gender"
-                defaultValue={formStatePD.gender}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  gender: e.target.value
-                }))}}
-              />
-          </Grid>
+                    <FormControl sx={{width: "100%" }}>
+                      <InputLabel id="demo-simple-select-autowidth-label">Gender *</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={formStatePD?.gender}
+                        disabled={!editablePD}
+                        required
+                        onChange={(e) => {setFormStatePD(prevState => ({
+                          ...prevState,
+                          gender: e.target.value
+                        }))}}
+                        label="Gender"
+                        sx={{ minHeight:43 }}
+                      >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 required
                 disabled={true}
                 id="outlined-required"
-                label="Designation"
+                label="Position"
                 defaultValue={formStatePD.designation}
                 fullWidth
                 onChange={(e) => {setFormStatePD(prevState => ({
@@ -551,7 +563,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 required
-                disabled={true}
+                disabled={!editablePD}
                 id="outlined-required"
                 label="Family Yearly Income"
                 defaultValue={formStatePD.family_yearly_income}

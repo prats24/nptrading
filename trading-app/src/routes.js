@@ -229,14 +229,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "DB Entry",
-    key: "dbentry",
-    icon: <QueryStatsIcon/>,
-    route: "/dbentry",
-    component: <DBEntry />,
-  },
-  {
-    type: "collapse",
     name: "Users",
     key: "users",
     icon: <PersonIcon/>,
