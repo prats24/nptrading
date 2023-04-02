@@ -214,9 +214,7 @@ const userDetailSchema = new mongoose.Schema({
     passportPhoto:{
         type: String,
     },
-    addressProofDocument:{
-        type: String,
-    },
+    addressProofDocument:{url:String,name:String},
     incomeProofDocument:{
         type: String,
     },
