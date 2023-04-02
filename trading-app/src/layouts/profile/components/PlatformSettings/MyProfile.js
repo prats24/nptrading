@@ -33,6 +33,10 @@ import MDTypography from "../../../../components/MDTypography";
 import { Divider, Typography } from '@mui/material';
 
 function MyProfile({profilePhoto,setProfilePhoto}) {
+
+  console.log('Rendering again');
+
+
   const [followsMe, setFollowsMe] = useState(true);
   const [answersPost, setAnswersPost] = useState(false);
   const [mentionsMe, setMentionsMe] = useState(true);
@@ -40,6 +44,8 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   const [editableBD, setEditableBD] = useState(false);
   const [editableKYC, setEditableKYC] = useState(false);
   const getDetails = useContext(userContext);
+
+  console.log('rendering',getDetails?.userDetails?.degree);
 
   const blankImageUrl = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='130px'%3E%3Crect width='100%' height='130px' fill='lightgrey'/%3E%3Ctext x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='15px' fill='black'%3EDocument Preview%3C/text%3E%3C/svg%3E`;
 
@@ -137,9 +143,13 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       let response = await res.json()
       // console.log('response', response);
       if(response.status === 'success'){
+        getDetails.setUserDetail(response.data);
+        console.log("Response: ",response.data,data);
+        setFormStateKYC(prev=>({...prev, aadhaarCardBackImage:response.data?.aadhaarCardBackImage??'', 
+        aadhaarCardFrontImage: response.data?.aadhaarCardFrontImage??'', panCardFrontImage: response.data?.panCardFrontImage??'',
+        addressProofDocument: response.data?.addressProofDocument??'', passportPhoto: response.data?.passportPhoto??''
+      }));
         openSuccessSB(section,`Your ${section} updated successfully`)
-        getDetails.setUserDetail(data);
-        console.log("Response: ",response.data,data)
         // window.alert("Personal Details Updated")
       }
       

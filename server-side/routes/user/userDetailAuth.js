@@ -508,7 +508,8 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
         // if((req).addressProofDocumentUrl) filteredBody.addressProofDocument.name = (req.files).addressProofDocument[0].originalname;
         if((req).incomeProofDocumentUrl) filteredBody.incomeProofDocument = (req).incomeProofDocumentUrl;
         console.log(filteredBody)
-        const userData = await UserDetail.findByIdAndUpdate(user._id, filteredBody);
+        const userData = await UserDetail.findByIdAndUpdate(user._id, filteredBody, {new: true});
+        console.log(userData);
     
         res.status(200).json({message:'Edit successful',status:'success',data: userData});
 
