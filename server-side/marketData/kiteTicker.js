@@ -73,7 +73,7 @@ const getTicks = async (socket, tokens) => {
       socket.emit('tick', ticks);
       io.to(`${userId}`).emit('tick-room', filteredTicks);
     } catch (err){
-      console.log(err)
+      // console.log(err)
     }
 
 
