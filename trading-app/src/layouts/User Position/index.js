@@ -21,7 +21,6 @@ function UserPosition() {
 
   console.log("user position rendering")
   const [reRender, setReRender] = useState(true);
-  const [text,setText] = useState('');
   const getDetails = useContext(userContext);
   const [isGetStartedClicked, setIsGetStartedClicked] = useState(false);
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
@@ -41,35 +40,15 @@ function UserPosition() {
     })
   }, []);
 
-  const [timeoutId, setTimeoutId] = useState(null);
 
-
-
-  function sendSearchReq(e) {
-    // let newData += data
-    // clear previous timeout if there is one
-    const value = e.target.value;
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-
-    setTimeoutId(
-      setTimeout(() => {
-        // sendRequest(value);
-      }, 400)
-    );
-  }
-
-  // let textRef = useRef(null);
-
-  let writeText ;
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={0}>
 
-        <StockIndex/>
+        {/* <StockIndex /> */}
+        <StockIndex socket={socket}/>
 
         {/* <MemoizedTradableInstrument /> */}
         <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/>
