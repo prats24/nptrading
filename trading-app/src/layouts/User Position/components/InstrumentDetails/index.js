@@ -1,20 +1,11 @@
-import { useCallback, useContext, useState } from "react";
+import {useContext, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { RiStockFill } from "react-icons/ri";
 import { TiMediaRecord } from "react-icons/ti";
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-// import td from '@mui/material/td';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
@@ -26,13 +17,9 @@ import MDButton from "../../../../components/MDButton";
 import MDTypography from "../../../../components/MDTypography";
 
 // Material Dashboard 2 React examples
-import DataTable from "../../../../examples/Tables/DataTable";
 import MDSnackbar from "../../../../components/MDSnackbar";
 
-
-// Data
-// import data from "./data";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import BuyModel from "./data/BuyModel";
 import SellModel from "./data/SellModel";
@@ -44,46 +31,45 @@ import { marketDataContext } from "../../../../MarketDataContext";
 
 
 
-function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition}) {
+function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   const marketDetails = useContext(marketDataContext)
-  
+  console.log("socket print", socket)
+
   let styleTD = {
     textAlign: "center",
-    fontSize: "15px",
-    fontColor: "grey"
+    fontSize: "11px",
+    fontWeight: "900",
+    color: "#7b809a",
+    opacity: 0.7
   }
-
-  // console.log("data from socket socket", socket)
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
   const [menu, setMenu] = useState(null);
-  // const [marketDetails.marketData, setMarketData] = useState([]);
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
-  // const [instrumentTokenArr, setInstrumentTokenArr] = useState([]);
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
-  // let instrumentTokenArr = [];
 
   useEffect(()=>{
 
     // console.log("in socket useeffect")
-    // axios.get(`${baseUrl}api/v1/getliveprice`)
-    // .then((res) => {
-    //     setMarketData(res.data);
-    // }).catch((err) => {
-    //     return new Error(err);
-    // })
+    axios.get(`${baseUrl}api/v1/getliveprice`)
+    .then((res) => {
+      marketDetails.setMarketData(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
     socket.on('check', (data)=>{
       console.log("data from socket check", data)
     })
 
+    // socket.on("tick", (data) => {
     socket.on("tick-room", (data) => {
 
-      console.log('data from socket in instrument', data);
-      console.log("marketdata", data)
+      console.log('data from socket in instrument in parent', data);
+      // console.log("marketdata", data)
       marketDetails.setMarketData(prevInstruments => {
         const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
         data.forEach(instrument => {
@@ -92,18 +78,25 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
         return Array.from(instrumentMap.values());
       });
 
-      // setMarketDataInPosition(prevInstruments => {
-      //   const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-      //   data.forEach(instrument => {
-      //     instrumentMap.set(instrument.instrument_token, instrument);
-      //   });
-      //   return Array.from(instrumentMap.values());
-      // });
+    })
+
+    socket.on("index-tick", (data) => {
+
+      console.log('data from socket in of index in parent', data);
+      // console.log("marketdata", data)
+      marketDetails.setIndexLiveData(prevInstruments => {
+        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+        data.forEach(instrument => {
+          instrumentMap.set(instrument.instrument_token, instrument);
+        });
+        return Array.from(instrumentMap.values());
+      });
+
     })
 
   }, [])
 
-  console.log("rendering in userPosition: instruemntGrid", marketDetails)
+  console.log("rendering in userPosition: instruemntGrid")
 
 
   useEffect(() => {
@@ -120,19 +113,6 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
   }, []);
 
   const [instrumentData, setInstrumentData] = useState([]);
-  // // const [marketDetails.marketData, setMarketData] = useState([]);
-  // // const [livedata, setLiveData] = useState([]);
-
-  // // const Company = ({ image, name }) => (
-  // //   <MDBox display="flex" alignItems="center" lineHeight={1}>
-  // //     <MDAvatar src={image} name={name} size="sm" />
-  // //     <MDTypography variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-  // //       {name}
-  // //     </MDTypography>
-  // //   </MDBox>
-  // // );
-
-  // console.log(reRender)
 
   useEffect(()=>{
     axios.get(`${baseUrl}api/v1/instrumentDetails`,{
@@ -144,31 +124,19 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       },
     })
     .then((res) => {
-
-        console.log("inside of", res.data)
-        let instrumentTokenArr = [];
-        (res.data).map((elem)=>{
-          instrumentTokenArr.push(elem.instrumentToken)
-        })
-
-        socket.emit("subscribeToken", instrumentTokenArr);
         setInstrumentData(res.data)
     }).catch((err) => {
         return new Error(err);
     })
-  }, [reRender])
+  }, [reRender, socket])
 
 
 
-  const instrumentDetailArr = useMemo(() => {
-    const arr = [];
+  // const instrumentDetailArr = useMemo(() => {
+    const instrumentDetailArr = [];
     instrumentData.map((elem)=>{
       let instrumentDetailObj = {}
-
-      console.log("inside of instruemt memo", marketDetails.marketData)
-
       const instrumentcolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
-      // const percentagechangecolor = elem.symbol.slice(-2) == "CE" ? "success" : "error"
       let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
         return elem.instrumentToken === subelem.instrument_token
       })
@@ -218,7 +186,7 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
       }
 
       instrumentDetailObj.buy = (
-        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/> 
       );
       
       instrumentDetailObj.sell = (
@@ -242,15 +210,12 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
         </MDTypography>
       );
 
-      arr.push(instrumentDetailObj)
+      instrumentDetailArr.push(instrumentDetailObj)
     })
 
-    console.log("arr in memo")
-    return arr;
-  }, [reRender, marketDetails.marketData, socket]);
-
-  console.log("instrumentDetailArr", instrumentDetailArr)
-
+  //   console.log("arr in memo")
+  //   return arr;
+  // }, [reRender, socket, marketDetails.marketData]);
 
 
   async function removeInstrument(instrumentToken){
@@ -282,32 +247,6 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
   }
 
 
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
-  const closeMenu = () => setMenu(null);
-
-  const renderMenu = (
-    <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-      <MenuItem onClick={closeMenu}>Action</MenuItem>
-      <MenuItem onClick={closeMenu}>Another action</MenuItem>
-      <MenuItem onClick={closeMenu}>Something else</MenuItem>
-    </Menu>
-  );
-
-    // let title = "App " + appstatus
-  // let enablestatus = settingData[0]?.isAppLive === true ? "enabled" : "disabled"
   let content = "Instrument Removed"
   const renderSuccessSB = (
     <MDSnackbar
@@ -323,9 +262,6 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
     />
   );
 
-  const memoizedInstrumentComponent = useMemo(() => (
-    <InstrumentComponent data={instrumentDetailArr}/>
-  ), [ instrumentDetailArr]);
 
   return (
     <Card>
@@ -354,19 +290,12 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
         <RiStockFill style={{fontSize: '30px'}}/>
         <Typography style={{fontSize: '20px',color:"grey"}}>Nothing here</Typography>
         <Typography mb={2} fontSize={15} color="grey">Use the search bar to add instruments.</Typography>
-        <MDButton variant="outlined" size="small" color="info" onClick={handleClick}>Add Instrument</MDButton>
+        <MDButton variant="outlined" size="small" color="info" onClick={()=>{setIsGetStartedClicked(true)}}>Add Instrument</MDButton>
       </MDBox>)
       :
       (<MDBox>
-        {/* <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        /> */}
         <TableContainer component={Paper}>
-          <table style={{borderCollapse: "collapse", width: "auto"}}>
+          <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
             <thead>
               <tr style={{borderBottom: "1px solid grey"}}>
                 <td style={styleTD}>CONTRACT DATE</td>
@@ -384,34 +313,20 @@ function InstrumentDetails({socket, Render, handleClick, setMarketDataInPosition
 
               {instrumentDetailArr.map((elem)=>{
                 return(
-                  // {memoizedInstrumentComponent}
-                  
-                  // {<InstrumentComponent data={elem}/> }
-
               <tr
-              style={{borderBottom: "1px solid grey"}}
+              style={{borderBottom: "1px solid grey"}} key={elem.instrumentToken.props.children}
               >
-                  {/* <td style={styleTD} >
-                  {elem.contractDate.props.children}
-                  </td>
-                  <td style={styleTD} >{elem.symbol.props.children}</td>
-                  <td style={styleTD} >{elem.instrument.props.children}</td>
-                  <td style={styleTD} >{elem.last_price.props.children}</td>
-                  <td style={styleTD} >{elem.change.props.children}</td>
-                  <td style={styleTD} >{elem.chart.props.children}</td> */}
                   <InstrumentComponent 
                     contractDate={elem.contractDate.props.children}
                     symbol={elem.symbol.props.children}
                     instrument={elem.instrument.props.children}
                     last_price={elem.last_price.props.children}
                     change={elem.change.props.children}
-                    // chart={elem.chart.props.children}
-                    // data={elem}
                   />
                   <td style={styleTD} >{elem.chart.props.children}</td>
-                  <td style={styleTD} >{elem.buy}</td>
-                  <td style={styleTD} >{elem.sell}</td>
-                  <td style={styleTD} >{elem.remove}</td>
+                  <td style={{textAlign: "center"}} >{elem.buy}</td>
+                  <td style={{textAlign: "center"}} >{elem.sell}</td>
+                  <td style={{textAlign: "center"}} >{elem.remove}</td>
       
               </tr>
 

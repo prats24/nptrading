@@ -133,27 +133,27 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
   const handleClose = async (e) => {
     console.log("in close")
-    if(fromUserPos){
-      const res = await fetch(`${baseUrl}api/v1/unsubscribeInstrument`, {
-        method: "POST",
-        credentials:"include",
-        headers: {
-            "content-type" : "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-        body: JSON.stringify({
-          instrumentToken
-        })
-      });
+    // if(fromUserPos){
+    //   const res = await fetch(`${baseUrl}api/v1/unsubscribeInstrument`, {
+    //     method: "POST",
+    //     credentials:"include",
+    //     headers: {
+    //         "content-type" : "application/json",
+    //         "Access-Control-Allow-Credentials": true
+    //     },
+    //     body: JSON.stringify({
+    //       instrumentToken
+    //     })
+    //   });
     
-      const data = await res.json();
-      //console.log(data);
-      if(data.status === 422 || data.error || !data){
-      }else{
-        // socket.emit("subscribeToken", instrumentTokenArr);
-        console.log(data.message)
-      }
-    }
+    //   const data = await res.json();
+    //   //console.log(data);
+    //   if(data.status === 422 || data.error || !data){
+    //   }else{
+    //     // socket.emit("subscribeToken", instrumentTokenArr);
+    //     console.log(data.message)
+    //   }
+    // }
     setOpen(false);
   };
 
@@ -269,7 +269,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
         B
       </MDBox>
       : 
-      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} fullWidth>
+      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}}>
         {"BUY"}
       </MDButton>}
       <div>

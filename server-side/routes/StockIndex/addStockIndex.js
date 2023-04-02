@@ -53,7 +53,7 @@ router.post("/stockindex",authentication, async (req, res)=>{
 })
 
 router.get("/stockindex", (req, res)=>{
-    StockIndex.find((err, data)=>{
+    StockIndex.find({status: "Active"}, (err, data)=>{
         if(err){
             return res.status(500).send(err);
         }else{
