@@ -62,15 +62,20 @@ const getTicks = async (socket, tokens) => {
       return indexObj[item.instrument_token];
     });
 
-    let userId = await client.get(socket.id)
-    let instruments = await client.LRANGE(userId, 0, -1)
-    let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
-    let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+    try{
+      let userId = await client.get(socket.id)
+      let instruments = await client.LRANGE(userId, 0, -1)
+      let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
+      let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+  
+      console.log("indexData", indexData);
+      socket.emit('index-tick', indexData)
+      socket.emit('tick', ticks);
+      io.to(`${userId}`).emit('tick-room', filteredTicks);
+    } catch (err){
+      console.log(err)
+    }
 
-    console.log("indexData", indexData);
-    socket.emit('index-tick', indexData)
-    socket.emit('tick', ticks);
-    io.to(`${userId}`).emit('tick-room', filteredTicks);
 
   });
 }

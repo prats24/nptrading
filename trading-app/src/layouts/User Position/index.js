@@ -69,7 +69,7 @@ function UserPosition() {
       <DashboardNavbar />
       <MDBox py={0}>
 
-        <StockIndex/>
+        <StockIndex socket={socket}/>
 
         {/* <MemoizedTradableInstrument /> */}
         <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/>

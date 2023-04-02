@@ -11,11 +11,12 @@ import axios from 'axios';
 import { NetPnlContext } from "../../../../PnlContext";
 
 
-function StockIndex() {
+function StockIndex({socket}) {
 
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [indexData, setIndexData] = useState([]);
-    const marketDetails = useContext(marketDataContext);
+    // const marketDetails = useContext(marketDataContext);
+    const [indexLiveData, setIndexLiveData] = useState([]);
     const pnl = useContext(NetPnlContext);
     const lightTheme = createTheme({ palette: { mode: 'light' } });
     const gpnlcolor = pnl.netPnl >= 0 ? "success" : "error"
@@ -29,8 +30,21 @@ function StockIndex() {
         })
     }, [])
 
+    useEffect(()=>{
+        socket.on("index-tick", (data) => {
+            setIndexLiveData(prevInstruments => {
+              const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+              data.forEach(instrument => {
+                instrumentMap.set(instrument.instrument_token, instrument);
+              });
+              return Array.from(instrumentMap.values());
+            });
+      
+          })
+    }, [])
+
     let finalArr = [];
-    marketDetails?.indexLiveData?.map((elem)=>{
+    indexLiveData?.map((elem)=>{
         let obj = {};
         let name = indexData.filter((subElem)=>{
             return subElem.instrumentToken == elem.instrument_token;
