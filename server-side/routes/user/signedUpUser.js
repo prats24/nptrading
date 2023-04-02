@@ -139,7 +139,7 @@ router.patch("/verifyotp", async (req, res)=>{
         if(dataExist){
             console.log(dataExist)
             console.log("data already exists");
-            return res.status(422).json({error : "Already a User"})
+            return res.status(422).json({message : "You already have an account, please login using your email id."})
         }
 
         //Check for referrer code

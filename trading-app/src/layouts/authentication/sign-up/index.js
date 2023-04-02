@@ -179,14 +179,13 @@ function Cover() {
 
   const data = await res.json();
   console.log(data.status);
-  if(data.status === 200 || data.status === 201){ 
+  if(data.status === "Success"){ 
     setShowConfirmation(false)
     console.log("Going to call Open Success SB")
     return openSuccessSB("Account Created",data.message);
   }else{
-      console.log("Going to call Open Success SB")
-      return openInfoSB("Error",data.message);
-      // window.alert(data.message);
+      console.log("Going to call Open Info SB")
+      return openInfoSB("Already a User",data.message);
   }
 
   }
@@ -306,7 +305,7 @@ function Cover() {
           <>
           <Grid container spacing={2} mt={0.5} mb={2}>
                 
-                <Grid item xs={12} md={6} xl={3}>
+                <Grid item xs={12} md={12} xl={3}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -317,7 +316,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={6} xl={3}>
+                  <Grid item xs={12} md={12} xl={3}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -328,7 +327,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={6} xl={3}>
+                  <Grid item xs={12} md={12} xl={3}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -340,7 +339,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={6} xl={3}>
+                  <Grid item xs={12} md={12} xl={3}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -350,221 +349,6 @@ function Cover() {
                         onChange={(e)=>{formstate.mobile = e.target.value}}
                       />
                   </Grid>
-
-                  {/* <Grid item xs={12} md={6} xl={3} mt={-1}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoContainer components={['DatePicker']}>
-                          <DatePicker
-                            label="Date of Birth"
-                            disabled={showEmailOTP}
-                            required
-                            fullWidth
-                            value={dayjs(formstate.dob || "01/01/1991")}
-                            onChange={(e) => {setformstate(prevState => ({
-                              ...prevState,
-                              dob: dayjs(e)
-                            }))}}
-                            sx={{ width: '100%' }}
-                          />
-                        </DemoContainer>
-                      </LocalizationProvider>
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Gender *</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-autowidth-label"
-                        id="demo-simple-select-autowidth"
-                        value={formstate.gender}
-                        required
-                        onChange={(e) => {setformstate(prevState => ({
-                          ...prevState,
-                          gender: e.target.value
-                        }))}}
-                        label="Gender"
-                        sx={{ minHeight:43 }}
-                      >
-                        <MenuItem value="Male">Male</MenuItem>
-                        <MenuItem value="Female">Female</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Prior Options Trading Experience *</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-autowidth-label"
-                        id="demo-simple-select-autowidth"
-                        value={formstate.trading_exp}
-                        required
-                        onChange={(e) => {setformstate(prevState => ({
-                          ...prevState,
-                          trading_exp: e.target.value
-                        }))}}
-                        label="Prior Options Trading Experience"
-                        sx={{ minHeight:43 }}
-                      >
-                        <MenuItem value="Yes">Yes</MenuItem>
-                        <MenuItem value="No">No</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <TextField
-                        required
-                        disabled={showEmailOTP}
-                        id="outlined-required"
-                        label="City"
-                        fullWidth
-                        onChange={(e)=>{formstate.city = e.target.value}}
-                      />
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <TextField
-                        required
-                        disabled={showEmailOTP}
-                        id="outlined-required"
-                        label="Pin Code"
-                        fullWidth
-                        onChange={(e)=>{formstate.pincode = e.target.value}}
-                      />
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <TextField
-                        required
-                        disabled={showEmailOTP}
-                        id="outlined-required"
-                        label="State"
-                        fullWidth
-                        onChange={(e)=>{formstate.state = e.target.value}}
-                      />
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <TextField
-                        required
-                        disabled={showEmailOTP}
-                        id="outlined-required"
-                        label="Country"
-                        fullWidth
-                        onChange={(e)=>{formstate.country = e.target.value}}
-                      />
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Purpose of Joining *</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-autowidth-label"
-                        id="demo-simple-select-autowidth"
-                        value={formstate.purpose_of_joining}
-                        required
-                        onChange={(e) => {setformstate(prevState => ({
-                          ...prevState,
-                          purpose_of_joining: e.target.value
-                        }))}}
-                        label="Purpose of Joining"
-                        sx={{ minHeight:43 }}
-                      >
-                        <MenuItem value="Learn Options Trading">Learn Options Trading</MenuItem>
-                        <MenuItem value="Earn Money">Earn Money</MenuItem>
-                        <MenuItem value="Just for Fun">Just for Fun</MenuItem>
-                        <MenuItem value="Don't have anything else to do">Don't have anything else to do</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Trading App you are using currently *</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-autowidth-label"
-                        id="demo-simple-select-autowidth"
-                        value={formstate.trading_account}
-                        required
-                        onChange={(e) => {setformstate(prevState => ({
-                          ...prevState,
-                          trading_account: e.target.value
-                        }))}}
-                        label="Purpose of Joining"
-                        sx={{ minHeight:43 }}
-                      >
-                        <MenuItem value="Zerodha">Zerodha</MenuItem>
-                        <MenuItem value="PayTM Money">PayTM Money</MenuItem>
-                        <MenuItem value="Groww">Groww</MenuItem>
-                        <MenuItem value="Upstox">Upstox</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
-                        <MenuItem value="Don't have any">Don't have any</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <TextField
-                        required
-                        disabled={showEmailOTP}
-                        id="outlined-required"
-                        label="Referrer Code"
-                        fullWidth
-                        onChange={(e)=>{formstate.referrerCode = e.target.value}}
-                      />
-                  </Grid>
-
-                  <Grid item xs={12} md={6} xl={3}>
-                    <FormControl sx={{width: "100%" }}>
-                      <InputLabel id="demo-simple-select-autowidth-label">Are you currenlty employeed? *</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-autowidth-label"
-                        id="demo-simple-select-autowidth"
-                        value={formstate.employeed}
-                        required
-                        onChange={(e) => {setformstate(prevState => ({
-                          ...prevState,
-                          employeed: e.target.value
-                        }))}}
-                        label="Are you currenlty employeed?"
-                        sx={{ minHeight:43 }}
-                      >
-                        <MenuItem value="true">Yes</MenuItem>
-                        <MenuItem value="false">No</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  
-                  <Grid item xs={12} md={6} xl={3}>
-                  <MDBox display="flex" alignItems="center">
-                      <Checkbox 
-                          checked={formstate.terms_and_conditions}
-                          disabled={showEmailOTP}
-                          onChange={(e)=>{setformstate(prevState => ({...prevState, terms_and_conditions: e.target.checked}))}}
-                      />
-                        <MDTypography
-                          variant="button"
-                          fontWeight="regular"
-                          color="text"
-                          sx={{ cursor: "pointer", userSelect: "none", fontSize:10 }}
-                        >
-                          I agree the&nbsp;
-                        </MDTypography>
-                        <MDTypography
-                          component="a"
-                          href="#"
-                          variant="button"
-                          fontWeight="bold"
-                          color="info"
-                          textGradient
-                          style={{fontSize:10}}
-                        >
-                          Terms and Conditions*
-                        </MDTypography>
-                  </MDBox>
-                  </Grid> */}
 
             </Grid>
             </>
@@ -580,11 +364,14 @@ function Cover() {
             
             {showEmailOTP && showConfirmation && (
             <>
-            <MDBox display="flex" justifyContent="space-between" ml={2} mt={2}>
+            <MDBox mt={2}>
+              <MDTypography fontSize={15}>This is an invite only trading platfrom, so please enter referrer code and email OTP to continue.</MDTypography>
+            </MDBox>
+            <MDBox display="flex" justifyContent="space-between">
             
             <Grid container spacing={2} mt={0.25}>
                 
-                  <Grid item xs={12} md={6} xl={3}>
+                  <Grid item xs={12} md={12} xl={3}>
                     <TextField
                         required
                         // disabled={showEmailOTP}
@@ -595,7 +382,7 @@ function Cover() {
                       />
                   </Grid>
                 
-                <Grid item xs={12} md={6} xl={3} display="flex" justifyContent="space-between">
+                <Grid item xs={12} md={12} xl={3} width="100%" display="flex" justifyContent="center">
                   <OtpInput
                     value={formstate.email_otp}
                     onChange={(e)=>{setformstate(prevState => ({...prevState, email_otp: e}))}}
@@ -603,7 +390,7 @@ function Cover() {
                     numInputs={6}
                     renderSeparator={<span>-</span>}
                     renderInput={(props) => <input {...props} />}
-                    inputStyle={{width:35, height:35}}
+                    inputStyle={{width:42, height:42}}
                   />
                   </Grid>
 
