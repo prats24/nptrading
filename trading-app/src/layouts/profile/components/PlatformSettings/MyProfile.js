@@ -19,12 +19,11 @@ import { useState, useContext, useEffect } from "react";
 // @mui material components
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-import { MdModeEditOutline } from 'react-icons/md';
+
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
-import Button from '@mui/material/Button';
 import MDTypography from "../../../../components/MDTypography";
 import { Divider, Typography } from '@mui/material';
 
@@ -1254,41 +1253,6 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
       <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
 
-      <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Email Settings
-        </MDTypography>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!followsMe} onChange={() => setFollowsMe(followsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my daily P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my weekly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!mentionsMe} onChange={() => setMentionsMe(mentionsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my monthly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-      </MDBox>
       {renderSuccessSB}
     </Card>
   );

@@ -96,11 +96,6 @@ function Cover() {
     setSubmitClicked(true)
     setformstate(formstate);
 
-    if(!formstate.terms_and_conditions)
-    {
-      return openInfoSB("Terms & Conditions","Please accept the terms and conditions to proceed")
-    }
-
     const { 
       first_name, 
       last_name, 
@@ -149,15 +144,15 @@ function Cover() {
  
 
     const data = await res.json();
-    if(data.status === 201 && data.message){ 
+    if(data.status === 201 || data.status === 200){ 
         // window.alert(data.message);
         setShowEmailOTP(true);
         setTimerActive(true);
         setResendTimer(30); 
-        openSuccessSB("OTP Sent");  
+        return openSuccessSB("OTP Sent",data.message);  
     }else{
         // console.log("openInfoBS Called")
-        openInfoSB(data.error,"You have already signed Up")
+        return openInfoSB(data.message,"You have already signed Up")
     }
 }
 
@@ -175,33 +170,22 @@ function Cover() {
         first_name:formstate.first_name,
         last_name:formstate.last_name,
         mobile:formstate.mobile,
-        city:formstate.city,
-        state:formstate.state,
-        country:formstate.country,
-        dob:formstate.dob,
-        gender:formstate.gender,
-        trading_exp:formstate.trading_exp,
-        mobile:formstate.mobile,
-        purpose_of_joining:formstate.purpose_of_joining,
-        employeed:formstate.employeed,
         email:formstate.email, 
         email_otp:formstate.email_otp,
-        trading_account:formstate.trading_account,
         referrerCode:formstate.referrerCode,
-        pincode:formstate.pincode
       })
   });
 
 
   const data = await res.json();
-  // console.log(data);
-  if(data.status === 422 || data.error || !data){ 
-      // window.alert(data.error);
-      // console.log("Invalid Entry");
+  console.log(data.status);
+  if(data.status === 200 || data.status === 201){ 
+    setShowConfirmation(false)
+    console.log("Going to call Open Success SB")
+    return openSuccessSB("Account Created",data.message);
   }else{
-      setShowConfirmation(false)
       console.log("Going to call Open Success SB")
-      openSuccessSB("Account Created");
+      return openInfoSB("Error",data.message);
       // window.alert(data.message);
   }
 
@@ -228,12 +212,11 @@ function Cover() {
 
 
   const data = await res.json();
-  // console.log(data);
-  if(data.status === 422 || data.error || !data){ 
-      // window.alert(data.error);
-      // console.log("Invalid Entry");
+  console.log(data.status);
+  if(data.status === 200 || data.status === 201){ 
+        openSuccessSB("OTP Sent",data.message);
   }else{
-        openSuccessSB("OTP Sent");
+        openInfoSB("Something went wrong",data.mesaage);
   }
 
   }
@@ -243,15 +226,15 @@ function Cover() {
   const [time,setTime] = useState('')
  
   const [successSB, setSuccessSB] = useState(false);
-  const openSuccessSB = (value) => {
+  const openSuccessSB = (value,content) => {
     // console.log("Value: ",value)
     if(value === "OTP Sent"){
         setTitle("OTP Sent");
-        setContent("Please check your email");
+        setContent(content);
     };
     if(value === "Account Created"){
       setTitle("Account Created");
-      setContent("Please check your email for login details");
+      setContent(content);
   };
     setSuccessSB(true);
   }
@@ -368,7 +351,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={6} xl={3} mt={-1}>
+                  {/* <Grid item xs={12} md={6} xl={3} mt={-1}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker']}>
                           <DatePicker
@@ -581,7 +564,7 @@ function Cover() {
                           Terms and Conditions*
                         </MDTypography>
                   </MDBox>
-                  </Grid>
+                  </Grid> */}
 
             </Grid>
             </>
@@ -601,6 +584,17 @@ function Cover() {
             
             <Grid container spacing={2} mt={0.25}>
                 
+                  <Grid item xs={12} md={6} xl={3}>
+                    <TextField
+                        required
+                        // disabled={showEmailOTP}
+                        id="outlined-required"
+                        label="Referrer Code"
+                        fullWidth
+                        onChange={(e)=>{formstate.referrerCode = e.target.value}}
+                      />
+                  </Grid>
+                
                 <Grid item xs={12} md={6} xl={3} display="flex" justifyContent="space-between">
                   <OtpInput
                     value={formstate.email_otp}
@@ -612,11 +606,14 @@ function Cover() {
                     inputStyle={{width:35, height:35}}
                   />
                   </Grid>
+
                   <Grid item xs={12} md={6} xl={3} display="flex" justifyContent="flex-start">
                   <MDButton disabled={timerActive} variant="text" color="info" fullWidth onClick={resendOTP}>
                     {timerActive ? `Resend OTP in ${resendTimer} seconds` : 'Resend OTP'}
                     </MDButton>
                   </Grid>
+
+
 
             </Grid>
 
