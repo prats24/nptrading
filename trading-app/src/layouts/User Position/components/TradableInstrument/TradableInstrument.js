@@ -274,10 +274,11 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
 
   }
 
-  let content = state.addOrRemoveCheck ? "Added" : "Removed"
+  let content = `Instrument ${state.addOrRemoveCheck ? "Added" : "Removed"}`
+  let color = state.addOrRemoveCheck ? "success" : "error"
   const renderSuccessSB = (
     <MDSnackbar
-      color="success"
+      color={color}
       icon="check"
       // title={title}
       content={content}
@@ -286,6 +287,7 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
       onClose={closeSuccessSB}
       close={closeSuccessSB}
       bgWhite="info"
+      sx={{ borderLeft: `10px solid ${state.addOrRemoveCheck ? "green" : "red"}`, borderRadius: "15px"}}
     />
   );
 

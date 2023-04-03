@@ -238,7 +238,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   let content = "Instrument Removed"
   const renderSuccessSB = (
     <MDSnackbar
-      color="success"
+      color="error"
       icon="check"
       // title={title}
       content={content}
@@ -247,6 +247,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       onClose={closeSuccessSB}
       close={closeSuccessSB}
       bgWhite="info"
+      sx={{ borderLeft: '10px solid red', borderRadius: "15px" }}
     />
   );
 

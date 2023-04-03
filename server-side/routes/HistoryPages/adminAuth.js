@@ -11,11 +11,31 @@ const dbBackup = require("../../Backup/mongoDbBackUp")
 const newdbBackup = require("../../Backup/newBackup")
 const TradableInstrument = require("../../controllers/TradableInstrument/tradableInstrument")
 const cronjob = require("../../marketData/getinstrumenttickshistorydata")
+const dailyPnlDataController = require("../../controllers/dailyPnlDataController")
+const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
+const DailyPNLData = require("../../models/InstrumentHistoricalData/DailyPnlDataSchema")
+const TraderDailyPnlData = require("../../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
 
 
 router.get("/tradableInstrument", async (req, res)=>{
   await TradableInstrument.tradableInstrument();
 })
+
+router.get("/dailyPnl", async (req, res)=>{
+  let matchingDate = "2023-03-31"
+  // const dailyPnl = await DailyPNLData.find({timestamp: {$regex:matchingDate}})
+  // const traderDailyPnl = await TraderDailyPnlData.find({timestamp: {$regex:matchingDate}})
+
+  // if(dailyPnl.length === 0){
+    await dailyPnlDataController.dailyPnlCalculation(matchingDate);
+  // }
+
+  // if(traderDailyPnl.length === 0){
+    await traderwiseDailyPnlController.traderDailyPnlCalculation(matchingDate);
+  // }
+
+})
+
 
 router.get("/cronjob", async (req, res)=>{
   await cronjob();
