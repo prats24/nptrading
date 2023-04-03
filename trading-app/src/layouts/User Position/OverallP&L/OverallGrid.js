@@ -4,6 +4,10 @@ import Card from "@mui/material/Card";
 import axios from "axios";
 import { NetPnlContext } from '../../../PnlContext';
 import { Typography } from "@mui/material";
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import { Tooltip } from '@mui/material';
+
 // Material Dashboard 2 React components
 
 import { GrAnchor } from "react-icons/gr";
@@ -20,13 +24,20 @@ import MDButton from '../../../components/MDButton';
 import ExitPosition from './ExitPosition';
 import Buy from "../components/InstrumentDetails/data/BuyModel";
 import Sell from "../components/InstrumentDetails/data/SellModel"
+import OverallRow from './OverallRow';
 // import Button from '@mui/material/Button';
 
 function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   console.log("rendering in userPosition: overallPnl")
-
+  let styleTD = {
+    textAlign: "center",
+    fontSize: "11px",
+    fontWeight: "900",
+    color: "#7b809a",
+    opacity: 0.7
+  }
   const { netPnl, updateNetPnl } = useContext(NetPnlContext);
-  const { columns, rows } = OverallPL();
+  // const { columns, rows } = OverallPL();
   const [menu, setMenu] = useState(null);
 
   const closeMenu = () => setMenu(null);
@@ -44,7 +55,7 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   let totalTransactionCost = 0;
   let totalGrossPnl = 0;
   let totalRunningLots = 0;
-
+  let rows = [];
 
     useEffect(()=>{
 
@@ -211,7 +222,9 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         );
       }
       obj.exit = (
-        < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
+        // <Tooltip title="Exit Your Position" placement="top">
+          < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
+        // </Tooltip>
       );
       obj.buy = (
         <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
@@ -226,52 +239,16 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
       rows.push(obj);
     })
 
-
-    let obj = {};
-
-    const totalGrossPnlcolor = totalGrossPnl >= 0 ? "success" : "error"
-    const totalnetPnlcolor = (totalGrossPnl-totalTransactionCost) >= 0 ? "success" : "error"
-
-    obj.symbol = (
-      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-       {}
-      </MDTypography>
-    );
-  
-    obj.Quantity = (
-      <MDTypography component="a" variant="caption" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-        Running Lots : {totalRunningLots}
-      </MDTypography>
-    );
-  
-    obj.avgPrice = (
-      <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-       {}
-      </MDTypography>
-    );
-  
-    obj.last_price = (
-      <MDTypography component="a" variant="caption" color="dark" backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-        Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}
-      </MDTypography>
-    );
-  
-  
-    obj.grossPnl = (
-      <MDTypography component="a" variant="caption" color={totalGrossPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-       Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}
-      </MDTypography>
-    );
-  
-    obj.change = (
-      <MDTypography component="a" variant="caption" color={totalnetPnlcolor} backgroundColor="#e0e1e5" borderRadius="5px" padding="5px" fontWeight="medium">
-        Net P&L : {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}
-      </MDTypography>
-    );
-    
-  
-    rows.push(obj);
-  
+    rows.sort((a,b)=>{
+      if(a.Quantity.props.children > b.Quantity.props.children){
+        return -1
+      }
+      if(a.Quantity.props.children < b.Quantity.props.children){
+        return 1
+      }
+      return 1
+    })
+    console.log("rows value", rows)
 
   return (
     <Card>
@@ -290,16 +267,88 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         <MDButton variant="outlined" size="small" color="info" onClick={()=>{setIsGetStartedClicked(true)}}>Get Started</MDButton>
       </MDBox>)
       :
+      // (<MDBox>
+      //   <DataTable
+      //     table={{ columns, rows }}
+      //     showTotalEntries={false}
+      //     isSorted={false}
+      //     noEndBorder
+      //     entriesPerPage={false}
+      //   />
+      // </MDBox>
+      // )
       (<MDBox>
-        <DataTable
-          table={{ columns, rows }}
-          showTotalEntries={false}
-          isSorted={false}
-          noEndBorder
-          entriesPerPage={false}
-        />
+        <TableContainer component={Paper}>
+          <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
+            <thead>
+              <tr style={{borderBottom: "1px solid #D3D3D3"}}>
+                <td style={styleTD} >PRODUCT</td>
+                <td style={styleTD} >INSTRUMENT</td>
+                <td style={styleTD}>QUANTITY</td>
+                <td style={styleTD} >AVG. PRICE</td>
+                <td style={styleTD} >LTP</td>
+                <td style={styleTD} >GROSS P&L</td>
+                <td style={styleTD} >CHANGE(%)</td>
+                <td style={styleTD} >EXIT</td>
+                <td style={styleTD} >BUY</td>
+                <td style={styleTD} >SELL</td>
+                
+              </tr>
+            </thead>
+            <tbody>
+
+              {rows.map((elem)=>{
+                return(
+                  <>
+              <tr
+              style={{borderBottom: "1px solid #D3D3D3"}} key={elem.symbol.props.children}
+              >
+                  <OverallRow 
+                    quantity={elem?.Quantity?.props?.children}
+                    symbol={elem?.symbol?.props?.children}
+                    product={elem?.Product?.props?.children}
+                    avgPrice={elem?.avgPrice?.props?.children}
+                    last_price={elem?.last_price?.props?.children}
+                    grossPnl={elem?.grossPnl?.props?.children}
+                    change={elem?.change?.props?.children}
+                  />
+                  <Tooltip title="Exit Your Position" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.exit}</td>
+                  </Tooltip>
+                  <Tooltip title="Buy" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.buy}</td>
+                  </Tooltip>
+                  <Tooltip title="Sell" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.sell}</td>
+                  </Tooltip>
+      
+              </tr>
+              </>
+
+                )
+              })} 
+              <tr
+              style={{borderBottom: "1px solid #D3D3D3"}}
+              >
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} >Running Lots : {totalRunningLots}</td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} >Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}</td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600", color: `${totalGrossPnl > 0 ? 'green' : 'red'}`}} >Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}</td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600", color: `${(totalGrossPnl-totalTransactionCost) > 0 ? 'green' : 'red'}`}} >Net P&L : {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}</td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+                  <td style={{textAlign: "center", fontSize: ".75rem", color: "#7b809a", fontWeight: "600"}} ></td>
+              </tr>
+            </tbody>
+          </table>
+        </TableContainer>
+
       </MDBox>
-      )}
+      )
+      }
     </Card>
   );
 
