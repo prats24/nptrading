@@ -67,6 +67,8 @@ function Cover() {
     trading_account:"",
     referrerCode:"",
     pincode:"",
+    email_otp: "",
+    mobile_otp:"",
   });
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -172,6 +174,7 @@ function Cover() {
         mobile:formstate.mobile,
         email:formstate.email, 
         email_otp:formstate.email_otp,
+        mobile_otp: formstate.mobile_otp,
         referrerCode:formstate.referrerCode,
       })
   });
@@ -190,7 +193,7 @@ function Cover() {
 
   }
 
-  const resendOTP = async () => {
+  const resendOTP = async (type) => {
   
       setTimerActive(true);
       // console.log("Active timer set to true")
@@ -206,6 +209,8 @@ function Cover() {
       },
       body: JSON.stringify({
         email:formstate.email, 
+        mobile: formstate.mobile,
+        type: type
       })
   });
 
@@ -283,10 +288,10 @@ function Cover() {
           variant="gradient"
           bgColor="info"
           borderRadius="lg"
-          coloredShadow="success"
+          coloredShadow="info"
           mx={2}
-          mt={-3}
-          p={3}
+          mt={-5}
+          p={3} 
           mb={1}
           textAlign="center"
         >
@@ -305,7 +310,7 @@ function Cover() {
           <>
           <Grid container spacing={2} mt={0.5} mb={2}>
                 
-                <Grid item xs={12} md={12} xl={3}>
+                <Grid item xs={12} md={12} xl={12}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -316,7 +321,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={12} xl={3}>
+                  <Grid item xs={12} md={12} xl={12}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -327,7 +332,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={12} xl={3}>
+                  <Grid item xs={12} md={12} xl={12}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -339,7 +344,7 @@ function Cover() {
                       />
                   </Grid>
 
-                  <Grid item xs={12} md={12} xl={3}>
+                  <Grid item xs={12} md={12} xl={12}>
                     <TextField
                         required
                         disabled={showEmailOTP}
@@ -371,7 +376,7 @@ function Cover() {
             
             <Grid container spacing={2} mt={0.25}>
                 
-                  <Grid item xs={12} md={12} xl={3}>
+                  <Grid item xs={12} md={12} xl={12}>
                     <TextField
                         required
                         // disabled={showEmailOTP}
@@ -382,7 +387,9 @@ function Cover() {
                       />
                   </Grid>
                 
-                <Grid item xs={12} md={12} xl={3} width="100%" display="flex" justifyContent="center">
+                <Grid item xs={12} md={12} xl={12} width="100%" display="flex" justifyContent="center">
+                  <MDBox display='block'>
+                  <MDTypography fontSize={14} mb={1}>Email OTP</MDTypography>
                   <OtpInput
                     value={formstate.email_otp}
                     onChange={(e)=>{setformstate(prevState => ({...prevState, email_otp: e}))}}
@@ -390,23 +397,43 @@ function Cover() {
                     numInputs={6}
                     renderSeparator={<span>-</span>}
                     renderInput={(props) => <input {...props} />}
-                    inputStyle={{width:42, height:42}}
-                  />
+                    inputStyle={{width:60, height:50}}
+                  /> 
+                    </MDBox>
                   </Grid>
 
-                  <Grid item xs={12} md={6} xl={3} display="flex" justifyContent="flex-start">
-                  <MDButton disabled={timerActive} variant="text" color="info" fullWidth onClick={resendOTP}>
-                    {timerActive ? `Resend OTP in ${resendTimer} seconds` : 'Resend OTP'}
+                  <Grid item xs={12} md={6} xl={12} mt={-1}>
+                  <MDButton style={{padding:'0rem', margin:'0rem', minHeight:20, width: '30%', display: 'flex', justifyContent: 'center', margin: 'auto'}} disabled={timerActive} variant="text" color="info" fullWidth onClick={()=>{resendOTP('email')}}>
+                    {timerActive ? `Resend Email OTP in ${resendTimer} seconds` : 'Resend Email OTP'}
                     </MDButton>
                   </Grid>
+                  <Grid item xs={12} md={12} xl={12} width="100%" display="flex" justifyContent="center">
+                  <MDBox mt={-2}>
 
+                  <MDTypography fontSize={14} mb={1}>Mobile OTP</MDTypography>
+                  <OtpInput
+                    value={formstate.mobile_otp}
+                    onChange={(e)=>{setformstate(prevState => ({...prevState, mobile_otp: e}))}}
+                    // onChange={(e)=>{console.log(e)}}
+                    numInputs={6}
+                    renderSeparator={<span>-</span>}
+                    renderInput={(props) => <input {...props} />}
+                    inputStyle={{width:60, height:50}}
+                  />
+                  </MDBox>
+                  </Grid>
+                  <Grid item xs={12} md={6} xl={12} mt={-1} display="flex" justifyContent="flex-start">
+                  <MDButton style={{padding:'0rem', margin:'0rem', minHeight:20, width: '40%', display: 'flex', justifyContent: 'center', margin: 'auto'}} disabled={timerActive} variant="text" color="info" fullWidth onClick={()=>{resendOTP('mobile')}}>
+                    {timerActive ? `Resend Mobile OTP in ${resendTimer} seconds` : 'Resend Mobile OTP'}
+                    </MDButton>
+                  </Grid>
 
 
             </Grid>
 
             </MDBox>
 
-            <MDBox mt={4} mb={1} display="flex" justifyContent="space-around">
+            <MDBox mt={2.5} mb={1} display="flex" justifyContent="space-around">
               <MDButton variant="gradient" color="info" fullWidth onClick={otpConfirmation}>
                 Confirm
               </MDButton>

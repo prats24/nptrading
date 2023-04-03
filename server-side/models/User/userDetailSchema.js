@@ -55,6 +55,9 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    mobile_otp:{
+        type: String,
+    },
     whatsApp_number:{
         type: String,
         // required: true
