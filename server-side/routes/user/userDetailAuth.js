@@ -524,6 +524,19 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
 
 });
 
+router.get("/myreferrals/:id", (req, res)=>{
+  //console.log(req.params)
+  const {id} = req.params
+  const referrals = UserDetail.find({referredBy : id})
+  .then((data)=>{
+      console.log(data)
+      return res.status(200).json({data : data, count: data.length});
+  })
+  .catch((err)=>{
+      return res.status(422).json({error : err})
+  })
+})
+
 module.exports = router;
 
 

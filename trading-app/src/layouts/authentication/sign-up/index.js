@@ -5,36 +5,23 @@ import React, {useState, useContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
 import OtpInput from 'react-otp-input';
 import dayjs from 'dayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-// import { makeStyles } from '@material-ui/core/styles';
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
-import MDInput from "../../../components/MDInput";
 import MDButton from "../../../components/MDButton";
 import MDSnackbar from "../../../components/MDSnackbar";
 import TextField from '@mui/material/TextField';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 
 // Authentication layout components
 import CoverLayout from "../components/CoverLayout";
 
 // Images
 import bgImage from "../../../assets/images/trading.jpg";
-import { Typography } from "@mui/material";
-import { controllers } from "chart.js";
 
 
 
