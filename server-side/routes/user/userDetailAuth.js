@@ -485,7 +485,7 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
     
         if(!user) return res.status(404).json({message: 'No such user found.'});
     
-        const filteredBody = filterObj(req.body, 'name', 'first_name', 'lastName', 'email', 'mobile', 
+        const filteredBody = filterObj(req.body, 'name', 'first_name', 'lastName', 'email', 'mobile','gender', 
         'whatsApp_number', 'dob', 'address', 'city', 'state', 'country', 'last_occupation', 'family_yearly_income',
         'employeed', 'upiId','googlePay_number','payTM_number','phonePe_number','bankName','nameAsPerBankAccount','accountNumber',
         'ifscCode','profilePhoto','aadhaarNumber','degree','panNumber','passportNumber','drivingLicenseNumber','pincode','KYCStatus'
@@ -497,14 +497,24 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
         if((req).aadhaarCardBackImageUrl) filteredBody.aadhaarCardBackImage = (req).aadhaarCardBackImageUrl;
         if((req).panCardFrontImageUrl) filteredBody.panCardFrontImage = (req).panCardFrontImageUrl;
         if((req).passportPhotoUrl) filteredBody.passportPhoto = (req).passportPhotoUrl;
-        if((req).addressProofDocumentUrl) filteredBody.addressProofDocument = (req).addressProofDocumentUrl;
+        // if((req).addressProofDocumentUrl) filteredBody.addressProofDocument.url = (req).addressProofDocumentUrl;
+        if (req.addressProofDocumentUrl) {
+          if (!filteredBody.addressProofDocument) {
+            filteredBody.addressProofDocument = {};
+          }
+          filteredBody.addressProofDocument.url = req.addressProofDocumentUrl;
+          filteredBody.addressProofDocument.name = (req.files).addressProofDocument[0].originalname;
+        }
+        // if((req).addressProofDocumentUrl) filteredBody.addressProofDocument.name = (req.files).addressProofDocument[0].originalname;
         if((req).incomeProofDocumentUrl) filteredBody.incomeProofDocument = (req).incomeProofDocumentUrl;
         console.log(filteredBody)
-        await UserDetail.findByIdAndUpdate(user._id, filteredBody);
+        const userData = await UserDetail.findByIdAndUpdate(user._id, filteredBody, {new: true});
+        console.log(userData);
     
-        res.status(200).json({message:'Edit successful',status:'success'});
+        res.status(200).json({message:'Edit successful',status:'success',data: userData});
 
     }catch(e){
+        console.log(e)
         res.status(500).json({
             message: 'Something went wrong. Try again.'
         })

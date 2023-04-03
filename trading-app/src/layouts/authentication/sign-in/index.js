@@ -72,7 +72,6 @@ function Basic() {
       }
     }
 
-
     async function logInButton(e){
         e.preventDefault();
         //console.log(userId, pass);

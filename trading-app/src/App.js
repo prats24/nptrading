@@ -225,14 +225,14 @@ export default function App() {
         {layout === "dashboard" && (
           <>
           {
-            (getDetails.userDetails.role === "admin" || getDetails.userDetails.role === "user"|| getDetails.userDetails.role === "data") &&
+            (getDetails?.userDetails?.role === "admin" || getDetails?.userDetails?.role === "user"|| getDetails?.userDetails?.role === "data") &&
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brandName="ninepointer"
-              routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin")
-                ? routes : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
-                ? userRoutes : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
+              routes={(detailUser?.role === "admin" || getDetails?.userDetails?.role === "admin")
+                ? routes : (detailUser?.role === "user" || getDetails?.userDetails?.role === "user") 
+                ? userRoutes : (detailUser?.role === "data" || getDetails?.userDetails?.role === "data") 
                 ? analyticsRoutes : homeRoutes
               }
               onMouseEnter={handleOnMouseEnter}

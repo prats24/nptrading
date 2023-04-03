@@ -13,22 +13,30 @@ import { userContext } from "../../../../AuthContext";
 import MDAvatar from "../../../../components/MDAvatar";
 import MDSnackbar from "../../../../components/MDSnackbar";
 import axios from "axios";
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import { MuiFileInput } from 'mui-file-input'
 
 import { useState, useContext, useEffect } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
 import Switch from "@mui/material/Switch";
-import { MdModeEditOutline } from 'react-icons/md';
+
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDButton from "../../../../components/MDButton";
-import Button from '@mui/material/Button';
 import MDTypography from "../../../../components/MDTypography";
 import { Divider, Typography } from '@mui/material';
 
 function MyProfile({profilePhoto,setProfilePhoto}) {
+
+  console.log('Rendering again');
+
+
   const [followsMe, setFollowsMe] = useState(true);
   const [answersPost, setAnswersPost] = useState(false);
   const [mentionsMe, setMentionsMe] = useState(true);
@@ -36,6 +44,8 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   const [editableBD, setEditableBD] = useState(false);
   const [editableKYC, setEditableKYC] = useState(false);
   const getDetails = useContext(userContext);
+
+  console.log('rendering',getDetails?.userDetails?.degree);
 
   const blankImageUrl = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='130px'%3E%3Crect width='100%' height='130px' fill='lightgrey'/%3E%3Ctext x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='15px' fill='black'%3EDocument Preview%3C/text%3E%3C/svg%3E`;
 
@@ -47,7 +57,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       email:getDetails?.userDetails?.email || '',
       mobile:getDetails?.userDetails?.mobile || '',
       whatsApp_number:getDetails?.userDetails?.whatsApp_number || '',
-      gender:getDetails?.userDetails?.gender,
+      gender:getDetails?.userDetails?.gender || '',
       designation:getDetails?.userDetails?.designation || '',
       degree:getDetails?.userDetails?.degree || '',
       last_occupation:getDetails?.userDetails?.last_occupation || '',
@@ -61,6 +71,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       family_yearly_income:getDetails?.userDetails?.family_yearly_income || '',
       profilePhoto:getDetails?.userDetails?.profilePhoto || '',
       profilePhotoPreview:"",
+      role:getDetails?.userDetails?.role,
     }
   );
 
@@ -74,6 +85,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       bankName:getDetails?.userDetails?.bankName || '',
       accountNumber:getDetails?.userDetails?.accountNumber || '',
       ifscCode:getDetails?.userDetails?.ifscCode || '',
+      role:getDetails?.userDetails?.role,
     }
   );
 
@@ -83,17 +95,18 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       panNumber:getDetails?.userDetails?.panNumber || '',
       passportNumber:getDetails?.userDetails?.passportNumber || '',
       drivingLicenseNumber:getDetails?.userDetails?.drivingLicenseNumber || '',
-      aadhaarCardFrontImage:getDetails?.userDetails?.aadhaarCardFrontImage || '',
-      aadhaarCardBackImage:getDetails?.userDetails?.aadhaarCardBackImage || '',
-      panCardFrontImage:getDetails?.userDetails?.panCardFrontImage || '',
-      passportPhoto:getDetails?.userDetails?.passportPhoto || '',
-      addressProofDocument:getDetails?.userDetails?.addressProofDocument || '',
+      aadhaarCardFrontImage:getDetails?.userDetails?.aadhaarCardFrontImage || null,
+      aadhaarCardBackImage:getDetails?.userDetails?.aadhaarCardBackImage || null,
+      panCardFrontImage:getDetails?.userDetails?.panCardFrontImage || null,
+      passportPhoto:getDetails?.userDetails?.passportPhoto || null,
+      addressProofDocument:getDetails?.userDetails?.addressProofDocument || null,
       aadhaarCardFrontPreview:"",
       aadhaarCardBackPreview:"",
       panCardFrontPreview:"",
       passportPhotoPreview:"",
       addressProofDocumentPreview:"",
       KYCStatus:getDetails?.userDetails?.KYCStatus || '',
+      role:getDetails?.userDetails?.role,
     }
   );
 
@@ -102,7 +115,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   // console.log(formStateKYC)
 
   async function formSubmit(data,section){
-    console.log(data)
+    // console.log(data)
     try{
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
@@ -110,6 +123,10 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
         formData.append(key, data[key])
       });
       if(section==="KYC Details"){
+        if(!formStateKYC.aadhaarNumber || !formStateKYC.panNumber || 
+          !formStateKYC.aadhaarCardFrontImage || !formStateKYC.aadhaarCardBackImage ||
+          !formStateKYC.panCardFrontImage || !formStateKYC.passportPhoto || !formStateKYC.addressProofDocument
+          ) return openErrorSB("KYC Details","Please upload the required fields.")
         formData.append("KYCStatus","Pending Approval")
         setFormStateKYC(formStateKYC.KYCStatus,"Pending Approval")
       }
@@ -124,71 +141,111 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
         body: formData 
     });
       let response = await res.json()
-      console.log('response', response);
+      // console.log('response', response);
       if(response.status === 'success'){
-        openSuccessSB(section)
+        getDetails.setUserDetail(response.data);
+        console.log("Response: ",response.data,data);
+        setFormStateKYC(prev=>({...prev, aadhaarCardBackImage:response.data?.aadhaarCardBackImage??'', 
+        aadhaarCardFrontImage: response.data?.aadhaarCardFrontImage??'', panCardFrontImage: response.data?.panCardFrontImage??'',
+        addressProofDocument: response.data?.addressProofDocument??'', passportPhoto: response.data?.passportPhoto??''
+      }));
+        openSuccessSB(section,`Your ${section} updated successfully`)
         // window.alert("Personal Details Updated")
       }
       
     }catch(e){
-      console.log(e);
+      // console.log(e);
     }
   }
 
   const handleFileSelect = (event,fieldName) => {
-    console.log(event)
-    const selectedFile = event.target.files[0];
-    console.log("Selected file:", selectedFile);
+    console.log("Event: ",event)
+    if(!event && fieldName === "addressProofDocument")
+    {
+        setFormStateKYC(prevState => ({
+          ...prevState,
+          addressProofDocument:event,
+        }))
+    }
+    if(!event && fieldName === "aadhaarCardFrontImage")
+    {
+        setFormStateKYC(prevState => ({
+          ...prevState,
+          aadhaarCardFrontImage:event,
+        }))
+    }
+    if(!event && fieldName === "aadhaarCardBackImage")
+    {
+        setFormStateKYC(prevState => ({
+          ...prevState,
+          aadhaarCardBackImage:event,
+        }))
+    }
+    if(!event && fieldName === "panCardFrontImage")
+    {
+        setFormStateKYC(prevState => ({
+          ...prevState,
+          panCardFrontImage:event,
+        }))
+    }
+    if(!event && fieldName === "passportPhoto")
+    {
+        setFormStateKYC(prevState => ({
+          ...prevState,
+          passportPhoto:event,
+        }))
+    }
+    // const selectedFile = event.target.files[0];
+    const selectedFile = event;
+    // console.log("Selected file:", selectedFile);
     
     if (selectedFile) {
       const reader = new FileReader();
       reader.onload = () => {
         const fileDataUrl = reader.result;
+        const fileName = selectedFile.name;
+        console.log("File Name: ",selectedFile.name)
         const fileBlob = dataURLtoBlob(fileDataUrl);
         const newFile = new File([fileBlob], selectedFile.name, { type: selectedFile.type });
-        // console.log("New file object:", newFile);
+        console.log("New file object:", newFile);
         console.log(reader.result);
+        console.log("setting reader.result")
+        const previewURL = URL.createObjectURL(selectedFile)
         if(fieldName === "profilePhoto"){
           setFormStatePD(prevState => ({
             ...prevState,
-            profilePhotoPreview: reader.result,
-            profilePhoto:event.target.files[0],
+            profilePhoto:event,
           }));
           setProfilePhoto(reader.result);
         }
         if(fieldName === "aadhaarCardFront"){
           setFormStateKYC(prevState => ({
             ...prevState,
-            aadhaarCardFrontPreview: reader.result,
-            aadhaarCardFrontImage:event.target.files[0],
+            aadhaarCardFrontImage:event,
           }))
         }
         if(fieldName === "aadhaarCardBack"){
           setFormStateKYC(prevState => ({
             ...prevState,
-            aadhaarCardBackPreview: reader.result,
-            aadhaarCardBackImage:event.target.files[0],
+            aadhaarCardBackImage:event,
           }))
         }
         if(fieldName === "panCardFront"){
           setFormStateKYC(prevState => ({
             ...prevState,
-            panCardFrontPreview: reader.result,
-            panCardFrontImage:event.target.files[0],
+            panCardFrontImage:event,
           }))
         }
         if(fieldName === "passportPhoto"){
           setFormStateKYC(prevState => ({
             ...prevState,
-            passportPhotoPreview: reader.result,
-            passportPhoto:event.target.files[0],
+            passportPhoto:event,
           }))
         }
         if(fieldName === "addressProofDocument"){
           setFormStateKYC(prevState => ({
             ...prevState,
-            addressProofDocument: reader.result,
-            addressProofDocument:event.target.files[0],
+            addressProofDocument:event,
           }))
         }
         
@@ -199,7 +256,9 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
     }
   };
   
-
+  console.log("Address Prrof Doc Name: ",formStateKYC?.addressProofDocument?.name)
+  console.log("rending state set for preview")
+  console.log("Preview for Aadhaar Card Front: ",formStateKYC.aadhaarCardFrontPreview)
 
   // Helper function to convert data URL to Blob object
   function dataURLtoBlob(dataUrl) {
@@ -226,7 +285,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       setFormStateKYC(prevState => ({
         ...prevState,
         aadhaarCardFrontPreview: "",
-        aadhaarCardFrontImage:'',
+        // aadhaarCardFrontImage:'',
       }))
     }
     if(fieldPreview === "aadhaarCardBack"){
@@ -265,18 +324,18 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   const [content,setContent] = useState('')
  
   const [successSB, setSuccessSB] = useState(false);
-  const openSuccessSB = (value) => {
+  const openSuccessSB = (value,content) => {
     if(value === "Personal Details"){
-        setTitle("Personal Details");
-        setContent("Your personal details are updated now.");
+        setTitle(value);
+        setContent(content);
     };
     if(value === "Bank Details"){
-      setTitle("Bank Details");
-      setContent("Your bank details are updated now.");
+      setTitle(value);
+      setContent(content);
     };
     if(value === "KYC Details"){
-      setTitle("KYC Details");
-      setContent("Your KYC details are submitted for approval.");
+      setTitle(value);
+      setContent(content);
     };
     setSuccessSB(true);
   }
@@ -296,6 +355,50 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       bgWhite="info"
     />
   );
+
+  const [errorSB, setErrorSB] = useState(false);
+
+  const openErrorSB = (value,content) => {
+    if(value === "Personal Details"){
+        setTitle(value);
+        setContent(content);
+    };
+    if(value === "Bank Details"){
+      setTitle(value);
+      setContent(content);
+    };
+    if(value === "KYC Details"){
+      setTitle(value);
+      setContent(content);
+    };
+    setErrorSB(true);
+  }
+  const closeErrorSB = () => setErrorSB(false);
+  // console.log("Title, Content, Time: ",title,content,time)
+
+
+
+  const renderErrorSB = (
+    <MDSnackbar
+      color="error"
+      icon="warning"
+      title={title}
+      content={content}
+      open={errorSB}
+      onClose={closeErrorSB}
+      close={closeErrorSB}
+      bgWhite
+    />
+  );
+
+  console.log("Condition 1: ",formStateKYC.aadhaarCardBackImage ? formStateKYC.aadhaarCardBackImage : console.log(formStateKYC.aadhaarCardBackPreview))
+  console.log("Condition 2: ",formStateKYC.aadhaarCardBackPreview,blankImageUrl)
+
+  const [file, setFile] = React.useState(null)
+
+  const handleChange = (newFile) => {
+    setFile(newFile)
+  }
 
   return (
     <Card lg={12} sx={{ boxShadow: "none" }}>
@@ -415,26 +518,34 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                required
-                disabled={true}
-                id="outlined-required"
-                label="Gender"
-                defaultValue={formStatePD.gender}
-                fullWidth
-                onChange={(e) => {setFormStatePD(prevState => ({
-                  ...prevState,
-                  gender: e.target.value
-                }))}}
-              />
-          </Grid>
+                    <FormControl sx={{width: "100%" }}>
+                      <InputLabel id="demo-simple-select-autowidth-label">Gender *</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-autowidth-label"
+                        id="demo-simple-select-autowidth"
+                        value={formStatePD?.gender}
+                        disabled={!editablePD}
+                        required
+                        onChange={(e) => {setFormStatePD(prevState => ({
+                          ...prevState,
+                          gender: e.target.value
+                        }))}}
+                        label="Gender"
+                        sx={{ minHeight:43 }}
+                      >
+                        <MenuItem value="Male">Male</MenuItem>
+                        <MenuItem value="Female">Female</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 required
                 disabled={true}
                 id="outlined-required"
-                label="Designation"
+                label="Position"
                 defaultValue={formStatePD.designation}
                 fullWidth
                 onChange={(e) => {setFormStatePD(prevState => ({
@@ -552,7 +663,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 required
-                disabled={true}
+                disabled={!editablePD}
                 id="outlined-required"
                 label="Family Yearly Income"
                 defaultValue={formStatePD.family_yearly_income}
@@ -926,7 +1037,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
               <TextField
                 disabled={!editableKYC}
                 id="outlined-required"
-                label="Aadhaar Number"
+                label="Aadhaar Number *"
                 defaultValue={formStateKYC.aadhaarNumber}
                 fullWidth
                 onChange={(e) => {setFormStateKYC(prevState => ({
@@ -940,7 +1051,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
               <TextField
                 disabled={!editableKYC}
                 id="outlined-required"
-                label="PAN Number"
+                label="PAN Number *"
                 defaultValue={formStateKYC.panNumber}
                 fullWidth
                 onChange={(e) => {setFormStateKYC(prevState => ({
@@ -979,111 +1090,58 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           </Grid>
 
           <Grid item xs={12} md={6} xl={2.4}>
-              <MDButton variant="outlined" style={{fontSize:10}} size="small" fullWidth color={!editableKYC ? "secondary" : "success"} component="label">
-                Upload Aadhaar Front
-                <input 
-                hidden 
-                disabled={!editableKYC}
-                accept="image/*" 
-                type="file" 
-                // defaultValue={formStateKYC.aadhaarCardFrontImage}
-                onChange={(e)=>{handleFileSelect(e,"aadhaarCardFront");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    aadhaarCardFrontImage: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
+              <MuiFileInput 
+                value={formStateKYC.aadhaarCardFrontImage} 
+                placeholder="Click to upload"
+                label="Aadhaar Card Front"
+                onChange={(e)=>{handleFileSelect(e,"aadhaarCardFront")}}
+              />
           </Grid>
 
           <Grid item xs={12} md={6} xl={2.4}>
-              <MDButton variant="outlined" style={{fontSize:10}} size="small" fullWidth color={!editableKYC ? "secondary" : "success"} component="label">
-                Upload Aadhaar Back
-                <input 
-                hidden 
-                disabled={!editableKYC}
-                accept="image/*" 
-                type="file" 
-                // defaultValue={formStateKYC.aadhaarCardBackImage}
-                onChange={(e)=>{handleFileSelect(e,"aadhaarCardBack");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    aadhaarCardBackImage: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
+              <MuiFileInput 
+                value={formStateKYC.aadhaarCardBackImage} 
+                placeholder="Click to upload"
+                label="Aadhaar Card Back"
+                onChange={(e)=>{handleFileSelect(e,"aadhaarCardBack")}}
+              />
           </Grid>
 
           <Grid item xs={12} md={6} xl={2.4}>
-              <MDButton variant="outlined" style={{fontSize:10}} size="small" fullWidth color={!editableKYC ? "secondary" : "success"} component="label">
-                Upload PAN Card Front
-                <input 
-                hidden 
-                disabled={!editableKYC}
-                accept="image/*" 
-                type="file" 
-                // defaultValue={formStateKYC.panCardFrontImage}
-                onChange={(e)=>{handleFileSelect(e,"panCardFront");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    panCardFrontImage: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
+          <MuiFileInput 
+                value={formStateKYC.panCardFrontImage} 
+                placeholder="Click to upload"
+                label="PAN Card Photo"
+                onChange={(e)=>{handleFileSelect(e,"panCardFront")}}
+              />
           </Grid>
 
           <Grid item xs={12} md={6} xl={2.4}>
-              <MDButton variant="outlined" style={{fontSize:10}} fullWidth color={!editableKYC ? "secondary" : "success"} size="small" component="label">
-                Passport Size Photo
-                <input 
-                hidden 
-                disabled={!editableKYC}
-                accept="image/*" 
-                type="file" 
-                // defaultValue={formStateKYC.passportPhoto}
-                onChange={(e)=>{handleFileSelect(e,"passportPhoto");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    passportPhoto: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
+          <MuiFileInput 
+                value={formStateKYC.passportPhoto} 
+                placeholder="Click to upload"
+                label="Passport Size Photo"
+                onChange={(e)=>{handleFileSelect(e,"passportPhoto")}}
+              />
           </Grid>
           
           <Grid item xs={12} md={6} xl={2.4}>
-              <MDButton variant="outlined" style={{fontSize:10}} size="small" color={!editableKYC ? "secondary" : "success"} fullWidth component="label">
-                Address Proof Document
-                <input 
-                hidden 
-                disabled={!editableKYC}
-                accept="image/*" 
-                type="file" 
-                // defaultValue={formStateKYC.addressProofDocument}
-                onChange={(e)=>{handleFileSelect(e,"addressProofDocument");
-                  setFormStateKYC(prevState => ({
-                    ...prevState,
-                    addressProofDocument: e.target.files[0]
-                  })
-                  )}
-                }
-                />
-              </MDButton>
+              <MuiFileInput 
+                // value={formStateKYC.addressProofDocument} 
+                placeholder={formStateKYC.addressProofDocument ? formStateKYC.addressProofDocument.name  : "Click to upload"}
+                value={null}
+                label="Address Proof"
+                onChange={(e)=>{handleFileSelect(e,"addressProofDocument")}}
+                // InputLabelProps={{ style: { fontSize: '1px' } }}
+              />
           </Grid>
 
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
-                      style={{width:'100%',height:'130px'}} 
+                      style={{width:'100%',height:'130px', fontSize:15}} 
                       src={formStateKYC.aadhaarCardFrontImage ? formStateKYC.aadhaarCardFrontImage : formStateKYC.aadhaarCardFrontPreview ? formStateKYC.aadhaarCardFrontPreview : blankImageUrl} 
-                      alt="Passport Size Photo" 
+                      alt="Save to upload" 
                   />
                       {editableKYC && (
                         <button
@@ -1115,9 +1173,9 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
-                      style={{width:'100%',height:'130px'}} 
+                      style={{width:'100%',height:'130px', fontSize:15}} 
                       src={formStateKYC.aadhaarCardBackImage ? formStateKYC.aadhaarCardBackImage : formStateKYC.aadhaarCardBackPreview ? formStateKYC.aadhaarCardBackPreview : blankImageUrl} 
-                      alt="Passport Size Photo" 
+                      alt="Save to upload" 
                   />
                       {editableKYC && (
                         <button
@@ -1149,9 +1207,9 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
-                      style={{width:'100%',height:'130px'}} 
+                      style={{width:'100%',height:'130px', fontSize:15}} 
                       src={formStateKYC.panCardFrontImage ? formStateKYC.panCardFrontImage : formStateKYC.panCardFrontPreview ? formStateKYC.panCardFrontPreview : blankImageUrl} 
-                      alt="Passport Size Photo" 
+                      alt="Save to upload" 
                   />
                       {editableKYC && (
                         <button
@@ -1183,9 +1241,9 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
-                      style={{width:'100%',height:'130px'}} 
+                      style={{width:'100%',height:'130px', fontSize:15}} 
                       src={formStateKYC.passportPhoto ? formStateKYC.passportPhoto : formStateKYC.passportPhotoPreview ? formStateKYC.passportPhotoPreview : blankImageUrl} 
-                      alt="Passport Size Photo" 
+                      alt="Save to upload" 
                   />
                       {editableKYC && (
                         <button
@@ -1217,9 +1275,9 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
-                      style={{width:'100%',height:'130px'}} 
-                      src={formStateKYC.addressProofDocument ? formStateKYC.addressProofDocument : formStateKYC.addressProofDocumentPreview ? formStateKYC.addressProofDocumentPreview : blankImageUrl} 
-                      alt="Address Proof Document" 
+                      style={{width:'100%',height:'130px', fontSize:15}} 
+                      src={formStateKYC?.addressProofDocument?.url} 
+                      alt="Save to upload" 
                   />
                       {editableKYC && (
                         <button
@@ -1254,42 +1312,8 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
       <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
 
-      <MDBox pt={1} pb={2} px={2} lineHeight={1.25}>
-        <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Email Settings
-        </MDTypography>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!followsMe} onChange={() => setFollowsMe(followsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my daily P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={answersPost} onChange={() => setAnswersPost(!answersPost)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my weekly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-        <MDBox display="flex" alignItems="center" mb={0.5} ml={-1.5}>
-          <MDBox mt={0.5}>
-            <Switch checked={!mentionsMe} onChange={() => setMentionsMe(mentionsMe)} />
-          </MDBox>
-          <MDBox width="80%" ml={0.5}>
-            <MDTypography variant="button" fontWeight="regular" color="text">
-              Email me my monthly P&L report
-            </MDTypography>
-          </MDBox>
-        </MDBox>
-      </MDBox>
       {renderSuccessSB}
+      {renderErrorSB}
     </Card>
   );
 }
