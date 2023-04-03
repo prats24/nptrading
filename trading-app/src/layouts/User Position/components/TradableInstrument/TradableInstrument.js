@@ -118,14 +118,6 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
     })
   }, [reRender])
 
-  // let writeText = () => {
-
-
-  // }
-  // function writeText() {
-
-  // }
-
 
   function sendSearchReq(e) {
     // let newData += data

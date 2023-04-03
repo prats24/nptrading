@@ -270,7 +270,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
       </MDBox>
       : 
       <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}}>
-        {"BUY"}
+        B
       </MDButton>}
       <div>
         <Dialog

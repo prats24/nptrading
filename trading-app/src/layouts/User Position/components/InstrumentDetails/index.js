@@ -292,7 +292,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
                 <td style={styleTD} >INSTRUMENT</td>
                 <td style={styleTD} >LTP</td>
                 <td style={styleTD} >CHANGE(%)</td>
-                <td style={styleTD} >CHART</td>
+                {/* <td style={styleTD} >CHART</td> */}
                 <td style={styleTD} >BUY</td>
                 <td style={styleTD} >SELL</td>
                 <td style={styleTD} >REMOVE</td>
@@ -312,10 +312,10 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
                     last_price={elem.last_price.props.children}
                     change={elem.change.props.children}
                   />
-                  <td style={styleTD} >{elem.chart.props.children}</td>
-                  <td style={{textAlign: "center"}} >{elem.buy}</td>
-                  <td style={{textAlign: "center"}} >{elem.sell}</td>
-                  <td style={{textAlign: "center"}} >{elem.remove}</td>
+                  {/* <td style={styleTD} >{elem.chart.props.children}</td> */}
+                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.buy}</td>
+                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.sell}</td>
+                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.remove}</td>
       
               </tr>
 
