@@ -286,7 +286,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
         <TableContainer component={Paper}>
           <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
             <thead>
-              <tr style={{borderBottom: "1px solid grey"}}>
+              <tr style={{borderBottom: "1px solid #D3D3D3"}}>
                 <td style={styleTD}>CONTRACT DATE</td>
                 <td style={styleTD} >SYMBOL</td>
                 <td style={styleTD} >INSTRUMENT</td>
@@ -303,7 +303,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
               {instrumentDetailArr.map((elem)=>{
                 return(
               <tr
-              style={{borderBottom: "1px solid grey"}} key={elem.instrumentToken.props.children}
+              style={{borderBottom: "1px solid #D3D3D3"}} key={elem.instrumentToken.props.children}
               >
                   <InstrumentComponent 
                     contractDate={elem.contractDate.props.children}
