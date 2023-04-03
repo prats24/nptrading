@@ -168,11 +168,9 @@ function Cover() {
   console.log(data.status);
   if(data.status === "Success"){ 
     setShowConfirmation(false)
-    console.log("Going to call Open Success SB")
     return openSuccessSB("Account Created",data.message);
   }else{
-      console.log("Going to call Open Info SB")
-      return openInfoSB("Already a User",data.message);
+      return openInfoSB("Error",data.message);
   }
 
   }
@@ -180,7 +178,6 @@ function Cover() {
   const resendOTP = async () => {
   
       setTimerActive(true);
-      // console.log("Active timer set to true")
       setResendTimer(30);
     
     const res = await fetch(`${baseUrl}api/v1/resendotp`, {

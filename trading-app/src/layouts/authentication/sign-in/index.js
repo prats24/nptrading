@@ -16,25 +16,33 @@ import MuiLink from "@mui/material/Link";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+import IconButton from "@mui/material/IconButton";
+import Icon from "@mui/material/Icon";
+import { InputAdornment } from '@mui/material';
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import MDInput from "../../../components/MDInput";
+// import MDIconButton from "../../../components/MDIn";
 import MDButton from "../../../components/MDButton";
+
 
 // Authentication layout components
 import BasicLayout from "../components/BasicLayout";
 
 
 // Images
- import bgImage from "../../../assets/images/trading.jpg";
+import bgImage from "../../../assets/images/trading.jpg";
 import { userContext } from '../../../AuthContext';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
   const [userId, setEmail] = useState(false);
   const [pass, setPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   let [invalidDetail, setInvalidDetail] = useState();
 
   const setDetails = useContext(userContext);
@@ -42,6 +50,10 @@ function Basic() {
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
+
+  function handleTogglePasswordVisibility() {
+    setShowPassword(!showPassword);
+  }
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
@@ -69,6 +81,12 @@ function Basic() {
       } catch(err){
           //console.log("Fail to fetch data of user");
           //console.log(err);
+      }
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        logInButton(event);
       }
     }
 
@@ -121,6 +139,7 @@ function Basic() {
       navigate("/resetpassword");
     }
 
+
   return ( 
     <BasicLayout image={bgImage}>
       <Card>
@@ -149,7 +168,22 @@ function Basic() {
               <MDInput type="email" label="Email" onChange={handleEmailChange} fullWidth />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" onChange={handlePasswordChange} fullWidth />
+              <MDInput 
+                type={showPassword ? "text" : "password"} 
+                label="Password" 
+                onChange={handlePasswordChange} 
+                fullWidth
+                onKeyPress={handleKeyPress}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end" sx={{cursor:"pointer"}}>
+                      <div onClick={handleTogglePasswordVisibility} >
+                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                      </div>
+                    </InputAdornment>
+                  )
+                }}
+              />
             </MDBox>
 
             <MDBox mt={3} mb={1} textAlign="center">
