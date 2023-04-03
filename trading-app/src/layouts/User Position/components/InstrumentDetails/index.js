@@ -8,7 +8,7 @@ import { TiMediaRecord } from "react-icons/ti";
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-
+import { Tooltip } from '@mui/material';
 
 
 // Material Dashboard 2 React components
@@ -313,9 +313,15 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
                     change={elem.change.props.children}
                   />
                   {/* <td style={styleTD} >{elem.chart.props.children}</td> */}
-                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.buy}</td>
-                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.sell}</td>
-                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.remove}</td>
+                  <Tooltip title="Buy" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.buy}</td>
+                  </Tooltip>
+                  <Tooltip title="Sell" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.sell}</td>
+                  </Tooltip>
+                  <Tooltip title="Remove Instrument" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.remove}</td>
+                  </Tooltip>
       
               </tr>
 

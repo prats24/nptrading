@@ -13,6 +13,7 @@ import Grid from "@mui/material/Grid";
 import MDButton from "../../../../components/MDButton";
 import MDSnackbar from "../../../../components/MDSnackbar";
 import { userContext } from "../../../../AuthContext";
+import { Tooltip } from '@mui/material';
 
 
 
@@ -358,16 +359,33 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
                   <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
                   <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
-                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
-                      <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                    </MDButton></Grid>
-                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} >
-                      <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                    </MDButton></Grid>
+                    <Grid>
+                      <Tooltip title="Buy" placement="top">
+                        <MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
+                          <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
+                        </MDButton>
+                      </Tooltip>
+                    </Grid>
+
+                    <Grid>
+                      <Tooltip title="Sell" placement="top">
+                        <MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} >
+                          <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
+                        </MDButton>
+                      </Tooltip>
+                    </Grid>
                     {perticularInstrumentData.length ?
-                    <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
+                    <Grid lg={2.2}>
+                      <Tooltip title="Remove Instrument" placement="top">
+                        <MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton>
+                      </Tooltip>
+                    </Grid>
                     :
-                    <Grid lg={2.2}><MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton></Grid>
+                    <Grid lg={2.2}>
+                      <Tooltip title="Add Instrument" placement="top">
+                        <MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton>
+                      </Tooltip>
+                    </Grid>
                     }
                   </Grid>
                 </Grid>

@@ -6,6 +6,7 @@ import { NetPnlContext } from '../../../PnlContext';
 import { Typography } from "@mui/material";
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
+import { Tooltip } from '@mui/material';
 
 // Material Dashboard 2 React components
 
@@ -221,7 +222,9 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         );
       }
       obj.exit = (
-        < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
+        // <Tooltip title="Exit Your Position" placement="top">
+          < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
+        // </Tooltip>
       );
       obj.buy = (
         <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
@@ -236,6 +239,15 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
       rows.push(obj);
     })
 
+    rows.sort((a,b)=>{
+      if(a.Quantity.props.children > b.Quantity.props.children){
+        return -1
+      }
+      if(a.Quantity.props.children < b.Quantity.props.children){
+        return 1
+      }
+      return 1
+    })
     console.log("rows value", rows)
 
   return (
@@ -300,9 +312,15 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
                     grossPnl={elem?.grossPnl?.props?.children}
                     change={elem?.change?.props?.children}
                   />
-                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.exit}</td>
-                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.buy}</td>
-                  <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.sell}</td>
+                  <Tooltip title="Exit Your Position" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.exit}</td>
+                  </Tooltip>
+                  <Tooltip title="Buy" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.buy}</td>
+                  </Tooltip>
+                  <Tooltip title="Sell" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem?.sell}</td>
+                  </Tooltip>
       
               </tr>
               </>
