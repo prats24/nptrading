@@ -309,10 +309,10 @@ function MockOverallCompantPNL({socket}) {
       (<MDBox>
         <DataTable
           table={{ columns, rows }}
-          showTotalEntries={false}
+          showTotalEntries={true}
           isSorted={false}
           noEndBorder
-          entriesPerPage={false}
+          // entriesPerPage={false}
         />
       </MDBox>
       )}

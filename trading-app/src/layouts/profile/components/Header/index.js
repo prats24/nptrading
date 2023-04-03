@@ -29,14 +29,15 @@ import Settings from "../PlatformSettings/Settings"
 import breakpoints from "../../../../assets/theme/base/breakpoints";
 
 // Images
-import burceMars from "../../../../assets/images/bruce-mars.jpg";
+import DefaultProfilePic from "../../../../assets/images/default-profile.png";
 import backgroundImage from "../../../../assets/images/trading.jpg";
+
 
 function Header({ children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   const [userDetail,setuserDetail] = useState([]);
-  const [profilePhoto,setProfilePhoto] = useState();
+  const [profilePhoto,setProfilePhoto] = useState(DefaultProfilePic);
   const getDetails = useContext(userContext);
   console.log("getDetails", getDetails)
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -108,7 +109,7 @@ function Header({ children }) {
         <Grid container spacing={3}>
           <Grid item>
             <MDAvatar 
-            src={!profilePhoto ? getDetails.userDetails.profilePhoto : profilePhoto} 
+            src={getDetails?.userDetails?.profilePhoto?.url ? getDetails?.userDetails?.profilePhoto?.url : profilePhoto} 
             alt="profile-image" size="xl" shadow="sm" />
           </Grid>
           <Grid item>

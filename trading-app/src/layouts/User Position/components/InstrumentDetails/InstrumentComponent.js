@@ -2,7 +2,7 @@
 import {memo} from 'react';
 
 
-function InstrumentComponent({last_price, change, contractDate, symbol, instrument, socket, instrumentToken}) {
+function InstrumentComponent({last_price, change, contractDate, symbol, instrument}) {
 
     let styleTD = {
         textAlign: "center",
@@ -15,10 +15,10 @@ function InstrumentComponent({last_price, change, contractDate, symbol, instrume
   return (
     <>
       <td style={styleTD} >{contractDate}</td>
-      <td style={styleTD} >{symbol}</td>
-      <td style={styleTD} >{instrument}</td>
-      <td style={styleTD} >{last_price}</td>
-      <td style={styleTD} >{change}</td>
+      <td style={{...styleTD, color: `${symbol.includes('CE') ? "green" : "red"}`}} >{symbol}</td>
+      <td style={{...styleTD, color: `${symbol.includes('CE') ? "green" : "red"}`}} >{instrument}</td>
+      <td style={{...styleTD, color: `${(change.includes('+')) ? "green" : "red"}`}} >{last_price}</td>
+      <td style={{...styleTD, color: `${(change.includes('+')) ? "green" : "red"}`}} >{change}</td>
     </>
   );
 }

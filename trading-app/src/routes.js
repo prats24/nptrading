@@ -29,6 +29,7 @@ import AnalyticsRoutes from './analyticsRoutes'
 import SignUp from './layouts/authentication/sign-up'
 import ResetPassword from './layouts/authentication/reset-password/cover'
 import Response from './layouts/authentication/sign-up/responseSubmit'
+import MyReferrals from "./layouts/referrals"
 
 
 // @mui icons
@@ -258,6 +259,15 @@ const routes = [
     icon: <InventoryIcon/>,
     route: "/userorders",
     component: <UserOrders />,
+  },
+  {
+    type: "collapse",
+    name: "My Referrals",
+    key: "myreferrals",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <PersonIcon/>,
+    route: "/myreferrals",
+    component: <MyReferrals />,
   },
   {
     type: "collapse",

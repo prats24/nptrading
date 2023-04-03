@@ -28,7 +28,7 @@ const disconnectTicker = () => {
 const subscribeTokens = async() => {
   getKiteCred.getAccess().then(async (data)=>{
     let tokens = await fetchData(data.getApiKey, data.getAccessToken);
-    ticker.subscribe(tokens);
+    ticker?.subscribe(tokens);
   });
 }
 

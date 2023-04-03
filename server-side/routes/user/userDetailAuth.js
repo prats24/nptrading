@@ -12,7 +12,7 @@ const sharp = require('sharp');
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
-if (file.mimetype.startsWith("image/") || file.mimetype.startsWith("application/")) {
+if (file.mimetype.startsWith("image/")) {
     cb(null, true);
 } else {
     cb(new Error("Invalid file type"), false);
@@ -38,15 +38,17 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
 });
 
+
 const resizePhoto = async (req, res, next) => {
     console.log('resize func');
-    console.log(req.files,req.body)
+    console.log("Uploaded Files: ",req.files)
     if (!req.files) {
       // no file uploaded, skip to next middleware
       console.log('no file');
       next();
       return;
     }
+    
     const { profilePhoto, aadhaarCardFrontImage, aadhaarCardBackImage, panCardFrontImage, 
         passportPhoto, addressProofDocument, incomeProofDocument } = (req.files);
 
@@ -492,12 +494,53 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
         );
 
         filteredBody.lastModifiedBy = req.user._id;
-        if((req).profilePhotoUrl) filteredBody.profilePhoto = (req).profilePhotoUrl;
-        if((req).aadhaarCardFrontImageUrl) filteredBody.aadhaarCardFrontImage = (req).aadhaarCardFrontImageUrl;
-        if((req).aadhaarCardBackImageUrl) filteredBody.aadhaarCardBackImage = (req).aadhaarCardBackImageUrl;
-        if((req).panCardFrontImageUrl) filteredBody.panCardFrontImage = (req).panCardFrontImageUrl;
-        if((req).passportPhotoUrl) filteredBody.passportPhoto = (req).passportPhotoUrl;
-        // if((req).addressProofDocumentUrl) filteredBody.addressProofDocument.url = (req).addressProofDocumentUrl;
+        console.log("Profile Photo Url: ",req.profilePhotoUrl)
+        // if((req).profilePhotoUrl) filteredBody.profilePhoto = (req).profilePhotoUrl;
+        // if((req).aadhaarCardFrontImageUrl) filteredBody.aadhaarCardFrontImage = (req).aadhaarCardFrontImageUrl;
+        // if((req).aadhaarCardBackImageUrl) filteredBody.aadhaarCardBackImage = (req).aadhaarCardBackImageUrl;
+        // if((req).panCardFrontImageUrl) filteredBody.panCardFrontImage = (req).panCardFrontImageUrl;
+        // if((req).passportPhotoUrl) filteredBody.passportPhoto = (req).passportPhotoUrl;
+        
+        if (req.profilePhotoUrl) {
+          if (!filteredBody.profilePhoto) {
+            filteredBody.profilePhoto = {};
+          }
+          filteredBody.profilePhoto.url = req.profilePhotoUrl;
+          filteredBody.profilePhoto.name = (req.files).profilePhoto[0].originalname;
+        }
+
+        if (req.aadhaarCardFrontImageUrl) {
+          if (!filteredBody.aadhaarCardFrontImage) {
+            filteredBody.aadhaarCardFrontImage = {};
+          }
+          filteredBody.aadhaarCardFrontImage.url = req.aadhaarCardFrontImageUrl;
+          filteredBody.aadhaarCardFrontImage.name = (req.files).aadhaarCardFrontImage[0].originalname;
+        }
+
+        if (req.aadhaarCardBackImageUrl) {
+          if (!filteredBody.aadhaarCardBackImage) {
+            filteredBody.aadhaarCardBackImage = {};
+          }
+          filteredBody.aadhaarCardBackImage.url = req.aadhaarCardBackImageUrl;
+          filteredBody.aadhaarCardBackImage.name = (req.files).aadhaarCardBackImage[0].originalname;
+        }
+
+        if (req.panCardFrontImageUrl) {
+          if (!filteredBody.panCardFrontImage) {
+            filteredBody.panCardFrontImage = {};
+          }
+          filteredBody.panCardFrontImage.url = req.panCardFrontImageUrl;
+          filteredBody.panCardFrontImage.name = (req.files).panCardFrontImage[0].originalname;
+        }
+
+        if (req.passportPhotoUrl) {
+          if (!filteredBody.passportPhoto) {
+            filteredBody.passportPhoto = {};
+          }
+          filteredBody.passportPhoto.url = req.passportPhotoUrl;
+          filteredBody.passportPhoto.name = (req.files).passportPhoto[0].originalname;
+        }
+
         if (req.addressProofDocumentUrl) {
           if (!filteredBody.addressProofDocument) {
             filteredBody.addressProofDocument = {};
@@ -523,6 +566,19 @@ router.patch('/userdetail/me', authController.protect, currentUser, uploadMultip
 
 
 });
+
+router.get("/myreferrals/:id", (req, res)=>{
+  //console.log(req.params)
+  const {id} = req.params
+  const referrals = UserDetail.find({referredBy : id})
+  .then((data)=>{
+      console.log(data)
+      return res.status(200).json({data : data, count: data.length});
+  })
+  .catch((err)=>{
+      return res.status(422).json({error : err})
+  })
+})
 
 module.exports = router;
 

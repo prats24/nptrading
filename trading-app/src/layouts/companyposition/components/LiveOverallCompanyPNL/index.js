@@ -308,10 +308,10 @@ if(tradeData.length != 0){
         (<MDBox>
           <DataTable
             table={{ columns, rows }}
-            showTotalEntries={false}
+            showTotalEntries={true}
             isSorted={false}
             noEndBorder
-            entriesPerPage={false}
+            // entriesPerPage={false}
           />
          </MDBox>
       )}

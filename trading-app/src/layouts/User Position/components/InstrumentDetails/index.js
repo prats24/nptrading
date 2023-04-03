@@ -8,7 +8,7 @@ import { TiMediaRecord } from "react-icons/ti";
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-
+import { Tooltip } from '@mui/material';
 
 
 // Material Dashboard 2 React components
@@ -238,7 +238,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   let content = "Instrument Removed"
   const renderSuccessSB = (
     <MDSnackbar
-      color="success"
+      color="error"
       icon="check"
       // title={title}
       content={content}
@@ -247,6 +247,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       onClose={closeSuccessSB}
       close={closeSuccessSB}
       bgWhite="info"
+      sx={{ borderLeft: '10px solid red', borderRadius: "15px" }}
     />
   );
 
@@ -285,13 +286,13 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
         <TableContainer component={Paper}>
           <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
             <thead>
-              <tr style={{borderBottom: "1px solid grey"}}>
+              <tr style={{borderBottom: "1px solid #D3D3D3"}}>
                 <td style={styleTD}>CONTRACT DATE</td>
                 <td style={styleTD} >SYMBOL</td>
                 <td style={styleTD} >INSTRUMENT</td>
                 <td style={styleTD} >LTP</td>
                 <td style={styleTD} >CHANGE(%)</td>
-                <td style={styleTD} >CHART</td>
+                {/* <td style={styleTD} >CHART</td> */}
                 <td style={styleTD} >BUY</td>
                 <td style={styleTD} >SELL</td>
                 <td style={styleTD} >REMOVE</td>
@@ -302,7 +303,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
               {instrumentDetailArr.map((elem)=>{
                 return(
               <tr
-              style={{borderBottom: "1px solid grey"}} key={elem.instrumentToken.props.children}
+              style={{borderBottom: "1px solid #D3D3D3"}} key={elem.instrumentToken.props.children}
               >
                   <InstrumentComponent 
                     contractDate={elem.contractDate.props.children}
@@ -311,10 +312,16 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
                     last_price={elem.last_price.props.children}
                     change={elem.change.props.children}
                   />
-                  <td style={styleTD} >{elem.chart.props.children}</td>
-                  <td style={{textAlign: "center"}} >{elem.buy}</td>
-                  <td style={{textAlign: "center"}} >{elem.sell}</td>
-                  <td style={{textAlign: "center"}} >{elem.remove}</td>
+                  {/* <td style={styleTD} >{elem.chart.props.children}</td> */}
+                  <Tooltip title="Buy" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.buy}</td>
+                  </Tooltip>
+                  <Tooltip title="Sell" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.sell}</td>
+                  </Tooltip>
+                  <Tooltip title="Remove Instrument" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.remove}</td>
+                  </Tooltip>
       
               </tr>
 
