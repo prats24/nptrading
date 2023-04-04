@@ -3,6 +3,7 @@ import { useEffect, memo } from 'react';
 import axios from "axios"
 import uniqid from "uniqid"
 import { userContext } from "../../../../../AuthContext";
+import MDSnackbar from '../../../../../components/MDSnackbar';
 
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -44,7 +45,12 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   let tradeBy = getDetails.userDetails.name;
   let trader = getDetails.userDetails._id;
   let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
-
+  const [messageObj, setMessageObj] = useState({
+    color: '',
+    icon: '',
+    title: '',
+    content: ''
+  })
 
 
   let finalLot = maxLot/lotSize;
@@ -185,21 +191,25 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     //console.log("dataResp", dataResp)
     if (dataResp.status === 422 || dataResp.error || !dataResp) {
         //console.log(dataResp.error)
-        window.alert(dataResp.error);
+        // window.alert(dataResp.error);
+        openSuccessSB('error', dataResp.error)
         ////console.log("Failed to Trade");
-    } else {
-        if(dataResp.massage === "COMPLETE"){
+      } else {
+        if(dataResp.message === "COMPLETE"){
             // console.log(dataResp);
-            window.alert("Trade Succesfull Completed");
-        } else if(dataResp.massage === "REJECTED"){
+            openSuccessSB('complete', {symbol, Quantity})
+            // window.alert("Trade Succesfull Completed");
+        } else if(dataResp.message === "REJECTED"){
             // console.log(dataResp);
-            window.alert("Trade is Rejected due to Insufficient Fund");
-        } else if(dataResp.massage === "AMO REQ RECEIVED"){
+            openSuccessSB('reject', "Trade is Rejected due to Insufficient Fund")
+            // window.alert("Trade is Rejected due to Insufficient Fund");
+        } else if(dataResp.message === "AMO REQ RECEIVED"){
             // console.log(dataResp);
-            window.alert("AMO Request Recieved");
+            openSuccessSB('amo', "AMO Request Recieved")
+            // window.alert("AMO Request Recieved");
         } else{
-            // console.log("this is dataResp", dataResp)
-            window.alert(dataResp.message);
+          openSuccessSB('else', dataResp.message)
+          // window.alert(dataResp.message);
         }
     }
   }
@@ -248,6 +258,66 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     }else {
     }
   }
+
+
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = (value,content) => {
+    // console.log("Value: ",value)
+    if(value === "complete"){
+        messageObj.color = 'success'
+        messageObj.icon = 'check'
+        messageObj.title = "Trade Successfull";
+        messageObj.content = `Traded ${content.Quantity} of ${content.symbol}`;
+
+    };
+    if(value === "reject"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "REJECTED";
+      messageObj.content = content;
+    };
+    if(value === "amo"){
+      messageObj.color = 'info'
+      messageObj.icon = 'warning'
+      messageObj.title = "AMO Requested";
+      messageObj.content = content;
+    };
+    if(value === "else"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "REJECTED";
+      messageObj.content = content;
+    };
+    if(value === "error"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "Error";
+      messageObj.content = content;
+    };
+
+    setMessageObj(messageObj);
+    setSuccessSB(true);
+  }
+  const closeSuccessSB = () => setSuccessSB(false);
+  // console.log("Title, Content, Time: ",title,content,time)
+
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color= {messageObj.color}
+      icon= {messageObj.icon}
+      title={messageObj.title}
+      content={messageObj.content}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+      
+      sx={{ borderLeft: `10px solid ${messageObj.icon == 'check' ? "green" : "red"}`, borderRight: `10px solid ${messageObj.icon == 'check' ? "green" : "red"}`, borderRadius: "15px", width:"500px"}}
+    />
+  );
+
+
 
 
   return (
@@ -372,6 +442,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
 
       </Dialog>
+      {renderSuccessSB}
     </div>
   );
 }

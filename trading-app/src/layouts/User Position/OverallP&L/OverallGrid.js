@@ -27,7 +27,7 @@ import Sell from "../components/InstrumentDetails/data/SellModel"
 import OverallRow from './OverallRow';
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket, Render, setIsGetStartedClicked}) {
+function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
   console.log("rendering in userPosition: overallPnl")
   let styleTD = {
     textAlign: "center",
@@ -51,7 +51,7 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   const { updateNetPnl } = useContext(NetPnlContext);
 
   const getDetails = useContext(userContext);
-  const { reRender, setReRender } = Render
+  // const { reRender, setReRender } = Render
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   // const [liveDetail, setLiveDetail] = useState([]);
   const [marketData, setMarketData] = useState([]);

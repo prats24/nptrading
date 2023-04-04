@@ -139,7 +139,7 @@ exports.mockTrade = async (reqBody, res) => {
         //console.log("mockTradeDetails", mockTradeDetailsUser);
         mockTradeDetailsUser.save().then(()=>{
             console.log("sending response");
-            res.status(201).json({status: 'Complete', message: 'Trade Succesful'});
+            res.status(201).json({status: 'Complete', message: 'COMPLETE'});
         }).catch((err)=> {
             console.log("in err", err)
             // res.status(500).json({error:"Failed to enter data"})

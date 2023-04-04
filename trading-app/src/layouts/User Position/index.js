@@ -40,6 +40,50 @@ function UserPosition() {
     })
   }, []);
 
+  const memoizedStockIndex = useMemo(() => {
+    return <StockIndex socket={socket} />;
+  }, [socket]);
+
+  const handleSetIsGetStartedClicked = useCallback((value) => {
+    setIsGetStartedClicked(value);
+  }, []);
+
+  const memoizedSetReRender = useCallback((value) => {
+    setReRender(value);
+  }, []);
+
+  const memoizedTradableInstrument = useMemo(() => {
+    return <TradableInstrument
+      socket={socket}
+      reRender={reRender}
+      setReRender={memoizedSetReRender}
+      isGetStartedClicked={isGetStartedClicked}
+      setIsGetStartedClicked={handleSetIsGetStartedClicked}
+    />;
+  }, [socket, reRender, isGetStartedClicked, handleSetIsGetStartedClicked]);
+
+  const memoizedInstrumentDetails = useMemo(() => {
+    return <InstrumentDetails
+      socket={socket}
+      reRender={reRender}
+      setReRender={memoizedSetReRender}
+      // setReRender={}
+      // isGetStartedClicked={isGetStartedClicked}
+      setIsGetStartedClicked={handleSetIsGetStartedClicked}
+    />;
+  }, [socket, reRender, handleSetIsGetStartedClicked]);
+
+  const memoizedOverallPnl = useMemo(() => {
+    return <OverallGrid
+      socket={socket}
+      reRender={reRender}
+      setReRender={memoizedSetReRender}
+      // setReRender={}
+      // isGetStartedClicked={isGetStartedClicked}
+      setIsGetStartedClicked={handleSetIsGetStartedClicked}
+    />;
+  }, [socket, reRender, handleSetIsGetStartedClicked]);
+
 
 
   return (
@@ -48,16 +92,18 @@ function UserPosition() {
       <MDBox py={0}>
 
         {/* <StockIndex /> */}
-        <StockIndex socket={socket}/>
+        {/* <StockIndex socket={socket}/> */}
+        {memoizedStockIndex}
 
         {/* <MemoizedTradableInstrument /> */}
-        <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/>
-
+        {/* <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/> */}
+        {memoizedTradableInstrument}
 
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-              <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked} />
+              {memoizedInstrumentDetails}
+              {/* <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked} /> */}
             </Grid>
           </Grid>
         </MDBox>
@@ -65,7 +111,8 @@ function UserPosition() {
         <MDBox mt={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
-             <OverallGrid socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked}/>
+              {memoizedOverallPnl}
+             {/* <OverallGrid socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked}/> */}
             </Grid>
           </Grid>
         </MDBox>

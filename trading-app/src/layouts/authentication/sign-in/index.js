@@ -3,22 +3,11 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import OtpInput from 'react-otp-input';
-
-// react-router-dom components
-import { Link } from "react-router-dom";
+import MDSnackbar from "../../../components/MDSnackbar";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
 import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
-import IconButton from "@mui/material/IconButton";
-import Icon from "@mui/material/Icon";
 import { InputAdornment } from '@mui/material';
 
 // Material Dashboard 2 React components
@@ -51,6 +40,12 @@ function Basic() {
   const [resendTimer, setResendTimer] = useState(30); // Resend timer in seconds
   const [timerActive, setTimerActive] = useState(false);
   const [mobileOtp, setMobileOtp]=useState('');
+  const [messageObj, setMessageObj] = useState({
+    color: '',
+    icon: '',
+    title: '',
+    content: ''
+  })
 
   const setDetails = useContext(userContext);
   console.log(setDetails.userDetails);
@@ -180,7 +175,9 @@ function Basic() {
         if(data.status === 422 || data.error || !data){
             // window.alert(data.error);
             setInvalidDetail(`Mobile number incorrect`);
+
         }else{
+            openSuccessSB("otp sent", data.message);
             setOtpGen(true);
         }
 
@@ -258,10 +255,50 @@ function Basic() {
     if(data.status === 200 || data.status === 201){ 
         // openSuccessSB("OTP Sent",data.message);
     }else{
+
+      openSuccessSB('resent otp', data.message)
         // openInfoSB("Something went wrong",data.mesaage);
     }
-  }
+    }
 
+
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = (value,content) => {
+    // console.log("Value: ",value)
+    if(value === "otp sent"){
+        messageObj.color = 'info'
+        messageObj.icon = 'check'
+        messageObj.title = "OTP Sent";
+        messageObj.content = content;
+
+    };
+    if(value === "resent otp"){
+      messageObj.color = 'info'
+      messageObj.icon = 'check'
+      messageObj.title = "OTP Resent";
+      messageObj.content = content;
+    };
+
+    setMessageObj(messageObj);
+    setSuccessSB(true);
+  }
+  const closeSuccessSB = () => setSuccessSB(false);
+  // console.log("Title, Content, Time: ",title,content,time)
+
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color= {messageObj.color}
+      icon= {messageObj.icon}
+      title={messageObj.title}
+      content={messageObj.content}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+      sx={{ borderLeft: `10px solid ${"blue"}`, borderRadius: "15px"}}
+    />
+  );
 
 
 
@@ -362,7 +399,7 @@ function Basic() {
             {formType == 'email' && <MDBox mt={-1}>
               <MDTypography style={{
                 width:'fit-content', margin: 'auto', color:'#1A73E8', fontSize:14, cursor:'pointer', fontWeight:700
-                }} onClick={()=>{setFormType('mobile')}}>Login with OTP</MDTypography>
+                }} onClick={()=>{setFormType('mobile')}}>Login with Mobile</MDTypography>
             </MDBox>}
             {formType == 'mobile' && <MDBox mt={0}>
               <MDTypography style={{
@@ -377,7 +414,7 @@ function Basic() {
                 sign up
               </MDButton>
             </MDBox>
-
+                {renderSuccessSB}
           </MDBox>
         </MDBox>
       </Card>

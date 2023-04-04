@@ -31,7 +31,7 @@ import { marketDataContext } from "../../../../MarketDataContext";
 
 
 
-function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
+function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClicked}) {
   const marketDetails = useContext(marketDataContext)
   console.log("socket print", socket)
 
@@ -45,7 +45,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const { reRender, setReRender } = Render;
+  // const { reRender, setReRender } = Render;
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
   const [instrumentName, setInstrumentName] = useState("");

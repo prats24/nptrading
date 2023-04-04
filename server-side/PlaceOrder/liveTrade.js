@@ -371,7 +371,7 @@ exports.liveTrade = async (reqBody, res) => {
                 
                         // console.log("mockTradeDetails comapny", mockTradeDetails);
                         mockTradeDetails.save().then(()=>{
-                            // res.status(201).json({massage : "data enter succesfully"});
+                            // res.status(201).json({message : "data enter succesfully"});
                         }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
                     }).catch(err => {console.log(err, "fail company mock in placeorder")});
     
@@ -404,7 +404,7 @@ exports.liveTrade = async (reqBody, res) => {
                 
                         // console.log("mockTradeDetails USER", mockTradeDetailsUser);
                         mockTradeDetailsUser.save().then(()=>{
-                            // res.status(201).json({massage : "data enter succesfully"});
+                            // res.status(201).json({message : "data enter succesfully"});
                         }).catch((err)=> {
                             // res.status(500).json({error:"Failed to enter data"})
                         });
@@ -414,7 +414,7 @@ exports.liveTrade = async (reqBody, res) => {
     // dontSendResp = false then resopse will sent
                 setTimeout(()=>{
                     if(!isMissed && !dontSendResp){
-                        return res.status(201).json({massage : responseMsg, err: responseErr})
+                        return res.status(201).json({message : responseMsg, err: responseErr})
                     }
                 },0)
     
@@ -526,7 +526,7 @@ exports.liveTrade = async (reqBody, res) => {
                 if(!breakingLoop && i >= 5){
                     console.log("in the fifth if conditionfor reverse trade")
                     if(i === 5){
-                        res.status(400).json({massage : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
+                        res.status(400).json({message : `your trade of ${realSymbol} and quantity ${realQuantity} was not placed`})
                     }
                 
                     if(missedOrderId.length > 0){
@@ -755,7 +755,7 @@ exports.liveTrade = async (reqBody, res) => {
     
             // console.log("mockTradeDetails comapny", mockTradeDetails);
             mockTradeDetails.save().then(()=>{
-                // res.status(201).json({massage : "data enter succesfully"});
+                // res.status(201).json({message : "data enter succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
         }).catch(err => {console.log(err, "fail company mock in placeorder")});
 
@@ -790,7 +790,7 @@ exports.liveTrade = async (reqBody, res) => {
         
                 // console.log("mockTradeDetails USER", mockTradeDetailsUser);
                 mockTradeDetailsUser.save().then(()=>{
-                    // res.status(201).json({massage : "data enter succesfully"});
+                    // res.status(201).json({message : "data enter succesfully"});
                 }).catch((err)=> {
                     // res.status(500).json({error:"Failed to enter data"})
                 });
@@ -802,7 +802,7 @@ exports.liveTrade = async (reqBody, res) => {
         setTimeout(()=>{
             if(!checkingIsMissed){
                 console.log("sending resp to user")
-                return res.status(201).json({massage : responseMsg, err: responseErr})
+                return res.status(201).json({message : responseMsg, err: responseErr})
             }
         },0)
 
