@@ -364,7 +364,7 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
                     <Grid>
                       <Tooltip title="Buy" placement="top">
                         {/* <MDBox onClick={()=>{subscribeInstrumentFromBuySell(elem)}} > */}
-                          <BuyModel  reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true}/>
+                          <BuyModel  reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} expiry={elem.expiry}/>
                         {/* </MDBox> */}
                       </Tooltip>
                     </Grid>
@@ -372,7 +372,7 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
                     <Grid>
                       <Tooltip title="Sell" placement="top">
                         {/* <MDBox onClick={()=>{subscribeInstrumentFromBuySell(elem)}} > */}
-                          <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true}/>
+                          <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} expiry={elem.expiry}/>
                         {/* </MDBox> */}
                       </Tooltip>
                     </Grid>

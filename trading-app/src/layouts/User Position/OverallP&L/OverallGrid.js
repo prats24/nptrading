@@ -53,7 +53,7 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   const getDetails = useContext(userContext);
   const { reRender, setReRender } = Render
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-  const [liveDetail, setLiveDetail] = useState([]);
+  // const [liveDetail, setLiveDetail] = useState([]);
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
   const countPosition = {
@@ -62,7 +62,7 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
   };
   // const [render, setRender] = useState(true);
 
-  let liveDetailsArr = [];
+  // let liveDetailsArr = [];
   let totalTransactionCost = 0;
   let totalGrossPnl = 0;
   let totalRunningLots = 0;
@@ -111,16 +111,16 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
            );
 
            setTradeData(data);
-           data.map((elem)=>{
-             marketData.map((subElem)=>{
-                  console.log(subElem.instrument_token , elem._id.instrumentToken)
-                 if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
-                     liveDetailsArr.push(subElem)
-                 }
-             })
-           })
+        //    data.map((elem)=>{
+        //      marketData.map((subElem)=>{
+        //           console.log(subElem.instrument_token , elem._id.instrumentToken)
+        //          if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
+        //              liveDetailsArr.push(subElem)
+        //          }
+        //      })
+        //    })
  
-         setLiveDetail(liveDetailsArr);
+        //  setLiveDetail(liveDetailsArr);
 
       })();
 
@@ -137,24 +137,26 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
 
     tradeData.map((subelem, index)=>{
       let obj = {};
+      let liveDetail = marketData.filter((elem)=>{
+        console.log("elem", elem, subelem)
+        return subelem._id.instrumentToken == elem.instrument_token;
+      })
       totalRunningLots += Number(subelem.lots)
 
-      let updatedValue = (subelem.amount+(subelem.lots)*liveDetail[index]?.last_price);
+      let updatedValue = (subelem.amount+(subelem.lots)*liveDetail[0]?.last_price);
       totalGrossPnl += updatedValue;
 
       totalTransactionCost += Number(subelem.brokerage);
       let lotSize = (subelem._id.symbol).includes("BANKNIFTY") ? 25 : 50
       updateNetPnl(totalGrossPnl-totalTransactionCost,totalRunningLots);
-      // let perticularInstrumentData = instrumentData.filter((elem)=>{
-      //   console.log("elem", elem, subelem)
-      //   return subelem._id.instrumentToken == elem.instrumentToken;
-      // })
+
+
 
       
       const instrumentcolor = subelem._id.symbol.slice(-2) == "CE" ? "success" : "error"
       const quantitycolor = subelem.lots >= 0 ? "success" : "error"
       const gpnlcolor = updatedValue >= 0 ? "success" : "error"
-      const pchangecolor = (liveDetail[index]?.change) >= 0 ? "success" : "error"
+      const pchangecolor = (liveDetail[0]?.change) >= 0 ? "success" : "error"
       const productcolor =  subelem._id.product === "NRML" ? "info" : subelem._id.product == "MIS" ? "warning" : "error"
 
       obj.Product = (
@@ -181,16 +183,16 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         </MDTypography>
       );
 
-      if((liveDetail[index]?.last_price)){
+      if((liveDetail[0]?.last_price)){
         obj.last_price = (
           <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-            {"₹"+(liveDetail[index]?.last_price).toFixed(2)}
+            {"₹"+(liveDetail[0]?.last_price).toFixed(2)}
           </MDTypography>
         );
       } else{
         obj.last_price = (
           <MDTypography component="a" variant="caption" color="dark" fontWeight="medium">
-            {"₹"+(liveDetail[index]?.last_price)}
+            {"₹"+(liveDetail[0]?.last_price)}
           </MDTypography>
         );
       }
@@ -201,16 +203,16 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         </MDTypography>
       );
 
-      if((liveDetail[index]?.change)){
+      if((liveDetail[0]?.change)){
         obj.change = (
           <MDTypography component="a" variant="caption" color={pchangecolor} fontWeight="medium">
-            {(liveDetail[index]?.change).toFixed(2)+"%"}
+            {(liveDetail[0]?.change).toFixed(2)+"%"}
           </MDTypography>
         );
       } else{
         obj.change = (
           <MDTypography component="a" variant="caption" color={pchangecolor} fontWeight="medium">
-            {(((liveDetail[index]?.last_price-liveDetail[index]?.average_price)/liveDetail[index]?.average_price)*100).toFixed(2)+"%"}
+            {(((liveDetail[0]?.last_price-liveDetail[0]?.average_price)/liveDetail[0]?.average_price)*100).toFixed(2)+"%"}
           </MDTypography>
         );
       }
@@ -218,11 +220,11 @@ function OverallGrid({socket, Render, setIsGetStartedClicked}) {
         < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
       );
       obj.buy = (
-        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[0]?.last_price)?.toFixed(2)}/>
       );
       
       obj.sell = (
-        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[index]?.last_price)?.toFixed(2)}/>
+        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[0]?.last_price)?.toFixed(2)}/>
       );
 
       if(subelem.lots != 0){
