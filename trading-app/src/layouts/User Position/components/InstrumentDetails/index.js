@@ -46,9 +46,9 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   const { reRender, setReRender } = Render;
-  const [menu, setMenu] = useState(null);
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
+  const [instrumentName, setInstrumentName] = useState("");
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
 
@@ -128,7 +128,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
         return elem.instrumentToken === subelem.instrument_token
       })
-
+      
       const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
       const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
 
@@ -182,7 +182,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       );
 
       instrumentDetailObj.remove = (
-        <MDButton size="small" color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken)}}>
+        <MDButton size="small" sx={{marginRight:0.5,minWidth:2,minHeight:3, height: "30px"}} color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken, elem.instrument)}}>
           <RemoveCircleOutlineIcon  />
         </MDButton>
       );
@@ -206,8 +206,8 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   // }, [reRender, socket, marketDetails.marketData]);
 
 
-  async function removeInstrument(instrumentToken){
-    console.log("in remove")
+  async function removeInstrument(instrumentToken, instrument){
+    setInstrumentName(instrument)
     const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
       method: "PATCH",
       credentials:"include",
@@ -235,12 +235,13 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   }
 
 
-  let content = "Instrument Removed"
+  let title = "Instrument Removed"
+  let content = `${instrumentName} is removed from your watchlist`
   const renderSuccessSB = (
     <MDSnackbar
       color="error"
-      icon="check"
-      // title={title}
+      icon='error'
+      title={title}
       content={content}
       // dateTime={timestamp}
       open={successSB}
@@ -257,7 +258,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pl={2} pr={2} pt={2} pb={2}>
         <MDBox display="flex">
           <MDTypography variant="h6" gutterBottom>
-            Market Watchlist
+            My Watchlist
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
           </MDBox>

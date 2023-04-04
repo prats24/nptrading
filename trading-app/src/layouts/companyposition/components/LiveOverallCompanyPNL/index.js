@@ -191,7 +191,11 @@ if(tradeData.length != 0){
         );
       }
       //console.log(obj)
-      rows.push(obj);
+      if(subelem.lots != 0){
+        rows.unshift(obj);
+      } else{
+        rows.push(obj);
+      }
     })
 
 
@@ -237,6 +241,7 @@ if(tradeData.length != 0){
       </MDTypography>
     );
   
+    
     rows.push(obj);
 }
 
@@ -308,7 +313,7 @@ if(tradeData.length != 0){
         (<MDBox>
           <DataTable
             table={{ columns, rows }}
-            showTotalEntries={true}
+            showTotalEntries={false}
             isSorted={false}
             noEndBorder
             // entriesPerPage={false}

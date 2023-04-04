@@ -170,15 +170,6 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
   }, [getDetails])
 
-// useEffect(() => {
-//   return () => {
-//     if(marketDetails){
-//       marketDetails.socket.close();
-//     }
-//   }
-// }, [])
-
-
 
   async function sellFunction(e, uId) {
       e.preventDefault()
@@ -216,12 +207,6 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    // const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
-    // const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
-
-    // const { apiKey } = apiKeyParticular[0];
-    // const { accessToken } = accessTokenParticular[0];
-
     const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
         method: "POST",
         headers: {
@@ -262,14 +247,15 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
   return (
     <div>
-      {fromUserPos ? 
+      {/* {fromUserPos ? 
       <MDBox color="light" onClick={handleClickOpen}>
         S
       </MDBox>
-      : 
-      <MDButton size="small" variant="contained" color="error" onClick={handleClickOpen} sx={{margin: "5px"}}>
+      :  */}
+      <MDButton size="small" sx={{marginRight:0.5,minWidth:2,minHeight:3}} color="error" onClick={handleClickOpen} >
         S
-      </MDButton>}
+      </MDButton>
+      {/* } */}
       <Dialog
         fullScreen={fullScreen}
         open={open}

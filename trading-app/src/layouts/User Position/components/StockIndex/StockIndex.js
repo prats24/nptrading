@@ -112,9 +112,9 @@ console.log("finalArr", finalArr)
                     return (
                         <Item key={e.elevation.props.children} elevation={e.elevation.props.children}>           
                         <MDBox m={0.5} fontWeight={700}>{e.instrument.props.children}</MDBox>
-                        <MDBox m={0.5} fontWeight={700} color={e.percentageChange.props.children > 0 ? "success" : "error"}>{e.ltp.props.children>=0 ? '+₹' : '-₹'}{Math.abs(e.ltp.props.children)}</MDBox>
-                        <MDBox ml={0.5} fontWeight={700} mr={0.5} mt={0.5} mb={0.2} fontSize={10} color={e.valueChange.props.children > 0 ? "success" : "error"}>{e.valueChange.props.children>=0 ? '+₹' : '-₹'}{Math.abs(e.valueChange.props.children)}</MDBox>
-                        <MDBox ml={0.5} fontWeight={700} mr={0.5} mt={0.5} mb={0.2} fontSize={10} color={e.percentageChange.props.children > 0 ? "success" : "error"}>({e.percentageChange.props.children>0 ? '+' : ''}{e.percentageChange.props.children}%)</MDBox>
+                        <MDBox m={0.5} fontWeight={700} color={e.percentageChange.props.children >= 0 ? "success" : "error"}>{e.ltp.props.children>=0 ? '+₹' : '-₹'}{Math.abs(e.ltp.props.children).toFixed(2)}</MDBox>
+                        <MDBox ml={0.5} fontWeight={700} mr={0.5} mt={0.5} mb={0.2} fontSize={10} color={e.valueChange.props.children >= 0 ? "success" : "error"}>{e.valueChange.props.children>=0 ? '+₹' : '-₹'}{Math.abs(e.valueChange.props.children).toFixed(2)}</MDBox>
+                        <MDBox ml={0.5} fontWeight={700} mr={0.5} mt={0.5} mb={0.2} fontSize={10} color={e.percentageChange.props.children >= 0 ? "success" : "error"}>({e.percentageChange.props.children>0 ? '+' : ''}{e.percentageChange.props.children}%)</MDBox>
                         </Item>
                     )})}
                     <Item elevation={2}>           

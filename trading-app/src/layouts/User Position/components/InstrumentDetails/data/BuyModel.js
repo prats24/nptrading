@@ -213,15 +213,8 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   }
 
   async function placeOrder() {
-    let date = new Date();
-    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = buyFormDetails;
-    // const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
-    // const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
-
-    // const { apiKey } = apiKeyParticular[0];
-    // const { accessToken } = accessTokenParticular[0];
 
     const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
         method: "POST",
@@ -260,18 +253,18 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     }
   }
 
-//size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} 
 
   return (
     <div>
-      {fromUserPos ? 
-      <MDBox color="light" onClick={handleClickOpen}>
+      {/* {!fromUserPos ? 
+      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}} sx={{margin: "5px"}}>
         B
-      </MDBox>
-      : 
-      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}}>
+      </MDButton>
+      :  */}
+      <MDButton  size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={handleClickOpen} >
         B
-      </MDButton>}
+      </MDButton>
+      {/* } */}
       <div>
         <Dialog
           fullScreen={fullScreen}

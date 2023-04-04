@@ -494,7 +494,7 @@ router.get("/getavgpricemocktradeparticularuser/:email", async(req, res)=>{
 router.get("/getoverallpnlmocktradeparticularusertoday/:email", async(req, res)=>{
     const {email} = req.params
     let date = new Date();
-    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     
     let pnlDetails = await MockTradeDetails.aggregate([
         {

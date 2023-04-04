@@ -193,8 +193,14 @@ function MockOverallCompantPNL({socket}) {
           </MDTypography>
         );
       }
+
+      if(subelem.lots != 0){
+        rows.unshift(obj);
+      } else{
+        rows.push(obj);
+      }
       //console.log(obj)
-      rows.push(obj);
+      // rows.push(obj);
     })
 
 
@@ -309,7 +315,7 @@ function MockOverallCompantPNL({socket}) {
       (<MDBox>
         <DataTable
           table={{ columns, rows }}
-          showTotalEntries={true}
+          showTotalEntries={false}
           isSorted={false}
           noEndBorder
           // entriesPerPage={false}

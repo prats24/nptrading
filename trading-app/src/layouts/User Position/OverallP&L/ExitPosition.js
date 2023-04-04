@@ -28,7 +28,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
 function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
-  console.log("rendering in userPosition/overall: exitPosition")
+  console.log("rendering in userPosition/overall: exitPosition", quantity)
 
     let checkBuyOrSell ;
     if(quantity > 0){
@@ -230,10 +230,10 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
 
   return (
     <div>
+ {/* sx={{margin: "5px"}} */}
 
-
-    <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}} onClick={handleClickOpen}>
-        Exit
+    <MDButton size="small" sx={{marginRight:0.5,minWidth:2,minHeight:3}} color="info" onClick={handleClickOpen}> 
+        E
     </MDButton>
     <div>
       <Dialog
