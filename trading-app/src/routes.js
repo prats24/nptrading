@@ -53,7 +53,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import WalletIcon from '@mui/icons-material/Wallet';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DBEntry from "./layouts/InsertData/DBEntry";
-
+import Referral from "./layouts/refferal-programme";
 
 const routes = [
   {
@@ -64,6 +64,7 @@ const routes = [
     route: "/admindashboard",
     component: <AdminDashboard />,
   },
+
   {
     // type: "collapse",
     // name: "Company Dashboard",
@@ -139,6 +140,15 @@ const routes = [
     route: "/algoposition",
     component: <AlgoPosition />,
   },
+
+  // {
+  //   type: "collapse",
+  //   name: "Referral Programme",
+  //   key: "referral",
+  //   icon: <DashboardIcon/>,
+  //   route: "/admindashboard",
+  //   component: <Referral />,
+  // },
   
   {
     type: "collapse",
