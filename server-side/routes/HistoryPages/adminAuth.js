@@ -15,10 +15,25 @@ const dailyPnlDataController = require("../../controllers/dailyPnlDataController
 const traderwiseDailyPnlController = require("../../controllers/traderwiseDailyPnlController")
 const DailyPNLData = require("../../models/InstrumentHistoricalData/DailyPnlDataSchema")
 const TraderDailyPnlData = require("../../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
-
+const UserDetail = require("../../models/User/userDetailSchema");
 
 router.get("/tradableInstrument", async (req, res)=>{
   await TradableInstrument.tradableInstrument();
+})
+
+router.get("/updateName", async (req, res)=>{
+  let data = await UserDetail.updateMany(
+    {},
+    [
+      {
+        $set: {
+          first_name: { $arrayElemAt: [ { $split: [ "$name", " " ] }, 0 ] },
+          last_name: { $arrayElemAt: [ { $split: [ "$name", " " ] }, 1 ] }
+        }
+      }
+    ]
+ )
+ console.log(data)
 })
 
 router.get("/dailyPnl", async (req, res)=>{

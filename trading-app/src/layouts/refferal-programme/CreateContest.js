@@ -44,7 +44,7 @@ const MenuProps = {
 
 
 function CreateContest({createContestForm, setCreateContestForm, oldObjectId, setOldObjectId}) {
-  // console.log("Old Object Id: ",oldObjectId)
+  console.log("Old Object Id: ",oldObjectId)
   const [isSubmitted,setIsSubmitted] = useState(false);
   const getDetails = useContext(userContext);
   const [contestData,setContestData] = useState([]);
@@ -78,57 +78,56 @@ const theme = useTheme();
 
 React.useEffect(()=>{
     // console.log("Inside Use Effect")
-    // console.log("Inside Use Effect Id & Old Object Id: ",id,oldObjectId)
-    axios.get(`${baseUrl}api/v1/contest/${id}`)
+    console.log("Inside Use Effect Id & Old Object Id: ",id,oldObjectId)
+    axios.get(`${baseUrl}api/v1/referrals/${id}`)
     .then((res)=>{
         setContestData(res?.data?.data);
         console.log("Contest Data in Create Contest Form: ",res?.data?.data)
-        setLinkedContestRule(res?.data?.data?.contestRule._id)
+        // setLinkedContestRule(res?.data?.data?.contestRule._id)
         // setId(res?.data?.data._id)
         setFormState({
-            contestName: res.data.data?.contestName || '',
-            maxParticipants: res.data.data?.maxParticipants || '',
-            minParticipants: res.data.data?.minParticipants || '',
-            stockType: res.data.data?.stockType || 'Options',
-            contestOn: res.data.data?.contestOn || '',
-            contestStartDate: res.data?.data?.contestStartDate || '',
-            contestEndDate: res.data?.data?.contestEndDate || '',
-            entryOpeningDate: res.data?.data?.entryOpeningDate || '',
-            entryClosingDate: res.data?.data?.entryClosingDate || '',
-            entryFee:{
-                amount : res.data?.data?.entryFee?.amount || '',
-                currency: res.data?.data?.entryFee?.currency || ''
+            referrralProgramName: res.data.data?.referrralProgramName || '',
+            referralProgramStartDate: res.data.data?.referralProgramStartDate || '',
+            referralProgramEndDate: res.data.data?.referralProgramEndDate || '',
+            rewardPerReferral: res.data.data?.rewardPerReferral || '',
+            currency: res.data.data?.currency || '',
+            // budget: res.data?.data?.budget || '',
+            termsAndConditions: res.data?.data?.termsAndConditions || '',
+            description: res.data?.data?.description || '',
+            // entryClosingDate: res.data?.data?.entryClosingDate || '',
+            performanceMetrics:{
+              impressions : res.data?.data?.performanceMetrics?.impressions || '',
+              clicks: res.data?.data?.performanceMetrics?.clicks || ''
             },
-            contestRule: res.data?.data?.contestRule || '',
-            status: res.data?.data?.status || 'Live',
-            createdBy: res.data?.data?.createdBy || '',
+            status: res.data?.data?.status || '',
+            // createdBy: res.data?.data?.createdBy || '',
             lastModifiedBy: res.data?.data?.lastModifiedBy || '',
             lastModifiedOn: res.data?.data?.lastModifiedOn || '',
           });
-            setTimeout(()=>{setIsLoading(false)},500) 
+            
         // setIsLoading(false)
     }).catch((err)=>{
         //window.alert("Server Down");
         return new Error(err);
     })
-
+    setTimeout(()=>{setIsLoading(false)},500) 
 },[id,isSubmitted])
 
-React.useEffect(()=>{
-  axios.get(`${baseUrl}api/v1/contestrule`)
-  .then((res)=>{
-    setContestRules(res.data);
-  }).catch((err)=>{
-      return new Error(err)
-  })
+// React.useEffect(()=>{
+//   axios.get(`${baseUrl}api/v1/contestrule`)
+//   .then((res)=>{
+//     setContestRules(res.data);
+//   }).catch((err)=>{
+//       return new Error(err)
+//   })
 
-  axios.get(`${baseUrl}api/v1/contestrule/${id}`)
-  .then((res)=>{
-    setContestRules(res.data);
-  }).catch((err)=>{
-      return new Error(err)
-  })
-},[isSubmitted])
+//   axios.get(`${baseUrl}api/v1/contestrule/${id}`)
+//   .then((res)=>{
+//     setContestRules(res.data);
+//   }).catch((err)=>{
+//       return new Error(err)
+//   })
+// },[isSubmitted])
 
 
 
@@ -138,21 +137,22 @@ setCreating(true)
 // console.log(formState)
 // console.log("New Object Id: ",newObjectId)
 
-if(
-    !formState?.contestName || !formState?.maxParticipants || !formState?.minParticipants || 
-    !formState?.stockType || !formState?.contestOn || !formState.contestRule || !formState?.contestStartDate || 
-    !formState?.contestEndDate || !formState?.entryOpeningDate || 
-    !formState?.entryClosingDate || !formState?.entryFee?.amount || 
-    !formState?.entryFee?.currency || !formState?.status){
+// if(
+//     !formState?.contestName || !formState?.maxParticipants || !formState?.minParticipants || 
+//     !formState?.stockType || !formState?.contestOn || !formState.contestRule || !formState?.contestStartDate || 
+//     !formState?.contestEndDate || !formState?.entryOpeningDate || 
+//     !formState?.entryClosingDate || !formState?.entryFee?.amount || 
+//     !formState?.entryFee?.currency || !formState?.status){
 
-    setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-    return openErrorSB("Missing Field","Please fill all the mandatory fields")
+//     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+//     return openErrorSB("Missing Field","Please fill all the mandatory fields")
 
-}
+// }
 // console.log("Is Submitted before State Update: ",isSubmitted)
 setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-const { contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status} = formState;
-const res = await fetch(`${baseUrl}api/v1/contest`, {
+console.log(formState);
+const { referrralProgramName, referralProgramStartDate, referralProgramEndDate, rewardPerReferral, currency, termsAndConditions, description, performanceMetrics:{impressions,clicks}, status} = formState;
+const res = await fetch(`${baseUrl}api/v1/referrals`, {
     method: "POST",
     credentials:"include",
     headers: {
@@ -160,7 +160,7 @@ const res = await fetch(`${baseUrl}api/v1/contest`, {
         "Access-Control-Allow-Credentials": true
     },
     body: JSON.stringify({
-        contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
+      referrralProgramName, referralProgramStartDate, referralProgramEndDate, rewardPerReferral, currency, termsAndConditions, description, performanceMetrics:{impressions,clicks}, status
     })
 });
 
@@ -182,21 +182,9 @@ if (data.status === 422 || data.error || !data) {
 }
 }
 
-async function onAddReward(e,childFormState,setChildFormState){
-  e.preventDefault()
-  setSaving(true)
-  // console.log("Reward Child Form State: ",childFormState)
-  // console.log("New Object Id in Add Reward Function: ",newObjectId)
-  if(!childFormState?.rankStart || !childFormState?.rankEnd || !childFormState?.reward 
-    || !childFormState?.currency
-    )
-  {
-      setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-      return openErrorSB("Missing Field","Please fill all the mandatory fields")
-  }
-  const {rankStart, rankEnd, reward, currency} = childFormState;
-
-  const res = await fetch(`${baseUrl}api/v1/contest/${newObjectId}`, {
+async function onEdit(e,formState){
+  const { referrralProgramName, referralProgramEndDate, status} = formState;
+  const res = await fetch(`${baseUrl}api/v1/referrals`, {
       method: "PATCH",
       credentials:"include",
       headers: {
@@ -204,21 +192,28 @@ async function onAddReward(e,childFormState,setChildFormState){
           "Access-Control-Allow-Credentials": true
       },
       body: JSON.stringify({
-        rewards:{rankStart, rankEnd, reward, currency}
+        referrralProgramName, referralProgramEndDate, status
       })
   });
+
+
   const data = await res.json();
   // console.log(data);
   if (data.status === 422 || data.error || !data) {
-      openErrorSB("Error","data.error")
+      setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+      // console.log("invalid entry");
   } else {
-      openSuccessSB("New Reward Added","New Reward line item has been added in the contest")
-      setTimeout(()=>{setSaving(false);setEditing(false)},500)
-      setAddRewardObject(!addRewardObject);
-      // console.log("Entry Succesfull");
+      // openSuccessSB("Contest Edited",data.message)
+      // setNewObjectId(data.data._id)
+      // setIsSubmitted(true)
+      // console.log("setting linked contest rule to: ",data.data.contestRule)
+      // setLinkedContestRule(data?.data?.contestRule)
+      // // console.log(data.data)
+      // setContestData(data.data)
+      setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
   }
+  setEditing(false)
 }
-
 
 const [title,setTitle] = useState('')
 const [content,setContent] = useState('')
@@ -267,13 +262,6 @@ const renderErrorSB = (
 />
 );
 
-// console.log("Saving: ",saving)
-// console.log("Editing: ",editing)
-// console.log("Id:",newObjectId)
-console.log("Old Object Id: ",oldObjectId)
-// console.log("Is Submitted after State Update: ",isSubmitted)
-console.log("Linked Contest Rule Id: ",linkedContestRule)
-console.log("Rule Name: ",contestData?.contestRule?.ruleName)
 
     return (
     <>
@@ -287,109 +275,81 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
         <MDBox pl={2} pr={2} mt={6}>
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Contest Details
+          Referral Details
         </MDTypography>
         </MDBox>
 
         <Grid container spacing={1} mt={0.5}>
           <Grid item xs={12} md={6} xl={3}>
             <TextField
-                disabled={((isSubmitted || id) && (!editing || saving))}
+                disabled={((isSubmitted || id) && (editing || saving))}
                 id="outlined-required"
-                label='Contest Name *'
+                label='Referrral Programme Name *'
                 fullWidth
                 // defaultValue={contestData?.displayName}
-                defaultValue={oldObjectId ? contestData?.contestName : formState?.contestName}
+                defaultValue={oldObjectId ? contestData?.referrralProgramName : formState?.referrralProgramName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    contestName: e.target.value
+                    referrralProgramName: e.target.value
                   }))}}
               />
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['MobileDateTimePicker']}>
+                  <DemoItem>
+                    <MobileDateTimePicker 
+                      label="Referrral Programme Start Date"
+                      disabled={((isSubmitted || id) && (!editing || saving))}
+                      defaultValue={dayjs(oldObjectId ? contestData?.referralProgramStartDate : setFormState?.referralProgramStartDate)}
+                      onChange={(e) => {
+                        setFormState(prevState => ({
+                          ...prevState,
+                          referralProgramStartDate: dayjs(e)
+                        }))
+                      }}
+                      minDateTime={null}
+                      sx={{ width: '100%' }}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['MobileDateTimePicker']}>
+                  <DemoItem>
+                    <MobileDateTimePicker 
+                      label="Referrral Programme End Date"
+                      disabled={((isSubmitted || id) && (!editing || saving))}
+                      defaultValue={dayjs(oldObjectId ? contestData?.referralProgramEndDate : setFormState?.referralProgramEndDate)}
+                      onChange={(e) => {
+                        setFormState(prevState => ({
+                          ...prevState,
+                          referralProgramEndDate: dayjs(e)
+                        }))
+                      }}
+                      minDateTime={null}
+                      sx={{ width: '100%' }}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
-                label='Max. No. Participants *'
-                defaultValue={oldObjectId ? contestData.maxParticipants : formState?.maxParticipants}
+                label="Reward Per Referral *"
+                defaultValue={oldObjectId ? contestData?.rewardPerReferral :formState?.rewardPerReferral}
                 fullWidth
                 type="number"
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    maxParticipants: e.target.value
-                  }))}}
-              />
-          </Grid>
-
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                disabled={((isSubmitted || id) && (!editing || saving))}
-                id="outlined-required"
-                label="Min. No. Participants *"
-                defaultValue={oldObjectId ? contestData.minParticipants :formState?.minParticipants}
-                fullWidth
-                type="number"
-                onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    minParticipants: e.target.value
-                  }))}}
-              />
-          </Grid>
-
-          <Grid item xs={12} md={6} xl={3}>
-              <FormControl sx={{width: "100%" }}>
-                <InputLabel id="demo-simple-select-autowidth-label">Stock Type *</InputLabel>
-                <Select
-                labelId="demo-simple-select-autowidth-label"
-                id="demo-simple-select-autowidth"
-                defaultValue={oldObjectId ? contestData.stockType :formState?.stockType}
-                disabled={((isSubmitted || id) && (!editing || saving))}
-                onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    stockType: e.target.value
-                }))}}
-                label="Status"
-                sx={{ minHeight:43 }}
-                >
-                <MenuItem value="Options">Options</MenuItem>
-                <MenuItem value="Futures">Futures</MenuItem>
-                <MenuItem value="Equity">Equity</MenuItem>
-                <MenuItem value="Derivative">Derivative</MenuItem>
-                <MenuItem value="Currency">Currency</MenuItem>
-                <MenuItem value="Crypto">Crypto</MenuItem>
-                </Select>
-              </FormControl>
-          </Grid>
-
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                disabled={((isSubmitted || id) && (!editing || saving))}
-                id="outlined-required"
-                label="Contest On *"
-                defaultValue={oldObjectId ? contestData?.contestOn : formState?.contestOn}
-                fullWidth
-                onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    contestOn: e.target.value
-                  }))}}
-              />
-          </Grid>
-
-          <Grid item xs={12} md={6} xl={3}>
-            <TextField
-                disabled={((isSubmitted || id) && (!editing || saving))}
-                id="outlined-required"
-                label="Entry Fee Amount *"
-                defaultValue={oldObjectId ? contestData?.entryFee?.amount :formState?.entryFee?.amount}
-                fullWidth
-                type="number"
-                onChange={(e) => {setFormState(prevState => ({
-                    ...prevState,
-                    entryFee: {
-                        ...prevState?.entryFee,
-                        amount: e.target.value
-                      }
+                    rewardPerReferral: e.target.value
                   }))}}
               />
           </Grid>
@@ -400,22 +360,86 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                value={oldObjectId ? contestData?.entryFee?.currency : formState?.entryFee?.currency}
+                value={oldObjectId ? contestData?.currency : formState?.currency}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    entryFee: {
-                        ...prevState?.entryFee,
-                        currency: e.target.value
-                      }
+                    currency: e.target.value
                 }))}}
-                label="Currency"
+                label="Currency *"
                 sx={{ minHeight:43 }}
                 >
                 <MenuItem value="INR">INR</MenuItem>
                 <MenuItem value="CREDOS">CREDOS</MenuItem>
+                {/* <MenuItem value="Completed">Completed</MenuItem> */}
                 </Select>
               </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+            <TextField
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                id="outlined-required"
+                label="Terms And Conditions *"
+                defaultValue={oldObjectId ? contestData?.termsAndConditions :formState?.termsAndConditions}
+                fullWidth
+                // type="number"
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    termsAndConditions: e.target.value
+                  }))}}
+              />
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+            <TextField
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                id="outlined-required"
+                label="Description *"
+                defaultValue={oldObjectId ? contestData?.description :formState?.description}
+                fullWidth
+                // type="number"
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    description: e.target.value
+                  }))}}
+              />
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+            <TextField
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                id="outlined-required"
+                label="Impressions *"
+                defaultValue={oldObjectId ? contestData?.performanceMetrics?.impressions :formState?.performanceMetrics?.impressions}
+                fullWidth
+                type="number"
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    performanceMetrics: {
+                        ...prevState?.performanceMetrics,
+                        impressions: e.target.value
+                      }
+                  }))}}
+              />
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+            <TextField
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                id="outlined-required"
+                label="Clicks *"
+                defaultValue={oldObjectId ? contestData?.performanceMetrics?.clicks :formState?.performanceMetrics?.clicks}
+                fullWidth
+                type="number"
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    performanceMetrics: {
+                        ...prevState?.performanceMetrics,
+                        clicks: e.target.value
+                      }
+                  }))}}
+              />
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
@@ -433,123 +457,30 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 label="Status"
                 sx={{ minHeight:43 }}
                 >
-                <MenuItem value="Live">Live</MenuItem>
-                <MenuItem value="Not Live">Not Live</MenuItem>
-                <MenuItem value="Cancelled">Cancelled</MenuItem>
+                <MenuItem value="Active">Active</MenuItem>
+                <MenuItem value="Paused">Paused</MenuItem>
+                <MenuItem value="Completed">Completed</MenuItem>
                 </Select>
               </FormControl>
           </Grid>
 
-          <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['MobileDateTimePicker']}>
-                  <DemoItem>
-                    <MobileDateTimePicker 
-                      label="Contest Start Date"
-                      disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData?.contestStartDate : setFormState?.contestStartDate)}
-                      onChange={(e) => {
-                        setFormState(prevState => ({
-                          ...prevState,
-                          contestStartDate: dayjs(e)
-                        }))
-                      }}
-                      minDateTime={null}
-                      sx={{ width: '100%' }}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
-          </Grid>
 
-          <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['MobileDateTimePicker']}>
-                  <DemoItem>
-                    <MobileDateTimePicker 
-                      label="Contest End Date"
-                      disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData?.contestEndDate : setFormState?.contestEndDate)}
-                      onChange={(e) => {setFormState(prevState => ({
-                        ...prevState,
-                        contestEndDate: dayjs(e)
-                      }))}}
-                      sx={{ width: '100%' }}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
-          </Grid>
 
-          <Grid item xs={12} md={6} xl={3} mt={-1} mb={2.5}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['MobileDateTimePicker']}>
-                  <DemoItem>
-                    <MobileDateTimePicker 
-                      label="Entry Open Date"
-                      disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData?.entryOpeningDate : setFormState?.entryOpeningDate)}
-                      onChange={(e) => {setFormState(prevState => ({
-                        ...prevState,
-                        entryOpeningDate: dayjs(e)
-                      }))}}
-                      sx={{ width: '100%' }}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
-          </Grid>
 
-          <Grid item xs={12} md={6} xl={3} mt={-1}>
-            
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['MobileDateTimePicker']}>
-                  <DemoItem>
-                    <MobileDateTimePicker 
-                      label="Entry Close Date"
-                      disabled={((isSubmitted || id) && (!editing || saving))}
-                      defaultValue={dayjs(oldObjectId ? contestData?.entryClosingDate : setFormState?.entryClosingDate)}
-                      onChange={(e) => {setFormState(prevState => ({
-                        ...prevState,
-                        entryClosingDate: dayjs(e)
-                      }))}}
-                      sx={{ width: '100%' }}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
 
-          </Grid>
-                
-          <Grid item xs={12} md={3} xl={6} mb={-3}>
-                <FormControl sx={{ minHeight:10, minWidth:245 }}>
-                  <InputLabel id="demo-multiple-name-label">Contest Rule</InputLabel>
-                  <Select
-                    labelId="demo-multiple-name-label"
-                    id="demo-multiple-name"
-                    disabled={((isSubmitted || id) && (!editing || saving))}
-                    defaultValue={oldObjectId ? contestData?.contestRule?.ruleName : ruleName}
-                    onChange={handleChange}
-                    input={<OutlinedInput label="Contest Rule" />}
-                    sx={{minHeight:45}}
-                    MenuProps={MenuProps}
-                  >
-                    {contestRules?.map((rule) => (
-                      <MenuItem
-                        key={rule?.ruleName}
-                        value={rule?._id}
-                        // style={getStyles(rule, ruleName, theme)}
-                      >
-                        {rule.ruleName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-            </FormControl>
-          </Grid>
 
+
+
+
+
+
+
+
+
+  
 
           <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={6}>
-                {!isSubmitted && !isObjectNew && (
+                {(!isSubmitted && !oldObjectId) && (
                 <>
                 <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={(e)=>{onSubmit(e,formState)}}>
                     {creating ? <CircularProgress size={20} color="inherit" /> : "Next"}
@@ -559,7 +490,8 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 </MDButton>
                 </>
                 )}
-                {(isSubmitted || isObjectNew) && !editing && (
+                {(isSubmitted || oldObjectId) && !editing && 
+                  (
                 <>
                 <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={editing} onClick={(e)=>{setEditing(true)}}>
                     {editing ? <CircularProgress size={20} color="inherit" /> : "Edit"}
@@ -572,7 +504,7 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 {(isSubmitted || isObjectNew) && editing && (
                 <>
                 <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} 
-                // onClick={(e)=>{onEdit(e,formState)}}
+                onClick={(e)=>{onEdit(e,formState)}}
                 >
                     {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
                 </MDButton>
@@ -583,7 +515,8 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 )}
           </Grid>
 
-          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+
+          {/* {isSubmitted && <Grid item xs={12} md={6} xl={12}>
                 
                 <Grid container spacing={1}>
 
@@ -673,14 +606,14 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 <MDBox>
                     <LinkedContestRuleData linkedRuleId={linkedContestRule} setLinkedRuleId={setLinkedContestRule} isSubmitted={isSubmitted} setIsSubmitted={setIsSubmitted}/>
                 </MDBox>
-          </Grid>}
+          </Grid>} */}
             
           </Grid>
           {renderSuccessSB}
           {renderErrorSB}
     </MDBox>
     )
-                }
+  }
     </>
     )
 }

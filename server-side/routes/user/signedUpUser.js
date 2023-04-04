@@ -8,6 +8,7 @@ const User = require("../../models/User/userDetailSchema");
 const userPersonalDetail = require("../../models/User/userDetailSchema");
 const signedUpUser = require("../../models/User/signedUpUser");
 const sendSMS = require('../../utils/smsService');
+const Referral = require("../../models/campaigns/referralProgram");
 
 router.post("/signup", async (req, res)=>{
     console.log("Inside SignUp Routes")
@@ -157,27 +158,37 @@ router.patch("/verifyotp", async (req, res)=>{
 
         //Check for referrer code
         console.log("Referrer Code: ",referrerCode,!referrerCode)
-        if(!referrerCode){
-            console.log("Inside Referrer Code Empty Check")
-            return res.status(404).json({message : "No referrer code. Please enter your referrer code"});
+        // if(!referrerCode){
+        //     console.log("Inside Referrer Code Empty Check")
+        //     return res.status(404).json({message : "No referrer code. Please enter your referrer code"});
+        // }
+
+        //------
+        let referredBy;
+        if(referrerCode){
+            const referrerCodeMatch = await User.findOne({myReferralCode: referrerCode});
+            
+            console.log("Referrer Code Match: ",referrerCodeMatch)
+
+            if(!referrerCodeMatch){
+                return res.status(404).json({message : "No such referrer code. Please enter a valid referrer code"});
+            }
+
+            // const referralProgramme = await Referral.find({status: "Active"});
+    
+
+
+            console.log("OTP & Referral Code Verified")
+            user.status = 'OTP Verified'
+            user.last_modifiedOn = new Date()
+            await user.save();
+            // res.status(200).json({
+            //     message: "OTP verification done"
+            // })
+
+            referredBy = referrerCodeMatch._id;
         }
-
-        const referrerCodeMatch = await User.findOne({myReferralCode: referrerCode});
-        console.log("Referrer Code Match: ",referrerCodeMatch)
-
-        if(!referrerCodeMatch){
-            return res.status(404).json({message : "No such referrer code. Please enter a valid referrer code"});
-        }
-
-        console.log("OTP & Referral Code Verified")
-        user.status = 'OTP Verified'
-        user.last_modifiedOn = new Date()
-        await user.save();
-        // res.status(200).json({
-        //     message: "OTP verification done"
-        // })
-
-        const referredBy = referrerCodeMatch._id;
+        //--------
             async function generateUniqueReferralCode() {
             const length = 8; // change this to modify the length of the referral code
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -216,8 +227,13 @@ router.patch("/verifyotp", async (req, res)=>{
         
         console.log("user Id(Line 204): ",userId)
 
+
+        // let referralDocs = [];
+        // referralDocs.push(referral._id)
+        let referral = await Referral.findOne({status: "Active"});
+        console.log("referral", referral)
         try{
-        const newuser = await User.create({
+        let obj = {
             first_name, last_name, designation: 'Equity Trader', email, 
             mobile,
             role: 'user', 
@@ -226,8 +242,24 @@ router.patch("/verifyotp", async (req, res)=>{
             lastModified: user.last_modifiedOn, password: 'np' + last_name + '@123', status: 'Active', 
             employeeid: userId,fund: 0, creationProcess: 'Auto SignUp',
             joining_date:user.last_modifiedOn,myReferralCode:(await myReferralCode).toString(), referrerCode:referrerCode,
-            referredBy: referredBy
-        });
+            // referredBy: referredBy,
+            referralProgramme: referral._id
+        }
+        if(referredBy){
+            obj.referredBy = referredBy;
+        }
+        const newuser = await User.create(obj);
+
+        referral?.users?.push(newuser._id)
+        const referralProgramme = await Referral.findOneAndUpdate({status: "Active"}, {
+            $set:{ 
+                
+                users: referral?.users
+            }
+            
+        })
+
+        console.log("referralProgramme", referralProgramme);
 
         if(!newuser) return res.status(400).json({message: 'Something went wrong'});
 

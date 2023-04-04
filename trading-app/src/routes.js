@@ -141,14 +141,14 @@ const routes = [
     component: <AlgoPosition />,
   },
 
-  // {
-  //   type: "collapse",
-  //   name: "Referral Programme",
-  //   key: "referral",
-  //   icon: <DashboardIcon/>,
-  //   route: "/admindashboard",
-  //   component: <Referral />,
-  // },
+  {
+    type: "collapse",
+    name: "Referral Programme",
+    key: "referral",
+    icon: <DashboardIcon/>,
+    route: "/referralProgramme",
+    component: <Referral />,
+  },
   
   {
     type: "collapse",

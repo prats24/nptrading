@@ -25,6 +25,7 @@ const UpcomingContests = () => {
       <>
       {isLoading ?    
                 <>
+                {console.log("is loading")}
                 <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
                 <CircularProgress color="info" />
                 </MDBox>
@@ -34,15 +35,15 @@ const UpcomingContests = () => {
                 
                 <MDBox pt={0} pb={1}>
                   <MDBox>
-                    {(!createContestForm && !isObjectNew) && 
+                    {!createContestForm  && 
                     <MDButton 
                       variant="contained" 
                       size="small" 
                       color="success" 
                       sx={{marginLeft:1.5}}
-                      onClick={()=>{setCreateContestForm(true);setIsObjectNew(true)}}
+                      onClick={()=>{setCreateContestForm(true);setIsObjectNew(false); setIsLoading(false)}}
                       >
-                      Create Contest
+                      Create Referral Programme
                     </MDButton>
                     }
                   </MDBox>
@@ -50,13 +51,11 @@ const UpcomingContests = () => {
                 
                 {!createContestForm ?
                   <Grid container spacing={2} mt={-4}>
-                    
                     <ContestCard createContestForm={createContestForm} setCreateContestForm={setCreateContestForm} isObjectNew={isObjectNew} setIsObjectNew={setIsObjectNew}/>
-
                   </Grid>
                   :
-                  
-                  <CreateContest/>
+
+                  <CreateContest oldObjectId={isObjectNew} setCreateContestForm={setCreateContestForm}/>
                 }
                 </MDBox> 
                 </>

@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const referralProgramSchema = new mongoose.Schema({
     referrralProgramId:{
         type: String,
-        required: true
+        // required: true
     },
     referrralProgramName:{
         type: String,
@@ -27,10 +27,10 @@ const referralProgramSchema = new mongoose.Schema({
         required: true,
         enum: ['INR','CREDOS']
     },
-    budget:{
-        type:Number,
-        required: true
-    },
+    // currency:{
+    //     type:Number,
+    //     // required: true
+    // },
     termsAndConditions:{
         type:String,
         required:true
@@ -68,6 +68,23 @@ const referralProgramSchema = new mongoose.Schema({
         ref: 'user-personal-detail',
         // required : true
     },
+    users: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "user-personal-detail"
+        }
+        
+    ]
+})
+
+referralProgramSchema.pre('save', async function(next){
+    if(!this.referrralProgramId|| this.isNew){
+        const count = await referralProgramData.countDocuments();
+        const tId = "NPTR" + (count + 1).toString().padStart(8, "0");
+        this.referrralProgramId = tId;
+        next();
+    }
+    next();
 })
 
 const referralProgramData = mongoose.model("referral-program", referralProgramSchema);

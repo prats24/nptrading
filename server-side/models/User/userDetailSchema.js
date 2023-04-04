@@ -186,6 +186,13 @@ const userDetailSchema = new mongoose.Schema({
         }
         
     ],
+    referralProgramme: 
+        {
+            type: Schema.Types.ObjectId,
+            ref: "referral-program"
+        }
+        
+    ,
     userId: {
         type: String,
               

@@ -362,7 +362,7 @@ function Cover() {
                 
                   <Grid item xs={12} md={12} xl={12}>
                     <TextField
-                        required
+                        // required
                         // disabled={showEmailOTP}
                         id="outlined-required"
                         label="Referrer Code"
