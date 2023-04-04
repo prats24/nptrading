@@ -261,10 +261,6 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
     if(data.status === 422 || data.error || !data){
         window.alert(data.error);
     }else{
-      let instrumentTokenArr = [];
-      instrumentTokenArr.push(instrument_token)
-      // socket.emit("subscribeToken", instrumentTokenArr);
-      console.log("instrument_token data from socket", instrument_token)
       // openSuccessSB();
       console.log(data.message)
     }
@@ -367,17 +363,17 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
                     <Grid>
                       <Tooltip title="Buy" placement="top">
-                        <MDBox  onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
-                          <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                        </MDBox>
+                        {/* <MDBox onClick={()=>{subscribeInstrumentFromBuySell(elem)}} > */}
+                          <BuyModel  reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true}/>
+                        {/* </MDBox> */}
                       </Tooltip>
                     </Grid>
 
                     <Grid>
                       <Tooltip title="Sell" placement="top">
-                        <MDBox  onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
-                          <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                        </MDBox>
+                        {/* <MDBox onClick={()=>{subscribeInstrumentFromBuySell(elem)}} > */}
+                          <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true}/>
+                        {/* </MDBox> */}
                       </Tooltip>
                     </Grid>
                     {perticularInstrumentData.length ?
