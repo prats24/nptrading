@@ -55,6 +55,9 @@ const userDetailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    mobile_otp:{
+        type: String,
+    },
     whatsApp_number:{
         type: String,
         // required: true
@@ -190,9 +193,6 @@ const userDetailSchema = new mongoose.Schema({
     fund: {
         type: Number,      
     },
-    aadhaarCardFrontImage:{
-        type: String,
-    },
     aadhaarNumber:{
         type: String,
     },
@@ -205,22 +205,13 @@ const userDetailSchema = new mongoose.Schema({
     passportNumber:{
         type: String,
     },
-    aadhaarCardBackImage:{
-        type: String,
-    },
-    panCardFrontImage:{
-        type: String,
-    },
-    passportPhoto:{
-        type: String,
-    },
+    aadhaarCardFrontImage:{url:String,name:String},
+    aadhaarCardBackImage:{url:String,name:String},
+    panCardFrontImage:{url:String,name:String},
+    passportPhoto:{url:String,name:String},
     addressProofDocument:{url:String,name:String},
-    incomeProofDocument:{
-        type: String,
-    },
-    profilePhoto:{
-        type: String,
-    },
+    incomeProofDocument:{url:String,name:String},
+    profilePhoto:{url:String,name:String},
     KYCStatus:{
         type: String,
         enum: ['Not Initiated','Submitted','Approved','Rejected','Under Verification'],

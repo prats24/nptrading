@@ -7,6 +7,7 @@ const SignedUpUser = require("../../models/User/signedUpUser");
 const User = require("../../models/User/userDetailSchema");
 const userPersonalDetail = require("../../models/User/userDetailSchema");
 const signedUpUser = require("../../models/User/signedUpUser");
+const sendSMS = require('../../utils/smsService');
 
 router.post("/signup", async (req, res)=>{
     console.log("Inside SignUp Routes")
@@ -19,6 +20,7 @@ router.post("/signup", async (req, res)=>{
 
     const signedupuser = await SignedUpUser.findOne({ $or: [{ email: email }, { mobile: mobile }] })
     let email_otp = otpGenerator.generate(6, { upperCaseAlphabets: true,lowerCaseAlphabets: false, specialChars: false });
+    let mobile_otp = otpGenerator.generate(6, {digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
     try{
     if(signedupuser)
     {
@@ -26,12 +28,17 @@ router.post("/signup", async (req, res)=>{
         signedupuser.first_name = first_name;
         signedupuser.last_name = last_name;
         signedupuser.mobile = mobile;
+        signedupuser.email = email;
+        signedupuser.mobile_otp = mobile_otp;
         await signedupuser.save({validateBeforeSave:false})
     }
     else{
-        await SignedUpUser.create({first_name:first_name, last_name:last_name, email:email, mobile:mobile, email_otp:email_otp})
+        await SignedUpUser.create({first_name:first_name, last_name:last_name, email:email, 
+            mobile:mobile, email_otp:email_otp, mobile_otp: mobile_otp});
     }
-    res.status(201).json({message : "OTP Email has been sent, please check your email", status: 201});
+
+    res.status(201).json({message : "Mobile and mail OTPs have been sent. Check your email and messages. OTPs expire in 30 minutes.", 
+        status: 201});
                 let subject = "OTP from ninepointer";
                 let message = 
                 `
@@ -102,7 +109,9 @@ router.post("/signup", async (req, res)=>{
                     </body>
                     </html>
                 `;
+
                 emailService(email,subject,message);
+                sendSMS([mobile.toString()], `Welcome to ninepointer. Your OTP for signup is ${mobile_otp}`);
             }catch(err){console.log(err);res.status(500).json({message:'Something went wrong',status:"error"})}
 })
 
@@ -113,6 +122,7 @@ router.patch("/verifyotp", async (req, res)=>{
         email,
         email_otp,
         mobile,
+        mobile_otp,
         referrerCode,
         } = req.body
 
@@ -128,11 +138,11 @@ router.patch("/verifyotp", async (req, res)=>{
             message: "User with this email doesn't exist"
         })
     }
-    if(user.email_otp != email_otp)
+    if(user.email_otp != email_otp || user.mobile_otp != mobile_otp)
     {   
         console.log("Inside OTP Matching")
         return res.status(404).json({
-            message: "OTP doesn't match, please try again!"
+            message: "OTPs don't match, please try again!"
         })
     }
        
@@ -319,7 +329,7 @@ router.patch("/verifyotp", async (req, res)=>{
 })
 
 router.patch("/resendotp", async (req, res)=>{
-    const {email} = req.body
+    const {email, mobile, type} = req.body
     const user = await SignedUpUser.findOne({email: email})
     if(!user)
     {
@@ -328,15 +338,22 @@ router.patch("/resendotp", async (req, res)=>{
         })
     }
     let email_otp = otpGenerator.generate(6, { upperCaseAlphabets: true,lowerCaseAlphabets: false, specialChars: false });
+    let mobile_otp = otpGenerator.generate(6, {digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
     let subject = "OTP from ninepointer";
     let message = `Your OTP for email verification is: ${email_otp}`
-    user.email_otp = email_otp
-        await user.save();
-        res.status(200).json({
-            message: "OTP Resent"
-        })
-    emailService(email,subject,message);
-})
+    if(type == 'mobile'){
+        user.mobile_otp = mobile_otp;
+        sendSMS([mobile.toString()],`Your otp for ninepointer signup is ${mobile_otp}`);    
+    }
+    else if(type == 'email'){
+        user.email_otp = email_otp;
+        emailService(email,subject,message);
+    }    
+    await user.save();
+    res.status(200).json({
+            message: "OTP Resent. Please check again."
+    });
+});
 
 router.get("/signedupusers", (req, res)=>{
     SignedUpUser.find((err, data)=>{
