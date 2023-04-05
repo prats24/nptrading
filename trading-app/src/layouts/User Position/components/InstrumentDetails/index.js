@@ -82,7 +82,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
 
 
 
-  }, [])
+  }, [socket])
 
   console.log("rendering in userPosition: instruemntGrid")
 

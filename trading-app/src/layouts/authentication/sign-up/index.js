@@ -381,7 +381,7 @@ function Cover() {
                     numInputs={6}
                     renderSeparator={<span>-</span>}
                     renderInput={(props) => <input {...props} />}
-                    inputStyle={{width:60, height:50}}
+                    inputStyle={{width:40, height:40}}
                   /> 
                     </MDBox>
                   </Grid>
@@ -402,7 +402,7 @@ function Cover() {
                     numInputs={6}
                     renderSeparator={<span>-</span>}
                     renderInput={(props) => <input {...props} />}
-                    inputStyle={{width:60, height:50}}
+                    inputStyle={{width:40, height:40}}
                   />
                   </MDBox>
                   </Grid>

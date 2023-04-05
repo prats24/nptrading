@@ -45,7 +45,12 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
     borderRadius: "5px", 
     padding: "5px",  
     fontWeight: "600",
-    // margin: "50px"
+  }
+  let bottomRow = {
+    height: "10px",
+    [`@media only screen and (min-width: 546px)`]: {
+      height: "50px"
+    }
   }
   
   const { updateNetPnl } = useContext(NetPnlContext);
@@ -247,7 +252,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
           </MDTypography>
         </MDBox>
       </MDBox>
-      {rows.length === 1 ? (
+      {rows.length === 0 ? (
       <MDBox display="flex" flexDirection="column" mb={4} sx={{alignItems:"center"}}>
         <GrAnchor style={{fontSize: '30px'}}/>
         <Typography style={{fontSize: '20px', color:"grey"}}>No open positions yet</Typography>
@@ -307,15 +312,16 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
                 )
               })} 
               <tr
-              style={{borderBottom: "1px solid #D3D3D3", padding: "10x"}}
+              style={{borderBottom: "1px solid #D3D3D3", padding: "10x",}}
+
               >
                   <td  ></td>
                   <td  ></td>
-                  <td style={{ padding: "8px 10px"}} ><div style={styleBottomRow}>Running Lots : {totalRunningLots}</div></td>
+                  <td style={{ padding: "8px 10px"}} ><div style={styleBottomRow}>Running Lots: {totalRunningLots}</div></td>
                   <td  ></td>
-                  <td style={{ padding: "8px 10px"}}><div style={styleBottomRow} >Brokerage : {"₹"+(totalTransactionCost).toFixed(2)}</div></td>
-                  <td style={{ padding: "8px 10px"}} ><div style={{...styleBottomRow, color: `${totalGrossPnl > 0 ? 'green' : 'red'}`}}>Gross P&L : {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}</div></td>
-                  <td style={{ padding: "8px 10px"}} ><div style={{...styleBottomRow, color: `${(totalGrossPnl-totalTransactionCost) > 0 ? 'green' : 'red'}`}}>Net P&L : {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}</div></td>
+                  <td style={{ padding: "8px 10px"}}><div style={styleBottomRow} >Brokerage: {"₹"+(totalTransactionCost).toFixed(2)}</div></td>
+                  <td style={{ padding: "8px 10px"}} ><div style={{...styleBottomRow, color: `${totalGrossPnl > 0 ? 'green' : 'red'}`}}>Gross P&L: {totalGrossPnl >= 0.00 ? "+₹" + (totalGrossPnl.toFixed(2)): "-₹" + ((-totalGrossPnl).toFixed(2))}</div></td>
+                  <td style={{ padding: "8px 10px"}} ><div style={{...styleBottomRow, color: `${(totalGrossPnl-totalTransactionCost) > 0 ? 'green' : 'red'}`}}>Net P&L: {(totalGrossPnl-totalTransactionCost) >= 0.00 ? "+₹" + ((totalGrossPnl-totalTransactionCost).toFixed(2)): "-₹" + ((-(totalGrossPnl-totalTransactionCost)).toFixed(2))}</div></td>
                   <td  ></td>
                   <td  ></td>
                   <td  ></td>
