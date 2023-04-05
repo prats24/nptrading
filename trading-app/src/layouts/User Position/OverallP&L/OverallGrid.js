@@ -76,17 +76,17 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
     useEffect(()=>{
 
       let abortController;
-      // (async () => {
-      //      abortController = new AbortController();
-      //      let signal = abortController.signal;    
+      (async () => {
+           abortController = new AbortController();
+           let signal = abortController.signal;    
 
-      //      // the signal is passed into the request(s) we want to abort using this controller
-      //      const { data } = await axios.get(
-      //       `${baseUrl}api/v1/getliveprice`,
-      //          { signal: signal }
-      //      );
-      //      setMarketData(data);
-      // })();
+           // the signal is passed into the request(s) we want to abort using this controller
+           const { data } = await axios.get(
+            `${baseUrl}api/v1/getliveprice`,
+               { signal: signal }
+           );
+           setMarketData(data);
+      })();
 
 
       socket.on("tick-room", (data) => {
@@ -100,7 +100,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
         });
       })
 
-      // return () => abortController.abort();
+      return () => abortController.abort();
     }, [])
 
     useEffect(()=>{
