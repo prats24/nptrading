@@ -22,13 +22,62 @@ console.log("hii")
     return (
         <>
         <div className='container'>
-            <div>
-                hello
+            <div className='sub-container1'>
+                <div className='top-text'>League is about to begin <span style={{backgroundColor: 'green', color: "white", padding: "5px", borderRadius: "5px"}}>4 days 11 hours</span></div>
+                <div className='sub-container-part1'>
+                    <img className='img' src="https://kappanonline.org/wp-content/uploads/2019/07/PDK_101_1_Nordengren_554x350.jpg" alt="img" />
+                    <div className='part1-a'>Reward Pool</div>
+                    <div className='part1-a' style={{fontWeight: "600", fontSize: "25px"}}>₹ 2,00,000</div>
+                    <div className='part1-a'>Entry: <span style={{fontWeight: "600"}}>Free</span></div>
+                    <button  className='btn part1-d'>INVITE FRIENDS</button>
+                </div>
+                <div className='sub-container-part2'>
+                    <div className='part2-a'>
+                        <div>Duration</div>
+                        {/* <div>10 Apr 23 | 09:30 am to 12 Apr 23 | 03:25 pm</div> */}
+                    </div>
+                    <div className='part2-a'>
+                        <div>Entry closes at</div>
+                        {/* <div>10 Apr 23 | 09:30 am</div> */}
+                    </div>
+                </div>
+                <div className='sub-container-part2 part2-bottom'>
+                    <div className='part2-b'>
+                        {/* <div>Duration</div> */}
+                        <div>10 Apr 23 | 09:30 am</div>
+                    </div>
+                    <div className='part2-b'>
+                        {/* <div>Entry closes at</div> */}
+                        <div>12 Apr 23 | 09:30 am</div>
+                    </div>
+                </div>
+                <div className='sub-container-part3'>
+                    <div className='part3-a'>
+                        Min: 5000
+                    </div>
+                    <div className='part3-a'>
+                        Left: 73376
+                    </div>
+                    <div className='part3-a'>
+                        Max: 100000
+                    </div>
+                </div>
+
+                <div className='bottom-text'>
+                    <input type={"checkbox"} />
+                    <div>I accept all the <a>term & condition</a> for this league</div>
+                    
+                </div>
+                <div className='sub-container-part4'>
+                    <button className='btn continue'>CONTINUE</button>
+                    <button className='btn back'>BACK</button>
+                </div>
+
             </div>
-            <div>
+            <div className='sub-container2'>
                 reward table
             </div>
-            <div>
+            <div className='sub-container3'>
                 rules
             </div>
         </div>
