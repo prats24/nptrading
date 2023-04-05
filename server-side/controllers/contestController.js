@@ -34,7 +34,7 @@ exports.getContests = async(req, res, next)=>{
     try{
         const contests = await Contest.find().populate('contestRule','ruleName');
         
-        res.status(201).json({data: contests});    
+        res.status(201).json({status: 'success', data: contests, results: contests.length});    
     }catch(e){
         console.log(e);
         res.status(500).json({status: 'error', message: 'Something went wrong'});
@@ -43,9 +43,9 @@ exports.getContests = async(req, res, next)=>{
 };
 exports.getActiveContests = async(req, res, next)=>{
     try {
-        const contests = await Contest.find({ contestEndDate: { $lt: new Date() } }).populate('contestRule','ruleName'); 
+        const contests = await Contest.find({ contestEndDate: { $gte: new Date() } }).populate('contestRule','ruleName'); 
     
-        res.status(201).json({data: contests}); 
+        res.status(201).json({status: 'success', data: contests, results: contests.length}); 
         
     } catch (e) {
         console.log(e);
@@ -148,11 +148,11 @@ exports.joinContest = async(req, res, next) => {
         // }
         
         contest.participants.push({userId, registeredOn: Date.now(), paymentId});
-        await contest.save();
+        await contest.save({validateBeforeSave: false});
         const user = await User.findById(userId);
         user.contests.push(contest._id);
     
-        await user.save();
+        await user.save({validateBeforeSave: false});
 
         res.status(200).json({status:'success', message:'Joined contest.'});
 
@@ -172,6 +172,23 @@ exports.getContest = async (req,res,next) => {
             return res.status(404).json({status: 'error', message: 'Contest not found.'});
         }
         return res.status(200).json({status: 'success', message:'Successful', data:contest});
+
+    }catch(e){
+        console.log(e);
+        res.status(500).json({status: 'error', message: 'Something went wrong'});
+    }
+}
+
+exports.myContests = async(req,res,next) => {
+    const userId = req.user._id;
+    try{
+        const myContests = await Contest.find({"participants.userId": userId});
+
+        if(!myContests){
+            return res.status(404).json({status:'error', message: 'No contests found'});
+        }
+
+        res.status(200).json({status: 'success', data: myContests, results: myContests.length});
 
     }catch(e){
         console.log(e);
