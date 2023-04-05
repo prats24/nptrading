@@ -48,10 +48,20 @@ const unSubscribeTokens = async(token) => {
 }
 
 const getTicks = async (socket, tokens) => {
-  const indecies = await StockIndex.find({status: "Active"});
+  let indecies = await client.get("index")
+  if(!indecies){
+    indecies = await StockIndex.find({status: "Active"});
+    await client.set("index", JSON.stringify(indecies));
+  } else{
+    indecies = JSON.parse(indecies);  
+  }
+  
+
+  console.log("checking get ticks")
   ticker.on('ticks', async (ticks) => {
     let indexObj = {};
 
+    let now = performance.now();
     // populate hash table with indexObj from indecies
     for (let i = 0; i < indecies.length; i++) {
       indexObj[indecies[i].instrumentToken] = true;
@@ -64,19 +74,43 @@ const getTicks = async (socket, tokens) => {
 
     try{
       let userId = await client.get(socket.id)
-      let instruments = await client.LRANGE(userId, 0, -1)
+      let instruments = await client.SMEMBERS(userId)
+      console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
+      console.log(instrumentTokenArr)
       let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+
+      // let userId = await client.get(socket.id)
+      // let instruments = await client.SMEMBERS(await client.get(socket.id))
+      // console.log(userId, instruments)
+
+      // let filteredTicks = ticks.filter(async (tick)=>{
+      //   console.log(await client.SISMEMBER(await client.get(socket.id), (tick.instrument_token).toString()))
+      //   return await client.SISMEMBER(await client.get(socket.id), (tick.instrument_token).toString());
+      // })
+
   
-      console.log("indexData", filteredTicks);
+      console.log("indexData", filteredTicks.length);
       if(indexData.length > 0){
         socket.emit('index-tick', indexData)
       }
       
       socket.emit('tick', ticks);
-      if(filteredTicks > 0){
+      socket.emit('check', true);
+
+      // if(filteredTicks > 0){
+        // socket.emit('tick-room', ticks);
         io.to(`${userId}`).emit('tick-room', filteredTicks);
-      }
+      // }
+      console.log("performance", performance.now()-now);
+
+      filteredTicks = null;
+      ticks = null;
+      indexData = null;
+      instrumentTokenArr = null;
+      instruments = null;
+
+
     } catch (err){
       // console.log(err)
     }

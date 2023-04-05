@@ -51,8 +51,9 @@ router.post("/addInstrument",authentication, async (req, res)=>{
                 })
                 try{
                     console.log((_id).toString(), instrumentToken)
-                    const redisClient = await client.LPUSH((_id).toString(), (instrumentToken).toString());
-                    console.log("this is redis client", redisClient)
+                    // const redisClient = await client.LPUSH((_id).toString(), (instrumentToken).toString());
+                    const newredisClient = await client.SADD((_id).toString(), (instrumentToken).toString());
+                    console.log("this is redis client", newredisClient)
     
                 } catch(err){
                     console.log(err)
@@ -66,8 +67,10 @@ router.post("/addInstrument",authentication, async (req, res)=>{
 
                 try{
                     console.log((_id).toString(), instrumentToken)
-                 const redisClient = await client.LPUSH((_id).toString(), (instrumentToken).toString());
-                 console.log("this is redis client", redisClient)
+                //  const redisClient = await client.LPUSH((_id).toString(), (instrumentToken).toString());
+                 const newredisClient = await client.SADD((_id).toString(), (instrumentToken).toString());
+
+                 console.log("this is redis client", newredisClient)
 
                 } catch(err){
                     console.log(err)
@@ -138,7 +141,9 @@ router.patch("/inactiveInstrument/:instrumentToken", authentication, async (req,
         if (index !== -1) {
             user.watchlistInstruments.splice(index, 1); // remove the element at the index
             try{
-             const redisClient = await client.LREM((_id).toString(), 1, (instrumentToken).toString());
+            //  const redisClient = await client.LREM((_id).toString(), 1, (instrumentToken).toString());
+             const redisClient = await client.SREM((_id).toString(), (instrumentToken).toString());
+             console.log("redisClient", redisClient)
 
             } catch(err){
                 console.log(err)
