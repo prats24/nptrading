@@ -2,16 +2,17 @@ const nodemailer = require('nodemailer');
 
 function mailSender(to,subject,message){
     console.log("Inside Email Service")
+    console.log("Password: ",process.env.STOXHEROEMAILPASSWORD)
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-              user: 'team@ninepointer.in',
-              pass: process.env.NINEPOINTEREMAILPASSWORD              //password here
+              user: 'team@stoxhero.com',
+              pass: process.env.STOXHEROEMAILPASSWORD              //password here
             }
     });
-    
+    console.log('Transporter: ',transporter)
     const mailOptions = { 
-                  from: 'team@ninepointer.in',      // sender address
+                  from: 'team@stoxhero.com',      // sender address
                   to: to,       // reciever address 
                   subject: subject,  
                   html: message // plain text body

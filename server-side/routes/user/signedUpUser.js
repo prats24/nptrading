@@ -32,7 +32,7 @@ router.post("/signup", async (req, res)=>{
         await SignedUpUser.create({first_name:first_name, last_name:last_name, email:email, mobile:mobile, email_otp:email_otp})
     }
     res.status(201).json({message : "OTP Email has been sent, please check your email", status: 201});
-                let subject = "OTP from ninepointer";
+                let subject = "OTP from StoxHero";
                 let message = 
                 `
                 <!DOCTYPE html>
@@ -223,7 +223,7 @@ router.patch("/verifyotp", async (req, res)=>{
 
         res.status(201).json({status: "Success", data:newuser, message:"Welcome! Your account is created, please check your email for your userid and password details."});
             // let email = newuser.email;
-            let subject = "Account Created - ninepointer";
+            let subject = "Account Created - StoxHero";
             let message = 
             `
             <!DOCTYPE html>
@@ -300,7 +300,7 @@ router.patch("/verifyotp", async (req, res)=>{
                     <p>User ID: <span class="userid">${newuser.email}</span></p>
                     <p>Password: <span class="password">np${last_name}@123</span></p>
                     <p>Please use these credentials to log in to our website:</p>
-                    <a href="https://www.ninepointer.in/" class="login-button">Log In</a>
+                    <a href="https://www.stoxhero.com/" class="login-button">Log In</a>
                     </div>
                 </body>
                 </html>
@@ -328,7 +328,7 @@ router.patch("/resendotp", async (req, res)=>{
         })
     }
     let email_otp = otpGenerator.generate(6, { upperCaseAlphabets: true,lowerCaseAlphabets: false, specialChars: false });
-    let subject = "OTP from ninepointer";
+    let subject = "OTP from StoxHero";
     let message = `Your OTP for email verification is: ${email_otp}`
     user.email_otp = email_otp
         await user.save();

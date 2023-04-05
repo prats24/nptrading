@@ -136,7 +136,7 @@ function Basic() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Welcome to ninepointer!
+            Welcome to StoxHero!
           </MDTypography>
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
             Sign In

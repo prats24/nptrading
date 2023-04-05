@@ -104,7 +104,7 @@ const MarginGrid = () => {
                   <DefaultInfoCard
                     // icon={<CreditCardIcon/>}
                     title="total credit"
-                    description="Total funds added by ninepointer"
+                    description="Total funds added by StoxHero"
                     value={totalCreditString}
                   />
                 </Grid>
