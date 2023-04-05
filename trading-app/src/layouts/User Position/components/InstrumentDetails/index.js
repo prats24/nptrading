@@ -55,14 +55,14 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
   useEffect(()=>{
 
     // console.log("in socket useeffect")
-    axios.get(`${baseUrl}api/v1/getliveprice`)
-    .then((res) => {
-      marketDetails.setMarketData(res.data);
-    }).catch((err) => {
-        return new Error(err);
-    })
+    // axios.get(`${baseUrl}api/v1/getliveprice`)
+    // .then((res) => {
+    //   marketDetails.setMarketData(res.data);
+    // }).catch((err) => {
+    //     return new Error(err);
+    // })
     socket.on('check', (data)=>{
-      console.log("data from socket check", data)
+      console.log("data from socket in instrument in parent", data)
     })
 
     // socket.on("tick", (data) => {
@@ -82,7 +82,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
 
 
 
-  }, [socket])
+  }, [])
 
   console.log("rendering in userPosition: instruemntGrid")
 
@@ -96,6 +96,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
 
   useEffect(() => {    
     return () => {
+      socket.emit('removeKey', socket.id)
       socket.close();
     }
   }, []);

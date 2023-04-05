@@ -68,14 +68,13 @@ io.on("connection", (socket) => {
     })
   })
 
-  socket.on('disconnect', ()=>{
+  socket.on('removeKey', (key)=>{
+    client.del(key);
+  })
 
-    // data.map((elem)=>{
-    //   console.log("in index.js  unSubscribeToken", elem, socket.id)
-      // console.log("rooms before", socket.rooms)
-      // socket.leave(`instrument ${elem}`)
-      // console.log("rooms after", socket.rooms)
-    // })
+  socket.on('disconnect', ()=>{
+    console.log("disconnecting socket")
+    client.del(socket.id);
   })
 
   socket.on('hi', async (data) => {

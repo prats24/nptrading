@@ -15,6 +15,7 @@ import UserOrders from "./layouts/userorders";
 import UserPosition from "./layouts/User Position";
 import UserReport from "./layouts/userreports";
 import MyReferrals from "./layouts/referrals"
+import Contest from "./layouts/user-contest"
 
 
 const routes = [
@@ -27,6 +28,15 @@ const routes = [
     icon: <BusinessIcon/>,
     route: "/Position",
     component: <UserPosition />,
+  },
+  {
+    type: "collapse",
+    name: "contests",
+    key: "contests",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <BusinessIcon/>,
+    route: "/contest",
+    component: <Contest />,
   },
   {
     type: "collapse",

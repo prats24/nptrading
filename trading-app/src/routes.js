@@ -54,6 +54,8 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DBEntry from "./layouts/InsertData/DBEntry";
 import Referral from "./layouts/refferal-programme";
+import Contest from "./layouts/user-contest"
+
 
 const routes = [
   {
@@ -278,6 +280,15 @@ const routes = [
     icon: <PersonIcon/>,
     route: "/myreferrals",
     component: <MyReferrals />,
+  },
+  {
+    type: "collapse",
+    name: "User Contest",
+    key: "contest",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <PersonIcon/>,
+    route: "/usercontest",
+    component: <Contest />,
   },
   {
     type: "collapse",
