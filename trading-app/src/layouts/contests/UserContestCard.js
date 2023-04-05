@@ -15,7 +15,7 @@ import Timer from './timer'
 
 
 
-const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsObjectNew}) => {
+const UserContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsObjectNew}) => {
   const [contestData,setContestData] = useState([]);
   const [contestDetailsForm,setContestDetailsForm] = useState(false)
   const [objectId,setObjectId] = useState('')
@@ -72,6 +72,8 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
 
     return (
       <>
+      {     
+      !contestDetailsForm ?
       <>
                     {contestData?.map((e)=>(
                     
@@ -142,9 +144,10 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
                     <>
                     <ContestDetailsForm oldObjectId={objectId} setOldObjectId={setObjectId}/>
                     </>
+                    }
                     </>
 )}
 
 
 
-export default ContestCard;
+export default UserContestCard;
