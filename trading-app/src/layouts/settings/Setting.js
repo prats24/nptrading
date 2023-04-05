@@ -110,17 +110,17 @@ function Setting() {
                 }}
                 social={[
                     {
-                      link: "https://www.facebook.com/ninepointer/",
+                      link: "https://www.facebook.com/stoxhero/",
                       icon: <FacebookIcon />,
                       color: "facebook",
                     },
                     {
-                      link: "https://twitter.com/nine_pointers",
+                      link: "https://twitter.com/stoxhero",
                       icon: <TwitterIcon />,
                       color: "twitter",
                     },
                     {
-                      link: "https://www.instagram.com/nine_pointer/",
+                      link: "https://www.instagram.com/stoxhero/",
                       icon: <InstagramIcon />,
                       color: "instagram",
                     },

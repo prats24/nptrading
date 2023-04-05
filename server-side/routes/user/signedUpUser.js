@@ -40,7 +40,7 @@ router.post("/signup", async (req, res)=>{
 
     res.status(201).json({message : "Mobile and mail OTPs have been sent. Check your email and messages. OTPs expire in 30 minutes.", 
         status: 201});
-                let subject = "OTP from ninepointer";
+                let subject = "OTP from StoxHero";
                 let message = 
                 `
                 <!DOCTYPE html>
@@ -157,7 +157,7 @@ router.patch("/verifyotp", async (req, res)=>{
         }
 
         //Check for referrer code
-        console.log("Referrer Code: ",referrerCode,!referrerCode)
+        // console.log("Referrer Code: ",referrerCode,!referrerCode)
         // if(!referrerCode){
         //     console.log("Inside Referrer Code Empty Check")
         //     return res.status(404).json({message : "No referrer code. Please enter your referrer code"});
@@ -253,7 +253,6 @@ router.patch("/verifyotp", async (req, res)=>{
         referral?.users?.push(newuser._id)
         const referralProgramme = await Referral.findOneAndUpdate({status: "Active"}, {
             $set:{ 
-                
                 users: referral?.users
             }
             
@@ -265,7 +264,7 @@ router.patch("/verifyotp", async (req, res)=>{
 
         res.status(201).json({status: "Success", data:newuser, message:"Welcome! Your account is created, please check your email for your userid and password details."});
             // let email = newuser.email;
-            let subject = "Account Created - ninepointer";
+            let subject = "Account Created - StoxHero";
             let message = 
             `
             <!DOCTYPE html>
@@ -340,9 +339,9 @@ router.patch("/verifyotp", async (req, res)=>{
                     <p>Hello ${newuser.first_name},</p>
                     <p>Your login details are:</p>
                     <p>User ID: <span class="userid">${newuser.email}</span></p>
-                    <p>Password: <span class="password">np${last_name}@123</span></p>
+                    <p>Password: <span class="password">np${newuser.last_name}@123</span></p>
                     <p>Please use these credentials to log in to our website:</p>
-                    <a href="https://www.ninepointer.in/" class="login-button">Log In</a>
+                    <a href="https://www.stoxhero.com/" class="login-button">Log In</a>
                     </div>
                 </body>
                 </html>
@@ -371,11 +370,78 @@ router.patch("/resendotp", async (req, res)=>{
     }
     let email_otp = otpGenerator.generate(6, { upperCaseAlphabets: true,lowerCaseAlphabets: false, specialChars: false });
     let mobile_otp = otpGenerator.generate(6, {digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false});
-    let subject = "OTP from ninepointer";
-    let message = `Your OTP for email verification is: ${email_otp}`
+    let subject = "OTP from StoxHero";
+    let message = `
+    <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Email OTP</title>
+            <style>
+            body {
+                font-family: Arial, sans-serif;
+                font-size: 16px;
+                line-height: 1.5;
+                margin: 0;
+                padding: 0;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                border: 1px solid #ccc;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            p {
+                margin: 0 0 20px;
+            }
+
+            .otp-code {
+                display: inline-block;
+                background-color: #f5f5f5;
+                padding: 10px;
+                font-size: 20px;
+                font-weight: bold;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+
+            .cta-button {
+                display: inline-block;
+                background-color: #007bff;
+                color: #fff;
+                padding: 10px 20px;
+                font-size: 18px;
+                font-weight: bold;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+
+            .cta-button:hover {
+                background-color: #0069d9;
+            }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+            <h1>Email OTP</h1>
+            <p>Hello ${user.first_name},</p>
+            <p>Your OTP code is: <span class="otp-code">${email_otp}</span></p>
+            <p>Please use this code to verify your email address and complete your registration.</p>
+            <p>If you did not request this OTP, please ignore this email.</p>
+            </div>
+        </body>
+        </html>
+    `;
     if(type == 'mobile'){
         user.mobile_otp = mobile_otp;
-        sendSMS([mobile.toString()],`Your otp for ninepointer signup is ${mobile_otp}`);    
+        sendSMS([mobile.toString()],`Your otp for StoxHero signup is ${mobile_otp}`);    
     }
     else if(type == 'email'){
         user.email_otp = email_otp;

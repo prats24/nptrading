@@ -189,7 +189,7 @@ export default function App() {
                 <Sidenav
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-                brandName="ninepointer"
+                brandName="StoxHero"
                 // routes=
                 // {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? 
                 // routes : ((detailUser.role === "user" || getDetails.userDetails.role === "user") ? userRoutes
@@ -229,7 +229,7 @@ export default function App() {
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="ninepointer"
+              brandName="StoxHero"
               routes={(detailUser?.role === "admin" || getDetails?.userDetails?.role === "admin")
                 ? routes : (detailUser?.role === "user" || getDetails?.userDetails?.role === "user") 
                 ? userRoutes : (detailUser?.role === "data" || getDetails?.userDetails?.role === "data") 

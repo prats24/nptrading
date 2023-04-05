@@ -318,7 +318,7 @@ router.patch("/generateOTP", async (req, res)=>{
         })
     }
     let email_otp = otpGenerator.generate(6, { upperCaseAlphabets: true,lowerCaseAlphabets: false, specialChars: false });
-    let subject = "Password Reset ninepointer";
+    let subject = "Password Reset StoxHero";
     let message = `Your OTP for password reset is: ${email_otp}`
     resetuser.resetPasswordOTP = email_otp
         await resetuser.save({validateBeforeSave:false});

@@ -72,7 +72,7 @@ function Transactions() {
       <Transaction
         color={color}
         icon={<CurrencyRupeeIcon/>}
-        name="ninepointer"
+        name="StoxHero"
         description={datestring}
         value={amountstring}
         />

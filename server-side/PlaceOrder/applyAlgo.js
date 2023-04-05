@@ -129,7 +129,7 @@ const ApplyAlgo = async (req, res, next)=>{
     }
 
     if(userPermissionAlgo?.length === 0){
-        return res.status(401).send({message: "Your profile is not active yet, please contact the admin @ team@ninepointer.in for more details."})
+        return res.status(401).send({message: "Your profile is not active yet, please contact the admin @ team@stoxhero.com for more details."})
     }
     await tradingAlgo();
 

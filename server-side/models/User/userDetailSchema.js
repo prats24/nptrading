@@ -233,7 +233,11 @@ const userDetailSchema = new mongoose.Schema({
     referredBy:{
         type: Schema.Types.ObjectId,
         ref: 'user-personal-detail'
-    }
+    },
+    contests:[{
+        type: Schema.Types.ObjectId,
+        ref: 'user-personal-detail'
+    }]
 })
 
 //Adding the ninepointer id before saving
