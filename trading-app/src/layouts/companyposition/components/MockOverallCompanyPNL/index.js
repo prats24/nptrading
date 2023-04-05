@@ -193,8 +193,14 @@ function MockOverallCompantPNL({socket}) {
           </MDTypography>
         );
       }
+
+      if(subelem.lots != 0){
+        rows.unshift(obj);
+      } else{
+        rows.push(obj);
+      }
       //console.log(obj)
-      rows.push(obj);
+      // rows.push(obj);
     })
 
 
@@ -312,7 +318,7 @@ function MockOverallCompantPNL({socket}) {
           showTotalEntries={false}
           isSorted={false}
           noEndBorder
-          entriesPerPage={false}
+          // entriesPerPage={false}
         />
       </MDBox>
       )}

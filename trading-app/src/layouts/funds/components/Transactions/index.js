@@ -32,7 +32,7 @@ function Transactions() {
                 console.log(res.data);
                 setMarginDetails(res.data);
         }).catch((err)=>{
-            window.alert("Error Fetching Margin Details");
+            // window.alert("Error Fetching Margin Details");
             return new Error(err);
         })
   },[])

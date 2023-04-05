@@ -34,7 +34,7 @@ import { Divider, Typography } from '@mui/material';
 
 function MyProfile({profilePhoto,setProfilePhoto}) {
 
-  console.log('Rendering again');
+  // console.log('Rendering again');
 
 
   const [followsMe, setFollowsMe] = useState(true);
@@ -45,7 +45,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   const [editableKYC, setEditableKYC] = useState(false);
   const getDetails = useContext(userContext);
 
-  console.log('rendering',getDetails?.userDetails?.degree);
+  // console.log('rendering',getDetails?.userDetails?.degree);
 
   const blankImageUrl = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%' height='130px'%3E%3Crect width='100%' height='130px' fill='lightgrey'/%3E%3Ctext x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='15px' fill='black'%3EDocument Preview%3C/text%3E%3C/svg%3E`;
 
@@ -77,24 +77,24 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
   const [formStateBD,setFormStateBD] = React.useState(
     {
-      upiId:getDetails?.userDetails?.upiId || '',
-      googlePay_number:getDetails?.userDetails?.googlePay_number || '',
-      phonePe_number:getDetails?.userDetails?.phonePe_number || '',
-      payTM_number:getDetails?.userDetails?.payTM_number || '',
-      nameAsPerBankAccount:getDetails?.userDetails?.nameAsPerBankAccount || '',
-      bankName:getDetails?.userDetails?.bankName || '',
-      accountNumber:getDetails?.userDetails?.accountNumber || '',
-      ifscCode:getDetails?.userDetails?.ifscCode || '',
+      upiId:getDetails?.userDetails?.upiId || "",
+      googlePay_number:getDetails?.userDetails?.googlePay_number || "",
+      phonePe_number:getDetails?.userDetails?.phonePe_number || "",
+      payTM_number:getDetails?.userDetails?.payTM_number || "",
+      nameAsPerBankAccount:getDetails?.userDetails?.nameAsPerBankAccount || "",
+      bankName:getDetails?.userDetails?.bankName || "",
+      accountNumber:getDetails?.userDetails?.accountNumber || "",
+      ifscCode:getDetails?.userDetails?.ifscCode || "",
       role:getDetails?.userDetails?.role,
     }
   );
 
   const [formStateKYC,setFormStateKYC] = React.useState(
     {
-      aadhaarNumber:getDetails?.userDetails?.aadhaarNumber || '',
-      panNumber:getDetails?.userDetails?.panNumber || '',
-      passportNumber:getDetails?.userDetails?.passportNumber || '',
-      drivingLicenseNumber:getDetails?.userDetails?.drivingLicenseNumber || '',
+      aadhaarNumber:getDetails?.userDetails?.aadhaarNumber || "",
+      panNumber:getDetails?.userDetails?.panNumber || "",
+      passportNumber:getDetails?.userDetails?.passportNumber || "",
+      drivingLicenseNumber:getDetails?.userDetails?.drivingLicenseNumber || "",
       aadhaarCardFrontImage:getDetails?.userDetails?.aadhaarCardFrontImage || null,
       aadhaarCardBackImage:getDetails?.userDetails?.aadhaarCardBackImage || null,
       panCardFrontImage:getDetails?.userDetails?.panCardFrontImage || null,
@@ -105,7 +105,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       panCardFrontPreview:"",
       passportPhotoPreview:"",
       addressProofDocumentPreview:"",
-      KYCStatus:getDetails?.userDetails?.KYCStatus || '',
+      KYCStatus:getDetails?.userDetails?.KYCStatus || "",
       role:getDetails?.userDetails?.role,
     }
   );
@@ -115,7 +115,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   // console.log(formStateKYC)
 
   async function formSubmit(data,section){
-    // console.log(data)
+    console.log("Form Data: ",data)
     try{
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
@@ -123,12 +123,18 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
         formData.append(key, data[key])
       });
       if(section==="KYC Details"){
+        console.log("KYC FormData: ",data)
         if(!formStateKYC.aadhaarNumber || !formStateKYC.panNumber || 
           !formStateKYC.aadhaarCardFrontImage || !formStateKYC.aadhaarCardBackImage ||
           !formStateKYC.panCardFrontImage || !formStateKYC.passportPhoto || !formStateKYC.addressProofDocument
           ) return openErrorSB("KYC Details","Please upload the required fields.")
-        formData.append("KYCStatus","Pending Approval")
+        // formData.append("KYCStatus","Pending Approval")
         setFormStateKYC(formStateKYC.KYCStatus,"Pending Approval")
+      }
+      if(section==="Bank Details"){
+        if(!formStateBD.nameAsPerBankAccount || !formStateBD.bankName || 
+          !formStateBD.accountNumber || !formStateBD.ifscCode 
+          ) return openErrorSB("Bank Details","Please fill all the required fields.")
       }
 
       const res = await fetch(`${baseUrl}api/v1/userdetail/me`, {
@@ -145,12 +151,11 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       if(response.status === 'success'){
         getDetails.setUserDetail(response.data);
         console.log("Response: ",response.data,data);
-        setFormStateKYC(prev=>({...prev, aadhaarCardBackImage:response.data?.aadhaarCardBackImage??'', 
+        setFormStateKYC(prev=>({...prev, drivingLicenseNumber:response.data?.drivingLicenseNumber??'',passportNumber:response.data?.passportNumber??'',panNumber:response.data?.panNumber??'',aadhaarNumber:response.data?.aadhaarNumber??'' ,aadhaarCardBackImage:response.data?.aadhaarCardBackImage??'', 
         aadhaarCardFrontImage: response.data?.aadhaarCardFrontImage??'', panCardFrontImage: response.data?.panCardFrontImage??'',
         addressProofDocument: response.data?.addressProofDocument??'', passportPhoto: response.data?.passportPhoto??''
       }));
         openSuccessSB(section,`Your ${section} updated successfully`)
-        // window.alert("Personal Details Updated")
       }
       
     }catch(e){
@@ -159,7 +164,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
   }
 
   const handleFileSelect = (event,fieldName) => {
-    console.log("Event: ",event)
+    // console.log("Event: ",event)
     if(!event && fieldName === "addressProofDocument")
     {
         setFormStateKYC(prevState => ({
@@ -204,13 +209,10 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
       reader.onload = () => {
         const fileDataUrl = reader.result;
         const fileName = selectedFile.name;
-        console.log("File Name: ",selectedFile.name)
         const fileBlob = dataURLtoBlob(fileDataUrl);
         const newFile = new File([fileBlob], selectedFile.name, { type: selectedFile.type });
-        console.log("New file object:", newFile);
-        console.log(reader.result);
-        console.log("setting reader.result")
         const previewURL = URL.createObjectURL(selectedFile)
+        if (selectedFile && selectedFile.type && selectedFile.type.startsWith("image/")){
         if(fieldName === "profilePhoto"){
           setFormStatePD(prevState => ({
             ...prevState,
@@ -248,17 +250,20 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
             addressProofDocument:event,
           }))
         }
-        
-        
+      }
+      else{
+        openErrorSB("KYC Details","Invalid file type. Please select an image.");
+        console.log("Error: Invalid file type. Please select an image.");
+      } 
       };
       reader.readAsDataURL(selectedFile);
       
     }
   };
   
-  console.log("Address Prrof Doc Name: ",formStateKYC?.addressProofDocument?.name)
-  console.log("rending state set for preview")
-  console.log("Preview for Aadhaar Card Front: ",formStateKYC.aadhaarCardFrontPreview)
+  // console.log("Address Prrof Doc Name: ",formStateKYC?.addressProofDocument?.name)
+  // console.log("rending state set for preview")
+  // console.log("Preview for Aadhaar Card Front: ",formStateKYC.aadhaarCardFrontPreview)
 
   // Helper function to convert data URL to Blob object
   function dataURLtoBlob(dataUrl) {
@@ -391,8 +396,8 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
     />
   );
 
-  console.log("Condition 1: ",formStateKYC.aadhaarCardBackImage ? formStateKYC.aadhaarCardBackImage : console.log(formStateKYC.aadhaarCardBackPreview))
-  console.log("Condition 2: ",formStateKYC.aadhaarCardBackPreview,blankImageUrl)
+  // console.log("Condition 1: ",formStateKYC.aadhaarCardBackImage ? formStateKYC.aadhaarCardBackImage : console.log(formStateKYC.aadhaarCardBackPreview))
+  // console.log("Condition 2: ",formStateKYC.aadhaarCardBackPreview,blankImageUrl)
 
   const [file, setFile] = React.useState(null)
 
@@ -410,17 +415,37 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
           Personal Details
         </MDTypography>
-            {!editablePD ? <Tooltip title="Edit Personal Details" placement="top">
+            {!editablePD ? 
+            <Tooltip title="Edit Personal Details" placement="top">
+              <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <Typography
+                variant="caption"
+                fontWeight="bold"
+                sx={{ marginRight: 1 }}
+              >
+                Click on pencil icon to update personal details
+              </Typography>
               <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditablePD(true)}}>
                 edit
               </Icon>
+              </Box>
             </Tooltip>
             :
             <Tooltip title="Save Personal Details" placement="top">
+              <Box sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <Typography
+                variant="caption"
+                fontWeight="bold"
+                sx={{ marginRight: 1 }}
+              >
+                Click on tick icon to save personal details
+              </Typography>
               <Icon sx={{ cursor: "pointer" }} fontSize="small" onClick={()=>{setEditablePD(false);formSubmit(formStatePD,"Personal Details")}}>
                 done
               </Icon>
-            </Tooltip>}
+              </Box>
+            </Tooltip>
+            }
         </MDBox>
 
         <Divider orientation="horizontal" sx={{ ml: 1, mr: 1, color:'rgba(0, 0, 0, 0.87)' }} />
@@ -719,7 +744,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 accept="image/*" 
                 type="file" 
                 // defaultValue={formStatePD.profilePhoto}
-                onChange={(e)=>{handleFileSelect(e,"profilePhoto");
+                onChange={(e)=>{
                   setFormStatePD(prevState => ({
                     ...prevState,
                     profilePhoto: e.target.files[0]
@@ -751,7 +776,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 fontWeight="bold"
                 sx={{ marginRight: 1 }}
               >
-                Update Bank Details
+                Click on pencil icon to update bank details
               </Typography>
               <Icon
                 fontSize="small"
@@ -773,7 +798,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 fontWeight="bold"
                 sx={{ marginRight: 1 }}
               >
-                Save Bank Details
+                Click on tick icon to save bank details
               </Typography>
               <Icon
                 fontSize="small"
@@ -952,30 +977,30 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                     pr:1,
                     pl:1,
                     backgroundColor: `${
-                      formStateKYC.KYCStatus === 'Not Initiated'
+                      formStateKYC?.KYCStatus === 'Not Initiated'
                         ? '#1A73E8'
-                        : formStateKYC.KYCStatus === 'Approved'
+                        : formStateKYC?.KYCStatus === 'Approved'
                         ? '#4CAF50'
-                        : formStateKYC.KYCStatus === 'Rejected'
+                        : formStateKYC?.KYCStatus === 'Rejected'
                         ? '#F44335'
-                        : formStateKYC.KYCStatus === 'Under Verification'
+                        : formStateKYC?.KYCStatus === 'Under Verification'
                         ? '#fb8c00'
                         : '#1A73E8'
                     }`,
                     color: `${
-                      formStateKYC.KYCStatus === 'Not Initiated'
+                      formStateKYC?.KYCStatus === 'Not Initiated'
                         ? 'white!important'
-                        : formStateKYC.KYCStatus === 'Approved'
+                        : formStateKYC?.KYCStatus === 'Approved'
                         ? 'white!important'
-                        : formStateKYC.KYCStatus === 'Rejected'
+                        : formStateKYC?.KYCStatus === 'Rejected'
                         ? 'white!important'
-                        : formStateKYC.KYCStatus === 'Under Verification'
+                        : formStateKYC?.KYCStatus === 'Under Verification'
                         ? 'black!important'
                         : 'white!important'
                     }`,
                   }}
                 >
-                  {formStateKYC.KYCStatus}
+                  {getDetails?.userDetails?.KYCStatus ? getDetails?.userDetails?.KYCStatus : formStateKYC.KYCStatus}
                 </MDTypography>
           </MDBox>
           </MDBox>
@@ -992,7 +1017,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 fontWeight="bold"
                 sx={{ marginRight: 1 }}
               >
-                Update KYC Details
+                Click on pencil icon to update KYC details
               </Typography>
               <Icon
                 fontSize="small"
@@ -1012,7 +1037,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                   fontWeight="bold"
                   sx={{ marginRight: 1 }}
                 >
-                  Save KYC Details
+                  Click on tick icon to save KYC details
                 </Typography>
                 <Icon
                   fontSize="small"
@@ -1038,7 +1063,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 disabled={!editableKYC}
                 id="outlined-required"
                 label="Aadhaar Number *"
-                defaultValue={formStateKYC.aadhaarNumber}
+                defaultValue={formStateKYC?.aadhaarNumber}
                 fullWidth
                 onChange={(e) => {setFormStateKYC(prevState => ({
                   ...prevState,
@@ -1052,7 +1077,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 disabled={!editableKYC}
                 id="outlined-required"
                 label="PAN Number *"
-                defaultValue={formStateKYC.panNumber}
+                defaultValue={formStateKYC?.panNumber}
                 fullWidth
                 onChange={(e) => {setFormStateKYC(prevState => ({
                   ...prevState,
@@ -1066,7 +1091,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 disabled={!editableKYC}
                 id="outlined-required"
                 label="Passport Number"
-                defaultValue={formStateKYC.passportNumber}
+                defaultValue={formStateKYC?.passportNumber}
                 fullWidth
                 onChange={(e) => {setFormStateKYC(prevState => ({
                   ...prevState,
@@ -1080,7 +1105,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 disabled={!editableKYC}
                 id="outlined-required"
                 label="Driving License Number"
-                defaultValue={formStateKYC.drivingLicenseNumber}
+                defaultValue={formStateKYC?.drivingLicenseNumber}
                 fullWidth
                 onChange={(e) => {setFormStateKYC(prevState => ({
                   ...prevState,
@@ -1091,8 +1116,10 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
           <Grid item xs={12} md={6} xl={2.4}>
               <MuiFileInput 
-                value={formStateKYC.aadhaarCardFrontImage} 
-                placeholder="Click to upload"
+                value={null} 
+                disabled={!editableKYC}
+                placeholder={(formStateKYC?.aadhaarCardFrontImage ? formStateKYC?.aadhaarCardFrontImage?.name?.slice(0, 15)  : "Click to upload") +
+                (formStateKYC?.aadhaarCardFrontImage?.name?.length > 15 ? "..." : "")}
                 label="Aadhaar Card Front"
                 onChange={(e)=>{handleFileSelect(e,"aadhaarCardFront")}}
               />
@@ -1100,8 +1127,10 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
           <Grid item xs={12} md={6} xl={2.4}>
               <MuiFileInput 
-                value={formStateKYC.aadhaarCardBackImage} 
-                placeholder="Click to upload"
+                value={null} 
+                disabled={!editableKYC}
+                placeholder={(formStateKYC?.aadhaarCardBackImage ? formStateKYC?.aadhaarCardBackImage?.name?.slice(0, 15)  : "Click to upload") +
+                (formStateKYC?.aadhaarCardBackImage?.name?.length > 15 ? "..." : "")}
                 label="Aadhaar Card Back"
                 onChange={(e)=>{handleFileSelect(e,"aadhaarCardBack")}}
               />
@@ -1109,8 +1138,10 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
           <Grid item xs={12} md={6} xl={2.4}>
           <MuiFileInput 
-                value={formStateKYC.panCardFrontImage} 
-                placeholder="Click to upload"
+                value={null}
+                placeholder={(formStateKYC?.panCardFrontImage ? formStateKYC?.panCardFrontImage?.name?.slice(0, 15)  : "Click to upload") +
+                (formStateKYC?.panCardFrontImage?.name?.length > 15 ? "..." : "")}
+                disabled={!editableKYC}
                 label="PAN Card Photo"
                 onChange={(e)=>{handleFileSelect(e,"panCardFront")}}
               />
@@ -1118,29 +1149,32 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
           <Grid item xs={12} md={6} xl={2.4}>
           <MuiFileInput 
-                value={formStateKYC.passportPhoto} 
-                placeholder="Click to upload"
+                value={null} 
+                disabled={!editableKYC}
+                placeholder={(formStateKYC?.passportPhoto ? formStateKYC?.passportPhoto?.name?.slice(0, 10)  : "Click to upload") +
+                (formStateKYC?.passportPhoto?.name?.length > 15 ? "..." : "")}
                 label="Passport Size Photo"
                 onChange={(e)=>{handleFileSelect(e,"passportPhoto")}}
               />
           </Grid>
           
           <Grid item xs={12} md={6} xl={2.4}>
-              <MuiFileInput 
-                // value={formStateKYC.addressProofDocument} 
-                placeholder={formStateKYC.addressProofDocument ? formStateKYC.addressProofDocument.name  : "Click to upload"}
+              <MuiFileInput  
+                placeholder={(formStateKYC?.addressProofDocument ? formStateKYC?.addressProofDocument?.name?.slice(0, 15)  : "Click to upload") +
+                (formStateKYC?.addressProofDocument?.name?.length > 15 ? "..." : "")}
                 value={null}
+                disabled={!editableKYC}
                 label="Address Proof"
                 onChange={(e)=>{handleFileSelect(e,"addressProofDocument")}}
-                // InputLabelProps={{ style: { fontSize: '1px' } }}
               />
           </Grid>
 
+          {!editableKYC && 
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
                       style={{width:'100%',height:'130px', fontSize:15}} 
-                      src={formStateKYC.aadhaarCardFrontImage ? formStateKYC.aadhaarCardFrontImage : formStateKYC.aadhaarCardFrontPreview ? formStateKYC.aadhaarCardFrontPreview : blankImageUrl} 
+                      src={formStateKYC?.aadhaarCardFrontImage?.url}
                       alt="Save to upload" 
                   />
                       {editableKYC && (
@@ -1163,18 +1197,19 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                         </button>
                       )}
               </MDBox>
-                {formStateKYC.aadhaarCardFrontPreview ? 
+                {formStateKYC?.aadhaarCardFrontPreview ? 
                 <Typography sx={{fontSize:10,mt:-1}}>Aadhaar Card Front Uploaded</Typography> 
                 :
                 <Typography sx={{fontSize:10,mt:-1}}>Please Upload Aadhaar Card Back</Typography>
                 }
-          </Grid>
+          </Grid>}
 
+          {!editableKYC &&
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
                       style={{width:'100%',height:'130px', fontSize:15}} 
-                      src={formStateKYC.aadhaarCardBackImage ? formStateKYC.aadhaarCardBackImage : formStateKYC.aadhaarCardBackPreview ? formStateKYC.aadhaarCardBackPreview : blankImageUrl} 
+                      src={formStateKYC?.aadhaarCardBackImage?.url}
                       alt="Save to upload" 
                   />
                       {editableKYC && (
@@ -1197,18 +1232,20 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                         </button>
                       )}
               </MDBox>
-                {formStateKYC.aadhaarCardBackPreview ? 
+                {formStateKYC?.aadhaarCardBackPreview ? 
                 <Typography sx={{fontSize:10,mt:-1}}>Aadhaar Card Back Uploaded</Typography> 
                 :
                 <Typography sx={{fontSize:10,mt:-1}}>Please Upload Aadhaar Card Back</Typography>
                 }
           </Grid>
+          }
 
+          {!editableKYC &&
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
                       style={{width:'100%',height:'130px', fontSize:15}} 
-                      src={formStateKYC.panCardFrontImage ? formStateKYC.panCardFrontImage : formStateKYC.panCardFrontPreview ? formStateKYC.panCardFrontPreview : blankImageUrl} 
+                      src={formStateKYC?.panCardFrontImage?.url}
                       alt="Save to upload" 
                   />
                       {editableKYC && (
@@ -1231,18 +1268,20 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                         </button>
                       )}
               </MDBox>
-                {formStateKYC.panCardFrontPreview ? 
+                {formStateKYC?.panCardFrontPreview ? 
                 <Typography sx={{fontSize:10,mt:-1}}>Pan Card Uploaded</Typography> 
                 :
                 <Typography sx={{fontSize:10,mt:-1}}>Please Upload Pan Card</Typography>
                 }
           </Grid>
+          }
 
+          {!editableKYC &&
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
                       style={{width:'100%',height:'130px', fontSize:15}} 
-                      src={formStateKYC.passportPhoto ? formStateKYC.passportPhoto : formStateKYC.passportPhotoPreview ? formStateKYC.passportPhotoPreview : blankImageUrl} 
+                      src={formStateKYC?.passportPhoto?.url}
                       alt="Save to upload" 
                   />
                       {editableKYC && (
@@ -1265,13 +1304,15 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                         </button>
                       )}
               </MDBox>
-                {formStateKYC.passportPhotoPreview ? 
+                {formStateKYC?.passportPhotoPreview ? 
                 <Typography sx={{fontSize:10,mt:-1}}>Passport Size Photo Uploaded</Typography> 
                 :
                 <Typography sx={{fontSize:10,mt:-1}}>Please Upload Passport Size Photo</Typography>
                 }
           </Grid>
+          }
 
+          {!editableKYC &&
           <Grid item xs={12} md={6} xl={2.4}>
               <MDBox position="relative" display="inline-block">
                   <img 
@@ -1299,12 +1340,13 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                         </button>
                       )}
               </MDBox>
-                {formStateKYC.addressProofDocumentPreview ? 
+                {formStateKYC?.addressProofDocumentPreview ? 
                 <Typography sx={{fontSize:10,mt:-1}}>Address Proof Document Uploaded</Typography> 
                 :
                 <Typography sx={{fontSize:10,mt:-1}}>Please Upload Address Proof Document</Typography>
                 }
           </Grid>
+          }
 
           </Grid>
 

@@ -29,6 +29,7 @@ import AnalyticsRoutes from './analyticsRoutes'
 import SignUp from './layouts/authentication/sign-up'
 import ResetPassword from './layouts/authentication/reset-password/cover'
 import Response from './layouts/authentication/sign-up/responseSubmit'
+import MyReferrals from "./layouts/referrals"
 
 
 // @mui icons
@@ -52,7 +53,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import WalletIcon from '@mui/icons-material/Wallet';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DBEntry from "./layouts/InsertData/DBEntry";
-
+import Referral from "./layouts/refferal-programme";
 
 const routes = [
   {
@@ -63,6 +64,7 @@ const routes = [
     route: "/admindashboard",
     component: <AdminDashboard />,
   },
+
   {
     // type: "collapse",
     // name: "Company Dashboard",
@@ -137,6 +139,15 @@ const routes = [
     icon: <EngineeringIcon/>,
     route: "/algoposition",
     component: <AlgoPosition />,
+  },
+
+  {
+    type: "collapse",
+    name: "Referral Programme",
+    key: "referral",
+    icon: <DashboardIcon/>,
+    route: "/referralProgramme",
+    component: <Referral />,
   },
   
   {
@@ -258,6 +269,15 @@ const routes = [
     icon: <InventoryIcon/>,
     route: "/userorders",
     component: <UserOrders />,
+  },
+  {
+    type: "collapse",
+    name: "My Referrals",
+    key: "myreferrals",
+    // icon: <Icon fontSize="small">person</Icon>,
+    icon: <PersonIcon/>,
+    route: "/myreferrals",
+    component: <MyReferrals />,
   },
   {
     type: "collapse",

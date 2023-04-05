@@ -9,6 +9,7 @@ import { userContext } from '../../../AuthContext';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import uniqid from "uniqid"
+import MDSnackbar from '../../../components/MDSnackbar';
 
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -28,7 +29,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
 function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
-  console.log("rendering in userPosition/overall: exitPosition")
+  console.log("rendering in userPosition/overall: exitPosition", quantity)
 
     let checkBuyOrSell ;
     if(quantity > 0){
@@ -46,7 +47,12 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
     let trader = getDetails.userDetails._id;
     let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
     const [tradeData, setTradeData] = useState([]);
-
+    const [messageObj, setMessageObj] = useState({
+      color: '',
+      icon: '',
+      title: '',
+      content: ''
+    })
   
     const [open, setOpen] = React.useState(false);
     const theme = useTheme();
@@ -206,34 +212,95 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
       const dataResp = await res.json();
       //console.log("dataResp", dataResp)
       if (dataResp.status === 422 || dataResp.error || !dataResp) {
-          //console.log(dataResp.error)
-          window.alert(dataResp.error);
-          ////console.log("Failed to Trade");
-      } else {
-          if(dataResp.massage === "COMPLETE"){
-              console.log(dataResp);
-              window.alert("Trade Succesfull Completed");
-          } else if(dataResp.massage === "REJECTED"){
-              console.log(dataResp);
-              window.alert("Trade is Rejected due to Insufficient Fund");
-          } else if(dataResp.massage === "AMO REQ RECEIVED"){
-              console.log(dataResp);
-              window.alert("AMO Request Recieved");
-          } else{
-              console.log("this is dataResp", dataResp)
-              window.alert(dataResp.message);
-          }
-      }
+        //console.log(dataResp.error)
+        // window.alert(dataResp.error);
+        openSuccessSB('error', dataResp.error)
+        ////console.log("Failed to Trade");
+    } else {
+        if(dataResp.message === "COMPLETE"){
+            // console.log(dataResp);
+            openSuccessSB('complete', {symbol, Quantity})
+            // window.alert("Trade Succesfull Completed");
+        } else if(dataResp.message === "REJECTED"){
+            // console.log(dataResp);
+            openSuccessSB('reject', "Trade is Rejected due to Insufficient Fund")
+            // window.alert("Trade is Rejected due to Insufficient Fund");
+        } else if(dataResp.message === "AMO REQ RECEIVED"){
+            // console.log(dataResp);
+            openSuccessSB('amo', "AMO Request Recieved")
+            // window.alert("AMO Request Recieved");
+        } else{
+          openSuccessSB('else', dataResp.message)
+          // window.alert(dataResp.message);
+        }
     }
+    }
+
+    const [successSB, setSuccessSB] = useState(false);
+    const openSuccessSB = (value,content) => {
+      // console.log("Value: ",value)
+      if(value === "complete"){
+          messageObj.color = 'success'
+          messageObj.icon = 'check'
+          messageObj.title = "Trade Successfull";
+          messageObj.content = `Traded ${content.Quantity} of ${content.symbol}`;
+  
+      };
+      if(value === "reject"){
+        messageObj.color = 'error'
+        messageObj.icon = 'error'
+        messageObj.title = "REJECTED";
+        messageObj.content = content;
+      };
+      if(value === "amo"){
+        messageObj.color = 'info'
+        messageObj.icon = 'warning'
+        messageObj.title = "AMO Requested";
+        messageObj.content = content;
+      };
+      if(value === "else"){
+        messageObj.color = 'error'
+        messageObj.icon = 'error'
+        messageObj.title = "REJECTED";
+        messageObj.content = content;
+      };
+      if(value === "error"){
+        messageObj.color = 'error'
+        messageObj.icon = 'error'
+        messageObj.title = "Error";
+        messageObj.content = content;
+      };
+  
+      setMessageObj(messageObj);
+      setSuccessSB(true);
+    }
+    const closeSuccessSB = () => setSuccessSB(false);
+    // console.log("Title, Content, Time: ",title,content,time)
+  
+  
+    const renderSuccessSB = (
+      <MDSnackbar
+        color= {messageObj.color}
+        icon= {messageObj.icon}
+        title={messageObj.title}
+        content={messageObj.content}
+        open={successSB}
+        onClose={closeSuccessSB}
+        close={closeSuccessSB}
+        bgWhite="info"
+        sx={{ borderLeft: `10px solid ${messageObj.icon == 'check' ? "green" : "red"}`, borderRight: `10px solid ${messageObj.icon == 'check' ? "green" : "red"}`, borderRadius: "15px", width: `${messageObj.title == "Error" ? "500px" : "auto"}`}}
+      />
+    );
+  
 
 
 
   return (
     <div>
+ {/* sx={{margin: "5px"}} */}
 
-
-    <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} fullWidth>
-        Exit Position
+    <MDButton size="small" sx={{marginRight:0.5,minWidth:2,minHeight:3}} color="info" onClick={handleClickOpen}> 
+        E
     </MDButton>
     <div>
       <Dialog
@@ -340,7 +407,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         </DialogActions>
       </Dialog>
     </div >
-
+    {renderSuccessSB}
   </div >
 );
 

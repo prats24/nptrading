@@ -45,37 +45,8 @@ getKiteCred.getAccess().then((data)=>{
   createNewTicker(data.getApiKey, data.getAccessToken);
 });
 
-
+// redis connection
 client.connect();
-
-
-
-
-
-// Get a value by key
-async function check(){
-  // client.LREM("id", 1, '15');
-  client.set("id", '15');
-  // client.LPUSH("id", ['13', '15', '17']);
-  // let result = await client.LRANGE('id', 0, -1)
-  // console.log("my result", result);
-  // const keys = await redis.collection
-  // .keys('*');
-  // console.log(keys)
-  // get all keys
-  // client.KEYS("name", function (err, keys) {
-  //   if (err) return console.log(err);
-  
-  //   // print keys
-  //   console.log("keys", keys)
-  //   keys.forEach(function (key, i) {
-  //     console.log(i + 1 + ") " + key);
-  //   });
-  
-  //   // quit Redis client
-  // });
-}
-// check();
 
 
 io.on("connection", (socket) => {
@@ -181,6 +152,8 @@ app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));
 app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
 app.use('/api/v1', require("./routes/marginAllocation/marginAllocationAuth"));
 app.use('/api/v1/contest', require("./routes/contest/contestRoutes"));
+app.use('/api/v1/referrals', require("./routes/campaigns/referralRoutes"));
+
 app.use('/api/v1', require("./routes/contest/contestRuleRoute"));
 app.use('/api/v1', require("./routes/dbEntry/dbEntryRoute"));
 app.use('/api/v1', require("./PlaceOrder/main"));

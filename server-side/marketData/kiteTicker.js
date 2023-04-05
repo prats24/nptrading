@@ -28,7 +28,7 @@ const disconnectTicker = () => {
 const subscribeTokens = async() => {
   getKiteCred.getAccess().then(async (data)=>{
     let tokens = await fetchData(data.getApiKey, data.getAccessToken);
-    ticker.subscribe(tokens);
+    ticker?.subscribe(tokens);
   });
 }
 
@@ -68,10 +68,15 @@ const getTicks = async (socket, tokens) => {
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
       let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
   
-      console.log("indexData", indexData);
-      socket.emit('index-tick', indexData)
+      console.log("indexData", filteredTicks);
+      if(indexData.length > 0){
+        socket.emit('index-tick', indexData)
+      }
+      
       socket.emit('tick', ticks);
-      io.to(`${userId}`).emit('tick-room', filteredTicks);
+      if(filteredTicks > 0){
+        io.to(`${userId}`).emit('tick-room', filteredTicks);
+      }
     } catch (err){
       // console.log(err)
     }

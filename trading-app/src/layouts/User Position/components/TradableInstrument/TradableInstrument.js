@@ -13,6 +13,7 @@ import Grid from "@mui/material/Grid";
 import MDButton from "../../../../components/MDButton";
 import MDSnackbar from "../../../../components/MDSnackbar";
 import { userContext } from "../../../../AuthContext";
+import { Tooltip } from '@mui/material';
 
 
 
@@ -37,7 +38,8 @@ const initialState = {
   text: '',
   timeoutId: null,
   addOrRemoveCheck: null,
-  userInstrumentData: []
+  userInstrumentData: [],
+  instrumentName: ''
 };
 
 function reducer(state, action) {
@@ -62,6 +64,9 @@ function reducer(state, action) {
       return { ...state, addOrRemoveCheck: action.payload };
     case 'setUserInstrumentData':
       return { ...state, userInstrumentData: action.payload };
+    case 'setInstrumentName':
+      return { ...state, instrumentName: action.payload };
+  
 
     default:
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -75,10 +80,10 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let textRef = useRef(null);
   const PAGE_SIZE = 20;
-  // const getDetails = useContext(userContext);
   const marketDetails = useContext(marketDataContext)
   const [timeoutId, setTimeoutId] = useState(null);
   const [state, dispatch] = useReducer(reducer, initialState);
+  // const [instru]
 
   const openSuccessSB = () => {
     return dispatch({ type: 'openSuccess', payload: true });
@@ -117,14 +122,6 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
         return new Error(err);
     })
   }, [reRender])
-
-  // let writeText = () => {
-
-
-  // }
-  // function writeText() {
-
-  // }
 
 
   function sendSearchReq(e) {
@@ -182,8 +179,8 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
     const {instrument_token, tradingsymbol, name, strike, lot_size, instrument_type, exchange, expiry} = instrumentData
 
     // socket.emit("subscribeToken", instrument_token);
-    
-    
+    dispatch({ type: 'setInstrumentName', payload: `${strike} ${instrument_type}` });
+    // instrumentName = `${strike} ${instrument_type}`
     if(addOrRemove === "Add"){
       dispatch({ type: 'setAddOrRemoveCheckTrue', payload: true });
       // setAddOrRemoveCheck(true);
@@ -264,23 +261,21 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
     if(data.status === 422 || data.error || !data){
         window.alert(data.error);
     }else{
-      let instrumentTokenArr = [];
-      instrumentTokenArr.push(instrument_token)
-      // socket.emit("subscribeToken", instrumentTokenArr);
-      console.log("instrument_token data from socket", instrument_token)
       // openSuccessSB();
       console.log(data.message)
     }
 
   }
 
-  let content = `Instrument ${state.addOrRemoveCheck ? "Added" : "Removed"}`
-  let color = state.addOrRemoveCheck ? "success" : "error"
+  let title = `Instrument ${state.addOrRemoveCheck ? "Added" : "Removed"}`
+  let content = `${state.instrumentName} is ${state.addOrRemoveCheck ? "Added to" : "Removed from"} your watchlist`
+  let color = state.addOrRemoveCheck ? "success" : "error";
+  let icon = state.addOrRemoveCheck ? "check" : "error";
   const renderSuccessSB = (
     <MDSnackbar
       color={color}
-      icon="check"
-      // title={title}
+      icon={icon}
+      title={title}
       content={content}
       // dateTime={timestamp}
       open={state.successSB}
@@ -366,16 +361,33 @@ function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked,
                   <Grid xs={5} lg={2.2}>{elem.tradingsymbol}</Grid>
                   <Grid sx={{ display: { xs: 'none', lg: 'block' } }} xs={0} lg={2.2}>{elem.exchange}</Grid>
                   <Grid xs={5} lg={2} mr={4} display="flex" justifyContent="space-between">
-                    <Grid><MDButton size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrumentFromBuySell(elem)}}>
-                      <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                    </MDButton></Grid>
-                    <Grid><MDButton size="small" color="error" sx={{marginRight:0.5,minWidth:2,minHeight:3}} >
-                      <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} socket={socket}/>
-                    </MDButton></Grid>
+                    <Grid>
+                      <Tooltip title="Buy" placement="top">
+                        {/* <MDBox onClick={()=>{subscribeInstrumentFromBuySell(elem)}} > */}
+                          <BuyModel  reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} expiry={elem.expiry}/>
+                        {/* </MDBox> */}
+                      </Tooltip>
+                    </Grid>
+
+                    <Grid>
+                      <Tooltip title="Sell" placement="top">
+                        {/* <MDBox onClick={()=>{subscribeInstrumentFromBuySell(elem)}} > */}
+                          <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.tradingsymbol} exchange={elem.exchange} instrumentToken={elem.instrument_token} symbolName={`${elem.strike} ${elem.instrument_type}`} lotSize={elem.lot_size} maxLot={elem.lot_size*36} ltp={(perticularMarketData[0]?.last_price)?.toFixed(2)} fromUserPos={true} expiry={elem.expiry}/>
+                        {/* </MDBox> */}
+                      </Tooltip>
+                    </Grid>
                     {perticularInstrumentData.length ?
-                    <Grid lg={2.2}><MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton></Grid>//{isAdded ? "Remove" : "Add"}
+                    <Grid lg={2.2}>
+                      <Tooltip title="Remove Instrument" placement="top">
+                        <MDButton size="small" color="secondary" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Remove")}}>-</MDButton>
+                      </Tooltip>
+                    </Grid>
                     :
-                    <Grid lg={2.2}><MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton></Grid>
+                    <Grid lg={2.2}>
+                      <Tooltip title="Add Instrument" placement="top">
+                        <MDButton size="small" color="warning" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={()=>{subscribeInstrument(elem, "Add")}}>+</MDButton>
+                      </Tooltip>
+                    </Grid>
                     }
                   </Grid>
                 </Grid>

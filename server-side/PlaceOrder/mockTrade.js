@@ -11,7 +11,6 @@ exports.mockTrade = async (reqBody, res) => {
         validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
         realBuyOrSell, realQuantity, real_instrument_token, realSymbol, trader } = reqBody 
 
-
     const {algoName, transactionChange, instrumentChange
       , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
 
@@ -140,7 +139,7 @@ exports.mockTrade = async (reqBody, res) => {
         //console.log("mockTradeDetails", mockTradeDetailsUser);
         mockTradeDetailsUser.save().then(()=>{
             console.log("sending response");
-            res.status(201).json({status: 'Complete', message: 'Trade Succesful'});
+            res.status(201).json({status: 'Complete', message: 'COMPLETE'});
         }).catch((err)=> {
             console.log("in err", err)
             // res.status(500).json({error:"Failed to enter data"})

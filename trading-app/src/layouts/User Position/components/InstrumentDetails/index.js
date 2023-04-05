@@ -8,7 +8,7 @@ import { TiMediaRecord } from "react-icons/ti";
 import TableContainer from '@mui/material/TableContainer';
 import Paper from '@mui/material/Paper';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-
+import { Tooltip } from '@mui/material';
 
 
 // Material Dashboard 2 React components
@@ -31,7 +31,7 @@ import { marketDataContext } from "../../../../MarketDataContext";
 
 
 
-function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
+function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClicked}) {
   const marketDetails = useContext(marketDataContext)
   console.log("socket print", socket)
 
@@ -45,10 +45,10 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  const { reRender, setReRender } = Render;
-  const [menu, setMenu] = useState(null);
+  // const { reRender, setReRender } = Render;
   const [isAppLive, setisAppLive] = useState('');
   const [successSB, setSuccessSB] = useState(false);
+  const [instrumentName, setInstrumentName] = useState("");
   const openSuccessSB = () => setSuccessSB(true);
   const closeSuccessSB = () => setSuccessSB(false);
 
@@ -82,7 +82,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
 
 
 
-  }, [])
+  }, [socket])
 
   console.log("rendering in userPosition: instruemntGrid")
 
@@ -128,7 +128,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
         return elem.instrumentToken === subelem.instrument_token
       })
-
+      
       const percentagechangecolor = perticularInstrumentMarketData[0]?.change >= 0 ? "success" : "error"
       const percentagechangecolor1 = (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "success" : "error"
 
@@ -182,7 +182,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       );
 
       instrumentDetailObj.remove = (
-        <MDButton size="small" color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken)}}>
+        <MDButton size="small" sx={{marginRight:0.5,minWidth:2,minHeight:3, height: "30px"}} color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken, elem.instrument)}}>
           <RemoveCircleOutlineIcon  />
         </MDButton>
       );
@@ -206,8 +206,8 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   // }, [reRender, socket, marketDetails.marketData]);
 
 
-  async function removeInstrument(instrumentToken){
-    console.log("in remove")
+  async function removeInstrument(instrumentToken, instrument){
+    setInstrumentName(instrument)
     const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
       method: "PATCH",
       credentials:"include",
@@ -235,12 +235,13 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
   }
 
 
-  let content = "Instrument Removed"
+  let title = "Instrument Removed"
+  let content = `${instrumentName} is removed from your watchlist`
   const renderSuccessSB = (
     <MDSnackbar
       color="error"
-      icon="check"
-      // title={title}
+      icon='error'
+      title={title}
       content={content}
       // dateTime={timestamp}
       open={successSB}
@@ -257,7 +258,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
       <MDBox display="flex" justifyContent="space-between" alignItems="center" pl={2} pr={2} pt={2} pb={2}>
         <MDBox display="flex">
           <MDTypography variant="h6" gutterBottom>
-            Market Watchlist
+            My Watchlist
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
           </MDBox>
@@ -286,13 +287,13 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
         <TableContainer component={Paper}>
           <table style={{borderCollapse: "collapse", width: "100%", borderSpacing: "10px 5px"}}>
             <thead>
-              <tr style={{borderBottom: "1px solid grey"}}>
+              <tr style={{borderBottom: "1px solid #D3D3D3"}}>
                 <td style={styleTD}>CONTRACT DATE</td>
                 <td style={styleTD} >SYMBOL</td>
                 <td style={styleTD} >INSTRUMENT</td>
                 <td style={styleTD} >LTP</td>
                 <td style={styleTD} >CHANGE(%)</td>
-                <td style={styleTD} >CHART</td>
+                {/* <td style={styleTD} >CHART</td> */}
                 <td style={styleTD} >BUY</td>
                 <td style={styleTD} >SELL</td>
                 <td style={styleTD} >REMOVE</td>
@@ -303,7 +304,7 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
               {instrumentDetailArr.map((elem)=>{
                 return(
               <tr
-              style={{borderBottom: "1px solid grey"}} key={elem.instrumentToken.props.children}
+              style={{borderBottom: "1px solid #D3D3D3"}} key={elem.instrumentToken.props.children}
               >
                   <InstrumentComponent 
                     contractDate={elem.contractDate.props.children}
@@ -312,10 +313,16 @@ function InstrumentDetails({socket, Render, setIsGetStartedClicked}) {
                     last_price={elem.last_price.props.children}
                     change={elem.change.props.children}
                   />
-                  <td style={styleTD} >{elem.chart.props.children}</td>
-                  <td style={{textAlign: "center"}} >{elem.buy}</td>
-                  <td style={{textAlign: "center"}} >{elem.sell}</td>
-                  <td style={{textAlign: "center"}} >{elem.remove}</td>
+                  {/* <td style={styleTD} >{elem.chart.props.children}</td> */}
+                  <Tooltip title="Buy" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.buy}</td>
+                  </Tooltip>
+                  <Tooltip title="Sell" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.sell}</td>
+                  </Tooltip>
+                  <Tooltip title="Remove Instrument" placement="top">
+                    <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.remove}</td>
+                  </Tooltip>
       
               </tr>
 

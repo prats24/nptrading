@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import MDButton from '../../../../../components/MDButton';
+import MDSnackbar from '../../../../../components/MDSnackbar';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -27,7 +28,7 @@ import MDBox from '../../../../../components/MDBox';
 import { borderBottom } from '@mui/system';
 import { marketDataContext } from "../../../../../MarketDataContext";
 
-const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos}) => {
+const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos, expiry}) => {
 
   console.log("rendering in userPosition: buyModel")
 
@@ -46,7 +47,12 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   let tradeBy = getDetails.userDetails.name;
   let trader = getDetails.userDetails._id;
   let dummyOrderId = `${date.getFullYear()-2000}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${Math.floor(100000000+ Math.random() * 900000000)}`
- 
+  const [messageObj, setMessageObj] = useState({
+    color: '',
+    icon: '',
+    title: '',
+    content: ''
+  })
   let finalLot = maxLot/lotSize;
   let optionData = [];
   for(let i =1; i<= finalLot; i++){
@@ -102,58 +108,18 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   };
 
   const handleClickOpen = async () => {
-    // if(fromUserPos){
-    //   const res = await fetch(`${baseUrl}api/v1/subscribeInstrument`, {
-    //     method: "POST",
-    //     credentials:"include",
-    //     headers: {
-    //         "content-type" : "application/json",
-    //         "Access-Control-Allow-Credentials": true
-    //     },
-    //     body: JSON.stringify({
-    //       instrumentToken
-    //     })
-    //   });
-    
-    //   const data = await res.json();
-    //   //console.log(data);
-    //   if(data.status === 422 || data.error || !data){
-    //       window.alert(data.error);
-    //   }else{
-    //     let instrumentTokenArr = [];
-    //     instrumentTokenArr.push(instrumentToken)
-    //     socket.emit("subscribeToken", instrumentTokenArr);
-    //     console.log("instrumentToken data from socket", instrumentToken)
-    //     // openSuccessSB();
-    //     console.log(data.message)
-    //   }
-    // }
+    if(fromUserPos){
+      addInstrument();
+    }
+    reRender ? setReRender(false) : setReRender(true);
     setOpen(true);
   }; 
 
   const handleClose = async (e) => {
-    console.log("in close")
-    // if(fromUserPos){
-    //   const res = await fetch(`${baseUrl}api/v1/unsubscribeInstrument`, {
-    //     method: "POST",
-    //     credentials:"include",
-    //     headers: {
-    //         "content-type" : "application/json",
-    //         "Access-Control-Allow-Credentials": true
-    //     },
-    //     body: JSON.stringify({
-    //       instrumentToken
-    //     })
-    //   });
-    
-    //   const data = await res.json();
-    //   //console.log(data);
-    //   if(data.status === 422 || data.error || !data){
-    //   }else{
-    //     // socket.emit("subscribeToken", instrumentTokenArr);
-    //     console.log(data.message)
-    //   }
-    // }
+    if(fromUserPos){
+      removeInstrument()
+    }
+    reRender ? setReRender(false) : setReRender(true);
     setOpen(false);
   };
 
@@ -166,17 +132,6 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
         return new Error(err);
     })
   }, [getDetails, ltp])
-
-  // useEffect(() => {
-  //   return () => {
-  //     if(marketDetails){
-  //       marketDetails.socket.close();
-  //     }
-  //   }
-  // }, [])
-
-
-
 
   async function buyFunction(e, uId) {
       e.preventDefault()
@@ -213,15 +168,8 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
   }
 
   async function placeOrder() {
-    let date = new Date();
-    let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = buyFormDetails;
-    // const { algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault } = algoBox;
-    // const { realBuyOrSell, realQuantity, real_instrument_token, realSymbol } = companyTrade;
-
-    // const { apiKey } = apiKeyParticular[0];
-    // const { accessToken } = accessTokenParticular[0];
 
     const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
         method: "POST",
@@ -241,37 +189,143 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
     //console.log("dataResp", dataResp)
     if (dataResp.status === 422 || dataResp.error || !dataResp) {
         //console.log(dataResp.error)
-        window.alert(dataResp.error);
+        // window.alert(dataResp.error);
+        openSuccessSB('error', dataResp.error)
         ////console.log("Failed to Trade");
     } else {
-        if(dataResp.massage === "COMPLETE"){
+        if(dataResp.message === "COMPLETE"){
             // console.log(dataResp);
-            window.alert("Trade Succesfull Completed");
-        } else if(dataResp.massage === "REJECTED"){
+            openSuccessSB('complete', {symbol, Quantity})
+            // window.alert("Trade Succesfull Completed");
+        } else if(dataResp.message === "REJECTED"){
             // console.log(dataResp);
-            window.alert("Trade is Rejected due to Insufficient Fund");
-        } else if(dataResp.massage === "AMO REQ RECEIVED"){
+            openSuccessSB('reject', "Trade is Rejected due to Insufficient Fund")
+            // window.alert("Trade is Rejected due to Insufficient Fund");
+        } else if(dataResp.message === "AMO REQ RECEIVED"){
             // console.log(dataResp);
-            window.alert("AMO Request Recieved");
+            openSuccessSB('amo', "AMO Request Recieved")
+            // window.alert("AMO Request Recieved");
         } else{
-            // console.log("this is dataResp", dataResp)
-            window.alert(dataResp.message);
+          openSuccessSB('else', dataResp.message)
+          // window.alert(dataResp.message);
         }
     }
   }
 
-//size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} 
+  async function addInstrument(){
+    const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
+      method: "POST",
+      credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+      body: JSON.stringify({
+        instrument: symbolName, exchange, status: "Active", 
+        symbol, lotSize, instrumentToken, 
+        uId, contractDate: expiry, maxLot: lotSize*36, notInWatchList: true
+      })
+    });
+  
+    const data = await res.json();
+    if(data.status === 422 || data.error || !data){
+        window.alert(data.error);
+    }else{
+      // openSuccessSB();
+      console.log(data.message)
+    }
+  }
+
+  async function removeInstrument(){
+    const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
+      method: "PATCH",
+      credentials:"include",
+      headers: {
+          "Accept": "application/json",
+          "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        isAddedWatchlist: false
+      })
+    });
+
+    const permissionData = await response.json();
+    console.log("remove", permissionData)
+    if (permissionData.status === 422 || permissionData.error || !permissionData) {
+        window.alert(permissionData.error);
+    }else {
+    }
+  }
+
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = (value,content) => {
+    // console.log("Value: ",value)
+    if(value === "complete"){
+        messageObj.color = 'success'
+        messageObj.icon = 'check'
+        messageObj.title = "Trade Successfull";
+        messageObj.content = `Traded ${content.Quantity} of ${content.symbol}`;
+
+    };
+    if(value === "reject"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "REJECTED";
+      messageObj.content = content;
+    };
+    if(value === "amo"){
+      messageObj.color = 'info'
+      messageObj.icon = 'warning'
+      messageObj.title = "AMO Requested";
+      messageObj.content = content;
+    };
+    if(value === "else"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "REJECTED";
+      messageObj.content = content;
+    };
+    if(value === "error"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "Error";
+      messageObj.content = content;
+    };
+
+    setMessageObj(messageObj);
+    setSuccessSB(true);
+  }
+  const closeSuccessSB = () => setSuccessSB(false);
+  // console.log("Title, Content, Time: ",title,content,time)
+
+
+  const renderSuccessSB = (
+    <MDSnackbar
+      color= {messageObj.color}
+      icon= {messageObj.icon}
+      title={messageObj.title}
+      content={messageObj.content}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+      sx={{ borderLeft: `10px solid ${messageObj.icon == 'check' ? "green" : "red"}`, borderRight: `10px solid ${messageObj.icon == 'check' ? "green" : "red"}`, borderRadius: "15px", width: `${messageObj.title == "Error" ? "500px" : "auto"}`}}
+    />
+  );
+
+
 
   return (
     <div>
-      {fromUserPos ? 
-      <MDBox color="light" onClick={handleClickOpen}>
+      {/* {!fromUserPos ? 
+      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}} sx={{margin: "5px"}}>
         B
-      </MDBox>
-      : 
-      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}}>
-        {"BUY"}
-      </MDButton>}
+      </MDButton>
+      :  */}
+      <MDButton  size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={handleClickOpen} >
+        B
+      </MDButton>
+      {/* } */}
       <div>
         <Dialog
           fullScreen={fullScreen}
@@ -387,7 +441,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
           </DialogActions>
         </Dialog>
       </div >
-
+      {renderSuccessSB}
     </div >
   );
 }
