@@ -33,7 +33,7 @@ const MyContests = () => {
       :
                 <>
                 
-                <MDBox pt={0} pb={1}>
+                <MDBox pt={0} pb={1} mt={3}>
                   {/* <MDBox>
                     {(!createContestForm && !isObjectNew) && 
                     <MDButton 

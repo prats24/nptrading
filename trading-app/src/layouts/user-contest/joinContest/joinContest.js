@@ -10,6 +10,8 @@ import Divider from '@mui/material/Divider';
 import MDAvatar from "../../../components/MDAvatar";
 import MDButton from "../../../components/MDButton";
 import ContestIcon from "../../../assets/images/contest.png";
+import Logo from "../../../assets/images/logo1.jpeg"
+import { HiUserGroup } from 'react-icons/hi';
 // // import ContestDetailsForm from './CreateContest'
 // // import StockIcon from '../../assets/images/contest.gif'
 // // import MDAvatar from "../../components/MDAvatar";
@@ -122,7 +124,7 @@ let rules = [
                         <Grid container>
                             <Grid item xs={4} md={3} lg={12} mt={2} display="flex" justifyContent="center">
                             <MDAvatar 
-                                src={<ContestIcon/>} 
+                                src={Logo} 
                                 alt="profile-image" size="xl" shadow="sm" />
                             </Grid>
                             <Grid item xs={4} md={3} lg={12} mt={2} display="flex" justifyContent="center">
@@ -154,14 +156,14 @@ let rules = [
                             </Grid>
 
                             <Grid container display="flex" justifyContent="center">
-                            <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="left">
-                            <MDTypography style={{fontSize:12}} color="info">Min : 5000</MDTypography>
+                            <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="left" alignItems="center" alignContent="center">
+                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup /> Min : 5000</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="center">
-                            <MDTypography style={{fontSize:12}} color="info">Left: 1500</MDTypography>
+                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Left: 1500</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="right">
-                            <MDTypography style={{fontSize:12}} color="info">Max: 10000</MDTypography>
+                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Max: 10000</MDTypography>
                             </Grid>
                             </Grid>
 
