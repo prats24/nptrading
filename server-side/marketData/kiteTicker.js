@@ -57,7 +57,7 @@ const getTicks = async (socket, tokens) => {
   }
   
 
-  console.log("checking get ticks")
+  // console.log("checking get ticks")
   ticker.on('ticks', async (ticks) => {
     let indexObj = {};
 
@@ -75,9 +75,9 @@ const getTicks = async (socket, tokens) => {
     try{
       let userId = await client.get(socket.id)
       let instruments = await client.SMEMBERS(userId)
-      console.log(userId, instruments)
+      // console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
-      console.log(instrumentTokenArr)
+      // console.log(instrumentTokenArr)
       let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
 
       // let userId = await client.get(socket.id)
@@ -90,7 +90,7 @@ const getTicks = async (socket, tokens) => {
       // })
 
   
-      console.log("indexData", filteredTicks.length);
+      // console.log("indexData", filteredTicks.length);
       if(indexData.length > 0){
         socket.emit('index-tick', indexData)
       }
@@ -102,7 +102,7 @@ const getTicks = async (socket, tokens) => {
         // socket.emit('tick-room', ticks);
         io.to(`${userId}`).emit('tick-room', filteredTicks);
       // }
-      console.log("performance", performance.now()-now);
+      // console.log("performance", performance.now()-now);
 
       filteredTicks = null;
       ticks = null;
