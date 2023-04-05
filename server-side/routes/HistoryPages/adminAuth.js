@@ -17,6 +17,47 @@ const DailyPNLData = require("../../models/InstrumentHistoricalData/DailyPnlData
 const TraderDailyPnlData = require("../../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
 const UserDetail = require("../../models/User/userDetailSchema");
 
+
+async function generateUniqueReferralCode() {
+  const length = 8; // change this to modify the length of the referral code
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let myReferralCode = '';
+  let codeExists = true;
+
+  // Keep generating new codes until a unique one is found
+  while (codeExists) {
+      for (let i = 0; i < length; i++) {
+          myReferralCode += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      // Check if the generated code already exists in the database
+      const existingCode = await UserDetail.findOne({ myReferralCode: myReferralCode });
+      if (!existingCode) {
+      codeExists = false;
+      }
+  }
+
+  return myReferralCode;
+}
+
+router.get("/referralCode", async (req, res) => {
+  const users = await UserDetail.find();
+
+  for (let i = 0; i < users.length; i++) {
+    if (!users[i].myReferralCode) {
+      const code = await generateUniqueReferralCode();
+      const result = await UserDetail.updateOne(
+        { _id: users[i]._id },
+        { $set: { myReferralCode: code } },
+        { upsert: true }
+      );
+      console.log(result);
+    }
+  }
+
+  res.send('Referral codes generated and inserted');
+});
+
 router.get("/tradableInstrument", async (req, res)=>{
   await TradableInstrument.tradableInstrument();
 })
