@@ -76,20 +76,21 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
     useEffect(()=>{
 
       let abortController;
-      (async () => {
-           abortController = new AbortController();
-           let signal = abortController.signal;    
+      // (async () => {
+      //      abortController = new AbortController();
+      //      let signal = abortController.signal;    
 
-           // the signal is passed into the request(s) we want to abort using this controller
-           const { data } = await axios.get(
-            `${baseUrl}api/v1/getliveprice`,
-               { signal: signal }
-           );
-           setMarketData(data);
-      })();
+      //      // the signal is passed into the request(s) we want to abort using this controller
+      //      const { data } = await axios.get(
+      //       `${baseUrl}api/v1/getliveprice`,
+      //          { signal: signal }
+      //      );
+      //      setMarketData(data);
+      // })();
 
 
-      socket.on("tick", (data) => {
+      socket.on("tick-room", (data) => {
+        console.log("tick data in overallpnl", data)
         setMarketData(prevInstruments => {
           const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
           data.forEach(instrument => {
@@ -99,7 +100,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
         });
       })
 
-      return () => abortController.abort();
+      // return () => abortController.abort();
     }, [])
 
     useEffect(()=>{
@@ -135,6 +136,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
 
     useEffect(() => {
       return () => {
+          socket.emit('removeKey', socket.id);
           socket.close();
       }
     }, [])
