@@ -23,7 +23,14 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
 
     useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/contest`)
+      axios.get(`${baseUrl}api/v1/contest/mycontests`,{
+        withCredentials: true,
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+      })
       .then((res)=>{
                 setContestData(res.data.data);
                 console.log(res.data.data)
