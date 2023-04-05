@@ -7,13 +7,16 @@ import MDBox from "../../../components/MDBox";
 // import Paper from '@mui/material/Paper';
 import MDTypography from "../../../components/MDTypography";
 import Divider from '@mui/material/Divider';
-// import ContestIcon from "../../../assets/images/contest.png";
+import MDAvatar from "../../../components/MDAvatar";
+import MDButton from "../../../components/MDButton";
+import ContestIcon from "../../../assets/images/contest.png";
 // // import ContestDetailsForm from './CreateContest'
 // // import StockIcon from '../../assets/images/contest.gif'
 // // import MDAvatar from "../../components/MDAvatar";
 // import { HiUserGroup } from 'react-icons/hi';
 // import Timer from './timer'
 import "./Style.css"
+import { Typography } from '@mui/material';
 
 
 
@@ -30,6 +33,18 @@ let rewards =
     {rank:6,reward:'INR 30'},
     {rank:7,reward:'INR 10'},
     {rank:8,reward:'INR 5'}
+]
+
+let rules = [
+    {OrderNo:1,rule:'My Rules'},
+    {OrderNo:2,rule:'My Rules'},
+    {OrderNo:3,rule:'My Rules'},
+    {OrderNo:4,rule:'My Rules'},
+    {OrderNo:5,rule:'My Rules'},
+    {OrderNo:6,rule:'My Rules'},
+    {OrderNo:7,rule:'My Rules'},
+    {OrderNo:8,rule:'My Rules'},
+    {OrderNo:9,rule:'My Rules'},
 ]
 
     return (
@@ -97,7 +112,7 @@ let rewards =
         <MDBox mt={6} ml={3} width="100%">
             <Grid container >
 
-                <Grid items xs={12} md={6} lg={4}>
+                <Grid items xs={12} md={6} lg={5}>
                     <MDBox>
 
                         <MDTypography display="flex" justifyContent="center">
@@ -105,9 +120,62 @@ let rewards =
                         </MDTypography>
 
                         <Grid container>
-                            <Grid item>
-                               Hello 
+                            <Grid item xs={4} md={3} lg={12} mt={2} display="flex" justifyContent="center">
+                            <MDAvatar 
+                                src={<ContestIcon/>} 
+                                alt="profile-image" size="xl" shadow="sm" />
                             </Grid>
+                            <Grid item xs={4} md={3} lg={12} mt={2} display="flex" justifyContent="center">
+                            <MDTypography>Reward Pool</MDTypography>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={12} display="flex" justifyContent="center">
+                            <MDTypography>Entry: Free</MDTypography>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={12} mt={2} display="flex" justifyContent="center">
+                            <MDButton variant="outlined" color="success">Invite Friends</MDButton>
+                            </Grid>
+                            
+                            <Grid container display="flex" justifyContent="center">
+                            <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="left">
+                            <MDTypography style={{fontSize:15}} color="success">Duration</MDTypography>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="right">
+                            <MDTypography style={{fontSize:15}} color="success">Entry Closes at</MDTypography>
+                            </Grid>
+                            </Grid>
+
+                            <Grid container display="flex" justifyContent="center">
+                            <Grid item xs={4} md={3} lg={6} width="100%" display="flex" justifyContent="left">
+                            <MDTypography style={{fontSize:12}} color="info">10 Apr 23 | 09:30 AM to 12 Apr 23 | 03:25 PM</MDTypography>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={6} width="100%" display="flex" justifyContent="right">
+                            <MDTypography style={{fontSize:12}} color="info">10 Apr 23 | 09:30 AM</MDTypography>
+                            </Grid>
+                            </Grid>
+
+                            <Grid container display="flex" justifyContent="center">
+                            <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="left">
+                            <MDTypography style={{fontSize:12}} color="info">Min : 5000</MDTypography>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="center">
+                            <MDTypography style={{fontSize:12}} color="info">Left: 1500</MDTypography>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="right">
+                            <MDTypography style={{fontSize:12}} color="info">Max: 10000</MDTypography>
+                            </Grid>
+                            </Grid>
+
+                            <Grid item xs={4} md={3} lg={12} mt={2} width="100%" display="flex" justifyContent="center">
+                            <MDTypography style={{fontSize:15}} color="warning">I accept all the terms and conditions</MDTypography>
+                            </Grid>
+
+                            <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
+                            <MDButton variant="outlined" color="success">Continue</MDButton>
+                            </Grid>
+                            <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
+                            <MDButton variant="outlined" color="error">Go Back</MDButton>
+                            </Grid>
+
                         </Grid>
 
                     </MDBox>
@@ -115,12 +183,12 @@ let rewards =
 
                 <Divider orientation="vertical" flexItem />
 
-                <Grid items xs={12} md={6} lg={4}>
+                <Grid items xs={12} md={6} lg={3}>
                     <MDBox>
                         <MDTypography display="flex" justifyContent="center">
                             Reward Distribution
                         </MDTypography>
-                            <Grid container display="flex" flexDirection="row">
+                            <Grid container display="flex" flexDirection="row" border="1px solid black" borderRadius={6}>
                                 
                                 <Grid item xs={6} md={3} lg={6} display="flex" justifyContent="center">
                                      <MDTypography>
@@ -159,9 +227,30 @@ let rewards =
 
                 <Grid items xs={12} md={6} lg={3}>
                     <MDBox>
-                        <MDTypography display="flex" justifyContent="center">
+                    <MDTypography display="flex" justifyContent="center">
                             League Rules
                         </MDTypography>
+                        <MDBox display="flex" border="1px solid black" borderRadius={6}>
+                            <Grid container display="flex" flexDirection="row">
+                            
+                            
+                                {rules.map((e)=>{
+                                 return <>
+                                    <Grid item xs={6} md={3} lg={3} display="flex" justifyContent="center">
+                                    <MDTypography>
+                                            {e.OrderNo}
+                                    </MDTypography>
+                                    </Grid>
+
+                                    <Grid item xs={6} md={3} lg={9} display="flex" justifyContent="center">
+                                    <MDTypography>
+                                            {e.rule}
+                                    </MDTypography>
+                                    </Grid>
+                                </>
+                                })}    
+                            </Grid>
+                            </MDBox>
                     </MDBox>
                 </Grid> 
 
