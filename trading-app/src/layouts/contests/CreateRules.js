@@ -48,7 +48,7 @@ React.useEffect(()=>{
     axios.get(`${baseUrl}api/v1/contestrule/${id}`)
     .then((res)=>{
             setRuleData(res.data[0]);
-            console.log(res.data[0])
+            console.log("Contest Rule Object: ",res.data[0])
             setId(res.data[0]._id)
             setFormState({
             ruleName: res.data[0]?.ruleName || '',
@@ -68,44 +68,7 @@ React.useEffect(()=>{
         return new Error(err);
     })
 
-},[])
-
-async function onAdd(e,childFormState,setChildFormState){
-    e.preventDefault()
-    setSaving(true)
-    console.log(childFormState)
-    console.log(newObjectId)
-    if(!childFormState?.orderNo || !childFormState?.rule){
-    
-        setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
-        return openErrorSB("Missing Field","Please fill all the mandatory fields")
-    
-    }
-    const {orderNo,rule} = childFormState;
-
-    const res = await fetch(`${baseUrl}api/v1/contestrule/${newObjectId}`, {
-        method: "PUT",
-        credentials:"include",
-        headers: {
-            "content-type" : "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-        body: JSON.stringify({
-          contestRules:{orderNo,rule}
-        })
-    });
-
-    const data = await res.json();
-    console.log(data);
-    if (data.status === 422 || data.error || !data) {
-        openErrorSB("Error","data.error")
-    } else {
-        openSuccessSB("New Rule Added","New Rule line item has been added in the contest rule")
-        setTimeout(()=>{setSaving(false);setEditing(false)},500)
-        setAddRuleObject(!addRuleObject);
-        console.log("Entry Succesfull");
-    }
-  }
+},[formState])
 
 async function onNext(e,formState){
 e.preventDefault()
@@ -134,16 +97,56 @@ const res = await fetch(`${baseUrl}api/v1/contestrule`, {
 });
 
 const data = await res.json();
-console.log(data);
-if (data.status === 422 || data.error || !data) {
+console.log(data.error,data);
+if (!data.error) {
+    setNewObjectId(data.data?._id)
+    setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
+    openSuccessSB(data.message,`Contest Rule Created with name: ${data.data?.ruleName}`)
+    
+} else {
     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
     console.log("Invalid Entry");
-} else {
-    openSuccessSB("Contest Created",data.status)
-    setNewObjectId(data.data)
-    setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
+    return openErrorSB("Couldn't Created Contest",data.error)
 }
 }
+
+async function onAdd(e,childFormState,setChildFormState){
+    e.preventDefault()
+    setSaving(true)
+    console.log("Rule Child Form State: ",childFormState)
+    console.log("New Rule Object Id: ",newObjectId)
+    if(!childFormState?.orderNo || !childFormState?.rule){
+    
+        setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+        return openErrorSB("Missing Field","Please fill all the mandatory fields")
+    
+    }
+    const {orderNo,rule} = childFormState;
+
+    const res = await fetch(`${baseUrl}api/v1/contestrule/${newObjectId}`, {
+        method: "PUT",
+        credentials:"include",
+        headers: {
+            "content-type" : "application/json",
+            "Access-Control-Allow-Credentials": true
+        },
+        body: JSON.stringify({
+          contestRules:{orderNo,rule}
+        })
+    });
+
+    const data = await res.json();
+    console.log(data);
+    if (data.status === 422 || data.error || !data) {
+        openErrorSB("Error",data.error)
+    } else {
+        openSuccessSB("New Rule Added","New Rule line item has been added in the contest rule")
+        setTimeout(()=>{setSaving(false);setEditing(false)},500)
+        setAddRuleObject(!addRuleObject);
+        console.log("Entry Succesfull");
+    }
+  }
+  
 const date = new Date(ruleData.lastModifiedOn);
 
 const formattedLastModifiedOn = `${date.getUTCDate()}/${date.toLocaleString('default', { month: 'short' })}/${String(date.getUTCFullYear())} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')}`;
@@ -207,16 +210,16 @@ const renderErrorSB = (
     )
         :
       ( 
-        <MDBox pl={2} pr={2} mt={4}>
+        <MDBox mt={4}>
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
           Rule Details
         </MDTypography>
         </MDBox>
 
-        <Grid container spacing={1} mt={0.5} mb={0}>
+        <Grid container spacing={1} mt={0.5} alignItems="space-between">
 
-          <Grid item xs={12} md={6} xl={4}>
+          <Grid item xs={12} md={5} xl={6}>
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
@@ -230,7 +233,7 @@ const renderErrorSB = (
               />
           </Grid>
 
-          <Grid item xs={12} md={6} xl={4}>
+          <Grid item xs={12} md={5} xl={4}>
               <FormControl sx={{width: "100%" }}>
                 <InputLabel id="demo-simple-select-autowidth-label">Status *</InputLabel>
                 <Select
@@ -252,14 +255,17 @@ const renderErrorSB = (
           </Grid>
    
 
-          {!isSubmitted && <Grid item xs={12} md={6} xl={2} mt={-0.7}>
-            <GrFormNextLink cursor="pointer" onClick={(e)=>{onNext(e,formState)}}/>
-          </Grid>}
+          {!isSubmitted && 
+          <Grid item xs={12} md={2} xl={2} width="100%">
+            <MDButton variant="contained" size="small" color="success" onClick={(e) => {onNext(e,formState)}}>Next</MDButton>
+          </Grid>
+          }
 
-          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+          {isSubmitted && 
+        //   <Grid item xs={12} md={6} xl={12}>
                 
-            <Grid container spacing={1} mt={0.5} mb={0}>
-            <Grid item xs={12} md={6} xl={1.5}>
+            <Grid container spacing={1} mt={0.5}>
+            <Grid item xs={12} md={3} xl={3}>
                 <TextField
                     id="outlined-required"
                     label='Rule No *'
@@ -273,7 +279,7 @@ const renderErrorSB = (
                 />
             </Grid>
 
-            <Grid item xs={12} md={6} xl={9.5}>
+            <Grid item xs={12} md={7.5} xl={8}>
                 <TextField
                     id="outlined-required"
                     label='Add rule here *'
@@ -286,13 +292,14 @@ const renderErrorSB = (
                 />
             </Grid>
 
-            <Grid item xs={12} md={6} xl={1} mt={-0.7}>
+            <Grid item xs={12} md={1.5} xl={1} display="flex" justifyContent="center" >
                 <IoMdAddCircle cursor="pointer" onClick={(e)=>{onAdd(e,formState,setFormState)}}/>
             </Grid>
 
             </Grid>
 
-            </Grid>}
+            // </Grid>
+            }
 
           {isSubmitted && <Grid item xs={12} md={6} xl={12}>
                 {/* <MDTypography>Added Rules will show up here</MDTypography> */}

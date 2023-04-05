@@ -22,18 +22,23 @@ const contestSchema = new mongoose.Schema({
         type:Date,
         required: true
     },
-    StockType:{
+    stockType:{
         type:String,
         required:true,
         enum: ['Options','Futures','Equity','Derivative','Currency','Crypto']
     },
-    ContestOn:{
+    contestOn:{
         type:String,
         required:true
     },
     rewards:{
         type:[{rankStart:Number,rankEnd:Number,rankIcon:String,reward:Number,currency:String}],
         required:true
+    },
+    contestRule:{
+        type:Schema.Types.ObjectId,
+        required:true,
+        ref: 'contest-rule'
     },
     entryFee:{
         amount:Number,

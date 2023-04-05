@@ -101,6 +101,5 @@ const uploadToS3 = async (req, res, next) => {
 router.route('/').post(Authenticate, uploadArray, resizePhoto, uploadToS3, createContest).get(getContests).
 patch(Authenticate, editContest);
 router.route('/active').get(getActiveContests)
-router.route('/:id').get(getContest).post(Authenticate, joinContest)
-
+router.route('/:id').get(getContest).post(Authenticate, joinContest).patch(Authenticate, editContest)
 module.exports = router;
