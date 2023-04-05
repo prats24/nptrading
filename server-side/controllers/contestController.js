@@ -164,7 +164,7 @@ exports.joinContest = async(req, res, next) => {
 
 }
 
-exports.getContest = async (res,res,next) => {
+exports.getContest = async (req,res,next) => {
     const {id} = req.params;
     try{
         const contest = await Contest.findById(id);
