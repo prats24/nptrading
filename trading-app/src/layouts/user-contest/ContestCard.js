@@ -28,49 +28,11 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
       .then((res)=>{
                 let newData = res.data.data
                 setContestData(res.data.data);
-                // console.log(res.data.data)
-                axios.get(`${baseUrl}api/v1/contest/mycontests`,{
-                  withCredentials: true,
-                  headers: {
-                      Accept: "application/json",
-                      "Content-Type": "application/json",
-                      "Access-Control-Allow-Credentials": true
-                  },
-                })
-                .then((res)=>{
-                  let data = res.data.data;
-                  console.log(data)
-                  let filteredData = [];
-
-                  for(let i = 0; i < data.length; i++){
-                    for(let j = 0; j < newData.length; j++){
-                      if(data[i]._id !== newData[j]._id){
-                        filteredData.push(newData[i]);
-                      }
-                    }
-                  }
-                  // data.map((elem)=>{
-                  //   newData.map((subelem)=>{
-                  //     if(elem._id !== subelem._id){
-                  //       filteredData.push(subelem);
-                  //     }
-                  //   })
-                  // })
-
-                          setContestData([...new Set(filteredData)]);
-                          console.log(filteredData)
-                          setContestData(filteredData)
-                  }).catch((err)=>{
-                    return new Error(err);
-                })
         }).catch((err)=>{
           return new Error(err);
       })
     },[createContestForm])
 
-    useEffect(()=>{
-
-    }, [createContestForm])
 
       // console.log("Contest Data: ",contestData)
 
