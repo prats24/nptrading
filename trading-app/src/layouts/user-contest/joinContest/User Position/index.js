@@ -93,7 +93,7 @@ function UserPosition() {
     // <DashboardLayout>
     //   <DashboardNavbar />
     <MDTypography display="flex" justifyContent="space-between" sx={{mt: "40px"}} >
-      <MDTypography py={0} width="100%" flex={0.7}>
+      <MDTypography py={0} width="100%" flex={0.8}>
 
         {/* <StockIndex /> */}
         {/* <StockIndex socket={socket}/> */}

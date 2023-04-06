@@ -12,6 +12,8 @@ import MDButton from "../../../components/MDButton";
 import ContestIcon from "../../../assets/images/contest.png";
 import Logo from "../../../assets/images/logo1.jpeg"
 import { HiUserGroup } from 'react-icons/hi';
+import Input from '@mui/material/Input';
+
 // // import ContestDetailsForm from './CreateContest'
 // // import StockIcon from '../../assets/images/contest.gif'
 // // import MDAvatar from "../../components/MDAvatar";
@@ -201,7 +203,11 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                             </Grid>
 
                             <Grid item xs={4} md={3} lg={12} mt={2} width="100%" display="flex" justifyContent="center">
-                            <MDTypography style={{fontSize:15}} color="warning">I accept all the terms and conditions</MDTypography>
+                                <Input
+                                   type="checkbox"
+                                   sx={{mr: "5px"}}
+                                />
+                                <MDTypography style={{fontSize:15}} color="warning">I accept all the terms and conditions</MDTypography>
                             </Grid>
 
                             <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
@@ -237,7 +243,8 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                                      </MDTypography>
                                 </Grid>
 
-                                {rewards.map((e)=>{
+                                {contestData?.rewards?.length === 0 ?
+                                rewards.map((e)=>{
                                  return <>
                                     <Grid item xs={6} md={3} lg={6} display="flex" justifyContent="center">
                                     <MDTypography>
@@ -251,7 +258,26 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                                     </MDTypography>
                                     </Grid>
                                 </>
-                                })}
+                                })
+                                :
+                                contestData?.rewards?.map((e)=>{
+                                    return(
+                                        <>
+                                            <Grid item xs={6} md={3} lg={6} display="flex" justifyContent="center">
+                                                <MDTypography>
+                                                        {e.rankStart == e.rankEnd ? e.rankStart : `${e.rankStart}-${e.rankEnd}`}
+                                                </MDTypography>
+                                            </Grid>
+
+                                            <Grid item xs={6} md={3} lg={6} display="flex" justifyContent="center">
+                                                <MDTypography>
+                                                        {`${e.currency} ${e.reward}`}
+                                                </MDTypography>
+                                            </Grid>
+                                        </>
+                                    )
+                                })
+                                }
 
 
                             </Grid>

@@ -184,7 +184,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         setexitPositionFormDetails(exitPositionFormDetails)
 
 
-        placeOrder();
+        // placeOrder();
         
     }
   

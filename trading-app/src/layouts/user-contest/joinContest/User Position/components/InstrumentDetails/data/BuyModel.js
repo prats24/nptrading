@@ -158,7 +158,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
       setBuyFormDetails(buyFormDetails)
 
-      placeOrder();
+      // placeOrder();
 
 
       let id = setTimeout(()=>{

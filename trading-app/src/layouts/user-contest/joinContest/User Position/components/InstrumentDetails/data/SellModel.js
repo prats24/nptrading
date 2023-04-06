@@ -160,7 +160,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
       setsellFormDetails(sellFormDetails)
 
-      placeOrder();
+      // placeOrder();
 
       let id = setTimeout(()=>{
           reRender ? setReRender(false) : setReRender(true)

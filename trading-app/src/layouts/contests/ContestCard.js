@@ -23,7 +23,7 @@ const ContestCard = ({createContestForm,setCreateContestForm,isObjectNew,setIsOb
 
     useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/contest`)
+      axios.get(`${baseUrl}api/v1/contest/active`)
       .then((res)=>{
                 setContestData(res.data.data);
                 console.log(res.data.data)
