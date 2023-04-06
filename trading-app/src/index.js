@@ -17,8 +17,8 @@ ReactDOM.render(
       <MarketDataContext>
         <BrowserRouter>
           <MaterialUIControllerProvider>
-            <App />
-            {/* <JoinContest /> */}
+            {/* <App /> */}
+            <JoinContest />
           </MaterialUIControllerProvider>
         </BrowserRouter>
       </MarketDataContext>

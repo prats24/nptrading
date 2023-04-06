@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Grid from "@mui/material/Grid";
+import RewardsTable from './components/RewardsTable';
 // import axios from "axios";
 // Material Dashboard 2 React components
 // import MDBox from "../../../components/MDBox";
@@ -21,12 +22,13 @@ console.log("hii")
 
     return (
         <>
-        <div className='container'>
+        <div className='table'> 
             <div>
                 hello
             </div>
             <div>
-                reward table
+                <h4>Rewards</h4>
+                <RewardsTable/>
             </div>
             <div>
                 rules

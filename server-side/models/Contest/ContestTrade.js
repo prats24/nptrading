@@ -7,6 +7,10 @@ const ContestTrade = new mongoose.Schema({
         type: String,
         required: true
     },
+    contestId:{
+        type: Schema.Types.ObjectId,
+        ref:'contest'
+    },
     status:{
         type: String,
         required: true
@@ -38,10 +42,6 @@ const ContestTrade = new mongoose.Schema({
     validity:{
         type: String,
         // required: true
-    },
-    exchange:{
-        type: String,
-        required: true
     },
     order_type:{
         type: String,
