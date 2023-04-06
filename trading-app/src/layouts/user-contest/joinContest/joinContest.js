@@ -20,6 +20,7 @@ import { HiUserGroup } from 'react-icons/hi';
 import "./Style.css"
 import { Typography } from '@mui/material';
 import axios from "axios";
+import UserPosition from "./User Position/index";
 
 
 
@@ -115,9 +116,34 @@ const JoinContest = ({id, setContestDetailsForm}) => {
         return (`${daysDiff} days, ${remainingHours} hours`);
     }
 
-    return (
-        <>
+    async function joinContest(id){
+        const res = await fetch(`${baseUrl}api/v1/contest/${id}`, {
+            method: "POST",
+            credentials:"include",
+            headers: {
+                "content-type" : "application/json",
+                "Access-Control-Allow-Credentials": true
+            },
+            body: JSON.stringify({
+            })
+        });
+        
+        const data = await res.json();
+        console.log(data);
+        if(data.status === 422 || data.error || !data){
+            // window.alert(data.error);
+            console.log("invalid entry");
+        }else{
+            setNextPage(false)
+            // window.alert("entry succesfull");
+            console.log("entry succesfull");
+        }
+ 
+    }
 
+    return (
+    <>
+        {nextPage ?
         <MDBox mt={6} ml={3} width="100%">
             <Grid container >
 
@@ -179,7 +205,7 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                             </Grid>
 
                             <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
-                            <MDButton variant="outlined" color="success" onClick={()=>{setNextPage(false)}}>Continue</MDButton>
+                            <MDButton variant="outlined" color="success" onClick={()=>{joinContest(id)}}>Continue</MDButton>
                             </Grid>
                             <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
                             <MDButton variant="outlined" color="error" onClick={()=>{setContestDetailsForm(false)}}>Go Back</MDButton>
@@ -265,6 +291,9 @@ const JoinContest = ({id, setContestDetailsForm}) => {
 
             </Grid>
         </MDBox>
+        :
+        <UserPosition />
+        }
       </>
     )
 }
