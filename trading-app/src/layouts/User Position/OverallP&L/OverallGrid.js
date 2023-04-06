@@ -76,17 +76,17 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
     useEffect(()=>{
 
       let abortController;
-      // (async () => {
-      //      abortController = new AbortController();
-      //      let signal = abortController.signal;    
+      (async () => {
+           abortController = new AbortController();
+           let signal = abortController.signal;    
 
-      //      // the signal is passed into the request(s) we want to abort using this controller
-      //      const { data } = await axios.get(
-      //       `${baseUrl}api/v1/getliveprice`,
-      //          { signal: signal }
-      //      );
-      //      setMarketData(data);
-      // })();
+           // the signal is passed into the request(s) we want to abort using this controller
+           const { data } = await axios.get(
+            `${baseUrl}api/v1/getliveprice`,
+               { signal: signal }
+           );
+           setMarketData(data);
+      })();
 
 
       socket.on("tick-room", (data) => {
@@ -100,7 +100,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
         });
       })
 
-      // return () => abortController.abort();
+      return () => abortController.abort();
     }, [])
 
     useEffect(()=>{
@@ -117,16 +117,6 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
            );
 
            setTradeData(data);
-        //    data.map((elem)=>{
-        //      marketData.map((subElem)=>{
-        //           console.log(subElem.instrument_token , elem._id.instrumentToken)
-        //          if(subElem !== undefined && subElem.instrument_token == elem._id.instrumentToken){
-        //              liveDetailsArr.push(subElem)
-        //          }
-        //      })
-        //    })
- 
-        //  setLiveDetail(liveDetailsArr);
 
       })();
 
@@ -151,6 +141,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
       totalRunningLots += Number(subelem.lots)
 
       let updatedValue = (subelem.amount+(subelem.lots)*liveDetail[0]?.last_price);
+      let netupdatedValue = updatedValue - Number(subelem.brokerage);
       totalGrossPnl += updatedValue;
 
       totalTransactionCost += Number(subelem.brokerage);
@@ -207,6 +198,12 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
       obj.grossPnl = (
         <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
           {updatedValue >= 0.00 ? "+₹" + (updatedValue.toFixed(2)): "-₹" + ((-updatedValue).toFixed(2))}
+        </MDTypography>
+      );
+
+      obj.netPnl = (
+        <MDTypography component="a" variant="caption" color={gpnlcolor} fontWeight="medium">
+          {netupdatedValue >= 0.00 ? "+₹" + (netupdatedValue.toFixed(2)): "-₹" + ((-netupdatedValue).toFixed(2))}
         </MDTypography>
       );
 
@@ -274,6 +271,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
                 <td style={styleTD} >AVG. PRICE</td>
                 <td style={styleTD} >LTP</td>
                 <td style={styleTD} >GROSS P&L</td>
+                <td style={styleTD} >NET P&L</td>
                 <td style={styleTD} >CHANGE(%)</td>
                 <td style={styleTD} >EXIT</td>
                 <td style={styleTD} >BUY</td>
@@ -296,6 +294,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
                     avgPrice={elem?.avgPrice?.props?.children}
                     last_price={elem?.last_price?.props?.children}
                     grossPnl={elem?.grossPnl?.props?.children}
+                    netPnl={elem?.netPnl?.props?.children}
                     change={elem?.change?.props?.children}
                   />
                   <Tooltip title="Exit Your Position" placement="top">

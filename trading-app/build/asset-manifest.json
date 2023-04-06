@@ -1,6 +1,7 @@
 {
   "files": {
-    "main.js": "/static/js/main.a1eb0731.js",
+    "main.css": "/static/css/main.45b80f81.css",
+    "main.js": "/static/js/main.584bb84c.js",
     "static/js/498.e7cb86be.chunk.js": "/static/js/498.e7cb86be.chunk.js",
     "static/js/703.e5427e5c.chunk.js": "/static/js/703.e5427e5c.chunk.js",
     "static/js/513.f7e92010.chunk.js": "/static/js/513.f7e92010.chunk.js",
@@ -23,6 +24,7 @@
     "static/media/kal-visuals-square.jpg": "/static/media/kal-visuals-square.3210e28a48ff572ae88b.jpg",
     "static/media/contest.png": "/static/media/contest.2fc14939bbfec540974b.png",
     "static/media/team-4.jpg": "/static/media/team-4.85c82b6e60178804017f.jpg",
+    "static/media/logo1.jpeg": "/static/media/logo1.f67dd281ffc95ee9fa68.jpeg",
     "static/media/complete.png": "/static/media/complete.5d24ae13ef58852dba95.png",
     "static/media/github.svg": "/static/media/github.067f80f311bc16bd0d1216457d09bdb3.svg",
     "static/media/logo-slack.svg": "/static/media/logo-slack.7c47c5aa474b5c4fb39fcf05ffb8e4e7.svg",
@@ -33,12 +35,14 @@
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.f2b0e8570a4b4ce768854ff3dad1a6e1.svg",
     "static/media/logo-asana.svg": "/static/media/logo-asana.d758f410d82760a61d1eabcb03409de6.svg",
     "index.html": "/index.html",
-    "main.a1eb0731.js.map": "/static/js/main.a1eb0731.js.map",
+    "main.45b80f81.css.map": "/static/css/main.45b80f81.css.map",
+    "main.584bb84c.js.map": "/static/js/main.584bb84c.js.map",
     "498.e7cb86be.chunk.js.map": "/static/js/498.e7cb86be.chunk.js.map",
     "703.e5427e5c.chunk.js.map": "/static/js/703.e5427e5c.chunk.js.map",
     "513.f7e92010.chunk.js.map": "/static/js/513.f7e92010.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.a1eb0731.js"
+    "static/css/main.45b80f81.css",
+    "static/js/main.584bb84c.js"
   ]
 }

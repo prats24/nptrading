@@ -3,7 +3,7 @@ import {memo} from 'react';
 import colors from '../../../assets/theme/base/colors';
 
 
-function OverallRow({last_price, change, grossPnl, avgPrice, product, symbol, quantity}) {
+function OverallRow({last_price, change, grossPnl, avgPrice, product, symbol, quantity, netPnl}) {
 
     let styleTD = {
         textAlign: "center",
@@ -21,6 +21,7 @@ function OverallRow({last_price, change, grossPnl, avgPrice, product, symbol, qu
       <td style={{...styleTD}} >{avgPrice}</td>
       <td style={{...styleTD, color: `${quantity ==0 ? 'grey' : (change?.includes('+')) ? "green" : "red"}`}} >{last_price}</td>
       <td style={{...styleTD, color: `${quantity ==0 ? 'grey' : grossPnl?.includes('+') > 0 ? "green" : "red"}`}} >{grossPnl}</td>
+      <td style={{...styleTD, color: `${quantity ==0 ? 'grey' : netPnl?.includes('+') > 0 ? "green" : "red"}`}} >{netPnl}</td>
       <td style={{...styleTD, color: `${quantity ==0 ? 'grey' : (change?.includes('+')) ? "green" : "red"}`}} >{change}</td>
     </>
   );
