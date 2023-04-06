@@ -27,6 +27,7 @@ const JoinContest = ({id, setContestDetailsForm}) => {
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     const [contestData, setContestData] = useState([]);
+    const [nextPage, setNextPage] = useState(true);
     useEffect(()=>{
   
         axios.get(`${baseUrl}api/v1/contest/${id}`,{
@@ -47,14 +48,14 @@ const JoinContest = ({id, setContestDetailsForm}) => {
 
     let rewards = 
     [
-        {rank:1,reward:'INR 200'},
-        {rank:2,reward:'INR 150'},
-        {rank:3,reward:'INR 100'},
-        {rank:4,reward:'INR 80'},
-        {rank:5,reward:'INR 60'},
-        {rank:6,reward:'INR 30'},
-        {rank:7,reward:'INR 10'},
-        {rank:8,reward:'INR 5'}
+        {rank:"1",reward:'INR 200'},
+        {rank:"2",reward:'INR 150'},
+        {rank:"3",reward:'INR 100'},
+        {rank:"4-8",reward:'INR 80'},
+        {rank:"9-20",reward:'INR 60'},
+        {rank:"21-50",reward:'INR 30'},
+        {rank:"51-100",reward:'INR 10'},
+        {rank:"101-200",reward:'INR 5'}
     ]
 
     let rules = [
@@ -178,7 +179,7 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                             </Grid>
 
                             <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
-                            <MDButton variant="outlined" color="success">Continue</MDButton>
+                            <MDButton variant="outlined" color="success" onClick={()=>{setNextPage(false)}}>Continue</MDButton>
                             </Grid>
                             <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
                             <MDButton variant="outlined" color="error" onClick={()=>{setContestDetailsForm(false)}}>Go Back</MDButton>

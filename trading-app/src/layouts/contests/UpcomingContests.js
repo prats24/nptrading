@@ -56,7 +56,7 @@ const UpcomingContests = () => {
                   </Grid>
                   :
                   
-                  <CreateContest/>
+                  <CreateContest setCreateContestForm={setCreateContestForm}/>
                 }
                 </MDBox> 
                 </>
