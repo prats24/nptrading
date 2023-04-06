@@ -17,98 +17,104 @@ import ContestIcon from "../../../assets/images/contest.png";
 // import Timer from './timer'
 import "./Style.css"
 import { Typography } from '@mui/material';
+import axios from "axios";
 
 
 
-const JoinContest = () => {
-console.log("hii")
+const JoinContest = ({id, setContestDetailsForm}) => {
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-let rewards = 
-[
-    {rank:1,reward:'INR 200'},
-    {rank:2,reward:'INR 150'},
-    {rank:3,reward:'INR 100'},
-    {rank:4,reward:'INR 80'},
-    {rank:5,reward:'INR 60'},
-    {rank:6,reward:'INR 30'},
-    {rank:7,reward:'INR 10'},
-    {rank:8,reward:'INR 5'}
-]
+    const [contestData, setContestData] = useState([]);
+    useEffect(()=>{
+  
+        axios.get(`${baseUrl}api/v1/contest/${id}`,{
+          withCredentials: true,
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+        })
+        .then((res)=>{
+                  setContestData(res.data.data);
+                  console.log(res.data.data)
+          }).catch((err)=>{
+            return new Error(err);
+        })
+    },[])
 
-let rules = [
-    {OrderNo:1,rule:'My Rules'},
-    {OrderNo:2,rule:'My Rules'},
-    {OrderNo:3,rule:'My Rules'},
-    {OrderNo:4,rule:'My Rules'},
-    {OrderNo:5,rule:'My Rules'},
-    {OrderNo:6,rule:'My Rules'},
-    {OrderNo:7,rule:'My Rules'},
-    {OrderNo:8,rule:'My Rules'},
-    {OrderNo:9,rule:'My Rules'},
-]
+    let rewards = 
+    [
+        {rank:1,reward:'INR 200'},
+        {rank:2,reward:'INR 150'},
+        {rank:3,reward:'INR 100'},
+        {rank:4,reward:'INR 80'},
+        {rank:5,reward:'INR 60'},
+        {rank:6,reward:'INR 30'},
+        {rank:7,reward:'INR 10'},
+        {rank:8,reward:'INR 5'}
+    ]
+
+    let rules = [
+        {OrderNo:1,rule:'My Rules'},
+        {OrderNo:2,rule:'My Rules'},
+        {OrderNo:3,rule:'My Rules'},
+        {OrderNo:4,rule:'My Rules'},
+        {OrderNo:5,rule:'My Rules'},
+        {OrderNo:6,rule:'My Rules'},
+        {OrderNo:7,rule:'My Rules'},
+        {OrderNo:8,rule:'My Rules'},
+        {OrderNo:9,rule:'My Rules'},
+    ]
+
+    function timeChange(timeString){
+        // const timeString = "18:27:36.000Z";
+        console.log("timeString", timeString)
+        const date = new Date(`1970-01-01T${timeString}`);
+        const options = {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+        };
+        const formattedTime = date.toLocaleTimeString('en-US', options);
+
+        return formattedTime;
+    }
+
+    function dateChange(dateString){
+        // const dateString = "2023-04-17";
+        console.log("dateString", dateString)
+        const date = new Date(dateString);
+        const options = {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+        };
+        const formattedDate = date.toLocaleDateString('en-US', options);
+
+        return formattedDate;
+    }
+
+    function convertDate(date){
+        console.log(date)
+        return `${dateChange(date?.split("T")[0])} | ${timeChange(date?.split("T")[1])}`
+    }
+
+    function substractDate(dateTimeString){
+        // const dateTimeString = "2023-04-17T18:27:36.000Z";
+        const targetDate = new Date(dateTimeString);
+        const currentDate = new Date();
+        const timeDiff = targetDate.getTime() - currentDate.getTime();
+        const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
+        const daysDiff = Math.floor(hoursDiff / 24);
+        const remainingHours = hoursDiff % 24;
+
+        return (`${daysDiff} days, ${remainingHours} hours`);
+    }
 
     return (
         <>
-        {/* <MDBox pt={0} pb={1}> */}
-            {/* <Grid container spacing={2} mt={-4}> */}
-                {/* <div className='container'>
-                    <div className='sub-container1'>
-                        <div className='top-text'>League is about to begin <span style={{backgroundColor: 'green', color: "white", padding: "5px", borderRadius: "5px"}}>4 days 11 hours</span></div>
-                        <div className='sub-container-part1'>
-                            <img className='img' src="https://kappanonline.org/wp-content/uploads/2019/07/PDK_101_1_Nordengren_554x350.jpg" alt="img" />
-                            <div className='part1-a'>Reward Pool</div>
-                            <div className='part1-a' style={{fontWeight: "600", fontSize: "25px"}}>₹ 2,00,000</div>
-                            <div className='part1-a'>Entry: <span style={{fontWeight: "600"}}>Free</span></div>
-                            <button  className='btn part1-d'>INVITE FRIENDS</button>
-                        </div>
-                        <div className='sub-container-part2'>
-                            <div className='part2-a'>
-                                <div>Duration</div>
-                            </div>
-                            <div className='part2-a'>
-                                <div>Entry closes at</div>
-                            </div>
-                        </div>
-                        <div className='sub-container-part2 part2-bottom'>
-                            <div className='part2-b'>
-                                <div>10 Apr 23 | 09:30 am</div>
-                            </div>
-                            <div className='part2-b'>
-                                <div>12 Apr 23 | 09:30 am</div>
-                            </div>
-                        </div>
-                        <div className='sub-container-part3'>
-                            <div className='part3-a'>
-                                Min: 5000
-                            </div>
-                            <div className='part3-a'>
-                                Left: 73376
-                            </div>
-                            <div className='part3-a'>
-                                Max: 100000
-                            </div>
-                        </div>
 
-                        <div className='bottom-text'>
-                            <input type={"checkbox"} />
-                            <div>I accept all the <a>term & condition</a> for this league</div>
-                            
-                        </div>
-                        <div className='sub-container-part4'>
-                            <button className='btn continue'>CONTINUE</button>
-                            <button className='btn back'>BACK</button>
-                        </div>
-
-                    </div>
-                    <div className='sub-container2'>
-                        reward table
-                    </div>
-                    <div className='sub-container3'>
-                        rules
-                    </div>
-                </div> */}
-            {/* </Grid>
-        </MDBox> */}
         <MDBox mt={6} ml={3} width="100%">
             <Grid container >
 
@@ -116,7 +122,7 @@ let rules = [
                     <MDBox>
 
                         <MDTypography display="flex" justifyContent="center">
-                            League is about to begin in 4 days 11 hours
+                            League is about to begin in {substractDate(contestData?.contestEndDate)}
                         </MDTypography>
 
                         <Grid container>
@@ -146,22 +152,22 @@ let rules = [
 
                             <Grid container display="flex" justifyContent="center">
                             <Grid item xs={4} md={3} lg={6} width="100%" display="flex" justifyContent="left">
-                            <MDTypography style={{fontSize:12}} color="info">10 Apr 23 | 09:30 AM to 12 Apr 23 | 03:25 PM</MDTypography>
+                            <MDTypography style={{fontSize:12}} color="info">{`${convertDate(contestData.contestStartDate)} to ${convertDate(contestData.contestEndDate)}`}</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={6} width="100%" display="flex" justifyContent="right">
-                            <MDTypography style={{fontSize:12}} color="info">10 Apr 23 | 09:30 AM</MDTypography>
+                            <MDTypography style={{fontSize:12}} color="info">{convertDate(contestData.entryClosingDate)}</MDTypography>
                             </Grid>
                             </Grid>
 
                             <Grid container display="flex" justifyContent="center">
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="left">
-                            <MDTypography style={{fontSize:12}} color="info">Min : 5000</MDTypography>
+                            <MDTypography style={{fontSize:12}} color="info">Min : {contestData.minParticipants}</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="center">
                             <MDTypography style={{fontSize:12}} color="info">Left: 1500</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="right">
-                            <MDTypography style={{fontSize:12}} color="info">Max: 10000</MDTypography>
+                            <MDTypography style={{fontSize:12}} color="info">Max: {contestData.maxParticipants}</MDTypography>
                             </Grid>
                             </Grid>
 
@@ -173,7 +179,7 @@ let rules = [
                             <MDButton variant="outlined" color="success">Continue</MDButton>
                             </Grid>
                             <Grid item xs={4} md={3} lg={6} mt={2} width="100%" display="flex" justifyContent="center">
-                            <MDButton variant="outlined" color="error">Go Back</MDButton>
+                            <MDButton variant="outlined" color="error" onClick={()=>{setContestDetailsForm(false)}}>Go Back</MDButton>
                             </Grid>
 
                         </Grid>
@@ -263,3 +269,66 @@ let rules = [
 
 
 export default JoinContest;
+
+
+
+        {/* <MDBox pt={0} pb={1}> */}
+            {/* <Grid container spacing={2} mt={-4}> */}
+                {/* <div className='container'>
+                    <div className='sub-container1'>
+                        <div className='top-text'>League is about to begin <span style={{backgroundColor: 'green', color: "white", padding: "5px", borderRadius: "5px"}}>4 days 11 hours</span></div>
+                        <div className='sub-container-part1'>
+                            <img className='img' src="https://kappanonline.org/wp-content/uploads/2019/07/PDK_101_1_Nordengren_554x350.jpg" alt="img" />
+                            <div className='part1-a'>Reward Pool</div>
+                            <div className='part1-a' style={{fontWeight: "600", fontSize: "25px"}}>₹ 2,00,000</div>
+                            <div className='part1-a'>Entry: <span style={{fontWeight: "600"}}>Free</span></div>
+                            <button  className='btn part1-d'>INVITE FRIENDS</button>
+                        </div>
+                        <div className='sub-container-part2'>
+                            <div className='part2-a'>
+                                <div>Duration</div>
+                            </div>
+                            <div className='part2-a'>
+                                <div>Entry closes at</div>
+                            </div>
+                        </div>
+                        <div className='sub-container-part2 part2-bottom'>
+                            <div className='part2-b'>
+                                <div>10 Apr 23 | 09:30 am</div>
+                            </div>
+                            <div className='part2-b'>
+                                <div>12 Apr 23 | 09:30 am</div>
+                            </div>
+                        </div>
+                        <div className='sub-container-part3'>
+                            <div className='part3-a'>
+                                Min: 5000
+                            </div>
+                            <div className='part3-a'>
+                                Left: 73376
+                            </div>
+                            <div className='part3-a'>
+                                Max: 100000
+                            </div>
+                        </div>
+
+                        <div className='bottom-text'>
+                            <input type={"checkbox"} />
+                            <div>I accept all the <a>term & condition</a> for this league</div>
+                            
+                        </div>
+                        <div className='sub-container-part4'>
+                            <button className='btn continue'>CONTINUE</button>
+                            <button className='btn back'>BACK</button>
+                        </div>
+
+                    </div>
+                    <div className='sub-container2'>
+                        reward table
+                    </div>
+                    <div className='sub-container3'>
+                        rules
+                    </div>
+                </div> */}
+            {/* </Grid>
+        </MDBox> */}

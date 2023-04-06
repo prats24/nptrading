@@ -155,7 +155,7 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
       </>
       :
       <>
-      <JoinContest />
+      <JoinContest id={objectId} setContestDetailsForm={setContestDetailsForm}/>
       </>
       }
       </>
