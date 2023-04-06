@@ -121,7 +121,7 @@ const getTicks = async (socket, tokens) => {
 
 const onError = ()=>{
     ticker.on('error', (error)=>{
-      // console.log(error);
+      console.log(error);
     });
 }
 
