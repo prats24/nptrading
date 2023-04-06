@@ -86,7 +86,7 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
                 position: 'relative', 
                 backgroundColor: '#1c2127', 
                 width: '100%', // Add this line to set the width to 100%
-                height: 180,
+                height: 200,
                 // width:280,
                 borderRadius: 6,
               }}
@@ -121,7 +121,7 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
                   <Grid item xs={12} md={12} lg={12}>
                     <MDTypography color="black" display="flex" fontSize={10} justifyContent="center" alignContent="center">
                         <span style={{borderRadius:6, backgroundColor: "white", padding: "0 8px" }}>
-                          <Timer targetDate={e.contestStartDate} text="Contest Started" />
+                          Start in <Timer targetDate={e.contestStartDate} text="Contest Started" />
                         </span>
                     </MDTypography>
                   </Grid>

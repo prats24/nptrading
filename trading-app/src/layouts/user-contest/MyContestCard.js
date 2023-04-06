@@ -13,7 +13,7 @@ import MDAvatar from "../../components/MDAvatar";
 import { HiUserGroup } from 'react-icons/hi';
 import Timer from './timer'
 import JoinedContest from './joinedContest/joinedContest';
-
+import UserPosition from './joinContest/User Position/index'
 
 
 const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsObjectNew}) => {
@@ -22,7 +22,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
   const [objectId,setObjectId] = useState('')
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-    useEffect(()=>{
+  useEffect(()=>{
   
       axios.get(`${baseUrl}api/v1/contest/mycontests`,{
         withCredentials: true,
@@ -42,7 +42,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
 
       // console.log("Contest Data: ",contestData)
 
-      function dateConvert(dateConvert){
+    function dateConvert(dateConvert){
         const dateString = dateConvert;
         const date = new Date(dateString);
         const options = { 
@@ -93,7 +93,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
                   position: 'relative', 
                   backgroundColor: '#1c2127', 
                   width: '100%', // Add this line to set the width to 100%
-                  height: 180,
+                  height: 200,
                   // width:280,
                   borderRadius: 6,
                 }}
@@ -128,7 +128,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
                     <Grid item xs={12} md={12} lg={12}>
                       <MDTypography color="black" display="flex" fontSize={10} justifyContent="center" alignContent="center">
                           <span style={{borderRadius:6, backgroundColor: "white", padding: "0 8px" }}>
-                            <Timer targetDate={e.contestStartDate} text="Contest Started" />
+                          Start in <Timer targetDate={e.contestStartDate} text="Contest Started" />
                           </span>
                       </MDTypography>
                     </Grid>
@@ -150,7 +150,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
         </>
         :
         <>
-        <JoinedContest />
+        <UserPosition />
         </>
         }
     </>

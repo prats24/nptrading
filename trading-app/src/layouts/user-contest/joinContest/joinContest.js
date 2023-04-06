@@ -60,15 +60,15 @@ const JoinContest = ({id, setContestDetailsForm}) => {
     ]
 
     let rules = [
-        {OrderNo:1,rule:'My Rules'},
-        {OrderNo:2,rule:'My Rules'},
-        {OrderNo:3,rule:'My Rules'},
-        {OrderNo:4,rule:'My Rules'},
-        {OrderNo:5,rule:'My Rules'},
-        {OrderNo:6,rule:'My Rules'},
-        {OrderNo:7,rule:'My Rules'},
-        {OrderNo:8,rule:'My Rules'},
-        {OrderNo:9,rule:'My Rules'},
+        {OrderNo:1,rule:'Start and Finish times - League games could set to start as early as 10:00 am and finish as late as sunset.  No game should be scheduled to complete later that 9:00 pm if lighted fields are available'},
+        {OrderNo:2,rule:'Break time between matches -  A minimum of 45 minutes should be allowed between games if teams play two matches in one day.  Coaches need to keep in mind the health and abilities of their players at all times'},
+        // {OrderNo:3,rule:'My Rules'},
+        // {OrderNo:4,rule:'My Rules'},
+        // {OrderNo:5,rule:'My Rules'},
+        // {OrderNo:6,rule:'My Rules'},
+        // {OrderNo:7,rule:'My Rules'},
+        // {OrderNo:8,rule:'My Rules'},
+        // {OrderNo:9,rule:'My Rules'},
     ]
 
     function timeChange(timeString){
@@ -277,8 +277,8 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                                     </MDTypography>
                                     </Grid>
 
-                                    <Grid item xs={6} md={3} lg={9} display="flex" justifyContent="center">
-                                    <MDTypography>
+                                    <Grid item xs={6} md={3} lg={9}  display="flex" justifyContent="center">
+                                    <MDTypography fontSize="15px">
                                             {e.rule}
                                     </MDTypography>
                                     </Grid>
