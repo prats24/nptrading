@@ -50,7 +50,6 @@ function MockOverallCompantPNL({socket}) {
 
 
     useEffect(()=>{
-
       axios.get(`${baseUrl}api/v1/getliveprice`)
       .then((res) => {
           //console.log("live price data", res)
@@ -60,8 +59,12 @@ function MockOverallCompantPNL({socket}) {
           return new Error(err);
       })
 
-      socket.on("tick", (data) => {
-        //console.log("this is live market data", data);
+      socket.on('check', (data)=>{
+        console.log("checking", data)
+      })
+
+      socket.on('tick', (data) => {
+        console.log("checking", data);
         setMarketData(prevInstruments => {
           const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
           data.forEach(instrument => {
@@ -69,9 +72,8 @@ function MockOverallCompantPNL({socket}) {
           });
           return Array.from(instrumentMap.values());
         });
-        // setDetails.setMarketData(data);
       })
-    }, [])
+    }, [socket])
 
     useEffect(()=>{
 

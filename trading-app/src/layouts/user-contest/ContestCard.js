@@ -24,13 +24,35 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
 
     useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/contest/active`)
-      .then((res)=>{
-                let newData = res.data.data
-                setContestData(res.data.data);
-        }).catch((err)=>{
-          return new Error(err);
+      // promise.all[]
+      let call1 = axios.get(`${baseUrl}api/v1/contest/active`)
+      let call2 = axios.get(`${baseUrl}api/v1/contest/mycontests`,{
+                  withCredentials: true,
+                  headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json",
+                      "Access-Control-Allow-Credentials": true
+                    },
+                  })
+      Promise.all([call1, call2])
+      .then(([api1Response, api2Response]) => {
+        // Process the responses here
+        console.log(api1Response.data.data);
+        console.log(api2Response.data.data);
+        let activeData = api1Response.data.data;
+        let myData = api2Response.data.data;
+
+        activeData = activeData.filter((elem1) => !myData.some((elem2) => elem1._id === elem2._id));
+
+        console.log(activeData);
+        setContestData(activeData);
+      
       })
+      .catch((error) => {
+        // Handle errors here
+        console.error(error);
+      });  
+                
     },[createContestForm])
 
 
