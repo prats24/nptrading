@@ -1,5 +1,5 @@
 const kiteTicker = require('kiteconnect').KiteTicker;
-const fetchData = require('./fetchToken');
+const fetchToken = require('./fetchToken');
 const getKiteCred = require('./getKiteCred'); 
 const RetreiveOrder = require("../models/TradeDetails/retreiveOrder")
 const StockIndex = require("../models/StockIndex/stockIndexSchema");
@@ -9,12 +9,14 @@ const client = require("./redisClient");
 
 
 let ticker;
+
 const createNewTicker = (api_key, access_token) => {
+  console.log("createNewTicker")
     ticker = new kiteTicker({
         api_key,
         access_token 
     });
-   
+    console.log("ticker",ticker)
     ticker.connect();
     ticker.autoReconnect(true, 10000000000, 5);
     return ticker;    
@@ -26,10 +28,10 @@ const disconnectTicker = () => {
 }
 
 const subscribeTokens = async() => {
-  getKiteCred.getAccess().then(async (data)=>{
-    let tokens = await fetchData(data.getApiKey, data.getAccessToken);
+  // getKiteCred.getAccess().then(async (data)=>{
+    let tokens = await fetchToken();
     ticker?.subscribe(tokens);
-  });
+  // });
 }
 
 const subscribeSingleToken = async(instrumentToken) => {
@@ -47,7 +49,7 @@ const unSubscribeTokens = async(token) => {
   //  console.log("unsubscribed token", x, tokens);
 }
 
-const getTicks = async (socket, tokens) => {
+const getTicks = async (socket) => {
   let indecies = await client.get("index")
   if(!indecies){
     indecies = await StockIndex.find({status: "Active"});
@@ -57,8 +59,9 @@ const getTicks = async (socket, tokens) => {
   }
   
 
-  console.log("checking get ticks", socket.emit('check', false))
+  console.log("checking get ticks")
   ticker.on('ticks', async (ticks) => {
+    // console.log(ticks)
     socket.emit('tick', ticks);
     // socket.emit('check', ticks);
 
@@ -77,6 +80,7 @@ const getTicks = async (socket, tokens) => {
 
     try{
       let userId = await client.get(socket.id)
+      console.log("userId", userId, socket.id)
       let instruments = await client.SMEMBERS(userId)
       console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
@@ -93,7 +97,7 @@ const getTicks = async (socket, tokens) => {
       // })
 
   
-      console.log("indexData", filteredTicks.length);
+      console.log("indexData", filteredTicks.length, indexData.length);
       if(indexData.length > 0){
         socket.emit('index-tick', indexData)
       }
@@ -101,9 +105,10 @@ const getTicks = async (socket, tokens) => {
 
       // if(filteredTicks > 0){
         // socket.emit('tick-room', ticks);
+        socket.emit('check', false)
         io.to(`${userId}`).emit('tick-room', filteredTicks);
       // }
-      console.log("performance", performance.now()-now);
+      console.log("performance", performance.now()-now, socket.id);
 
       filteredTicks = null;
       ticks = null;
@@ -113,7 +118,7 @@ const getTicks = async (socket, tokens) => {
 
 
     } catch (err){
-      // console.log(err)
+      console.log(err)
     }
 
 

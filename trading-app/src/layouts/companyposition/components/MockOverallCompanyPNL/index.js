@@ -64,7 +64,7 @@ function MockOverallCompantPNL({socket}) {
       })
 
       socket.on('tick', (data) => {
-        console.log("checking", data);
+        console.log("data from socket in instrument in parent", data);
         setMarketData(prevInstruments => {
           const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
           data.forEach(instrument => {

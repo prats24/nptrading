@@ -6,7 +6,7 @@ const InstrumentMapping = require("../models/AlgoBox/instrumentMappingSchema");
 const StockIndex = require("../models/StockIndex/stockIndexSchema");
 
 
-const fetchData = async (getApiKey, getAccessToken) => {
+const fetchData = async () => {
 
 
 
@@ -61,7 +61,7 @@ const fetchData = async (getApiKey, getAccessToken) => {
       tokens.push(elem.instrumentToken);
     }) 
   
-    console.log("tokens", tokens);
+    // console.log("tokens", tokens);
     // console.log("arr", arr);
 
     return tokens
