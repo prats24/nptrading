@@ -28,10 +28,9 @@ export default function BasicModal() {
   const [invited,setInvited] = useState(false)
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {setOpen(false);setInvited(false)};
   const [formData,setFormData] = useState({name:'',email:'',mobile:''});
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-
 
   async function onInvite(e) {
    
@@ -64,9 +63,9 @@ export default function BasicModal() {
     if(response.message && response.status === 201)
     { 
         setInvited(true)
-        return openSuccessSB("Invitation Sent",response.message); 
+        // return openSuccessSB("Invitation Sent",response.message); 
     }
-    if(response.data && response.status === 404)
+    if(response.data || response.error)
     {
         return openErrorSB("Error",response.error)
     }
@@ -152,10 +151,10 @@ export default function BasicModal() {
             <Box>
             
                 <Grid container mb={2} backgroundColor="lightgrey" style={{borderRadius:5}}>
-                    <Grid xs={12} md={12} lg={12} pt={1.5} display="flex" justifyContent="center" alignItems="center">
+                    <Grid item xs={12} md={12} lg={12} pt={1.5} display="flex" justifyContent="center" alignItems="center">
                         <Typography fontSize={13} fontWeight={700}>Hurry up to refer only 5 days 3 hrs 20 mins left</Typography>
                     </Grid>
-                    <Grid xs={12} md={12} lg={12} pb={1.5} display="flex" justifyContent="center" alignItems="center">
+                    <Grid item xs={12} md={12} lg={12} pb={1.5} display="flex" justifyContent="center" alignItems="center">
                         <Typography fontSize={13} fontWeight={700}>Your referral Code : ABCDEF</Typography>
                     </Grid>
                 </Grid>
@@ -208,7 +207,10 @@ export default function BasicModal() {
             <Box>
                 <Box display="flex" justifyContent="center" flexDirection="column" p={1}>
                     <Typography fontSize={14} p={1}>Thanks for inviting {formData.name} to StoxHero. He will recieve an email with your referral code. Please ask him to signup using your referral code.</Typography>
+                    <Box display="flex" justifyContent="space-between" mt={3}>
                     <MDButton variant="contained" color="dark" size="small" onClick={()=>{setInvited(false)}}>Invite Another Friend</MDButton>
+                    <MDButton variant="contained" color="dark" size="small" onClick={()=>{handleClose()}}>Close</MDButton>
+                    </Box>
                 </Box>
             </Box>
             }
