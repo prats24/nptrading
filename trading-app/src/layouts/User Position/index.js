@@ -35,8 +35,8 @@ function UserPosition() {
 
   useEffect(() => {
     socket.on("connect", () => {
-      socket.emit("hi", true)
       socket.emit('userId', getDetails.userDetails._id)
+      socket.emit("hi", true)
     })
   }, []);
 

@@ -40,53 +40,60 @@ app.use(hpp());
 const path = require('path')
 require('dotenv').config({ path: path.resolve(__dirname, 'config.env') })
 
-console.log("in server js");
-
+console.log("index.js")
 getKiteCred.getAccess().then(async (data)=>{
-  console.log(data)
-  createNewTicker(data.getApiKey, data.getAccessToken);
-}).catch((err)=>{
-  console.log(err)
-})
-
-// redis connection
-client.connect();
+  // console.log(data)
+  await createNewTicker(data.getApiKey, data.getAccessToken);
+  // redis connection
+  client.connect();
 
 
-io.on("connection", (socket) => {
+  io.on("connection", (socket) => {
+    socket.on('userId', async (data)=>{
+      socket.join(`${data}`)
+      console.log("in index.js ", socket.id, data)
+      await client.set(socket.id, data);
+    })
 
+    //  socket.emit('check', true)
 
-  socket.on('userId', async (data)=>{
-    socket.join(`${data}`)
-    console.log("in index.js ", socket.id, data)
-    await client.set(socket.id, data);
-  })
+    // socket.on('unSubscribeToken', (data)=>{
 
+    //   data.map((elem)=>{
+    //     // console.log("in index.js  unSubscribeToken", elem, socket.id)
+    //     // console.log("rooms before", socket.rooms)
+    //     socket.leave(`instrument ${elem}`)
+    //     // console.log("rooms after", socket.rooms)
+    //   })
+    // })
 
+    // socket.on('removeKey', (key)=>{
+    //   client.del(key);
+    // })
 
-  socket.on('hi', async (data) => {
-    // getKiteCred.getAccess().then(async (data)=>{
-
-      // let tokens = await fetchData();
-
-      console.log("in hii event")
-      await getTicks(socket);
-      // await onError();
-      // await onOrderUpdate();
-
-    // });
-  });
-  subscribeTokens();
-
-  socket.on('disconnect', async ()=>{
-    socket.disconnect();
-    console.log("disconnecting socket", socket.id)
+    socket.on('disconnect', ()=>{
+      console.log("disconnecting socket")
       // client.del(socket.id);
-  })
+    })
+
+    socket.on('hi', async (data) => {
+      // getKiteCred.getAccess().then(async (data)=>{
+
+        await getTicks(socket);
+        await onError();
+        await onOrderUpdate();
+
+      // });
+    });
+    subscribeTokens();
+
+  });
+
+  io.on('disconnection', () => {disconnectTicker()});
+
 
 });
 
-io.on('disconnection', () => {disconnectTicker()});
 
 
 
@@ -138,6 +145,7 @@ app.use('/api/v1', require('./routes/user/userDetailAuth'));
 app.use('/api/v1', require("./routes/user/everyoneRoleAuth"));
 app.use('/api/v1', require("./routes/user/permissionAuth"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeUserAuth"));
+app.use('/api/v1', require("./routes/mockTrade/mockTradeTrader"));
 app.use('/api/v1', require("./routes/mockTrade/mockTradeCompanyAuth"));
 app.use('/api/v1', require("./routes/mockTrade/otmMockTradeAuth"));
 app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));

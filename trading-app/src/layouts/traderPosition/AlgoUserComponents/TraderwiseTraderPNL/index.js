@@ -56,13 +56,13 @@ function TraderwiseTraderPNL(props) {
     
   const [allTrade, setAllTrade] = useState([]);
   const [marketData, setMarketData] = useState([]);
-  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
-  const [lastestTradeTime, setLatestTradeTime] = useState([]);
-  const [lastestTradeBy, setLatestTradeBy] = useState([]);
-  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
-  const [lastestTradeType, setLatestTradeType] = useState([]);
-  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
-  const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
+  // const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
+  // const [lastestTradeTime, setLatestTradeTime] = useState([]);
+  // const [lastestTradeBy, setLatestTradeBy] = useState([]);
+  // const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
+  // const [lastestTradeType, setLatestTradeType] = useState([]);
+  // const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  // const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
 
   useEffect(()=>{
 
@@ -106,24 +106,24 @@ function TraderwiseTraderPNL(props) {
     }
   }, [])
 
-  useEffect(()=>{
-          // Get Lastest Trade timestamp
-          axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
-          // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
-          .then((res)=>{
-              //console.log(res.data);
-              setLatestTradeTimearr(res.data);
-              setLatestTradeTime(res.data.trade_time) ;
-              setLatestTradeBy(res.data.createdBy) ;
-              setLatestTradeType(res.data.buyOrSell) ;
-              setLatestTradeQuantity(res.data.Quantity) ;
-              setLatestTradeSymbol(res.data.symbol) ;
-              setLatestTradeStatus(res.data.status);
-                //console.log(lastestTradeTimearr);
-          }).catch((err) => {
-            return new Error(err);
-          })
-  }, [marketData])
+  // useEffect(()=>{
+  //         // Get Lastest Trade timestamp
+  //         axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
+  //         // axios.get(`${baseUrl}api/v1/readmocktradecompany`)
+  //         .then((res)=>{
+  //             //console.log(res.data);
+  //             setLatestTradeTimearr(res.data);
+  //             setLatestTradeTime(res.data.trade_time) ;
+  //             setLatestTradeBy(res.data.createdBy) ;
+  //             setLatestTradeType(res.data.buyOrSell) ;
+  //             setLatestTradeQuantity(res.data.Quantity) ;
+  //             setLatestTradeSymbol(res.data.symbol) ;
+  //             setLatestTradeStatus(res.data.status);
+  //               //console.log(lastestTradeTimearr);
+  //         }).catch((err) => {
+  //           return new Error(err);
+  //         })
+  // }, [marketData])
 
   let mapForParticularUser = new Map();
     //console.log("Length of All Trade Array:",allTrade.length);
@@ -327,7 +327,7 @@ rows.push(obj);
             Traderwise Trader P&L
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
+            {/* <Icon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
@@ -338,7 +338,7 @@ rows.push(obj);
             </Icon>
             <MDTypography variant="button" fontWeight="regular" color="text">
             &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime} - {lastestTradeStatus}
-            </MDTypography>
+            </MDTypography> */}
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>

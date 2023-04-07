@@ -173,6 +173,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
     const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
         method: "POST",
+        credentials:"include",
         headers: {
             "content-type": "application/json"
         },

@@ -5,9 +5,10 @@ const authoizeTrade = require('../controllers/authoriseTrade');
 const ApplyAlgo = require("../PlaceOrder/applyAlgo")
 const MockTradeFunc = require("../PlaceOrder/mockTrade")
 const LiveTradeFunc = require("../PlaceOrder/liveTrade")
+const authentication = require("../authentication/authentication")
 
 
-router.post("/placingOrder", ApplyAlgo, authoizeTrade.fundCheck,  async (req, res)=>{
+router.post("/placingOrder", authentication, ApplyAlgo, authoizeTrade.fundCheck,  async (req, res)=>{
 
     // console.log(req.body, "in placing order");
     

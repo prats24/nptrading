@@ -1,15 +1,15 @@
 
 import React from "react";
-// import axios from "axios";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 // @mui material components
-// import { Chart } from 'chart.js/auto';
-// // Chart.register(...registerables);
-// import Grid from "@mui/material/Grid";
+import { Chart } from 'chart.js/auto';
+// Chart.register(...registerables);
+import Grid from "@mui/material/Grid";
 
-// // Material Dashboard 2 React components
-// import MDBox from "../../components/MDBox";
+// Material Dashboard 2 React components
+import MDBox from "../../components/MDBox";
 
 
 
@@ -25,12 +25,12 @@ import Header from "./Header";
 
 // Dashboard components
 
-// import OverallTraderPnl from "./components/overallTraderPnl";
-// import TraderwiseTraderPnl from "./components/TraderwiseTraderPNL";
+import OverallTraderPnl from "./AlgoUserComponents/overallTraderPnl";
+import TraderwiseTraderPnl from "./AlgoUserComponents/TraderwiseTraderPNL";
 
-function TraderPosition() {
+function AlgoUser() {
 
-  // let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
   let socket;
   try{
@@ -60,9 +60,8 @@ function TraderPosition() {
 
 
   return (
-    <DashboardLayout>
-      <DashboardNavbar />
-      {/* <MDBox py={3}>
+
+       <MDBox py={3}>
 
         <MDBox mt={2}>
           <Grid container spacing={3}>
@@ -79,13 +78,11 @@ function TraderPosition() {
             </Grid>
           </Grid>
         </MDBox>
-      </MDBox> */}
-      <Header />
-      <Footer />
-    </DashboardLayout>
+      </MDBox> 
+
   );
 }
 
-export default TraderPosition;
+export default AlgoUser;
 
 // todo ---> mismatch

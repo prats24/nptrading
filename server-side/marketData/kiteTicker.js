@@ -59,7 +59,7 @@ const getTicks = async (socket) => {
   }
   
 
-  console.log("checking get ticks")
+  // console.log("checking get ticks", ticker)
   ticker.on('ticks', async (ticks) => {
     // console.log(ticks)
     socket.emit('tick', ticks);
@@ -97,7 +97,7 @@ const getTicks = async (socket) => {
       // })
 
   
-      console.log("indexData", filteredTicks.length, indexData.length);
+      // console.log("indexData", filteredTicks.length, indexData.length);
       if(indexData.length > 0){
         socket.emit('index-tick', indexData)
       }
@@ -110,11 +110,11 @@ const getTicks = async (socket) => {
       // }
       console.log("performance", performance.now()-now, socket.id);
 
-      filteredTicks = null;
-      ticks = null;
-      indexData = null;
-      instrumentTokenArr = null;
-      instruments = null;
+      // filteredTicks = null;
+      // ticks = null;
+      // indexData = null;
+      // instrumentTokenArr = null;
+      // instruments = null;
 
 
     } catch (err){

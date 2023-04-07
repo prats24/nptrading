@@ -25,20 +25,20 @@ function OverallTraderPNL({socket}) {
   const closeMenu = () => setMenu(null);
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-  const [overallPnlArr, setOverallPnlArr] = useState([]);
+  // const [overallPnlArr, setOverallPnlArr] = useState([]);
   const [liveDetail, setLiveDetail] = useState([]);
-  const [avgPrice, setAvgPrice] = useState([]);
+  // const [avgPrice, setAvgPrice] = useState([]);
   const [marketData, setMarketData] = useState([]);
-  const [instrumentData, setInstrumentData] = useState([]);
+  // const [instrumentData, setInstrumentData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
-  const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
-  const [lastestTradeTime, setLatestTradeTime] = useState([]);
-  const [lastestTradeBy, setLatestTradeBy] = useState([]);
-  const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
-  const [lastestTradeType, setLatestTradeType] = useState([]);
-  const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
-  const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
-  const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
+  // const [lastestTradeTimearr, setLatestTradeTimearr] = useState([]);
+  // const [lastestTradeTime, setLatestTradeTime] = useState([]);
+  // const [lastestTradeBy, setLatestTradeBy] = useState([]);
+  // const [lastestTradeSymbol, setLatestTradeSymbol] = useState([]);
+  // const [lastestTradeType, setLatestTradeType] = useState([]);
+  // const [lastestTradeQunaity, setLatestTradeQuantity] = useState([]);
+  // const [lastestTradeStatus, setLatestTradeStatus] = useState([]);
+  // const [lastAvgPriceArr, setLastAvgPriceArr] = useState([]);
 
   // Get Latest Trade Time Stamp code ends
 
@@ -98,20 +98,20 @@ function OverallTraderPNL({socket}) {
       })
 
       // Get Lastest Trade timestamp
-      axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
-      .then((res)=>{
-          console.log(res.data);
-          setLatestTradeTimearr(res.data);
-          setLatestTradeTime(res.data.trade_time) ;
-          setLatestTradeBy(res.data.createdBy) ;
-          setLatestTradeType(res.data.buyOrSell) ;
-          setLatestTradeQuantity(res.data.Quantity) ;
-          setLatestTradeSymbol(res.data.symbol) ;
-          setLatestTradeStatus(res.data.status)
-            console.log(lastestTradeTimearr);
-      }).catch((err) => { 
-        return new Error(err);
-      })
+      // axios.get(`${baseUrl}api/v1/getlastestmocktradecompany`)
+      // .then((res)=>{
+      //     console.log(res.data);
+      //     setLatestTradeTimearr(res.data);
+      //     setLatestTradeTime(res.data.trade_time) ;
+      //     setLatestTradeBy(res.data.createdBy) ;
+      //     setLatestTradeType(res.data.buyOrSell) ;
+      //     setLatestTradeQuantity(res.data.Quantity) ;
+      //     setLatestTradeSymbol(res.data.symbol) ;
+      //     setLatestTradeStatus(res.data.status)
+      //       console.log(lastestTradeTimearr);
+      // }).catch((err) => { 
+      //   return new Error(err);
+      // })
 
     }, [marketData])
 
@@ -276,18 +276,18 @@ function OverallTraderPNL({socket}) {
             Overall Trader P&L
           </MDTypography>
           <MDBox display="flex" alignItems="center" lineHeight={0}>
-            <Icon
+            {/* <Icon
               sx={{
                 fontWeight: "bold",
                 color: ({ palette: { info } }) => info.main,
                 mt: -0.5,
               }}
             >
-              done
-            </Icon>
-            <MDTypography variant="button" fontWeight="regular" color="text">
+              done */}
+            {/* </Icon> */}
+            {/* <MDTypography variant="button" fontWeight="regular" color="text">
               &nbsp;<strong>last trade</strong> {lastestTradeBy} {lastestTradeType === "BUY" ? "bought" : "sold"} {Math.abs(lastestTradeQunaity)} quantity of {lastestTradeSymbol} at {lastestTradeTime} - {lastestTradeStatus}
-            </MDTypography>
+            </MDTypography> */}
           </MDBox>
         </MDBox>
         <MDBox color="text" px={2}>

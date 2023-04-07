@@ -46,12 +46,24 @@ async function generateUniqueReferralCode() {
 router.get("/referralCode", async (req, res) => {
   const users = await UserDetail.find();
 
+  // for (let i = 0; i < users.length; i++) {
+  //   if (!users[i].myReferralCode) {
+  //     const code = await generateUniqueReferralCode();
+  //     const result = await UserDetail.updateOne(
+  //       { _id: users[i]._id },
+  //       { $set: { myReferralCode: code } },
+  //       { upsert: true }
+  //     );
+  //     console.log(result);
+  //   }
+  // }
+
   for (let i = 0; i < users.length; i++) {
-    if (!users[i].myReferralCode) {
-      const code = await generateUniqueReferralCode();
+    if (!users[i].isAlgoTrader) {
+      // const code = await generateUniqueReferralCode();
       const result = await UserDetail.updateOne(
         { _id: users[i]._id },
-        { $set: { myReferralCode: code } },
+        { $set: { isAlgoTrader: true } },
         { upsert: true }
       );
       console.log(result);

@@ -10,6 +10,7 @@ const InstrumentMapping = require("../models/AlgoBox/instrumentMappingSchema");
 const ApplyAlgo = async (req, res, next)=>{
 
     // console.log(req.body, "in apply algo")
+    // console.log(req.user)
     const {userId, symbol, instrumentToken, Quantity, buyOrSell} = req.body;
 
     let accessTokenDetails = await AccessToken.find({status: "Active"});
@@ -112,6 +113,7 @@ const ApplyAlgo = async (req, res, next)=>{
                         req.body.apiKey = apiKey;
                         req.body.accessToken = accessToken;
                         req.body.algoBox = elem;
+                        req.body.isAlgoTrader = req.user.isAlgoTrader
 
                     } else if(subElem.isTradeEnable){
                         // mockTradeCompany(elem, checkingMultipleAlgoFlag);
@@ -120,6 +122,7 @@ const ApplyAlgo = async (req, res, next)=>{
                         req.body.realBuyOrSell = companyTrade.realBuyOrSell;
                         req.body.realQuantity = companyTrade.realQuantity;
                         req.body.algoBox = elem;
+                        req.body.isAlgoTrader = req.user.isAlgoTrader
                     }
                 }
             })
@@ -129,7 +132,11 @@ const ApplyAlgo = async (req, res, next)=>{
     }
 
     if(userPermissionAlgo?.length === 0){
-        return res.status(401).send({message: "Your profile is not active yet, please contact the admin @ team@stoxhero.com for more details."})
+        if(req.user.isAlgoTrader){
+            return res.status(401).send({message: "Your profile is not active yet, please contact the admin @ team@stoxhero.com for more details."})
+        } else{
+            req.body.isAlgoTrader = req.user.isAlgoTrader
+        }
     }
     await tradingAlgo();
 

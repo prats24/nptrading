@@ -36,12 +36,12 @@ function TraderMockOrders({userId}) {
 const [open, setOpen] = useState(false);
 const theme = useTheme();
 const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-const [menu, setMenu] = useState(null);
+// const [menu, setMenu] = useState(null);
 
-const closeMenu = () => setMenu(null);
+// const closeMenu = () => setMenu(null);
 
 
-const [regularSwitch, setRegularSwitch] = useState(true);
+// const [regularSwitch, setRegularSwitch] = useState(true);
 const handleClickOpen = () => {
 
   setOpen(true);
@@ -56,12 +56,12 @@ const handleClose = (e) => {
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 const [orderData, setOrderData] = useState([]);
-const [tradeData, setTradeData] = useState([]);
+// const [tradeData, setTradeData] = useState([]);
 
-let liveDetailsArr = [];
-let totalTransactionCost = 0;
-let totalGrossPnl = 0;
-let totalRunningLots = 0;
+// let liveDetailsArr = [];
+// let totalTransactionCost = 0;
+// let totalGrossPnl = 0;
+// let totalRunningLots = 0;
 
   useEffect(()=>{
 

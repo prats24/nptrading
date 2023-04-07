@@ -4,9 +4,15 @@ require("../../db/conn");
 const Permission = require("../../models/User/permissionSchema");
 
 router.post("/permission", (req, res)=>{
-    const {modifiedOn, modifiedBy, userName, userId, isTradeEnable, isRealTradeEnable, algoName} = req.body;
+    let {modifiedOn, modifiedBy, userName, userId, isTradeEnable, isRealTradeEnable, algoName} = req.body;
     //console.log(req.body)
-    if(!modifiedOn || !modifiedBy || !userName || !userId || !isTradeEnable || !isRealTradeEnable || !algoName){
+    if(!isTradeEnable){
+        isTradeEnable = false;
+    }
+    if(!isRealTradeEnable){
+        isRealTradeEnable = false;
+    }
+    if(!modifiedOn || !modifiedBy || !userName || !userId  || !algoName){
         //console.log("data nhi h pura");
         return res.status(422).json({error : "Please fill all the fields..."})
     }
