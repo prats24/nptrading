@@ -11,6 +11,7 @@
     "@mui/styled-engine-sc": "^5.11.0",
     "@mui/x-data-grid": "^5.17.21",
     "@mui/x-date-pickers": "^6.0.3",
+    "@svgr/babel-plugin-transform-react-native-svg": "^7.0.0",
     "@syncfusion/ej2-react-charts": "^20.4.52",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
