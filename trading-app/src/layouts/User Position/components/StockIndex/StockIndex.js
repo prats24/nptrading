@@ -118,7 +118,7 @@ console.log("finalArr", finalArr)
                         </Item>
                     )})}
                     <Item elevation={2}>           
-                    <MDBox m={0.5} fontWeight={700} >P&L:</MDBox>
+                    <MDBox m={0.5} fontWeight={700} >Net P&L:</MDBox>
                     <MDBox m={0.5} fontWeight={700} color={gpnlcolor}>{pnl.netPnl >= 0.00 ? "+₹" + (pnl.netPnl.toFixed(2)): "-₹" + ((-pnl.netPnl).toFixed(2))}</MDBox>
                     </Item>
                 </MDBox>

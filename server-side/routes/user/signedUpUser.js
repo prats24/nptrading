@@ -9,6 +9,7 @@ const userPersonalDetail = require("../../models/User/userDetailSchema");
 const signedUpUser = require("../../models/User/signedUpUser");
 const sendSMS = require('../../utils/smsService');
 const Referral = require("../../models/campaigns/referralProgram");
+const Lead = require("../../models/leads/leads");
 
 router.post("/signup", async (req, res)=>{
     console.log("Inside SignUp Routes")
@@ -112,7 +113,7 @@ router.post("/signup", async (req, res)=>{
                 `;
 
                 emailService(email,subject,message);
-                sendSMS([mobile.toString()], `Welcome to ninepointer. Your OTP for signup is ${mobile_otp}`);
+                sendSMS([mobile.toString()], `Welcome to StoxHero. Your OTP for signup is ${mobile_otp}`);
             }catch(err){console.log(err);res.status(500).json({message:'Something went wrong',status:"error"})}
 })
 
@@ -255,8 +256,13 @@ router.patch("/verifyotp", async (req, res)=>{
             $set:{ 
                 users: referral?.users
             }
-            
+        
         })
+
+        let lead = await Lead.findOne({ $or: [{ email: newuser.email }, { mobile: newuser.mobile }] });
+        lead.status = 'Joined'
+        lead.referralCode = newuser.referrerCode
+        await lead.save({validateBeforeSave:false});
 
         console.log("referralProgramme", referralProgramme);
 

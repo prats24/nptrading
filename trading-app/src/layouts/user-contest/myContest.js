@@ -13,6 +13,7 @@ import { CircularProgress, Icon } from "@mui/material";
 // Data
 import ContestCard from './ContestCard'
 import CreateContest from './CreateContest'
+import MyContestCard from './MyContestCard';
 
 
 const MyContests = () => {
@@ -32,7 +33,7 @@ const MyContests = () => {
       :
                 <>
                 
-                <MDBox pt={0} pb={1}>
+                <MDBox pt={0} pb={1} mt={3}>
                   {/* <MDBox>
                     {(!createContestForm && !isObjectNew) && 
                     <MDButton 
@@ -51,7 +52,7 @@ const MyContests = () => {
                 {!createContestForm ?
                   <Grid container spacing={2} mt={-4}>
                     
-                    <ContestCard createContestForm={createContestForm} setCreateContestForm={setCreateContestForm} isObjectNew={isObjectNew} setIsObjectNew={setIsObjectNew}/>
+                    <MyContestCard createContestForm={createContestForm} setCreateContestForm={setCreateContestForm} isObjectNew={isObjectNew} setIsObjectNew={setIsObjectNew}/>
 
                   </Grid>
                   :

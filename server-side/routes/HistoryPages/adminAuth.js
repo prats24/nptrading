@@ -18,6 +18,9 @@ const TraderDailyPnlData = require("../../models/InstrumentHistoricalData/Trader
 const UserDetail = require("../../models/User/userDetailSchema");
 
 
+router.get("/removefeild", async (req, res)=>{
+  await UserDetail.updateMany({}, { $unset: { watchlistInstruments: "" } });
+})
 async function generateUniqueReferralCode() {
   const length = 8; // change this to modify the length of the referral code
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

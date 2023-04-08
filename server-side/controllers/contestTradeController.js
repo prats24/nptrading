@@ -17,7 +17,7 @@ exports.newTrade = async(req,res,next) => {
         res.status(201).json({status: 'success', message:'Trade placed successfully.'});
     }catch(e){
         console.log(e);
-        return res.status(500).json({status: 'error', message: 'SOmething went wrong'});
+        return res.status(500).json({status: 'error', message: 'Something went wrong'});
     }
     
 
@@ -42,4 +42,58 @@ exports.getUserTrades = async(req,res,next) => {
     }
 
 
+}
+
+exports.getContestPnl = async(req, res, next) => {
+    const {userId, id} = req.params;
+    const today = new Date().toISOString().slice(0, 10);
+
+    try{
+        let pnlDetails = await ContestTrade.aggregate([
+            {
+              $match: {
+                trade_time: {
+                  $regex: today,
+                },
+                status: "COMPLETE",
+                userId: id
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  symbol: "$symbol",
+                  product: "$Product",
+                  instrumentToken: "$instrumentToken",
+                  exchange: "$exchange"
+                },
+                amount: {
+                  $sum: {$multiply : ["$amount",-1]},
+                },
+                brokerage: {
+                  $sum: {
+                    $toDouble: "$brokerage",
+                  },
+                },
+                lots: {
+                  $sum: {
+                    $toInt: "$Quantity",
+                  },
+                },
+                lastaverageprice: {
+                  $last: "$average_price",
+                },
+              },
+            },
+            {
+              $sort: {
+                _id: -1,
+              },
+            },
+          ]);
+
+    }catch(e){
+        console.log(e);
+        return res.status(500).json({status:'success', message: 'something went wrong.'})
+    }
 }

@@ -4,7 +4,7 @@ import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
 
 // Data
-import ReferralHeader from "./Header";
+import ReferralHomePage from "./Header/referralHomePage";
 
 function RefferalTable() {
 
@@ -12,7 +12,7 @@ function RefferalTable() {
     <>
     <DashboardLayout>
       <DashboardNavbar />
-      <ReferralHeader/>
+      <ReferralHomePage/>
       <Footer />
     </DashboardLayout>
     </>

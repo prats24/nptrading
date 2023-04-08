@@ -9,8 +9,10 @@ import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import SettingsIcon from '@mui/icons-material/Settings';
 
+
 // Material Dashboard 2 React components
 import MDBox from "./components/MDBox";
+import MDAvatar from "./components/MDAvatar";
 
 // Material Dashboard 2 React example components
 import Sidenav from "./examples/Sidenav";
@@ -40,6 +42,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "./
 
 // Images
 import brandWhite from "./assets/images/logo-ct.png";
+import Logo from "./assets/images/logo1.jpeg"
 import brandDark from "./assets/images/logo-ct-dark.png";
 import SignIn from "./layouts/authentication/sign-in"
 import NewMain from "./NewMain"
@@ -228,7 +231,8 @@ export default function App() {
             (getDetails?.userDetails?.role === "admin" || getDetails?.userDetails?.role === "user"|| getDetails?.userDetails?.role === "data") &&
             <Sidenav
               color={sidenavColor}
-              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+              // brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+              brand={Logo}
               brandName="StoxHero"
               routes={(detailUser?.role === "admin" || getDetails?.userDetails?.role === "admin")
                 ? routes : (detailUser?.role === "user" || getDetails?.userDetails?.role === "user") 

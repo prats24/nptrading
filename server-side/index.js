@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
     await client.set(socket.id, data);
   })
 
-   socket.emit('check', true)
+  //  socket.emit('check', true)
 
   socket.on('unSubscribeToken', (data)=>{
 
@@ -82,7 +82,7 @@ io.on("connection", (socket) => {
 
       let tokens = await fetchData(data.getApiKey, data.getAccessToken);
   
-      
+      console.log("in hii event")
       getTicks(socket, tokens);
       onError();
       onOrderUpdate();
@@ -136,7 +136,7 @@ app.use('/api/v1', require('./marketData/switchToRealTrade'));
 app.use('/api/v1', require('./routes/instrument/instrumentAuth'));
 app.use('/api/v1', require('./routes/instrument/tradableInstrument'));
 app.use('/api/v1', require('./routes/instrument/addInstrument'));
-
+app.use('/api/v1', require('./routes/leads/invite'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/accountAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/brokerageAuth'));
 app.use('/api/v1', require('./routes/TradingAccountAuth/parameterAuth'));

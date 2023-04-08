@@ -30,6 +30,7 @@ import SignUp from './layouts/authentication/sign-up'
 import ResetPassword from './layouts/authentication/reset-password/cover'
 import Response from './layouts/authentication/sign-up/responseSubmit'
 import MyReferrals from "./layouts/referrals"
+import UserContest from "./layouts/contests"
 
 
 // @mui icons
@@ -264,6 +265,14 @@ const routes = [
     route: "/Position",
     component: <UserPosition />,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Contests",
+  //   key: "usercontests",
+  //   icon: <ReportIcon/>,
+  //   route: "/usercontests",
+  //   component: <UserContest/>,
+  // },
   {
     type: "collapse",
     name: "Orders",

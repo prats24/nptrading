@@ -57,8 +57,11 @@ const getTicks = async (socket, tokens) => {
   }
   
 
-  console.log("checking get ticks")
+  console.log("checking get ticks", socket.emit('check', false))
   ticker.on('ticks', async (ticks) => {
+    socket.emit('tick', ticks);
+    // socket.emit('check', ticks);
+
     let indexObj = {};
 
     let now = performance.now();
@@ -95,8 +98,6 @@ const getTicks = async (socket, tokens) => {
         socket.emit('index-tick', indexData)
       }
       
-      socket.emit('tick', ticks);
-      socket.emit('check', true);
 
       // if(filteredTicks > 0){
         // socket.emit('tick-room', ticks);
@@ -121,7 +122,7 @@ const getTicks = async (socket, tokens) => {
 
 const onError = ()=>{
     ticker.on('error', (error)=>{
-      // console.log(error);
+      console.log(error);
     });
 }
 

@@ -43,7 +43,7 @@ const MenuProps = {
 };
 
 
-function CreateContest({createContestForm, setCreateContestForm, oldObjectId, setOldObjectId}) {
+function CreateContest({createContestForm, setCreateContestForm, oldObjectId, setOldObjectId, setCreateContestFormCard}) {
   // console.log("Old Object Id: ",oldObjectId)
   const [isSubmitted,setIsSubmitted] = useState(false);
   const getDetails = useContext(userContext);
@@ -564,7 +564,7 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={editing} onClick={(e)=>{setEditing(true)}}>
                     {editing ? <CircularProgress size={20} color="inherit" /> : "Edit"}
                 </MDButton>
-                <MDButton variant="contained" color="error" size="small" disabled={editing} onClick={()=>{setCreateContestForm(false)}}>
+                <MDButton variant="contained" color="error" size="small" disabled={editing} onClick={()=>{setCreateContestFormCard(false); setCreateContestForm(false)}}>
                     Back
                 </MDButton>
                 </>

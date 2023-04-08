@@ -171,7 +171,7 @@ if (data.status === 422 || data.error || !data) {
     setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
     // console.log("invalid entry");
 } else {
-    openSuccessSB("Contest Created",data.message)
+    openSuccessSB("Referral Created",data.message)
     setNewObjectId(data.data._id)
     setIsSubmitted(true)
     console.log("setting linked contest rule to: ",data.data.contestRule)
