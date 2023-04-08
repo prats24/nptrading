@@ -72,15 +72,17 @@ const referralProgramSchema = new mongoose.Schema({
         {
             type: Schema.Types.ObjectId,
             ref: "user-personal-detail"
-        }
-        
+        }  
+    ],
+    invitedUsers: [
+        {name:String,mobile:String,email:String,invitedOn:Date}  
     ]
 })
 
 referralProgramSchema.pre('save', async function(next){
     if(!this.referrralProgramId|| this.isNew){
         const count = await referralProgramData.countDocuments();
-        const tId = "NPTR" + (count + 1).toString().padStart(8, "0");
+        const tId = "SHRP" + (count + 1).toString().padStart(8, "0");
         this.referrralProgramId = tId;
         next();
     }

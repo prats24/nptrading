@@ -50,9 +50,6 @@ router.post("/invite",authentication, async (req, res)=>{
     }
 
     if(req.body.email){
-        console.log(!isEmailValid(req.body.email))
-        console.log("isEmailValid return value:", isEmailValid(req.body.email));
-        console.log("!isEmailValid(req.body.email) value:", !isEmailValid(req.body.email));
         if (!isEmailValid((req.body.email).toString())) 
         {
             return res.status(400).json({error : "Please enter a valid email address."})
@@ -60,7 +57,7 @@ router.post("/invite",authentication, async (req, res)=>{
         }
 
     try{
-        let {name, email, mobile} = req.body;
+        let {name, email, mobile, referralProgram} = req.body;
         const id = req.user._id;
 
         if(!name){
@@ -75,25 +72,25 @@ router.post("/invite",authentication, async (req, res)=>{
         console.log("Lead Data: ",lead);
         if(!lead){
             
-            if(email){
-                let subject = `${req.user.first_name} ${req.user.last_name} invited you to join StoxHero`
-                let message = `
-                Hello Join StoxHero
-                `
-                emailService(email, subject, message);
-                console.log("Email sent successfully!");
-              } 
+            // if(email){
+            //     let subject = `${req.user.first_name} ${req.user.last_name} invited you to join StoxHero`
+            //     let message = `
+            //     Hello Join StoxHero
+            //     `
+            //     emailService(email, subject, message);
+            //     console.log("Email sent successfully!");
+            //   } 
           
 
-            if(mobile){
+            // if(mobile){
         
-            smsService([mobile.toString()], `Your friend ${req.user.first_name} ${req.user.last_name} has invited you to join StoxHero. Click to join www.stoxhero.com`);
-            console.log("SMS sent successfully!");
+            // smsService([mobile.toString()], `Your friend ${req.user.first_name} ${req.user.last_name} has referred you on a learning platform. Please connect with them for more details.`);
+            // console.log("SMS sent successfully!");
             
-            }
+            // }
 
             await Lead.create({name:name, email:email ? email : undefined, mobile:mobile ? mobile : undefined, 
-                invitedBy:req.user._id, status:'Invited'});
+                invitedBy:req.user._id, status:'Invited', referralProgram:referralProgram});
             
 
             return res.status(201).json({message : "You invited your friend succesfully", data: lead, status: 201});

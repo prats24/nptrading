@@ -10,6 +10,7 @@ const signedUpUser = require("../../models/User/signedUpUser");
 const sendSMS = require('../../utils/smsService');
 const Referral = require("../../models/campaigns/referralProgram");
 const Lead = require("../../models/leads/leads");
+const MarginAllocation = require("../../models/marginAllocation/marginAllocationSchema")
 
 router.post("/signup", async (req, res)=>{
     console.log("Inside SignUp Routes")
@@ -260,9 +261,28 @@ router.patch("/verifyotp", async (req, res)=>{
         })
 
         let lead = await Lead.findOne({ $or: [{ email: newuser.email }, { mobile: newuser.mobile }] });
+        if(lead){
         lead.status = 'Joined'
         lead.referralCode = newuser.referrerCode
+        lead.joinedOn = new Date();
         await lead.save({validateBeforeSave:false});
+        }
+
+        let marginAllocation = await MarginAllocation.create(
+            {
+                amount:1000000,
+                createdOn:new Date(),
+                createdBy:newuser._id,
+                lastModifiedOn:new Date(),
+                lastModifiedBy:newuser._id,
+                userId: newuser._id,
+                traderName: newuser.name,
+                fund:1000000,
+                creditedOn: new Date(),
+                creditedBy:newuser._id 
+            })
+        
+        console.log("Margin Allcoation Data: ",marginAllocation)
 
         console.log("referralProgramme", referralProgramme);
 
@@ -470,8 +490,8 @@ router.get("/signedupusers", (req, res)=>{
 })
 
 router.put("/updatesignedupuser/:id", async (req, res)=>{
-    //console.log(req.params)
-    //console.log("this is body", req.body);
+    console.log(req.params)
+    console.log("this is body", req.body);
 
     try{
         const {id} = req.params

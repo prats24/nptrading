@@ -15,14 +15,14 @@ const createNewTicker = (api_key, access_token) => {
         access_token 
     });
    
-    ticker.connect();
-    ticker.autoReconnect(true, 10000000000, 5);
+    ticker?.connect();
+    ticker?.autoReconnect(true, 10000000000, 5);
     return ticker;    
 }
 
 const disconnectTicker = () => {
     console.log('disconnecting ticker');
-    ticker.disconnect();
+    ticker?.disconnect();
 }
 
 const subscribeTokens = async() => {
@@ -33,7 +33,7 @@ const subscribeTokens = async() => {
 }
 
 const subscribeSingleToken = async(instrumentToken) => {
-  ticker.subscribe(instrumentToken);
+  ticker?.subscribe(instrumentToken);
 }
 
 // const unSubscribeSingleToken = async(instrumentToken) => {
@@ -42,7 +42,7 @@ const subscribeSingleToken = async(instrumentToken) => {
 
 const unSubscribeTokens = async(token) => {
     let tokens = [];
-    tokens.push(token)
+    tokens?.push(token)
    let x =  ticker.unsubscribe(tokens);
   //  console.log("unsubscribed token", x, tokens);
 }
@@ -57,7 +57,7 @@ const getTicks = async (socket, tokens) => {
   }
   
 
-  console.log("checking get ticks", socket.emit('check', false))
+  console.log("checking get ticks", socket?.emit('check', false))
   ticker.on('ticks', async (ticks) => {
     socket.emit('tick', ticks);
     // socket.emit('check', ticks);
@@ -66,8 +66,8 @@ const getTicks = async (socket, tokens) => {
 
     let now = performance.now();
     // populate hash table with indexObj from indecies
-    for (let i = 0; i < indecies.length; i++) {
-      indexObj[indecies[i].instrumentToken] = true;
+    for (let i = 0; i < indecies?.length; i++) {
+      indexObj[indecies[i]?.instrumentToken] = true;
     }
 
     // filter ticks using hash table lookups
@@ -93,8 +93,8 @@ const getTicks = async (socket, tokens) => {
       // })
 
   
-      console.log("indexData", filteredTicks.length);
-      if(indexData.length > 0){
+      console.log("indexData", filteredTicks?.length);
+      if(indexData?.length > 0){
         socket.emit('index-tick', indexData)
       }
       
@@ -121,7 +121,7 @@ const getTicks = async (socket, tokens) => {
 }
 
 const onError = ()=>{
-    ticker.on('error', (error)=>{
+    ticker?.on('error', (error)=>{
       console.log(error);
     });
 }

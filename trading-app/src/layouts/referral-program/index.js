@@ -7,7 +7,7 @@ import Footer from "../../examples/Footer";
 // Data
 // import authorsTableData from "./data/authorsTableData";
 // import projectsTableData from "./data/projectsTableData";
-import Header from "./Header";
+import ReferralHomePage from "./referralProgramHomePage";
 
 function Tables() {
   // const { columns, rows } = authorsTableData();
@@ -17,7 +17,7 @@ function Tables() {
     <>
     <DashboardLayout>
       <DashboardNavbar />
-      <Header/>
+      <ReferralHomePage/>
       <Footer />
     </DashboardLayout>
     </>
