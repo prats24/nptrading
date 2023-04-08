@@ -14,6 +14,7 @@ const contestSchema = new mongoose.Schema({
         type:Date,
         required: true
     },
+    contestMargin: Number,
     entryOpeningDate:{
         type:Date,
         required: true

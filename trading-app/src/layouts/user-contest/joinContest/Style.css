@@ -1,5 +1,6 @@
-.container{
+.table{
     display: flex;
+    /* flex-direction: row; */
     justify-content: space-evenly;
     font-family: sans-serif;
     background-color: aliceblue;

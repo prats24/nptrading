@@ -1,0 +1,17 @@
+.container{
+    width: 180px;
+    display: flex;
+    flex-direction: column;
+    background-color: #d3d3d3;
+    padding: 10px 10px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    color: grey;
+    /* width: 100px; */
+}
+

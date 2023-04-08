@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import Grid from "@mui/material/Grid";
+import RewardsTable from './components/RewardsTable';
 // import axios from "axios";
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
