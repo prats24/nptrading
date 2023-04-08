@@ -152,6 +152,7 @@ app.use('/api/v1', require("./models/TradeDetails/retreiveOrderAuth"));
 app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
 app.use('/api/v1', require("./routes/marginAllocation/marginAllocationAuth"));
 app.use('/api/v1/contest', require("./routes/contest/contestRoutes"));
+app.use('/api/v1/contestTrade', require("./routes/contest/contestTradeRoute"));
 app.use('/api/v1/referrals', require("./routes/campaigns/referralRoutes"));
 
 app.use('/api/v1', require("./routes/contest/contestRuleRoute"));

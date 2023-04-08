@@ -93,6 +93,11 @@ const contestSchema = new mongoose.Schema({
         ref: 'user-personal-detail',
         // required : true
     },
+    fund:{
+        type: Number,
+        default: 1000000,
+        // required : true
+    },
 })
 
 const contestData = mongoose.model("contest", contestSchema);

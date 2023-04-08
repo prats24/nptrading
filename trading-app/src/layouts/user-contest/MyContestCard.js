@@ -151,7 +151,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
         :
         <>
         <MDBox mt={6} ml={3} width="100%">
-        <UserPosition />
+        <UserPosition contestId={objectId}/>
         </MDBox>
         </>
         }

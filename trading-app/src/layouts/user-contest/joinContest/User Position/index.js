@@ -20,7 +20,7 @@ import RankTable from "./RankTable";
 
 
 
-function UserPosition() {
+function UserPosition({contestId}) {
 
   console.log("user position rendering")
   const [reRender, setReRender] = useState(true);
@@ -55,15 +55,6 @@ function UserPosition() {
     setReRender(value);
   }, []);
 
-  // const memoizedTradableInstrument = useMemo(() => {
-  //   return <TradableInstrument
-  //     socket={socket}
-  //     reRender={reRender}
-  //     setReRender={memoizedSetReRender}
-  //     isGetStartedClicked={isGetStartedClicked}
-  //     setIsGetStartedClicked={handleSetIsGetStartedClicked}
-  //   />;
-  // }, [socket, reRender, isGetStartedClicked, handleSetIsGetStartedClicked]);
 
   const memoizedInstrumentDetails = useMemo(() => {
     return <InstrumentDetails
@@ -71,7 +62,7 @@ function UserPosition() {
       reRender={reRender}
       setReRender={memoizedSetReRender}
       // setReRender={}
-      // isGetStartedClicked={isGetStartedClicked}
+      contestId={contestId}
       setIsGetStartedClicked={handleSetIsGetStartedClicked}
     />;
   }, [socket, reRender, handleSetIsGetStartedClicked]);
@@ -82,12 +73,11 @@ function UserPosition() {
       reRender={reRender}
       setReRender={memoizedSetReRender}
       // setReRender={}
-      // isGetStartedClicked={isGetStartedClicked}
+      contestId={contestId}
       setIsGetStartedClicked={handleSetIsGetStartedClicked}
     />;
   }, [socket, reRender, handleSetIsGetStartedClicked]);
 
-  // 
 
   return (
     <MDTypography  display='flex' justifyContent='space-between' gap="5px" >
@@ -121,9 +111,3 @@ function UserPosition() {
 }
 
 export default UserPosition;
-
-// 
-// width="100%"
-
-
-
