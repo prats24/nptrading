@@ -242,7 +242,7 @@ router.patch("/verifyotp", async (req, res)=>{
             createdBy: first_name + ' ' + last_name,last_modifiedBy: first_name + ' ' + last_name, 
             name: first_name + ' ' + last_name.substring(0,1), createdOn: user.last_modifiedOn, 
             lastModified: user.last_modifiedOn, password: 'np' + last_name + '@123', status: 'Active', 
-            employeeid: userId,fund: 0, creationProcess: 'Auto SignUp',
+            employeeid: userId,fund: 1000000, creationProcess: 'Auto SignUp',
             joining_date:user.last_modifiedOn,myReferralCode:(await myReferralCode).toString(), referrerCode:referrerCode,
             // referredBy: referredBy,
             referralProgramme: referral._id

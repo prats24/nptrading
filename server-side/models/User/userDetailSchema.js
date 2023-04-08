@@ -237,7 +237,12 @@ const userDetailSchema = new mongoose.Schema({
     contests:[{
         type: Schema.Types.ObjectId,
         ref: 'user-personal-detail'
-    }]
+    }],
+    isAlgoTrader:{
+        type: Boolean,
+        default: false
+    },
+
 })
 
 //Adding the ninepointer id before saving

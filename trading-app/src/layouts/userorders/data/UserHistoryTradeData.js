@@ -17,11 +17,13 @@ export default function UserTodayTradeData() {
 
   const [historydata, setHistoryData] = useState([]);
   const getDetails = useContext(userContext);
+  let url = getDetails.userDetails.isAlgoTrader ? "gethistorymocktradesparticularuser" : "gethistorymocktradesparticulartrader"
+
   console.log("getDetails", getDetails)
 
   useEffect(()=>{
 
-      axios.get(`${baseUrl}api/v1/gethistorymocktradesparticularuser/${getDetails.userDetails.email}`)
+      axios.get(`${baseUrl}api/v1/${url}/${getDetails.userDetails.email}`)
       .then((res)=>{
         //console.log(res.data)
         setHistoryData(res.data);
@@ -30,7 +32,7 @@ export default function UserTodayTradeData() {
           return new Error(err);
       })
   },[getDetails])
-
+  // gethistorymocktradesparticulartrader
   //console.log(data);
 
   let historyorders = [];

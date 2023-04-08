@@ -18,10 +18,11 @@ export default function UserTodayTradeData() {
   const [data, setData] = useState([]);
   const getDetails = useContext(userContext);
   console.log("getDetails", getDetails)
+  let url = getDetails.userDetails.isAlgoTrader ? "gettodaysmocktradesparticularuser" : "gettodaysmocktradesparticulartrader"
 
   useEffect(()=>{
 
-      axios.get(`${baseUrl}api/v1/gettodaysmocktradesparticularuser/${getDetails.userDetails.email}`)
+      axios.get(`${baseUrl}api/v1/${url}/${getDetails.userDetails.email}`)
       .then((res)=>{
         //console.log(res.data)
           setData(res.data);
@@ -30,7 +31,7 @@ export default function UserTodayTradeData() {
           return new Error(err);
       })
   },[getDetails])
-
+  // gettodaysmocktradesparticulartrader
   //console.log(data);
 
   let todaysorders = [];

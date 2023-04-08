@@ -197,6 +197,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
 
       const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
           method: "POST",
+          credentials:"include",
           headers: {
               "content-type": "application/json"
           },

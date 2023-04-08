@@ -175,6 +175,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
     const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
         method: "POST",
+        credentials:"include",
         headers: {
             "content-type": "application/json"
         },

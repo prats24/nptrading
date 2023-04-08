@@ -2,6 +2,7 @@ const axios = require("axios")
 const MockTradeDetails = require("../models/mock-trade/mockTradeCompanySchema");
 const MockTradeDetailsUser = require("../models/mock-trade/mockTradeUserSchema");
 const BrokerageDetail = require("../models/Trading Account/brokerageSchema");
+const MockTradeDetailsTrader = require("../models/mock-trade/mockTradeTraders");
 
 
 
@@ -9,16 +10,21 @@ exports.mockTrade = async (reqBody, res) => {
 
     let {exchange, symbol, buyOrSell, Quantity, Product, OrderType,
         validity, variety, createdBy, userId, uId, algoBox, order_id, instrumentToken,  
-        realBuyOrSell, realQuantity, real_instrument_token, realSymbol, trader } = reqBody 
+        realBuyOrSell, realQuantity, real_instrument_token, realSymbol, trader, isAlgoTrader } = reqBody 
 
-    const {algoName, transactionChange, instrumentChange
-      , exchangeChange, lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
+        // console.log(reqBody)
+        // let algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
+        //     productChange, tradingAccount, _id, marginDeduction, isDefault;
+        if(isAlgoTrader){
+            var {algoName, transactionChange, instrumentChange, exchangeChange, lotMultipler, 
+                productChange, tradingAccount, _id, marginDeduction, isDefault} = algoBox
+        }
 
       const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
       const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
 
 
-    if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety || !algoName || !transactionChange || !instrumentChange || !exchangeChange || !lotMultipler || !productChange || !tradingAccount){
+    if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety){
         //console.log(Boolean(exchange)); //console.log(Boolean(symbol)); //console.log(Boolean(buyOrSell)); //console.log(Boolean(Quantity)); //console.log(Boolean(Product)); //console.log(Boolean(OrderType)); //console.log(Boolean(validity)); //console.log(Boolean(variety));  //console.log(Boolean(algoName)); //console.log(Boolean(transactionChange)); //console.log(Boolean(instrumentChange)); //console.log(Boolean(exchangeChange)); //console.log(Boolean(lotMultipler)); //console.log(Boolean(productChange)); //console.log(Boolean(tradingAccount));
         return res.status(422).json({error : "please fill all the feilds..."})
     }
@@ -97,55 +103,84 @@ exports.mockTrade = async (reqBody, res) => {
         brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
     }
     
-    MockTradeDetails.findOne({order_id : order_id})
-    .then((dateExist)=>{
-        if(dateExist && dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
-            console.log("data already in mock company", checkingMultipleAlgoFlag);
-            return res.status(422).json({error : "date already exist..."})
-        }
-
-        const mockTradeDetails = new MockTradeDetails({
-            status:"COMPLETE", uId, createdBy, average_price: originalLastPriceCompany, Quantity: realQuantity, 
-            Product, buyOrSell:realBuyOrSell, order_timestamp: newTimeStamp,
-            variety, validity, exchange, order_type: OrderType, symbol: realSymbol, placed_by: "ninepointer", userId,
-                algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
-            lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, brokerage: brokerageCompany,
-            tradeBy: createdBy,trader : trader, isRealTrade: false, amount: (Number(realQuantity)*originalLastPriceCompany), trade_time:trade_time,
+    if(isAlgoTrader){
+        MockTradeDetails.findOne({order_id : order_id})
+        .then((dateExist)=>{
+            if(dateExist && dateExist.order_timestamp !== newTimeStamp && checkingMultipleAlgoFlag === 1){
+                console.log("data already in mock company", checkingMultipleAlgoFlag);
+                return res.status(422).json({error : "date already exist..."})
+            }
+    
+            const mockTradeDetails = new MockTradeDetails({
+                status:"COMPLETE", uId, createdBy, average_price: originalLastPriceCompany, Quantity: realQuantity, 
+                Product, buyOrSell:realBuyOrSell, order_timestamp: newTimeStamp,
+                variety, validity, exchange, order_type: OrderType, symbol: realSymbol, placed_by: "ninepointer", userId,
+                    algoBox:{algoName, transactionChange, instrumentChange, exchangeChange, 
+                lotMultipler, productChange, tradingAccount, _id, marginDeduction, isDefault}, order_id, instrumentToken: real_instrument_token, brokerage: brokerageCompany,
+                tradeBy: createdBy,trader : trader, isRealTrade: false, amount: (Number(realQuantity)*originalLastPriceCompany), trade_time:trade_time,
+                
+            });
+    
+            console.log("mockTradeDetails comapny", mockTradeDetails);
+            mockTradeDetails.save().then(()=>{
+                
+            }).catch(err => {console.log(err, "fail")});
             
-        });
-
-        // console.log("mockTradeDetails comapny", mockTradeDetails);
-        mockTradeDetails.save().then(()=>{
+        }).catch(err => {console.log(err, "fail")});
+    
+        MockTradeDetailsUser.findOne({order_id : order_id})
+        .then((dateExist)=>{
+            if(dateExist){
+                //console.log("data already");
+                return res.status(422).json({error : "date already exist..."})
+            }
+    
+            const mockTradeDetailsUser = new MockTradeDetailsUser({
+                status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
+                variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
+                isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
+                tradeBy: createdBy,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                
+            });
+    
+            console.log("mockTradeDetails", mockTradeDetailsUser);
+            mockTradeDetailsUser.save().then(()=>{
+                console.log("sending response");
+                res.status(201).json({status: 'Complete', message: 'COMPLETE'});
+            }).catch((err)=> {
+                console.log("in err", err)
+                // res.status(500).json({error:"Failed to enter data"})
+            });
             
-        }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-        
-    }).catch(err => {console.log(err, "fail")});
-
-    MockTradeDetailsUser.findOne({order_id : order_id})
-    .then((dateExist)=>{
-        if(dateExist){
-            //console.log("data already");
-            return res.status(422).json({error : "date already exist..."})
-        }
-
-        const mockTradeDetailsUser = new MockTradeDetailsUser({
-            status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
-            variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
-            isRealTrade: false, order_id, instrumentToken, brokerage: brokerageUser, 
-            tradeBy: createdBy,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+    
+        }).catch(err => {console.log("fail", err)});    
+    } else{
+        MockTradeDetailsTrader.findOne({order_id : order_id})
+        .then((dateExist)=>{
+            if(dateExist){
+                //console.log("data already");
+                return res.status(422).json({error : "date already exist..."})
+            }
+    
+            const mockTradeDetailsUser = new MockTradeDetailsTrader({
+                status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
+                variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
+                order_id, instrumentToken, brokerage: brokerageUser, 
+                tradeBy: createdBy,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+                
+            });
+    
+            //console.log("mockTradeDetails", mockTradeDetailsUser);
+            mockTradeDetailsUser.save().then(()=>{
+                console.log("sending response");
+                res.status(201).json({status: 'Complete', message: 'COMPLETE'});
+            }).catch((err)=> {
+                console.log("in err", err)
+                // res.status(500).json({error:"Failed to enter data"})
+            });
             
-        });
-
-        //console.log("mockTradeDetails", mockTradeDetailsUser);
-        mockTradeDetailsUser.save().then(()=>{
-            console.log("sending response");
-            res.status(201).json({status: 'Complete', message: 'COMPLETE'});
-        }).catch((err)=> {
-            console.log("in err", err)
-            // res.status(500).json({error:"Failed to enter data"})
-        });
-        
-
-    }).catch(err => {console.log("fail")});
+    
+        }).catch(err => {console.log("fail")});  
+    }
 
 }

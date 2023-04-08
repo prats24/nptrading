@@ -43,6 +43,9 @@ import axios from "axios";
 
 function UserReport() {
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const getDetails = useContext(userContext);
+
+  let url = getDetails.userDetails.isAlgoTrader ? "getuserreportdatewise" : "gettraderreportdatewise"
 
   const { columns, rows } = UserReportData();
   const { columns: pColumns, rows: pRows } = UserReportProject();
@@ -51,7 +54,6 @@ function UserReport() {
   let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
   const [firstDate, setFirstDate] = useState(valueInDate);
   const [secondDate, setSecondDate] = useState(valueInDate);
-  const getDetails = useContext(userContext);
   let [totalPnl, setPnl] = useState(0);
   let [totalTransactionCost, setCost] = useState(0);
   let [totalTrade, setTrade] = useState(0);
@@ -100,8 +102,10 @@ function UserReport() {
     //console.log(e.target.value);
   }
 
+  // gettraderreportdatewise
+
   function pnlCalculation(firstDate, secondDate){
-    axios.get(`${baseUrl}api/v1/getuserreportdatewise/${getDetails.userDetails.email}/${firstDate}/${secondDate}`)
+    axios.get(`${baseUrl}api/v1/${url}/${getDetails.userDetails.email}/${firstDate}/${secondDate}`)
     .then((res) => {
       let data = res.data;
       let hash = new Map();

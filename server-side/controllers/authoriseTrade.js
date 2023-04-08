@@ -1,6 +1,7 @@
 const HistoryInstrumentData = require("../models/InstrumentHistoricalData/InstrumentHistoricalData");
 const DailyPnlData = require("../models/InstrumentHistoricalData/DailyPnlDataSchema");
-const MockTradeData = require("../models/mock-trade/mockTradeUserSchema");
+const MockTradeDataUser = require("../models/mock-trade/mockTradeUserSchema");
+const MockTradeTrader = require("../models/mock-trade/mockTradeTraders");
 const UserDetail = require("../models/User/userDetailSchema");
 const MarginAllocation = require('../models/marginAllocation/marginAllocationSchema');
 const axios = require("axios");
@@ -14,7 +15,7 @@ exports.fundCheck = async(req, res, next) => {
     const {exchange, symbol, buyOrSell, variety,
            Product, OrderType, Quantity, userId} = req.body;
     
-
+    const MockTrade = req.user.isAlgoTrader ? MockTradeDataUser : MockTradeTrader;
     ////console.log("margin req", req.body)
 
     getKiteCred.getAccess().then(async (data)=>{
@@ -55,7 +56,7 @@ exports.fundCheck = async(req, res, next) => {
             let runningLots;
             try{
 
-                runningLots = await MockTradeData.aggregate([
+                runningLots = await MockTrade.aggregate([
                     {
                     $match:
                         {
@@ -93,6 +94,8 @@ exports.fundCheck = async(req, res, next) => {
             if(transactionTypeRunningLot !== buyOrSell){
                 isOpposite = true;
             }
+
+            console.log(runningLots, userFunds)
             if(((runningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
                 //console.log("checking runninglot- reverse trade");
                 return next();
@@ -116,7 +119,7 @@ exports.fundCheck = async(req, res, next) => {
 
             //TODO: get user pnl data and replace 0 with the value 
 
-            let pnlDetails = await MockTradeData.aggregate([
+            let pnlDetails = await MockTrade.aggregate([
                 {
                 $match:
                     {
@@ -154,7 +157,6 @@ exports.fundCheck = async(req, res, next) => {
             ])
 
 
-
             let userNetPnl = pnlDetails[0]?.npnl;
             console.log( userFunds , userNetPnl , zerodhaMargin)
             console.log((userFunds + userNetPnl - zerodhaMargin))
@@ -163,10 +165,33 @@ exports.fundCheck = async(req, res, next) => {
                 // //console.log("in if")
                 // return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
             if(Number(userFunds + userNetPnl) >= 0 && ((runningLots[0]?._id?.symbol === symbol) && Math.abs(Number(Quantity)) <= Math.abs(runningLots[0]?.runningLots) && (transactionTypeRunningLot !== buyOrSell))){
-                //console.log("user wants square off")
+                console.log("user wants square off")
                 return next();
             } else{
-                if(Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
+                console.log("in else")
+                if(userNetPnl !== undefined && Number(userFunds + userNetPnl - zerodhaMargin)  < 0){
+                    let uid = uuidv4();
+                    let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
+                        TriggerPrice, validity, variety, createdBy,
+                            createdOn, uId, algoBox, instrumentToken, realTrade, realBuyOrSell, realQuantity, apiKey, 
+                            accessToken, userId, checkingMultipleAlgoFlag, real_instrument_token, realSymbol, trader} = req.body;
+
+                    let dateNow = new Date().toISOString().split('T').join(' ').split('.')[0];    
+                    
+                    try{
+                        const marginCall = new MarginCall({status: 'MARGIN CALL', uId: uid, createdBy: createdBy, average_price: zerodhaMargin/Quantity, Quantity: Quantity, Product:Product,
+                            buyOrSell: buyOrSell, order_timestamp: dateNow, validity: validity, exchange: exchange, order_type: OrderType, variety: variety,
+                        symbol: symbol, instrumentToken: instrumentToken, tradeBy: createdBy, marginCallFor: trader, amount: Number(Quantity)*Number(Price), trade_time: dateNow, lastModifiedBy: userId});
+    
+                        console.log("margincall saving")
+                        await marginCall.save();
+                    }catch(e){
+                        console.log("error saving margin call", e);
+                    }
+
+                    //console.log("sending response from authorise trade");
+                    return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
+                } else if(Number(userFunds - zerodhaMargin) < 0){
                     let uid = uuidv4();
                     let {exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType,
                         TriggerPrice, validity, variety, createdBy,
@@ -190,7 +215,7 @@ exports.fundCheck = async(req, res, next) => {
                     return res.status(401).json({status: 'Failed', message: 'You dont have sufficient funds to take this trade. Please try with smaller lot size.'});
                 }
                 else{
-                    //console.log("if user have enough funds")
+                    console.log("if user have enough funds")
                     return next();
                 }
             }     

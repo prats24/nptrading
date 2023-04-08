@@ -25,6 +25,7 @@ import ExitPosition from './ExitPosition';
 import Buy from "../components/InstrumentDetails/data/BuyModel";
 import Sell from "../components/InstrumentDetails/data/SellModel"
 import OverallRow from './OverallRow';
+import { marketDataContext } from '../../../MarketDataContext';
 // import Button from '@mui/material/Button';
 
 function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
@@ -46,16 +47,13 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
     padding: "5px",  
     fontWeight: "600",
   }
-  let bottomRow = {
-    height: "10px",
-    [`@media only screen and (min-width: 546px)`]: {
-      height: "50px"
-    }
-  }
+
   
   const { updateNetPnl } = useContext(NetPnlContext);
-
+  const marketDetails = useContext(marketDataContext)
   const getDetails = useContext(userContext);
+  let url = getDetails.userDetails.isAlgoTrader ? "getoverallpnlmocktradeparticularusertoday" : "getoverallpnlmocktradeparticulartradertoday"
+
   // const { reRender, setReRender } = Render
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   // const [liveDetail, setLiveDetail] = useState([]);
@@ -73,6 +71,38 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
   let totalRunningLots = 0;
   let rows = [];
 
+    // useEffect(()=>{
+
+    //   let abortController;
+    //   (async () => {
+    //        abortController = new AbortController();
+    //        let signal = abortController.signal;    
+
+    //        // the signal is passed into the request(s) we want to abort using this controller
+    //        const { data } = await axios.get(
+    //         `${baseUrl}api/v1/getliveprice`,
+    //            { signal: signal }
+    //        );
+    //        setMarketData(data);
+    //   })();
+
+
+    //   socket.on("tick-room", (data) => {
+    //     console.log("tick data in overallpnl", data)
+    //     setMarketData(prevInstruments => {
+    //       const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+    //       data.forEach(instrument => {
+    //         instrumentMap.set(instrument.instrument_token, instrument);
+    //       });
+    //       return Array.from(instrumentMap.values());
+    //     });
+    //   })
+
+    //   return () => abortController.abort();
+    // }, [])
+
+    console.log("marketdata", marketDetails?.marketData)
+
     useEffect(()=>{
 
       let abortController;
@@ -82,59 +112,29 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
 
            // the signal is passed into the request(s) we want to abort using this controller
            const { data } = await axios.get(
-            `${baseUrl}api/v1/getliveprice`,
-               { signal: signal }
-           );
-           setMarketData(data);
-      })();
-
-
-      socket.on("tick-room", (data) => {
-        console.log("tick data in overallpnl", data)
-        setMarketData(prevInstruments => {
-          const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-          data.forEach(instrument => {
-            instrumentMap.set(instrument.instrument_token, instrument);
-          });
-          return Array.from(instrumentMap.values());
-        });
-      })
-
-      return () => abortController.abort();
-    }, [])
-
-    useEffect(()=>{
-
-      let abortController;
-      (async () => {
-           abortController = new AbortController();
-           let signal = abortController.signal;    
-
-           // the signal is passed into the request(s) we want to abort using this controller
-           const { data } = await axios.get(
-            `${baseUrl}api/v1/getoverallpnlmocktradeparticularusertoday/${getDetails.userDetails.email}`,
+            `${baseUrl}api/v1/${url}/${getDetails?.userDetails?.email}`,
               { signal: signal }
            );
-
+          //  getoverallpnlmocktradeparticulartradertoday
            setTradeData(data);
 
       })();
 
       // reRender ? setRender(false) : setRender(true);
       return () => abortController.abort();
-    }, [marketData, reRender])
+    }, [marketDetails.marketData, reRender])
 
-    useEffect(() => {
-      return () => {
-          socket.emit('removeKey', socket.id);
-          socket.close();
-      }
-    }, [])
+    // useEffect(() => {
+    //   return () => {
+    //       socket.emit('removeKey', socket.id);
+    //       socket.close();
+    //   }
+    // }, [])
 
 
     tradeData.map((subelem, index)=>{
       let obj = {};
-      let liveDetail = marketData.filter((elem)=>{
+      let liveDetail = marketDetails.marketData.filter((elem)=>{
         console.log("elem", elem, subelem)
         return subelem._id.instrumentToken == elem.instrument_token;
       })

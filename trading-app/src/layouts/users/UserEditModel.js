@@ -57,6 +57,7 @@ const [status, setStatus] = useState();
 const [degree, setDegree] = useState();
 const [pass, setPass] = useState();
 const [employeeid, setemployeeId] = useState();
+const [isAlgoTrader, setIsAlgoTrader] = useState();
 
     useEffect(()=>{
 
@@ -96,6 +97,7 @@ const [employeeid, setemployeeId] = useState();
         setRole(editData[0].role);
         setStatus(editData[0].status);
         setemployeeId(editData[0].employeeid)
+        setIsAlgoTrader(editData[0].isAlgoTrader)
 
     }, [editData, reRender])
 
@@ -117,7 +119,8 @@ const [employeeid, setemployeeId] = useState();
       Role:"",
       userPassword:"",
       Status:"",
-      employeeId: ""
+      employeeId: "",
+      isalgoTrader: ""
     });
 
 //console.log(formstate);
@@ -141,11 +144,12 @@ async function formbtn() {
     formstate.Status = status;
     formstate.userPassword = pass;
     formstate.employeeId = employeeid;
+    formstate.isalgoTrader = isAlgoTrader;
 
     setformstate(formstate);
 
 
-    const { Name,Cohort, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, userPassword, employeeId } = formstate;
+    const { Name,Cohort, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, userPassword, employeeId, isalgoTrader } = formstate;
 
     const res = await fetch(`${baseUrl}api/v1/readuserdetails/${id}`, {
         method: "PUT",
@@ -154,7 +158,7 @@ async function formbtn() {
             "content-type": "application/json"
         },
         body: JSON.stringify({
-            Name,Cohort, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, lastModified, userPassword, employeeId
+            Name,Cohort, Designation, Degree, EmailID, MobileNo, DOB, Gender, TradingExp, Location, LastOccupation, DateofJoining, Role, Status, lastModified, userPassword, employeeId, isalgoTrader
         })
     });
 
@@ -286,7 +290,20 @@ async function Ondelete(){
               id="outlined-basic" label="Employee Id" variant="standard" value={employeeid} 
               sx={{ margin: 1, padding: 1, width: "300px" }} onChange={(e)=>{setemployeeId( e.target.value)}}/>
 
-
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Is Algo Trader</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                label="Is Algo Trader"
+                sx={{ margin: 1, padding: 1, width: "300px" }}
+                onChange={(e)=>{setIsAlgoTrader( e.target.value)}}
+                value={isAlgoTrader} 
+              >
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </Select>
+            </FormControl>
 
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

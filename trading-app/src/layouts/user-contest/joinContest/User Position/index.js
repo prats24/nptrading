@@ -91,9 +91,9 @@ function UserPosition() {
 
   return (
     // <DashboardLayout>
-    //   <DashboardNavbar />
-    <MDTypography display="flex" justifyContent="space-between" sx={{mt: "40px"}} >
-      <MDTypography py={0} width="100%" flex={0.8}>
+    //   <DashboardNavbar />  sx={{mt: "40px"}}
+    <MDTypography display='flex'  >
+      <MDTypography >
 
         {/* <StockIndex /> */}
         {/* <StockIndex socket={socket}/> */}
@@ -112,23 +112,8 @@ function UserPosition() {
           </Grid>
         </MDBox>
 
-        <MDBox mt={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              {memoizedOverallPnl}
-             {/* <OverallGrid socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked}/> */}
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox mt={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              {/* <MarginGrid/> */}
-            </Grid>
-          </Grid>
-        </MDBox>
       </MDTypography>
-      <MDTypography flex={0.3}>
+      <MDTypography >
           
           <RankTable/>
       </MDTypography>
@@ -139,7 +124,8 @@ function UserPosition() {
 
 export default UserPosition;
 
-
+// py={0}
+// width="100%"
 
 
 

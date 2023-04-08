@@ -1,15 +1,15 @@
 
 import React from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 // @mui material components
-import { Chart } from 'chart.js/auto';
-// Chart.register(...registerables);
-import Grid from "@mui/material/Grid";
+// import { Chart } from 'chart.js/auto';
+// // Chart.register(...registerables);
+// import Grid from "@mui/material/Grid";
 
-// Material Dashboard 2 React components
-import MDBox from "../../components/MDBox";
+// // Material Dashboard 2 React components
+// import MDBox from "../../components/MDBox";
 
 
 
@@ -17,6 +17,7 @@ import MDBox from "../../components/MDBox";
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
+import Header from "./Header";
 
 // Data
 
@@ -24,12 +25,12 @@ import Footer from "../../examples/Footer";
 
 // Dashboard components
 
-import OverallTraderPnl from "./components/overallTraderPnl";
-import TraderwiseTraderPnl from "./components/TraderwiseTraderPNL";
+// import OverallTraderPnl from "./components/overallTraderPnl";
+// import TraderwiseTraderPnl from "./components/TraderwiseTraderPNL";
 
 function TraderPosition() {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  // let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
   let socket;
   try{
@@ -38,12 +39,6 @@ function TraderPosition() {
       throw new Error(err);
   }
 
-    const [todaymockcount, setTodayMockCount] = useState([]);
-    const [allmockcount, setAllMockCount] = useState([]);
-    const [todaylivecount, setTodayLiveCount] = useState([]);
-    const [alllivecount, setAllLiveCount] = useState([]);
-
-    const [userPermission, setUserPermission] = useState([]);
    
     useEffect(()=>{
 
@@ -67,21 +62,8 @@ function TraderPosition() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
-      <MDBox mt={1}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              {/* <MismatchDetails socket={socket}/> */}
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox mt={1}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              {/* <InstrumentDetails socket={socket}/> */}
-            </Grid>
-          </Grid>
-        </MDBox>
+      {/* <MDBox py={3}>
+
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
@@ -89,13 +71,7 @@ function TraderPosition() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox mt={2}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              {/* <LiveOverallCompanyPNL socket={socket} /> */}
-            </Grid>
-          </Grid>
-        </MDBox>
+
         <MDBox mt={2}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
@@ -103,14 +79,8 @@ function TraderPosition() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox mt={2}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={12}>
-              {/* <LiveTraderwiseCompanyPNL users={userPermission} handleSwitchChange={handleSwitchChange} socket={socket} /> */}
-            </Grid>
-          </Grid>
-        </MDBox>
-      </MDBox>
+      </MDBox> */}
+      <Header />
       <Footer />
     </DashboardLayout>
   );
