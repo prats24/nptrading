@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from 'react';
+import {useState,useRef} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -24,24 +24,40 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal() {
-  const [invited,setInvited] = useState(false)
+export default function BasicModal({invited,setInvited,referralCode,referralProgramId}) {
+  // const [invited,setInvited] = useState(false)
+  console.log(invited,referralCode,referralProgramId)
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {setOpen(false);setInvited(false)};
-  const [formData,setFormData] = useState({name:'',email:'',mobile:''});
+  const [formData,setFormData] = useState({name:'',email:'',mobile:'',referralProgram:''});
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  async function onInvite(e) {
-   
-    setFormData(formData);
-    console.log("Form Data: ",formData)
+  const [copied, setCopied] = useState(false);
 
+  const handleCopy = () => {
+    const copyText = document.getElementById("content");
+    const range = document.createRange();
+    range.selectNode(copyText);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand("copy");
+    setCopied(true);
+  };
+
+  async function onInvite() {
+    
     const { 
       name,  
       email, 
       mobile, 
+      referralProgram,
     } = formData;
+    formData.referralProgram = referralProgramId
+    setFormData(formData);
+    console.log("Form Data: ",formData)
+
+
 
     const res = await fetch(`${baseUrl}api/v1/invite`, {
       
@@ -55,6 +71,7 @@ export default function BasicModal() {
           name:name, 
           email:email, 
           mobile:mobile, 
+          referralProgram:referralProgramId,
         })
     });
 
@@ -155,7 +172,7 @@ export default function BasicModal() {
                         <Typography fontSize={13} fontWeight={700}>Hurry up to refer only 5 days 3 hrs 20 mins left</Typography>
                     </Grid>
                     <Grid item xs={12} md={12} lg={12} pb={1.5} display="flex" justifyContent="center" alignItems="center">
-                        <Typography fontSize={13} fontWeight={700}>Your referral Code : ABCDEF</Typography>
+                        <Typography fontSize={13} fontWeight={700}>Your referral Code : {referralCode}</Typography>
                     </Grid>
                 </Grid>
                 
@@ -197,7 +214,7 @@ export default function BasicModal() {
                       />
                   </Grid>
                   <Grid item xs={12} md={12} xl={12} mt={2} display="flex" justifyContent="center">
-                    <MDButton variant="contained" color="dark" size="small" onClick={onInvite}>Invite</MDButton>
+                    <MDButton variant="contained" color="dark" size="small" onClick={onInvite}>Generate Referral Link</MDButton>
                   </Grid>
             </Grid>
             </Box>
@@ -206,10 +223,37 @@ export default function BasicModal() {
 
             <Box>
                 <Box display="flex" justifyContent="center" flexDirection="column" p={1}>
-                    <Typography fontSize={14} p={1}>Thanks for inviting {formData.name} to StoxHero. He will recieve an email with your referral code. Please ask him to signup using your referral code.</Typography>
+                    <Typography fontSize={14} p={1}>Thanks for inviting {formData.name} to StoxHero.</Typography>
+
+                    <Typography fontSize={14} p={1}>
+                    <Box id="content" style={{backgroundColor:"grey"}} p={2}>
+                      <Typography fontSize={8}>Hey,</Typography>                      
+
+                      <Typography fontSize={8}>*AB INDIA SIKHEGA OPTIONS TRADING AUR BANEGA ATMANIRBHAR*</Typography>
+
+                      <Typography fontSize={8}>Join me at StoxHero - India's First Options Trading and Investment Platform 🤝</Typography>                             
+
+                      <Typography fontSize={8}>👉 Get 10,00,000 virtual currency in your account to start option trading using my referral code.</Typography>                             
+
+                      <Typography fontSize={8}>👉 Join the community of ace traders and learn real-time options trading.</Typography>
+
+                      <Typography fontSize={8}>👉 Participate in free options trading contests to sharpen your trading skills.</Typography>                        
+
+                      <Typography fontSize={8}>📲 Visit https://www.stoxhero.com/signup</Typography>                           
+
+                      <Typography fontSize={8}>Use my below invitation code 👇 and get INR ₹10,00,000 in your wallet and start trading.</Typography>                             
+
+                      <Typography fontSize={8}>My Referral Code to join the StoxHero: 8APOD7E3</Typography>
+                    </Box> 
+                    </Typography>
+
+                    <Box display="flex" justifyContent="center">
+                      <MDButton variant="outlined"  color="dark" size="small" onClick={()=>{handleCopy()}}>Copy & Share</MDButton>
+                    </Box>
+
                     <Box display="flex" justifyContent="space-between" mt={3}>
-                    <MDButton variant="contained" color="dark" size="small" onClick={()=>{setInvited(false)}}>Invite Another Friend</MDButton>
-                    <MDButton variant="contained" color="dark" size="small" onClick={()=>{handleClose()}}>Close</MDButton>
+                      <MDButton variant="contained" color="dark" size="small" onClick={()=>{setInvited(false)}}>Invite Another Friend</MDButton>
+                      <MDButton variant="contained" color="dark" size="small" onClick={handleClose}>Close</MDButton>
                     </Box>
                 </Box>
             </Box>

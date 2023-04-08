@@ -22,6 +22,8 @@ import breakpoints from "../../../assets/theme/base/breakpoints";
 import backgroundImage from "../../../assets/images/trading.jpg";
 import InstrumentActiveTable from "../InstrumentActiveTable";
 import InstrumentInactiveTable from "../InstrumentInactiveTable";
+import ContestInstrumentActiveTable from "../contest-Instrument/ContestInstrumentActiveTable";
+
 import StockIndexTable from "../stockIndexTable"
 
 
@@ -109,6 +111,13 @@ function Header({ children }) {
                     
                   }
                 />
+                <Tab
+                  label="Contest Instrument"
+                  icon={
+                    <CandlestickChartIcon fontSize="small" sx={{ mt: -0.25 }}/>
+                    
+                  }
+                />
                 
                 
               </Tabs>
@@ -116,7 +125,8 @@ function Header({ children }) {
             <TabPanel value={tabValue} index={0}><InstrumentActiveTable/> </TabPanel>
             <TabPanel value={tabValue} index={1}><InstrumentInactiveTable/> </TabPanel>
             <TabPanel value={tabValue} index={2}><StockIndexTable/> </TabPanel>
-            {/* <TabPaneltwo/> */}
+            <TabPanel value={tabValue} index={3}><ContestInstrumentActiveTable /> </TabPanel>
+            {/* <TabPaneltwo/>  ContestInstrumentInactiveTable */}
           </Grid>
         </Grid>
         </Card>

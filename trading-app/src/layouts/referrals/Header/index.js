@@ -114,13 +114,15 @@ function ReferralHeader({ children }) {
                                 {getDetails?.userDetails?.myReferralCode}
                             </MDTypography>  
                             <a 
-                            href={`https://web.whatsapp.com/send?text=Hey,
-                            %0A%0AJoin me at ninepointer - India's First Social Options Trading Investment Platform 🤝
-                            %0A%0A👉 Pick the right contract in your portfolio and win real money awards 🤑
-                            %0A%0A👉 Join the community of ace traders 👫
-                            %0A%0A📲 Visit https://www.ninepointer.in
-                            %0A%0AUse my below invitation code 👇 and get INR ₹1,00,000 in your wallet snd start trading
-                            %0A%0A*${getDetails.userDetails.myReferralCode}*`}
+                            href={`https://api.whatsapp.com/send?text=Hey,
+                            %0A%0A*AB INDIA SIKHEGA OPTIONS TRADING AUR BANEGA ATMANIRBHAR*
+                            %0A%0AJoin me at StoxHero - India's First Options Trading and Investment Platform 🤝 
+                            %0A%0A👉 Get 10,00,000 virtual currency in your account to start option trading using my referral code.
+                            %0A%0A👉 Join the community of ace traders and learn real-time options trading.
+                            %0A%0A👉 Participate in free options trading contests to sharpen your trading skills.
+                            %0A%0A📲 Visit https://www.stoxhero.com/signup
+                            %0A%0AUse my below invitation code 👇 and get INR ₹10,00,000 in your wallet and start trading.
+                            %0A%0AMy Referral Code to join the StoxHero: *${getDetails.userDetails.myReferralCode}*`}
                             target="_blank">
                             <MDTypography variant="contained" display="flex" justifyContent="center" style={{fontSize:"12px",lineHeight:1}}>
                                 Click to Share on &nbsp;<IoLogoWhatsapp color="green" lineHeight={1} />

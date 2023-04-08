@@ -1389,8 +1389,8 @@ router.get("/batchwisepnl", async(req, res)=>{
   res.status(201).json(batchwisepnl);
 })
 
-router.get("/gettraderpnlformargin/:email/", async(req, res)=>{
-  const {email} = req.params;
+router.get("/gettraderpnlformargin/:id/", async(req, res)=>{
+  const {id} = req.params;
   let date = new Date();
   let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
      
@@ -1402,7 +1402,7 @@ router.get("/gettraderpnlformargin/:email/", async(req, res)=>{
           trade_time: {
             $lt: `${todayDate} 00:00:00`,
           },
-          userId: email,
+          _id: id,
           status: "COMPLETE",
         },
     },
@@ -1490,14 +1490,14 @@ router.get("/gettraderpnlformarginAll", async(req, res)=>{
 
 })
 
-router.get("/gettraderpnlforavailablemargin/:email/", async(req, res)=>{
-  const {email} = req.params;  
+router.get("/gettraderpnlforavailablemargin/:id/", async(req, res)=>{
+  const {id} = req.params;  
   
   let pnlDetails = await MockTradeDetails.aggregate([
     {
       $match:
         {
-          userId: email,
+          _id: id,
           status: "COMPLETE",
         },
     },
@@ -1534,8 +1534,8 @@ router.get("/gettraderpnlforavailablemargin/:email/", async(req, res)=>{
 
 })
 
-router.get("/gettraderpnlforusedmargin/:email/", async(req, res)=>{
-  const {email} = req.params; 
+router.get("/gettraderpnlforusedmargin/:id/", async(req, res)=>{
+  const {id} = req.params; 
   let date = new Date();
   let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}` 
   
@@ -1544,7 +1544,7 @@ router.get("/gettraderpnlforusedmargin/:email/", async(req, res)=>{
       $match:
         {
           trade_time: { $regex: todayDate},
-          userId: email,
+          _id: id,
           status: "COMPLETE",
         },
     },

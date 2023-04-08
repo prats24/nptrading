@@ -36,10 +36,11 @@ function Billing() {
   const [availableMarginPNL, setAvailableMarginPNL] = useState([]);
   const { columns, rows } = TransactionData();
   const getDetails = useContext(userContext);
+  const id = getDetails?.userDetails?._id
 
   useEffect(()=>{
       console.log(getDetails.userDetails.email)
-      axios.get(`${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`)
+      axios.get(`${baseUrl}api/v1/getUserMarginDetails/${id}`)
         .then((res)=>{
                 console.log(res.data);
                 setMarginDetails(res.data);
@@ -48,7 +49,7 @@ function Billing() {
             return new Error(err);
         })
 
-        axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`)
+        axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${id}`)
         .then((res)=>{
                 console.log(res.data);
                 setLifetimePNL(res.data);
@@ -57,7 +58,7 @@ function Billing() {
             return new Error(err);
         })
         
-        axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`)
+        axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${id}`)
         .then((res)=>{
                 console.log(res.data);
                 setAvailableMarginPNL(res.data);
@@ -92,14 +93,10 @@ function Billing() {
           <Grid container spacing={3}>
             <Grid item xs={16} lg={12}>
               <Grid container spacing={3}>
-                {/* <Grid item xs={12} xl={6}>
-                  <MasterCard number={4562112245947852} holder="jack peterson" expires="11/22" />
-                </Grid> */}
                 <Grid item xs={16} md={6} xl={3}>
                   <DefaultInfoCard
                     icon={<AvailableIcon/>}
                     title="total credit"
-                    //description="Belong Interactive"
                     value={totalCreditString}
                   />
                 </Grid>
