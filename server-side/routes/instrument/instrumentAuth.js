@@ -64,16 +64,25 @@ router.get("/contestInstrument", (req, res)=>{
     }).sort({$natural:-1})
 })
 
-router.get("/contestInstrument/:id", (req, res)=>{
-    const {id} = body.req.params;
-    ContestInstrument.find({"$contest.contestId": id, status: "Active"}, (err, data)=>{
-        if(err){
-            return res.status(500).send(err);
-        }else{
-            return res.status(200).send(data);
-        }
-    }).sort({$natural:-1})
-})
+router.get("/contestInstrument/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await ContestInstrument.find(
+        { "contest.contestId": id, status: "Active" }
+      )
+        .sort({ date: -1 })
+        .exec();
+  
+      if (data.length === 0) {
+        return res.status(404).send("No data found");
+      }
+  
+      return res.status(200).send(data);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("Internal server error");
+    }
+  });
 
 router.get("/readInstrumentDetails", (req, res)=>{
     Instrument.find((err, data)=>{

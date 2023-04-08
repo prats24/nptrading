@@ -104,7 +104,8 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
   const [instrumentData, setInstrumentData] = useState([]);
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/instrumentDetails`,{
+    console.log("contestId", contestId)
+    axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
       withCredentials: true,
       headers: {
           Accept: "application/json",
