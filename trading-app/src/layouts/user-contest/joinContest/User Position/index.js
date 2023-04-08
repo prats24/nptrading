@@ -81,9 +81,16 @@ function UserPosition({contestId}) {
 
   return (
     <MDTypography  display='flex' justifyContent='space-between' gap="5px" >
-      <MDTypography py={0} flex="70%">
+      <MDTypography flex="70%">
 
-        {memoizedStockIndex}
+        <MDBox mt={0}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+            {memoizedStockIndex}
+            </Grid>
+          </Grid>
+        </MDBox>
+        
 
         <MDBox mt={0}>
           <Grid container spacing={3}>

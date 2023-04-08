@@ -12,7 +12,7 @@ import StockIcon from '../../assets/images/contest.gif'
 import MDAvatar from "../../components/MDAvatar";
 import { HiUserGroup } from 'react-icons/hi';
 import Timer from './timer'
-import JoinContest from './joinContest/joinContest';
+// import JoinContest from './joinContest/joinContest';
 
 
 
@@ -178,7 +178,7 @@ const ContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIsOb
       </>
       :
       <>
-      <JoinContest id={objectId} setContestDetailsForm={setContestDetailsForm}/>
+      {/* <JoinContest id={objectId} setContestDetailsForm={setContestDetailsForm}/> */}
       </>
       }
       </>

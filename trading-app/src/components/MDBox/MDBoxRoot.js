@@ -80,9 +80,9 @@ export default styled(Box)(({ theme, ownerState }) => {
   let backgroundValue = bgColor;
 
   if (variant === "gradient") {
-    backgroundValue = validGradients.find((el) => el === bgColor)
-      ? linearGradient(gradients[bgColor].main, gradients[bgColor].state)
-      : white.main;
+    // backgroundValue = validGradients.find((el) => el === bgColor)
+    //   ? linearGradient(gradients[bgColor].main, gradients[bgColor].state)
+    //   : white.main;
   } else if (validColors.find((el) => el === bgColor)) {
     backgroundValue = palette[bgColor] ? palette[bgColor].main : greyColors[bgColor];
   } else {
