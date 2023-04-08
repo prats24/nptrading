@@ -23,11 +23,12 @@ function Transactions() {
   const [marginDetails, setMarginDetails] = useState([]);
   const { columns, rows } = TransactionData();
   const getDetails = useContext(userContext);
+  const id = getDetails?.userDetails?._id
 
 
   useEffect(()=>{
-      console.log(getDetails.userDetails.email)
-      axios.get(`${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`)
+      console.log(getDetails?.userDetails?._id)
+      axios.get(`${baseUrl}api/v1/getUserMarginDetails/${id}`)
         .then((res)=>{
                 console.log(res.data);
                 setMarginDetails(res.data);
@@ -37,50 +38,47 @@ function Transactions() {
         })
   },[])
 
+  function dateConvert(dateToConvert){
+    if(dateToConvert){
+    const date = new Date(dateToConvert);
+    const formattedDate = date.toLocaleString('en-US', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true
+    });
+    return formattedDate;
+    }}
+
+  console.log("Margin Details: ",marginDetails)
+
   let totalCredit = 0;
-  marginDetails.map((elem)=>{
+  marginDetails?.map((elem)=>{
     totalCredit =+ totalCredit + elem.amount
   })
 
-  marginDetails.map((elem)=>{
+  marginDetails?.map((elem)=>{
     let obj = {};
     let amountstring = elem.amount > 0 ? "+₹" + (elem.amount).toLocaleString() : "-₹" + (-(elem.amount)).toLocaleString()
     let color = elem.amount > 0 ? "success" : "error"
     
     
-    var dateString = elem.createdOn;
-    var dateParts = dateString.split(" ");
-
-    var date = dateParts[0].split("-");
-    var time = dateParts[1].split(":");
-
-    date = new Date(date[2], parseInt(date[1]) - 1, date[0], time[0], time[1], time[2]);
-
-    let day = date.getDate();
-    const dayOfWeek = date.getDay();
-    const weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][dayOfWeek];
-    const month = date.getMonth();
-    const monthname = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul','Aug','Sep','Oct','Nov','Dec'][month];
-    const year = date.getFullYear();
-    const hour = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-    const variable = hour > 11 ? 'PM' : 'AM'
-    const datestring = day + ' ' + monthname + " " + " " + year + ", " + weekday + " at " + hour +":" + minutes + ":" + seconds + " " +variable
-    
+      
     obj = (
       <Transaction
         color={color}
         icon={<CurrencyRupeeIcon/>}
         name="StoxHero"
-        description={datestring}
+        description={dateConvert(elem.createdOn)}
         value={amountstring}
         />
   );
   rows.push(obj);
   })
 
-  console.log(rows[1])
+  console.log(rows)
 
   return (
     <Card sx={{ height: "100%" }}>

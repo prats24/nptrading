@@ -3,6 +3,7 @@ const router = express.Router();
 require("../../db/conn");
 const Margin = require("../../models/marginAllocation/marginAllocationSchema");
 const UserDetail = require("../../models/User/userDetailSchema");
+const { default: mongoose } = require("mongoose");
 
 router.post("/setmargin", async (req, res)=>{
     const {traderName, amount, lastModifiedBy, uId, userId, createdBy} = req.body;
@@ -37,9 +38,9 @@ router.get("/readApiExchange", (req, res)=>{
     })
 })
 
-router.get("/getUserMarginDetails/:email", (req, res)=>{
-    const {email} = req.params
-    Margin.find({userId: {$regex: email}}).sort({creditedOn: -1})
+router.get("/getUserMarginDetails/:id", (req, res)=>{
+    const {id} = req.params
+    Margin.find({userId: mongoose.Types.ObjectId(id)}).sort({creditedOn: -1})
     .then((data)=>{
         return res.status(200).send(data);
     })
@@ -82,20 +83,25 @@ router.get("/getUserTotalCreditDetails", async(req, res)=>{
  
 })
 
-router.get("/getUserPayInDetails/:email", async(req, res)=>{
-    const {email} = req.params; 
-    let date = new Date();
-    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}` 
-
-    let pnlDetails = await Margin.aggregate([
+router.get("/getUserPayInDetails/:id", async(req, res)=>{
+    const {id} = req.params; 
+    dayStart = new Date(new Date().setHours(00, 00, 00));
+    dayEnd = new Date(new Date().setHours(23, 59, 59));
+    console.log(id,dayStart,dayEnd)
+    
+    let payIn = await Margin.aggregate([
         {
-            $match : {
-                creditedOn : {$regex : todayDate}, userId : email
-            }
+            $match: {
+                creditedOn: {
+                  $gte: dayStart,
+                  $lte: dayEnd,
+                },
+                userId: mongoose.Types.ObjectId(id)
+              }
         },
         {
           $group: {
-            _id: {userId : "$userId", traderName : "$traderName"},
+            _id: {userId : "$userId"},
             totalCredit: {
               $sum: "$amount",
             },
@@ -108,9 +114,9 @@ router.get("/getUserPayInDetails/:email", async(req, res)=>{
         }
       ])
             
-       // //console.log(pnlDetails)
+       console.log(payIn)
 
-        res.status(201).json(pnlDetails);
+        res.status(201).json(payIn);
  
 })
 

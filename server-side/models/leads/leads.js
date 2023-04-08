@@ -30,6 +30,16 @@ const leadSchema = new mongoose.Schema({
     referralCode: {
         type: String,
     },
+    referralProgram:{
+        type: Schema.Types.ObjectId,
+        ref: 'referral-program',
+    },
+    emailStatus:{
+        type: String
+    },
+    smsStatus:{
+        type: String
+    }
 });
 
 const lead = mongoose.model('lead', leadSchema);

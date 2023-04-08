@@ -20,6 +20,7 @@ const MarginGrid = () => {
   const [availableMarginPNL, setAvailableMarginPNL] = useState([]);
   const [payIn, setPayIn] = useState([]);
   const getDetails = useContext(userContext);
+  const id = getDetails?.userDetails?._id
 
 
 
@@ -30,37 +31,39 @@ const MarginGrid = () => {
       let signal = abortController.signal;
   
       try {
-        const { data: data1 } = await axios.get(`${baseUrl}api/v1/getUserMarginDetails/${getDetails.userDetails.email}`, {
+        const { data: data1 } = await axios.get(`${baseUrl}api/v1/getUserMarginDetails/${id}`, {
           signal: signal,
         });
         if (!signal.aborted) {
           setMarginDetails(data1);
         }
   
-        const { data: data2 } = await axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${getDetails.userDetails.email}`, {
+        const { data: data2 } = await axios.get(`${baseUrl}api/v1/gettraderpnlformargin/${id}`, {
           signal: signal,
         });
         if (!signal.aborted) {
           setLifetimePNL(data2);
         }
   
-        const { data: data3 } = await axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${getDetails.userDetails.email}`, {
+        const { data: data3 } = await axios.get(`${baseUrl}api/v1/gettraderpnlforavailablemargin/${id}`, {
           signal: signal,
         });
         if (!signal.aborted) {
           setAvailableMarginPNL(data3);
         }
   
-        const { data: data4 } = await axios.get(`${baseUrl}api/v1/getUserPayInDetails/${getDetails.userDetails.email}`, {
+        const { data: data4 } = await axios.get(`${baseUrl}api/v1/getUserPayInDetails/${id}`, {
           signal: signal,
         });
         if (!signal.aborted) {
+          console.log("Data 4: ",data4)
           setPayIn(data4);
         }
       } catch (err) {
         console.log(err);
       }
     })();
+
   
     return () => abortController.abort();
   }, [netPnl, totalRunningLots]);

@@ -101,7 +101,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
     //   return () => abortController.abort();
     // }, [])
 
-    console.log("marketdata", marketDetails.marketData)
+    console.log("marketdata", marketDetails?.marketData)
 
     useEffect(()=>{
 
@@ -112,7 +112,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
 
            // the signal is passed into the request(s) we want to abort using this controller
            const { data } = await axios.get(
-            `${baseUrl}api/v1/${url}/${getDetails.userDetails.email}`,
+            `${baseUrl}api/v1/${url}/${getDetails?.userDetails?.email}`,
               { signal: signal }
            );
           //  getoverallpnlmocktradeparticulartradertoday

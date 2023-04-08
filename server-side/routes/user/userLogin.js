@@ -63,7 +63,7 @@ router.post('/phonelogin', async (req,res, next)=>{
         console.log(user);
         await user.save({validateBeforeSave: false});
     
-        sendSMS([mobile.toString()], `Your otp to login to ninepointer is: ${mobile_otp}`);
+        sendSMS([mobile.toString()], `Your otp to login to StoxHero is: ${mobile_otp}`);
     
         res.status(200).json({status: 'Success', message: `OTP sent to ${mobile}. OTP is valid for 30 minutes.`});
     }catch(e){

@@ -54,7 +54,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import WalletIcon from '@mui/icons-material/Wallet';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DBEntry from "./layouts/InsertData/DBEntry";
-import Referral from "./layouts/refferal-programme";
+import Referral from "./layouts/referral-program";
 import Contest from "./layouts/user-contest"
 
 
