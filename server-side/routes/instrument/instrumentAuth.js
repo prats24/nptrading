@@ -64,6 +64,17 @@ router.get("/contestInstrument", (req, res)=>{
     }).sort({$natural:-1})
 })
 
+router.get("/contestInstrument/:id", (req, res)=>{
+    const {id} = body.req.params;
+    ContestInstrument.find({"$contest.contestId": id, status: "Active"}, (err, data)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else{
+            return res.status(200).send(data);
+        }
+    }).sort({$natural:-1})
+})
+
 router.get("/readInstrumentDetails", (req, res)=>{
     Instrument.find((err, data)=>{
         if(err){

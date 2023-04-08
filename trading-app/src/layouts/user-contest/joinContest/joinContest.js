@@ -319,7 +319,7 @@ const JoinContest = ({id, setContestDetailsForm}) => {
         </MDBox>
         :
         <MDBox mt={6} ml={3} width="100%">
-        <UserPosition />
+        <UserPosition contestId={id}/>
         </MDBox>
         }
       </>

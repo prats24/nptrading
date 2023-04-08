@@ -31,7 +31,7 @@ import { marketDataContext } from "../../../../../../MarketDataContext";
 
 
 
-function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClicked}) {
+function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClicked, contestId}) {
   const marketDetails = useContext(marketDataContext)
   console.log("socket print", socket)
 

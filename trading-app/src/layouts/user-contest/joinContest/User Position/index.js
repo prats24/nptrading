@@ -20,7 +20,7 @@ import RankTable from "./RankTable";
 
 
 
-function UserPosition() {
+function UserPosition({contestId}) {
 
   console.log("user position rendering")
   const [reRender, setReRender] = useState(true);
@@ -72,6 +72,7 @@ function UserPosition() {
       setReRender={memoizedSetReRender}
       // setReRender={}
       // isGetStartedClicked={isGetStartedClicked}
+      contestId={contestId}
       setIsGetStartedClicked={handleSetIsGetStartedClicked}
     />;
   }, [socket, reRender, handleSetIsGetStartedClicked]);
