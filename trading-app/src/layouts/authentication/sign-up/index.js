@@ -57,7 +57,7 @@ function Cover() {
     email_otp: "",
     mobile_otp:"",
   });
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
   useEffect(() => {
     let countdownTimer = null;

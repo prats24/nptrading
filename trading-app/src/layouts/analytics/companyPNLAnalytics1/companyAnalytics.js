@@ -19,7 +19,7 @@ function DayWiseTraderPNL() {
 // Display only even labels
 const [traderName, setTraderName] = useState('Total');
 const { columnsdata, rowsdata } = MockCompanyPNLTWiseData();
-let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 let valueInDate2 = Number(10)
 let valueInDate1 = Number(1)
 const [startDay, setStartDay] = useState(1);

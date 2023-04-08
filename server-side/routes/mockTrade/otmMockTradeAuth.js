@@ -34,7 +34,7 @@ router.post("/mockOtmtradecompany", async (req, res)=>{
         realQuantity = "-"+realQuantity;
     }
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
     let originalLastPrice;
     let otmLastPrice;
     let newTimeStamp = "";

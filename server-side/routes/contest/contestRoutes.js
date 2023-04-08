@@ -7,7 +7,7 @@ const axios = require('axios');
 const Contest = require('../../models/Contest/contestSchema');
 const {createContest, getContests, editContest, getActiveContests, getContest, joinContest, myContests} = require('../../controllers/contestController');
 const Authenticate = require('../../authentication/authentication');
-
+const contestTradeRoutes = require('../../routes/contest/contestTradeRoutes');
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {
@@ -103,4 +103,5 @@ patch(Authenticate, editContest);
 router.route('/mycontests').get(Authenticate, myContests);
 router.route('/active').get(getActiveContests)
 router.route('/:id').get(getContest).post(Authenticate, joinContest).patch(Authenticate, editContest)
+router.use('/:id/trades', contestTradeRoutes);
 module.exports = router;

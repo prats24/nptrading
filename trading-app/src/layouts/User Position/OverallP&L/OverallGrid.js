@@ -55,7 +55,7 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
   let url = getDetails.userDetails.isAlgoTrader ? "getoverallpnlmocktradeparticularusertoday" : "getoverallpnlmocktradeparticulartradertoday"
 
   // const { reRender, setReRender } = Render
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   // const [liveDetail, setLiveDetail] = useState([]);
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);

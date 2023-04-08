@@ -33,7 +33,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
 
   // const marketDetails = useContext(marketDataContext)
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
   // const { reRender, setReRender } = Render;
   const getDetails = React.useContext(userContext);

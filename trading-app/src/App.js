@@ -78,7 +78,7 @@ export default function App() {
   const setDetails = useContext(userContext);
   const getDetails = useContext(userContext);
   const navigate = useNavigate();
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   
   useEffect(()=>{
         axios.get(`${baseUrl}api/v1/loginDetail`, {

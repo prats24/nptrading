@@ -27,7 +27,7 @@ const CategoryTable = ({setCreateCategory, setView, setEditData, reRender}) => {
   const {checkIsView, setGetId} = setView
   const [CategoryData,setCategoryData] = useState([]);
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   async function getCategory (){
     const res = await fetch(`${baseUrl}api/v1/category`, {
       method: "GET",

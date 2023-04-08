@@ -19,7 +19,7 @@ import uniqid from "uniqid"
 
 const DBEntry = () => {
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
     let date = new Date();
     let valueInDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()-1).padStart(2, '0')}`
     const [enterDate, setDate] = useState(valueInDate);

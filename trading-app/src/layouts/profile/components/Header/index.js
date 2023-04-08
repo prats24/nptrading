@@ -40,7 +40,7 @@ function Header({ children }) {
   const [profilePhoto,setProfilePhoto] = useState(DefaultProfilePic);
   const getDetails = useContext(userContext);
   console.log("getDetails", getDetails)
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
  useEffect(()=>{
        axios.get(`${baseUrl}api/v1/readparticularuserdetails/${getDetails.userDetails.email}`)

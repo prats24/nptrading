@@ -14,7 +14,7 @@ export default function ContestLinkedRuleData({linkedRuleId,setLinkedRuleId,isSu
 console.log("Linked Rule Id",linkedRuleId)
 const { columns, rows } = LinkedContestRule();
 const [linkedRuleData,setLinkedRuleData] = useState();
-let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 React.useEffect(()=>{
 
   axios.get(`${baseUrl}api/v1/contestrule/${linkedRuleId}`)
