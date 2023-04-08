@@ -77,7 +77,7 @@ function reducer(state, action) {
 function TradableInstrument({socket, reRender, setReRender, isGetStartedClicked, setIsGetStartedClicked}) {
 
   console.log("rendering in userPosition: TradableInstrument")
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   let textRef = useRef(null);
   const PAGE_SIZE = 20;
   const marketDetails = useContext(marketDataContext)

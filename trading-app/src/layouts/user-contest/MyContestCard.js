@@ -20,7 +20,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
   const [contestData,setContestData] = useState([]);
   const [contestDetailsForm,setContestDetailsForm] = useState(false)
   const [objectId,setObjectId] = useState('')
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
   useEffect(()=>{
   

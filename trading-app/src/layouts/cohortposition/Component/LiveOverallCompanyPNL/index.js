@@ -24,7 +24,7 @@ function LiveOverallCompantPNL({socket, batchName}) {
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   let date = new Date();
   let totalTransactionCost = 0;
   const [liveDetail, setLiveDetail] = useState([]);

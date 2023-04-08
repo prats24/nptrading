@@ -7,8 +7,7 @@ const axios = require('axios');
 const Contest = require('../../models/Contest/contestSchema');
 const {createContest, getContests, editContest, getActiveContests, getContest, joinContest, myContests} = require('../../controllers/contestController');
 const Authenticate = require('../../authentication/authentication');
-const contestTradeRoutes = require('../../routes/contest/contestTradeRoute');
-
+const contestTradeRoutes = require('../../routes/contest/contestTradeRoutes');
 
 const storage = multer.memoryStorage();
 const fileFilter = (req, file, cb) => {

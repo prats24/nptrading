@@ -28,7 +28,7 @@ import UserPosition from "./User Position/index";
 
 
 const JoinContest = ({id, setContestDetailsForm}) => {
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
 
     const [contestData, setContestData] = useState([]);
     const [nextPage, setNextPage] = useState(true);

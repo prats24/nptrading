@@ -18,7 +18,7 @@ import { margin } from "@mui/system";
 
 function BillingInformation({marginDetails,setMarginDetails}) {
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
   // const [marginDetails, setMarginDetails] = useState([]);
   const { columns, rows } = TransactionData();
   const getDetails = useContext(userContext);

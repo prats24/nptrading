@@ -36,7 +36,7 @@ exports.mockTrade = async (reqBody, res) => {
         realQuantity = "-"+realQuantity;
     }
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
     let originalLastPriceUser;
     let originalLastPriceCompany;
     let newTimeStamp = "";
