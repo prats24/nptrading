@@ -192,13 +192,13 @@ const JoinContest = ({id, setContestDetailsForm}) => {
 
                             <Grid container display="flex" justifyContent="center">
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="left" alignItems="center" alignContent="center">
-                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup /> Min : 5000</MDTypography>
+                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup /> Min : {contestData?.minParticipants}</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="center">
                             <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Left: 1500</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="right">
-                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Max: 10000</MDTypography>
+                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Max: {contestData?.maxParticipants}</MDTypography>
                             </Grid>
                             </Grid>
 
@@ -318,7 +318,9 @@ const JoinContest = ({id, setContestDetailsForm}) => {
             </Grid>
         </MDBox>
         :
+        <MDBox mt={6} ml={3} width="100%">
         <UserPosition />
+        </MDBox>
         }
       </>
     )

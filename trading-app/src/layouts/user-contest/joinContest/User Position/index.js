@@ -87,44 +87,42 @@ function UserPosition() {
     />;
   }, [socket, reRender, handleSetIsGetStartedClicked]);
 
-
+  // 
 
   return (
-    // <DashboardLayout>
-    //   <DashboardNavbar />  sx={{mt: "40px"}}
-    <MDTypography display='flex'  >
-      <MDTypography >
+    <MDTypography  display='flex' justifyContent='space-between' gap="5px" >
+      <MDTypography py={0} flex="70%">
 
-        {/* <StockIndex /> */}
-        {/* <StockIndex socket={socket}/> */}
         {memoizedStockIndex}
-
-        {/* <MemoizedTradableInstrument /> */}
-        {/* <TradableInstrument socket={socket} reRender={reRender} setReRender={setReRender} isGetStartedClicked={isGetStartedClicked} setIsGetStartedClicked={setIsGetStartedClicked}/> */}
-        {/* {memoizedTradableInstrument} */}
 
         <MDBox mt={0}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={12}>
               {memoizedInstrumentDetails}
-              {/* <InstrumentDetails socket={socket} Render={{ reRender, setReRender }} setIsGetStartedClicked={setIsGetStartedClicked} /> */}
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={3}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={12}>
+              {memoizedOverallPnl}
             </Grid>
           </Grid>
         </MDBox>
 
       </MDTypography>
-      <MDTypography >
+      <MDTypography flex="30%">
           
           <RankTable/>
       </MDTypography>
     </MDTypography>
-    // </DashboardLayout>
+
   );
 }
 
 export default UserPosition;
 
-// py={0}
+// 
 // width="100%"
 
 
