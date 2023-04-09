@@ -31,6 +31,7 @@ const JoinContest = ({id, setContestDetailsForm}) => {
 
     const [contestData, setContestData] = useState([]);
     const [nextPage, setNextPage] = useState(true);
+    const [agreement, setAgreement] = useState(false);
     useEffect(()=>{
   
         axios.get(`${baseUrl}api/v1/contest/${id}`,{
@@ -206,6 +207,8 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                                 <Input
                                    type="checkbox"
                                    sx={{mr: "5px"}}
+                                   value={}
+                                   onChange={()=>{}}
                                 />
                                 <MDTypography style={{fontSize:15}} color="warning">I accept all the terms and conditions</MDTypography>
                             </Grid>
