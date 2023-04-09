@@ -66,7 +66,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
     })
 
     // socket.on("tick", (data) => {
-    socket.on("tick-room", (data) => {
+    socket.on("contest-ticks", (data) => {
 
       console.log('data from socket in instrument in parent', data);
       // console.log("marketdata", data)
@@ -176,11 +176,11 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
       }
 
       instrumentDetailObj.buy = (
-        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/> 
+        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/> 
       );
       
       instrumentDetailObj.sell = (
-        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}/>
+        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
       );
 
       instrumentDetailObj.remove = (
@@ -298,7 +298,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
                 {/* <td style={styleTD} >CHART</td> */}
                 <td style={styleTD} >BUY</td>
                 <td style={styleTD} >SELL</td>
-                <td style={styleTD} >REMOVE</td>
+                {/* <td style={styleTD} >REMOVE</td> */}
               </tr>
             </thead>
             <tbody>
@@ -322,9 +322,9 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
                   <Tooltip title="Sell" placement="top">
                     <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.sell}</td>
                   </Tooltip>
-                  <Tooltip title="Remove Instrument" placement="top">
+                  {/* <Tooltip title="Remove Instrument" placement="top">
                     <td style={{textAlign: "center", marginRight:0.5,minWidth:2,minHeight:3}} >{elem.remove}</td>
-                  </Tooltip>
+                  </Tooltip> */}
       
               </tr>
 

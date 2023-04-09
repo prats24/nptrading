@@ -104,6 +104,7 @@ React.useEffect(()=>{
             createdBy: res.data?.data?.createdBy || '',
             lastModifiedBy: res.data?.data?.lastModifiedBy || '',
             lastModifiedOn: res.data?.data?.lastModifiedOn || '',
+            contestMargin: res.data?.data?.contestMargin || '',
           });
             setTimeout(()=>{setIsLoading(false)},500) 
         // setIsLoading(false)
@@ -151,7 +152,7 @@ if(
 }
 // console.log("Is Submitted before State Update: ",isSubmitted)
 setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-const { contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status} = formState;
+const { contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status, contestMargin} = formState;
 const res = await fetch(`${baseUrl}api/v1/contest`, {
     method: "POST",
     credentials:"include",
@@ -160,7 +161,7 @@ const res = await fetch(`${baseUrl}api/v1/contest`, {
         "Access-Control-Allow-Credentials": true
     },
     body: JSON.stringify({
-        contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status
+        contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status, contestMargin
     })
 });
 
@@ -393,6 +394,21 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                   }))}}
               />
           </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+            <TextField
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                id="outlined-required"
+                label="Contest Margin *"
+                defaultValue={oldObjectId ? contestData?.entryFee?.amount :formState?.entryFee?.amount}
+                fullWidth
+                type="number"
+                onChange={(e) => {setFormState(prevState => ({
+                  ...prevState,
+                  contestMargin: e.target.value
+                }))}}
+                />
+            </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
               <FormControl sx={{width: "100%" }}>

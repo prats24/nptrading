@@ -28,7 +28,7 @@ import MDBox from '../../../../../../../components/MDBox';
 import { borderBottom } from '@mui/system';
 import { marketDataContext } from "../../../../../../../MarketDataContext";
 
-const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos, expiry}) => {
+const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos, expiry, contestId}) => {
 
   console.log("rendering in userPosition: buyModel")
 
@@ -138,7 +138,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
       setOpen(false);
 
 
-      if(!appLive[0].isAppLive){
+      if(!appLive[0]?.isAppLive){
         window.alert("App is not Live right now. Please wait.");
         return;
       }
@@ -158,7 +158,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
       setBuyFormDetails(buyFormDetails)
 
-      // placeOrder();
+      placeOrder();
 
 
       let id = setTimeout(()=>{
@@ -171,13 +171,14 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = buyFormDetails;
 
-    const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
+    const res = await fetch(`${baseUrl}api/v1/contestTrade/${contestId}`, {
         method: "POST",
+        credentials:"include",
         headers: {
             "content-type": "application/json"
         },
         body: JSON.stringify({
-            
+          
           exchange, symbol, buyOrSell, Quantity, Price, 
           Product, OrderType, TriggerPrice, stopLoss, uId,
           validity, variety, createdBy, order_id:dummyOrderId,
@@ -317,15 +318,10 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
   return (
     <div>
-      {/* {!fromUserPos ? 
-      <MDButton size="small" variant="contained" color="info" onClick={handleClickOpen} sx={{margin: "5px"}} sx={{margin: "5px"}}>
-        B
-      </MDButton>
-      :  */}
+
       <MDButton  size="small" color="info" sx={{marginRight:0.5,minWidth:2,minHeight:3}} onClick={handleClickOpen} >
         B
       </MDButton>
-      {/* } */}
       <div>
         <Dialog
           fullScreen={fullScreen}

@@ -40,6 +40,7 @@ function UserPosition({contestId}) {
     socket.on("connect", () => {
       socket.emit("hi", true)
       socket.emit('userId', getDetails.userDetails._id)
+      socket.emit('contest', contestId)
     })
   }, []);
 
@@ -84,6 +85,7 @@ function UserPosition({contestId}) {
       setReRender={memoizedSetReRender}
       // setReRender={}
       // isGetStartedClicked={isGetStartedClicked}
+      contestId={contestId}
       setIsGetStartedClicked={handleSetIsGetStartedClicked}
     />;
   }, [socket, reRender, handleSetIsGetStartedClicked]);

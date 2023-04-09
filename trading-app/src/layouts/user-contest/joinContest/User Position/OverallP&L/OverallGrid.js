@@ -27,7 +27,7 @@ import Sell from "../components/InstrumentDetails/data/SellModel"
 import OverallRow from './OverallRow';
 // import Button from '@mui/material/Button';
 
-function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
+function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked, contestId}) {
   console.log("rendering in userPosition: overallPnl")
   let styleTD = {
     textAlign: "center",
@@ -221,14 +221,14 @@ function OverallGrid({socket, reRender, setReRender , setIsGetStartedClicked}) {
         );
       }
       obj.exit = (
-        < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange}/>
+        < ExitPosition product={(subelem._id.product)} symbol={(subelem._id.symbol)} quantity= {subelem.lots} instrumentToken={subelem._id.instrumentToken} exchange={subelem._id.exchange} contestId={contestId}/>
       );
       obj.buy = (
-        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[0]?.last_price)?.toFixed(2)}/>
+        <Buy reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
       );
       
       obj.sell = (
-        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[0]?.last_price)?.toFixed(2)}/>
+        <Sell reRender={reRender} setReRender={setReRender} symbol={subelem._id.symbol} exchange={subelem._id.exchange} instrumentToken={subelem._id.instrumentToken} symbolName={(subelem._id.symbol).slice(-7)} lotSize={lotSize} maxLot={lotSize*36} ltp={(liveDetail[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
       );
 
       if(subelem.lots != 0){

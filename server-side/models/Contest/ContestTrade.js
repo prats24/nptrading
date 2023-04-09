@@ -79,6 +79,11 @@ const ContestTrade = new mongoose.Schema({
         ref: 'user-personal-detail',
         // required : true
     },
+    contestId:{
+        type: Schema.Types.ObjectId,
+        ref: 'contest',
+        // required : true
+    },
 })
 
 const contestTrade = mongoose.model("contestTrade", ContestTrade);

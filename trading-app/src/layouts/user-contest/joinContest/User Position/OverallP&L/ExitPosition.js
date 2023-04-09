@@ -28,7 +28,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 
-function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
+function ExitPosition({product, symbol, quantity, exchange, instrumentToken, contestId}) {
   console.log("rendering in userPosition/overall: exitPosition", quantity)
 
     let checkBuyOrSell ;
@@ -184,7 +184,7 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
         setexitPositionFormDetails(exitPositionFormDetails)
 
 
-        // placeOrder();
+        placeOrder();
         
     }
   
@@ -195,8 +195,9 @@ function ExitPosition({product, symbol, quantity, exchange, instrumentToken}) {
   
       const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = exitPositionFormDetails;
 
-      const res = await fetch(`${baseUrl}api/v1/placingOrder`, {
-          method: "POST",
+      const res = await fetch(`${baseUrl}api/v1/contestTrade/${contestId}`, {
+        method: "POST",
+        credentials:"include",
           headers: {
               "content-type": "application/json"
           },

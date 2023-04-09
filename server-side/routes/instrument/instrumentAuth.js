@@ -3,6 +3,7 @@ const router = express.Router();
 require("../../db/conn");
 const Instrument = require("../../models/Instruments/instrumentSchema");
 const ContestInstrument = require("../../models/Instruments/contestInstrument");
+const client = require("../../marketData/redisClient");
 
 const axios = require('axios');
 const fetchToken = require("../../marketData/generateSingleToken");
@@ -42,6 +43,8 @@ router.post("/contestInstrument", async (req, res)=>{
             const instruments = new ContestInstrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, createdByUserId, lotSize, instrumentToken, contractDate, maxLot, contest: {name: contestName, contestId: _id}});
             console.log("instruments", instruments)
             instruments.save().then(async()=>{
+                //  const newredisClient = await client.SADD((_id).toString(), (instrumentToken).toString());
+                //  console.log("this is redis client", newredisClient)
                  await subscribeTokens();
                 res.status(201).json({massage : "data enter succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
@@ -138,6 +141,9 @@ router.put("/contestInstrument/:id", async (req, res)=>{
         })
         //console.log("this is role", instrument);
         if(((req.body).Symbole !== instrument.symbol) || (req.body).Status === "Inactive"){
+            // const redisClient = await client.SREM((_id).toString(), (instrument.instrumentToken).toString());
+            // console.log("redisClient", redisClient)
+
             unSubscribeTokens(instrument.instrumentToken).then(()=>{});
         }
         subscribeTokens().then(()=>{});           
