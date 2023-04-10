@@ -3,13 +3,16 @@ const KiteConnect = require('kiteconnect').KiteConnect;
 const AccessAndRequestToken = require("../models/Trading Account/requestTokenSchema");
 const {disconnectTicker, createNewTicker}  = require('../marketData/kiteTicker');
 const getKiteCred = require('../marketData/getKiteCred');
+const totp = require("totp-generator");
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
 
-function zerodhaLogin(ApiKey,SecretKey,UserId,Password,Pin, otherCredentials, resp) {
+function zerodhaLogin(ApiKey,SecretKey,UserId,Password, otherCredentials, resp) {
+  // const token = 
+
     const {accountId, status, generatedOn, lastModified, createdBy, uId} = otherCredentials;
     (async () => {
         const browser = await puppeteer.launch({ headless: false });
@@ -23,7 +26,7 @@ function zerodhaLogin(ApiKey,SecretKey,UserId,Password,Pin, otherCredentials, re
         await page.keyboard.press("Enter");
         await sleep(2000);
         await page.focus("input[type=text]").then((value) => console.log(value));
-        await page.keyboard.type(Pin);
+        await page.keyboard.type(totp(process.env.KUSH_ACCOUNT_HASH_CODE));
         await page.keyboard.press("Enter");
         await page.waitForNavigation();
         const reqUrl = page.url();

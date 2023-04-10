@@ -6,7 +6,7 @@ const {disconnectTicker, createNewTicker}  = require('../../marketData/kiteTicke
 const getKiteCred = require('../../marketData/getKiteCred');
 const puppeteer = require("puppeteer");
 const KiteConnect = require('kiteconnect').KiteConnect;
-const totp = require("totp-generator");
+// const totp = require("totp-generator");
 const zerodhaLogin = require("../../utils/zerodhaAutoLogin");
 
 
@@ -51,8 +51,8 @@ router.post("/autologin", (req, res)=>{
     
 
 // Keys provided must be base32 strings, ie. only containing characters matching (A-Z, 2-7, =).
-const token = totp(process.env.KUSH_ACCOUNT_HASH_CODE);
-console.log("otp", token)
+// const token = totp(process.env.KUSH_ACCOUNT_HASH_CODE);
+// console.log("otp", token)
 let password = accountId === process.env.KUSH_ACCOUNT_ID && process.env.KUSH_PASS
 
 try{
@@ -62,7 +62,7 @@ try{
         apiSecret,
         accountId,
         password,
-        `${token}`,
+        // `${token}`,
         req.body,
         res
         )
