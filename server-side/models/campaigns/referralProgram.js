@@ -6,7 +6,7 @@ const referralProgramSchema = new mongoose.Schema({
         type: String,
         // required: true
     },
-    referrralProgramName:{
+    referralProgramName:{
         type: String,
         required: true
     },
@@ -27,21 +27,9 @@ const referralProgramSchema = new mongoose.Schema({
         required: true,
         enum: ['INR','CREDOS']
     },
-    // currency:{
-    //     type:Number,
-    //     // required: true
-    // },
-    termsAndConditions:{
-        type:String,
-        required:true
-    },
     description:{
         type:String,
         required:true
-    },
-    performanceMetrics:{
-        impressions: { type: Number, required: true },
-        clicks: { type: Number, required: true },
     },
     status:{
         type:String,
@@ -68,11 +56,11 @@ const referralProgramSchema = new mongoose.Schema({
         ref: 'user-personal-detail',
         // required : true
     },
-    users: [
+    joinedUsers: [
         {
-            type: Schema.Types.ObjectId,
-            ref: "user-personal-detail"
-        }  
+            userId:{type:Schema.Types.ObjectId,ref: 'user-personal-detail'},
+            joinedOn:Date
+        }
     ],
     invitedUsers: [
         {name:String,mobile:String,email:String,invitedOn:Date}  

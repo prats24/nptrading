@@ -33,6 +33,7 @@ import MyReferrals from "./layouts/referrals"
 import UserContest from "./layouts/contests"
 import Portfolio from './layouts/portfolio'
 import CreatePortfolio from './layouts/portfolio/createPortfolio'
+import ReferralProgramDetails from './layouts/referral-program/ReferralProgramDetails'
 
 
 // @mui icons
@@ -104,6 +105,14 @@ const routes = [
     component: <CreatePortfolio />,
   },
   {
+    // type: "collapse",
+    // name: "Company Dashboard",
+    key: "referralprogramdetails",
+    // icon: <DashboardIcon/>,
+    route: "/referralprogramdetails",
+    component: <ReferralProgramDetails />,
+  },
+  {
     type: "collapse",
     name: "Company Position",
     key: "companyposition",
@@ -157,7 +166,7 @@ const routes = [
   {
     type: "collapse",
     name: "Referral Programme",
-    key: "referral",
+    key: "referralProgramme",
     icon: <DashboardIcon/>,
     route: "/referralProgramme",
     component: <Referral />,
@@ -303,7 +312,7 @@ const routes = [
   {
     type: "collapse",
     name: "User Contest",
-    key: "contest",
+    key: "usercontest",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <PersonIcon/>,
     route: "/usercontest",

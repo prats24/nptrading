@@ -33,6 +33,10 @@ const PortfolioSchema = new mongoose.Schema({
         type:String,
         enum:['Free','Paid']
     },
+    portfolioType:{
+        type:String,
+        enum:['Contest','Trading']
+    },
     createdBy:{
         type: Schema.Types.ObjectId,
         ref: 'user-personal-detail',
