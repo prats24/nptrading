@@ -31,6 +31,8 @@ import ResetPassword from './layouts/authentication/reset-password/cover'
 import Response from './layouts/authentication/sign-up/responseSubmit'
 import MyReferrals from "./layouts/referrals"
 import UserContest from "./layouts/contests"
+import Portfolio from './layouts/portfolio'
+import CreatePortfolio from './layouts/portfolio/createPortfolio'
 
 
 // @mui icons
@@ -92,6 +94,14 @@ const routes = [
     // icon: <DashboardIcon/>,
     route: "/response",
     component: <Response />,
+  },
+  {
+    // type: "collapse",
+    // name: "Company Dashboard",
+    key: "createportfolio",
+    // icon: <DashboardIcon/>,
+    route: "/createportfolio",
+    component: <CreatePortfolio />,
   },
   {
     type: "collapse",
@@ -227,11 +237,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Expenses",
-    key: "expense",
+    name: "Portfolio",
+    key: "portfolio",
     icon: <Shop2Icon/>,
-    route: "/expense",
-    component: <Expense />,
+    route: "/portfolio",
+    component: <Portfolio />,
   },
   {
     type: "collapse",
