@@ -29,9 +29,13 @@ const PortfolioSchema = new mongoose.Schema({
         required : true,
         default: new Date(),
     },
-    portfolioType:{
+    portfolioAccount:{
         type:String,
         enum:['Free','Paid']
+    },
+    portfolioType:{
+        type:String,
+        enum:['Contest','Trading']
     },
     createdBy:{
         type: Schema.Types.ObjectId,

@@ -60,52 +60,49 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
 
     },[])
 
-        async function onEdit(e,formState){
-            e.preventDefault()
-            setSaving(true)
-            console.log(formState)
-            if(!formState?.displayName || !formState?.instrumentSymbol || !formState?.exchange || !formState?.status){
-                setTimeout(()=>{setSaving(false);setEditing(true)},500)
-                return openErrorSB("Missing Field","Please fill all the mandatory fields")
-            }
-            const { displayName, instrumentSymbol, exchange, status } = formState;
-    
-            const res = await fetch(`${baseUrl}api/v1/stockindex/${id ? id : newObjectId}`, {
-                method: "PUT",
-                credentials:"include",
-                headers: {
-                    "content-type" : "application/json",
-                    "Access-Control-Allow-Credentials": true
-                },
-                body: JSON.stringify({
-                    displayName, instrumentSymbol, exchange, status
-                })
+    async function onEdit(e,formState){
+        e.preventDefault()
+        setSaving(true)
+        console.log(formState)
+        if(!formState?.portfolioName || !formState?.portfolioValue || !formState?.portfolioType || !formState?.status || !formState?.portfolioAccount){
+            setTimeout(()=>{setSaving(false);setEditing(true)},500)
+            return openErrorSB("Missing Field","Please fill all the mandatory fields")
+        }
+        const { portfolioName, portfolioValue, portfolioType, status, portfolioAccount } = formState;
+
+        const res = await fetch(`${baseUrl}api/v1/portfolio/${id}`, {
+            method: "PATCH",
+            credentials:"include",
+            headers: {
+                "content-type" : "application/json",
+                "Access-Control-Allow-Credentials": true
+            },
+            body: JSON.stringify({
+                portfolioName, portfolioValue, portfolioType, status, portfolioAccount            })
             });
-      
-            const data = await res.json();
-            console.log(data);
-            if (data.status === 422 || data.error || !data) {
-                openErrorSB("Error","data.error")
-            } else {
-                openSuccessSB("Index Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
-                setTimeout(()=>{setSaving(false);setEditing(false)},500)
-                console.log("entry succesfull");
-            }
-          }
+
+        const data = await res.json();
+        console.log(data);
+        if (data.status === 422 || data.error || !data) {
+            openErrorSB("Error","data.error")
+        } else {
+            openSuccessSB("Index Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
+            setTimeout(()=>{setSaving(false);setEditing(false)},500)
+            console.log("entry succesfull");
+        }
+    }
     
-
-
     async function onSubmit(e,formState){
         e.preventDefault()
         setCreating(true)
         console.log(formState)
         
-        if(!formState?.displayName || !formState?.instrumentSymbol || !formState?.exchange || !formState?.status){
+        if(!formState?.portfolioName || !formState?.portfolioValue || !formState?.portfolioType || !formState?.status || !formState?.portfolioAccount){
             setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
             return openErrorSB("Missing Field","Please fill all the mandatory fields")
         }
-        const { displayName, instrumentSymbol, exchange, status } = formState;
-        const res = await fetch(`${baseUrl}api/v1/stockindex`, {
+        const { portfolioName, portfolioValue, portfolioType, status, portfolioAccount } = formState;
+        const res = await fetch(`${baseUrl}api/v1/portfolio`, {
             method: "POST",
             credentials:"include",
             headers: {
@@ -113,7 +110,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({
-                displayName, instrumentSymbol, exchange, status
+                portfolioName, portfolioValue, portfolioType, status, portfolioAccount
             })
         });
   
@@ -124,11 +121,11 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
             console.log("invalid entry");
         } else {
-            openSuccessSB("Index Created",data.status)
+            openSuccessSB("Portfolio Created",data.status)
             setNewObjectId(data.data)
             setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
         }
-      }
+    }
   const date = new Date(indexData.lastModifiedOn);
 
   const formattedLastModifiedOn = `${date.getUTCDate()}/${date.toLocaleString('default', { month: 'short' })}/${String(date.getUTCFullYear())} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')}`;
@@ -198,7 +195,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
         <MDBox pl={2} pr={2} mt={4}>
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Index Details
+          Fill Portfolio Details
         </MDTypography>
         </MDBox>
 
@@ -207,13 +204,13 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
-                label='Display Name *'
+                label='Portfolio Name *'
                 fullWidth
                 // defaultValue={indexData?.displayName}
-                value={formState?.displayName}
+                value={formState?.portfolioName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    displayName: e.target.value
+                    portfolioName: e.target.value
                   }))}}
               />
           </Grid>
@@ -222,28 +219,59 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
-                label='Instrument Symbol *'
-                defaultValue={indexData?.instrumentSymbol}
+                label='Portfolio Value *'
+                type="number"
+                defaultValue={indexData?.portfolioValue}
                 fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    instrumentSymbol: e.target.value
+                    portfolioValue: e.target.value
                   }))}}
               />
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
-            <TextField
+              <FormControl sx={{width: "100%" }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Portfolio Type *</InputLabel>
+                <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                // value={oldObjectId ? contestData?.portfolioType : formState?.portfolioType}
+                value={formState?.portfolioType}
                 disabled={((isSubmitted || id) && (!editing || saving))}
-                id="outlined-required"
-                label="Exchange *"
-                defaultValue={formState?.exchange}
-                fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    exchange: e.target.value
-                  }))}}
-              />
+                    portfolioType: e.target.value
+                }))}}
+                label="Portfolio Type"
+                sx={{ minHeight:43 }}
+                >
+                <MenuItem value="Contest">Contest</MenuItem>
+                <MenuItem value="Trading">Trading</MenuItem>
+                </Select>
+              </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+              <FormControl sx={{width: "100%" }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Portfolio Account *</InputLabel>
+                <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                // value={oldObjectId ? contestData?.portfolioType : formState?.portfolioType}
+                value={formState?.portfolioAccount}
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    portfolioAccount: e.target.value
+                }))}}
+                label="Portfolio Account"
+                sx={{ minHeight:43 }}
+                >
+                <MenuItem value="Free">Free</MenuItem>
+                <MenuItem value="Paid">Paid</MenuItem>
+                </Select>
+              </FormControl>
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
@@ -252,7 +280,8 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                defaultValue={indexData?.status}
+                value={formState?.status}
+                // value={oldObjectId ? contestData?.status : formState?.status}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -265,20 +294,6 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 <MenuItem value="Inactive">Inactive</MenuItem>
                 </Select>
               </FormControl>
-          </Grid>
-
-          {/* <Grid item xs={12} md={6} xl={3}></Grid>
-          <Grid item xs={12} md={6} xl={3}></Grid> */}
-          <Grid item xs={12} md={6} xl={6}>
-            {isObjectNew &&
-            <>
-            <MDBox style={{fontSize:10}}>
-                Last Modified By: {indexData?.lastModifiedBy?.first_name} {indexData?.lastModifiedBy?.last_name}
-            </MDBox>
-            <MDBox style={{fontSize:10}}>
-                Last Modified On: {formattedLastModifiedOn}
-            </MDBox>
-            </>}
           </Grid>
           
 
