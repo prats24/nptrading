@@ -135,7 +135,7 @@ exports.myPortfolios = async(req,res,next) => {
 }
 
 exports.getUserPortfolio = async(req,res,next) => {
-    // const userId = 
+    
     try{
         const userId = req.user._id;
 
