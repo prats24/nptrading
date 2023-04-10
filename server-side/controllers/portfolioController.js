@@ -1,5 +1,5 @@
 const Portfolio = require('../models/userPortfolio/UserPortfolio');
-
+const User = require('../models/User/userDetailSchema');
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -127,6 +127,24 @@ exports.myPortfolios = async(req,res,next) => {
         }
 
         res.status(200).json({status: 'success', data: myPortfolios, results: myPortfolios.length});
+
+    }catch(e){
+        console.log(e);
+        res.status(500).json({status: 'error', message: 'Something went wrong'});
+    }
+}
+
+exports.getUserPortfolio = async(req,res,next) => {
+    // const userId = 
+    try{
+        const userId = req.user._id;
+
+        const user = await User.findOne({_id: userId});
+        const portfolioIds = user.portfolio.map(p => p.portfolioId);
+        
+        const portfolios = await Portfolio.find({_id: {$in: portfolioIds}});
+
+        res.status(200).json({status: 'success', data: portfolios, results: portfolios.length});
 
     }catch(e){
         console.log(e);

@@ -41,11 +41,11 @@ const InactivePortfolioCard = ({isObjectNew,setIsObjectNew}) => {
             <Grid key={e._id} item xs={12} md={6} lg={3} >
             <MDBox bgColor='dark' padding={0} style={{borderRadius:4}}>
             <MDButton variant="contained" color="dark" size="small" 
-            component={Link} 
-            // to={{
-            //   pathname: `/arena/${e.portfolioName}`,
-            // }}
-            // state= {{data:e._id}}
+              component={Link} 
+              to={{
+                pathname: `/createPortfolio`,
+              }}
+              state= {{data:e._id}}
             >
                 <Grid container>
                     

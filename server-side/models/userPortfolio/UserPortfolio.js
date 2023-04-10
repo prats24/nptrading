@@ -9,7 +9,7 @@ const PortfolioSchema = new mongoose.Schema({
     users:[{
         userId:{type:Schema.Types.ObjectId, ref: 'user-personal-detail'},
         linkedOn:{type:Date,default:new Date()},
-        protfolioValue:{type:Number}
+        portfolioValue:{type:Number}
     }],
     status:{
         type: String,
