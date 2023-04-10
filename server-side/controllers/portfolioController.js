@@ -1,5 +1,7 @@
 const Portfolio = require('../models/userPortfolio/UserPortfolio');
 const User = require('../models/User/userDetailSchema');
+const Contest = require('../models/Contest/contestSchema');
+
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -142,7 +144,13 @@ exports.getUserPortfolio = async(req,res,next) => {
         const user = await User.findOne({_id: userId});
         const portfolioIds = user.portfolio.map(p => p.portfolioId);
         
-        const portfolios = await Portfolio.find({_id: {$in: portfolioIds}});
+        const myContests = await Contest.find({"participants.userId": userId, "participants.status": "Joined"});
+
+        const filteredPortfolioIds = portfolioIds.filter(pid => !myContests.some(c => c.participants.some(p => p.portfolioId === pid)));
+
+        const portfolios = await Portfolio.find({_id: {$in: filteredPortfolioIds}});
+
+
 
         res.status(200).json({status: 'success', data: portfolios, results: portfolios.length});
 

@@ -89,7 +89,7 @@ exports.editContest = async(req, res, next) => {
 exports.joinContest = async(req, res, next) => {
     const userId = req.user._id;
     const contestId = req.params.id;
-    const {paymentId} = req.body;
+    const {paymentId, portfolioId} = req.body;
 
     try{
         const contest = await Contest.findById(contestId);
@@ -147,7 +147,7 @@ exports.joinContest = async(req, res, next) => {
         //       });
         // }
         
-        contest.participants.push({userId, registeredOn: Date.now(), paymentId});
+        contest.participants.push({userId, registeredOn: Date.now(), paymentId, portfolioId, status: "Joined"});
         await contest.save({validateBeforeSave: false});
         const user = await User.findById(userId);
         user.contests.push(contest._id);
