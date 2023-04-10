@@ -1,17 +1,17 @@
 import React,{useState} from 'react'
-import MDBox from '../../../components/MDBox'
+// import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
-import MDTypography from '../../../components/MDTypography'
-import MDButton from '../../../components/MDButton'
-import Logo from '../../../assets/images/logo1.jpeg'
-import { Divider } from '@mui/material'
-import { HiUserGroup } from 'react-icons/hi';
-import { Link } from 'react-router-dom';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useLocation } from 'react-router-dom';
-import axios from "axios";
+import MDTypography from '../../../../components/MDTypography'
+// import MDButton from '../../../../components/MDButton'
+// import Logo from '../../../assets/images/logo1.jpeg'
+// import { Divider } from '@mui/material'
+// import { HiUserGroup } from 'react-icons/hi';
+// import { Link } from 'react-router-dom';
+// import TaskAltIcon from '@mui/icons-material/TaskAlt';
+// import { useLocation } from 'react-router-dom';
+// import axios from "axios";
 
-function MYPNLData(){
+function MYPNLData({contestId}){
 
 return (
     <>

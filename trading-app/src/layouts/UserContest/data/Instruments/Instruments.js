@@ -1,17 +1,39 @@
-import React,{useState} from 'react'
-import MDBox from '../../../components/MDBox'
+import React,{useState, useEffect} from 'react'
+// import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
-import MDTypography from '../../../components/MDTypography'
-import MDButton from '../../../components/MDButton'
-import Logo from '../../../assets/images/logo1.jpeg'
-import { Divider } from '@mui/material'
-import { HiUserGroup } from 'react-icons/hi';
-import { Link } from 'react-router-dom';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useLocation } from 'react-router-dom';
+import MDTypography from '../../../../components/MDTypography'
+import MDButton from '../../../../components/MDButton'
+// import Logo from '../../../assets/images/logo1.jpeg'
+// import { Divider } from '@mui/material'
+// import { HiUserGroup } from 'react-icons/hi';
+// import { Link } from 'react-router-dom';
+// import TaskAltIcon from '@mui/icons-material/TaskAlt';
+// import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
-function InstrumentsData(){
+function InstrumentsData({contestId}){
+
+    let socket;
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+    const [instrumentData, setInstrumentData] = useState([]);
+
+    useEffect(()=>{
+        // console.log("contestId", contestId)
+        axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
+          withCredentials: true,
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+        })
+        .then((res) => {
+            setInstrumentData(res.data)
+        }).catch((err) => {
+            return new Error(err);
+        })
+      }, [socket])
+    
 
 return (
     <>
@@ -53,6 +75,9 @@ return (
 
         </Grid>
 
+        {instrumentData.map((elem)=>{
+
+        })}
         <Grid container mt={1} p={1} style={{border:'1px solid white',borderRadius:4}} alignItems="center">
             
             <Grid item xs={12} md={12} lg={2.5} display="flex" justifyContent="center">
