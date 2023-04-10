@@ -16,12 +16,14 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 
-function Index({createIndexForm, setCreateIndexForm, id}) {
+function Index() {
 
+    const location = useLocation();
+    const  id  = location?.state?.data;
     const [isSubmitted,setIsSubmitted] = useState(false);
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     // const getDetails = useContext(userContext);
@@ -32,35 +34,37 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
     const [editing,setEditing] = useState(false)
     const [saving,setSaving] = useState(false)
     const [creating,setCreating] = useState(false)
-    // const [newObjectId,setNewObjectId] = useState()
+    const [portfolioData,setPortfolioData] = useState({})
     const navigate = useNavigate();
 
-    // React.useEffect(()=>{
+    console.log("id is", location)
 
-    //     axios.get(`${baseUrl}api/v1/stockindex/${id}`)
-    //     .then((res)=>{
-    //         setIndexData(res.data[0]);
-    //         // console.log(res.data[0])
-    //         setFormState({
-    //             displayName: res.data[0]?.displayName || '',
-    //             instrumentSymbol: res.data[0]?.instrumentSymbol || '',
-    //             exchange: res.data[0]?.exchange || '',
-    //             status: res.data[0]?.status || '',
-    //             createdBy: res.data[0]?.createdBy || '',
-    //             lastModifiedBy: res.data[0]?.lastModifiedBy || '',
-    //             lastModifiedOn: res.data[0]?.lastModifiedOn || '',
-    //             createdBy: res.data[0]?.createdBy || getDetails.userDetails._id,
-    //             lastModifiedBy: res.data[0]?.lastModifiedBy || getDetails.userDetails._id,
-    //             lastModifiedOn: new Date()
-    //           });
-    //             setTimeout(()=>{setIsLoading(false)},500) 
-    //         // setIsLoading(false)
-    //     }).catch((err)=>{
-    //         //window.alert("Server Down");
-    //         return new Error(err);
-    //     })
+    React.useEffect(()=>{
 
-    // },[])
+        axios.get(`${baseUrl}api/v1/portfolio/${id}`)
+        .then((res)=>{
+            setPortfolioData(res.data.data);
+            console.log("portfolio data is", res.data)
+            setFormState({
+                portfolioName: res.data.data?.portfolioName || '',
+                portfolioValue: res.data.data?.portfolioValue || '',
+                portfolioType: res.data.data?.portfolioType || '',
+                status: res.data.data?.status || '',
+                portfolioAccount: res.data.data?.portfolioAccount || '',
+                status: res.data.data?.status || '',
+                // lastModifiedOn: res.data[0]?.lastModifiedOn || '',
+                // createdBy: res.data[0]?.createdBy || getDetails.userDetails._id,
+                // lastModifiedBy: res.data[0]?.lastModifiedBy || getDetails.userDetails._id,
+                // lastModifiedOn: new Date()
+              });
+                setTimeout(()=>{setIsLoading(false)},500) 
+            // setIsLoading(false)
+        }).catch((err)=>{
+            //window.alert("Server Down");
+            return new Error(err);
+        })
+
+    },[])
 
     async function onEdit(e,formState){
         e.preventDefault()
@@ -203,7 +207,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 id="outlined-required"
                 label='Portfolio Name *'
                 fullWidth
-                // defaultValue={indexData?.displayName}
+                defaultValue={portfolioData?.portfolioName}
                 value={formState?.portfolioName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -216,9 +220,12 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
+                labelId="demo-simple-select-autowidth-label"
                 label='Portfolio Value *'
                 type="number"
                 // defaultValue={indexData?.portfolioValue}
+                defaultValue={portfolioData?.portfolioValue}
+                value={formState?.portfolioValue}
                 fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,

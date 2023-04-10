@@ -8,7 +8,7 @@ import { CircularProgress } from '@mui/material';
 import MDBox from '../../../components/MDBox';
 import MDButton from '../../../components/MDButton';
 import {Link} from 'react-router-dom'
-import CreatePortfolio from '../createPortfolio'
+import ContestPortfolioCard from '../data/contestPortfolioCard'
 
 //data
 // import UpcomingContest from '../data/UserContestCard'
@@ -42,7 +42,7 @@ export default function LabTabs() {
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
             <Tab label="Contest Portfolios" value="1" />
-            <Tab label="Virtual Trading Portfolios" value="2" />
+            <Tab label="Trading Portfolios" value="2" />
             <Tab label="Inactive Portfolios" value="3" />
           </TabList>
         </Box>
@@ -52,7 +52,7 @@ export default function LabTabs() {
             <CircularProgress color="info" />
           </MDBox>
           : 
-          <>Item One</>
+          <ContestPortfolioCard/>
           }
           </TabPanel>
         <TabPanel value="2">Item Two</TabPanel>
