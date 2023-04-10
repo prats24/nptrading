@@ -21,8 +21,8 @@ import MDSnackbar from "../../../../../../components/MDSnackbar";
 
 import { useEffect } from "react";
 import axios from "axios";
-import BuyModel from "./data/BuyModel";
-import SellModel from "./data/SellModel";
+// import BuyModel from "./data/BuyModel";
+// import SellModel from "./data/SellModel";
 import { Typography } from "@mui/material";
 import InstrumentComponent from "./InstrumentComponent";
 import { marketDataContext } from "../../../../../../MarketDataContext";
@@ -175,13 +175,13 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
         );
       }
 
-      instrumentDetailObj.buy = (
-        <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/> 
-      );
+      // instrumentDetailObj.buy = (
+      //   <BuyModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/> 
+      // );
       
-      instrumentDetailObj.sell = (
-        <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
-      );
+      // instrumentDetailObj.sell = (
+      //   <SellModel reRender={reRender} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
+      // );
 
       instrumentDetailObj.remove = (
         <MDButton size="small" sx={{marginRight:0.5,minWidth:2,minHeight:3, height: "30px"}} color="secondary" onClick={()=>{removeInstrument(elem.instrumentToken, elem.instrument)}}>
