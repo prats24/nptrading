@@ -64,6 +64,22 @@ exports.editPortfolio = async(req, res, next) => {
     res.status(200).json({message: 'Successfully edited portfolio.'});
 }
 
+exports.editPortfolioWithName = async(req, res, next) => {
+    console.log("in edit")
+    // const _id = req.params.id;
+    // console.log("id is", _id)
+    const portfolio = await Portfolio.find({portfolioName: req.body.portfolioName});
+    console.log(portfolio)
+    const filteredBody = filterObj(req.body, "portfolioName", "portfolioValue", "portfolioType", "lastModifiedOn",
+                          "status");
+
+    filteredBody.lastModifiedBy = req.user._id;    
+
+    await Portfolio.findOneAndUpdate({portfolioName: req.body.portfolioName}, filteredBody, {new: true});
+
+    res.status(200).json({message: 'Successfully edited portfolio.'});
+}
+
 
 exports.myPortfolios = async(req,res,next) => {
     const userId = req.user._id;
