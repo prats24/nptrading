@@ -116,8 +116,6 @@ function Header({ children }) {
             </AppBar>
             <TabPanel value={tabValue} index={0}><UpcomingContests/> </TabPanel>
             <TabPanel value={tabValue} index={1}><ContestRules/> </TabPanel>
-            {/* <TabPanel value={tabValue} index={2}><StockIndexTable/> </TabPanel> */}
-            {/* <TabPaneltwo/> */}
           </Grid>
         </Grid>
         </Card>

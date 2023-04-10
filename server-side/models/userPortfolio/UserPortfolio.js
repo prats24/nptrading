@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const { Schema } = mongoose; 
 
 const PortfolioSchema = new mongoose.Schema({
     portfolioName:{
@@ -31,8 +31,13 @@ const PortfolioSchema = new mongoose.Schema({
     },
     portfolioType:{
         type:String,
+        enum:['Contest','Trading']
+    },
+    portfolioAccount:{
+        type:String,
         enum:['Free','Paid']
     },
+    
     createdBy:{
         type: Schema.Types.ObjectId,
         ref: 'user-personal-detail',
