@@ -22,7 +22,22 @@ function ContestRegistration () {
     const  id  = location?.state?.data;
     console.log("Location: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    
+    let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
+
+    let socket;
+    try {
+      socket = io.connect(`${baseUrl1}`)
+    } catch (err) {
+      throw new Error(err);
+    }
+  
+  
+    useEffect(() => {
+      socket.on("connect", () => {
+        socket.emit("hi", true)
+        socket.emit('contest', contestId)
+      })
+    }, []);
     React.useEffect(()=>{
       
         axios.get(`${baseUrl}api/v1/contest/${id}`)
@@ -35,7 +50,7 @@ function ContestRegistration () {
 
     },[])
 
-    console.log("Contest Registration Data: ",contest)
+    console.log("Contest Registration Data: ",id)
     console.log(`/arena/${contest?.contestName}/${contest?._id}`)
   
     return (
@@ -49,9 +64,9 @@ function ContestRegistration () {
                         {contest?.contestName}
                     </MDTypography>
                     
-                    <InstrumentsData contestId={id}/>
+                    <InstrumentsData contestId={id} socket={socket}/>
 
-                    <MYPNLData contestId={id} />
+                    <MYPNLData contestId={id} socket={socket}/>
 
                 </MDBox>
             </Grid>
