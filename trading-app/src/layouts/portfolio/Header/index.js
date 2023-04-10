@@ -9,6 +9,8 @@ import MDBox from '../../../components/MDBox';
 import MDButton from '../../../components/MDButton';
 import {Link} from 'react-router-dom'
 import ContestPortfolioCard from '../data/contestPortfolioCard'
+import TradingPortfolioCard from '../data/tradingPortfolioCard'
+import InactivePortfolioCard from '../data/inactivePortfolioCard'
 
 //data
 // import UpcomingContest from '../data/UserContestCard'
@@ -55,8 +57,24 @@ export default function LabTabs() {
           <ContestPortfolioCard/>
           }
           </TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
+        <TabPanel value="2">
+          {isLoading ? 
+          <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+            <CircularProgress color="info" />
+          </MDBox>
+          : 
+          <TradingPortfolioCard/>
+          }
+        </TabPanel>
+        <TabPanel value="3">
+          {isLoading ? 
+          <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+            <CircularProgress color="info" />
+          </MDBox>
+          : 
+          <InactivePortfolioCard/>
+          }
+        </TabPanel>
       </TabContext>
     </Box>
   );

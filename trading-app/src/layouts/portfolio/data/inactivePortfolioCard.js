@@ -12,16 +12,16 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 
 
-const TradingPortfolioCard = ({isObjectNew,setIsObjectNew}) => {
-  const [tradingPortfolioData,setTradingPortfolioData] = useState([]);
+const InactivePortfolioCard = ({isObjectNew,setIsObjectNew}) => {
+  const [inactivePortfolioData,setInactivePortfolioData] = useState([]);
   const [objectId,setObjectId] = useState('')
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/portfolio/trading`)
+      axios.get(`${baseUrl}api/v1/portfolio/inactive`)
       .then((res)=>{
-                setTradingPortfolioData(res.data.data);
+                setInactivePortfolioData(res.data.data);
                 console.log(res.data.data)
         }).catch((err)=>{
           return new Error(err);
@@ -29,13 +29,13 @@ const TradingPortfolioCard = ({isObjectNew,setIsObjectNew}) => {
   },[])
 
       
-  console.log(tradingPortfolioData)
+  console.log(inactivePortfolioData)
     
     return (
       <>
 
         <Grid container spacing={1} xs={12} md={6} lg={12}>
-          {tradingPortfolioData?.map((e)=>{
+          {inactivePortfolioData?.map((e)=>{
           return (
             
             <Grid key={e._id} item xs={12} md={6} lg={3} >
@@ -92,4 +92,4 @@ const TradingPortfolioCard = ({isObjectNew,setIsObjectNew}) => {
 
 
 
-export default TradingPortfolioCard;
+export default InactivePortfolioCard;
