@@ -9,6 +9,7 @@ const PortfolioSchema = new mongoose.Schema({
     users:[{
         userId:{type:Schema.Types.ObjectId, ref: 'user-personal-detail'},
         linkedOn:{type:Date,default:new Date()},
+        protfolioValue:{type:Number}
     }],
     status:{
         type: String,
@@ -27,6 +28,10 @@ const PortfolioSchema = new mongoose.Schema({
         type: Date,
         required : true,
         default: new Date(),
+    },
+    portfolioType:{
+        type:String,
+        enum:['Free','Paid']
     },
     createdBy:{
         type: Schema.Types.ObjectId,
