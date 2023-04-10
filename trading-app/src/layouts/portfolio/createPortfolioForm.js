@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -23,89 +24,87 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
 
     const [isSubmitted,setIsSubmitted] = useState(false);
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    const getDetails = useContext(userContext);
-    const [indexData,setIndexData] = useState([]);
+    // const getDetails = useContext(userContext);
+    // const [indexData,setIndexData] = useState([]);
     const [formState,setFormState] = useState();
-    const [isObjectNew,setIsObjectNew] = useState(id ? true : false)
+    // const [id,setIsObjectNew] = useState(id ? true : false)
     const [isLoading,setIsLoading] = useState(id ? true : false)
     const [editing,setEditing] = useState(false)
     const [saving,setSaving] = useState(false)
     const [creating,setCreating] = useState(false)
-    const [newObjectId,setNewObjectId] = useState()
-    
-    React.useEffect(()=>{
+    // const [newObjectId,setNewObjectId] = useState()
+    const navigate = useNavigate();
 
-        axios.get(`${baseUrl}api/v1/stockindex/${id}`)
-        .then((res)=>{
-            setIndexData(res.data[0]);
-            // console.log(res.data[0])
-            setFormState({
-                displayName: res.data[0]?.displayName || '',
-                instrumentSymbol: res.data[0]?.instrumentSymbol || '',
-                exchange: res.data[0]?.exchange || '',
-                status: res.data[0]?.status || '',
-                createdBy: res.data[0]?.createdBy || '',
-                lastModifiedBy: res.data[0]?.lastModifiedBy || '',
-                lastModifiedOn: res.data[0]?.lastModifiedOn || '',
-                createdBy: res.data[0]?.createdBy || getDetails.userDetails._id,
-                lastModifiedBy: res.data[0]?.lastModifiedBy || getDetails.userDetails._id,
-                lastModifiedOn: new Date()
-              });
-                setTimeout(()=>{setIsLoading(false)},500) 
-            // setIsLoading(false)
-        }).catch((err)=>{
-            //window.alert("Server Down");
-            return new Error(err);
-        })
+    // React.useEffect(()=>{
 
-    },[])
+    //     axios.get(`${baseUrl}api/v1/stockindex/${id}`)
+    //     .then((res)=>{
+    //         setIndexData(res.data[0]);
+    //         // console.log(res.data[0])
+    //         setFormState({
+    //             displayName: res.data[0]?.displayName || '',
+    //             instrumentSymbol: res.data[0]?.instrumentSymbol || '',
+    //             exchange: res.data[0]?.exchange || '',
+    //             status: res.data[0]?.status || '',
+    //             createdBy: res.data[0]?.createdBy || '',
+    //             lastModifiedBy: res.data[0]?.lastModifiedBy || '',
+    //             lastModifiedOn: res.data[0]?.lastModifiedOn || '',
+    //             createdBy: res.data[0]?.createdBy || getDetails.userDetails._id,
+    //             lastModifiedBy: res.data[0]?.lastModifiedBy || getDetails.userDetails._id,
+    //             lastModifiedOn: new Date()
+    //           });
+    //             setTimeout(()=>{setIsLoading(false)},500) 
+    //         // setIsLoading(false)
+    //     }).catch((err)=>{
+    //         //window.alert("Server Down");
+    //         return new Error(err);
+    //     })
 
-        async function onEdit(e,formState){
-            e.preventDefault()
-            setSaving(true)
-            console.log(formState)
-            if(!formState?.displayName || !formState?.instrumentSymbol || !formState?.exchange || !formState?.status){
-                setTimeout(()=>{setSaving(false);setEditing(true)},500)
-                return openErrorSB("Missing Field","Please fill all the mandatory fields")
-            }
-            const { displayName, instrumentSymbol, exchange, status } = formState;
-    
-            const res = await fetch(`${baseUrl}api/v1/stockindex/${id ? id : newObjectId}`, {
-                method: "PUT",
-                credentials:"include",
-                headers: {
-                    "content-type" : "application/json",
-                    "Access-Control-Allow-Credentials": true
-                },
-                body: JSON.stringify({
-                    displayName, instrumentSymbol, exchange, status
-                })
+    // },[])
+
+    async function onEdit(e,formState){
+        e.preventDefault()
+        setSaving(true)
+        console.log(formState)
+        if(!formState?.portfolioName || !formState?.portfolioValue || !formState?.portfolioType || !formState?.status || !formState?.portfolioAccount){
+            setTimeout(()=>{setSaving(false);setEditing(true)},500)
+            return openErrorSB("Missing Field","Please fill all the mandatory fields")
+        }
+        const { portfolioName, portfolioValue, portfolioType, status, portfolioAccount } = formState;
+
+        const res = await fetch(`${baseUrl}api/v1/portfolio`, {
+            method: "PATCH",
+            credentials:"include",
+            headers: {
+                "content-type" : "application/json",
+                "Access-Control-Allow-Credentials": true
+            },
+            body: JSON.stringify({
+                portfolioName, portfolioValue, portfolioType, status, portfolioAccount            })
             });
-      
-            const data = await res.json();
-            console.log(data);
-            if (data.status === 422 || data.error || !data) {
-                openErrorSB("Error","data.error")
-            } else {
-                openSuccessSB("Index Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
-                setTimeout(()=>{setSaving(false);setEditing(false)},500)
-                console.log("entry succesfull");
-            }
-          }
+
+        const data = await res.json();
+        console.log(data);
+        if (data.status === 422 || data.error || !data) {
+            openErrorSB("Error","data.error")
+        } else {
+            openSuccessSB("Index Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
+            setTimeout(()=>{setSaving(false);setEditing(false)},500)
+            console.log("entry succesfull");
+        }
+    }
     
-
-
     async function onSubmit(e,formState){
         e.preventDefault()
         setCreating(true)
         console.log(formState)
         
-        if(!formState?.displayName || !formState?.instrumentSymbol || !formState?.exchange || !formState?.status){
+        if(!formState?.portfolioName || !formState?.portfolioValue || !formState?.portfolioType || !formState?.status || !formState?.portfolioAccount){
             setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
             return openErrorSB("Missing Field","Please fill all the mandatory fields")
         }
-        const { displayName, instrumentSymbol, exchange, status } = formState;
-        const res = await fetch(`${baseUrl}api/v1/stockindex`, {
+        const { portfolioName, portfolioValue, portfolioType, status, portfolioAccount } = formState;
+        const res = await fetch(`${baseUrl}api/v1/portfolio`, {
             method: "POST",
             credentials:"include",
             headers: {
@@ -113,7 +112,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({
-                displayName, instrumentSymbol, exchange, status
+                portfolioName, portfolioValue, portfolioType, status, portfolioAccount
             })
         });
   
@@ -124,16 +123,11 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
             console.log("invalid entry");
         } else {
-            openSuccessSB("Index Created",data.status)
-            setNewObjectId(data.data)
+            openSuccessSB("Portfolio Created",data.status)
+            // setNewObjectId(data.data)
             setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
         }
-      }
-  const date = new Date(indexData.lastModifiedOn);
-
-  const formattedLastModifiedOn = `${date.getUTCDate()}/${date.toLocaleString('default', { month: 'short' })}/${String(date.getUTCFullYear())} ${String(date.getUTCHours()).padStart(2, '0')}:${String(date.getUTCMinutes()).padStart(2, '0')}:${String(date.getUTCSeconds()).padStart(2, '0')}`;
-
-//   console.log(formattedLastModifiedOn); // Output: "30/Mar/23 20:32:27"
+    }
 
   const [title,setTitle] = useState('')
   const [content,setContent] = useState('')
@@ -184,7 +178,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
 
     console.log("Saving: ",saving)
     console.log("Editing: ",editing)
-    console.log("Id:",id)
+    // console.log("Id:",id)
 
     return (
     <>
@@ -198,7 +192,7 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
         <MDBox pl={2} pr={2} mt={4}>
         <MDBox display="flex" justifyContent="space-between" alignItems="center">
         <MDTypography variant="caption" fontWeight="bold" color="text" textTransform="uppercase">
-          Index Details
+          Fill Portfolio Details
         </MDTypography>
         </MDBox>
 
@@ -207,13 +201,13 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
-                label='Display Name *'
+                label='Portfolio Name *'
                 fullWidth
                 // defaultValue={indexData?.displayName}
-                value={formState?.displayName}
+                value={formState?.portfolioName}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    displayName: e.target.value
+                    portfolioName: e.target.value
                   }))}}
               />
           </Grid>
@@ -222,28 +216,59 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
             <TextField
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 id="outlined-required"
-                label='Instrument Symbol *'
-                defaultValue={indexData?.instrumentSymbol}
+                label='Portfolio Value *'
+                type="number"
+                // defaultValue={indexData?.portfolioValue}
                 fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    instrumentSymbol: e.target.value
+                    portfolioValue: e.target.value
                   }))}}
               />
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
-            <TextField
+              <FormControl sx={{width: "100%" }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Portfolio Type *</InputLabel>
+                <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                // value={oldObjectId ? contestData?.portfolioType : formState?.portfolioType}
+                value={formState?.portfolioType}
                 disabled={((isSubmitted || id) && (!editing || saving))}
-                id="outlined-required"
-                label="Exchange *"
-                defaultValue={formState?.exchange}
-                fullWidth
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
-                    exchange: e.target.value
-                  }))}}
-              />
+                    portfolioType: e.target.value
+                }))}}
+                label="Portfolio Type"
+                sx={{ minHeight:43 }}
+                >
+                <MenuItem value="Contest">Contest</MenuItem>
+                <MenuItem value="Trading">Trading</MenuItem>
+                </Select>
+              </FormControl>
+          </Grid>
+
+          <Grid item xs={12} md={6} xl={3}>
+              <FormControl sx={{width: "100%" }}>
+                <InputLabel id="demo-simple-select-autowidth-label">Portfolio Account *</InputLabel>
+                <Select
+                labelId="demo-simple-select-autowidth-label"
+                id="demo-simple-select-autowidth"
+                // value={oldObjectId ? contestData?.portfolioType : formState?.portfolioType}
+                value={formState?.portfolioAccount}
+                disabled={((isSubmitted || id) && (!editing || saving))}
+                onChange={(e) => {setFormState(prevState => ({
+                    ...prevState,
+                    portfolioAccount: e.target.value
+                }))}}
+                label="Portfolio Account"
+                sx={{ minHeight:43 }}
+                >
+                <MenuItem value="Free">Free</MenuItem>
+                <MenuItem value="Paid">Paid</MenuItem>
+                </Select>
+              </FormControl>
           </Grid>
 
           <Grid item xs={12} md={6} xl={3}>
@@ -252,7 +277,8 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 <Select
                 labelId="demo-simple-select-autowidth-label"
                 id="demo-simple-select-autowidth"
-                defaultValue={indexData?.status}
+                value={formState?.status}
+                // value={oldObjectId ? contestData?.status : formState?.status}
                 disabled={((isSubmitted || id) && (!editing || saving))}
                 onChange={(e) => {setFormState(prevState => ({
                     ...prevState,
@@ -266,56 +292,42 @@ function Index({createIndexForm, setCreateIndexForm, id}) {
                 </Select>
               </FormControl>
           </Grid>
-
-          {/* <Grid item xs={12} md={6} xl={3}></Grid>
-          <Grid item xs={12} md={6} xl={3}></Grid> */}
-          <Grid item xs={12} md={6} xl={6}>
-            {isObjectNew &&
-            <>
-            <MDBox style={{fontSize:10}}>
-                Last Modified By: {indexData?.lastModifiedBy?.first_name} {indexData?.lastModifiedBy?.last_name}
-            </MDBox>
-            <MDBox style={{fontSize:10}}>
-                Last Modified On: {formattedLastModifiedOn}
-            </MDBox>
-            </>}
-          </Grid>
-          
-
-          <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={6}>
-                {!isSubmitted && !isObjectNew && (
-                <>
-                <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={(e)=>{onSubmit(e,formState)}}>
-                    {creating ? <CircularProgress size={20} color="inherit" /> : "Save"}
-                </MDButton>
-                <MDButton variant="contained" color="error" size="small" disabled={creating} onClick={()=>{setCreateIndexForm(false)}}>
-                    Cancel
-                </MDButton>
-                </>
-                )}
-                {(isSubmitted || isObjectNew) && !editing && (
-                <>
-                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} onClick={()=>{setEditing(true)}}>
-                    Edit
-                </MDButton>
-                <MDButton variant="contained" color="info" size="small" onClick={()=>{setCreateIndexForm(false)}}>
-                    Back
-                </MDButton>
-                </>
-                )}
-                {(isSubmitted || isObjectNew) && editing && (
-                <>
-                <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} onClick={(e)=>{onEdit(e,formState)}}>
-                    {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
-                </MDButton>
-                <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setCreateIndexForm(false)}}>
-                    Cancel
-                </MDButton>
-                </>
-                )}
-          </Grid>
             
-          </Grid>
+        </Grid>
+        <Grid>
+            <Grid item display="flex" justifyContent="flex-end" alignContent="center" xs={12} md={6} xl={6}>
+                    {!isSubmitted && !id && (
+                    <>
+                    <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={creating} onClick={(e)=>{onSubmit(e,formState)}}>
+                        {creating ? <CircularProgress size={20} color="inherit" /> : "Save"}
+                    </MDButton>
+                    <MDButton variant="contained" color="error" size="small" disabled={creating} onClick={()=>{navigate("/portfolio")}}>
+                        Cancel
+                    </MDButton>
+                    </>
+                    )}
+                    {(isSubmitted || id) && !editing && (
+                    <>
+                    <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} onClick={()=>{setEditing(true)}}>
+                        Edit
+                    </MDButton>
+                    <MDButton variant="contained" color="info" size="small" onClick={()=>{setIsSubmitted(false)}}>
+                        Back
+                    </MDButton>
+                    </>
+                    )}
+                    {(isSubmitted || id) && editing && (
+                    <>
+                    <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} onClick={(e)=>{onEdit(e,formState)}}>
+                        {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
+                    </MDButton>
+                    <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setEditing(false)}}>
+                        Cancel
+                    </MDButton>
+                    </>
+                    )}
+            </Grid>
+        </Grid>
           {renderSuccessSB}
           {renderErrorSB}
     </MDBox>

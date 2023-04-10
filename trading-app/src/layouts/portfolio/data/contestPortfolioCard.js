@@ -65,13 +65,16 @@ const ContestPortfolioCard = ({isObjectNew,setIsObjectNew}) => {
                         <MDTypography fontSize={9} style={{color:"white"}}>Portfolio Type <span style={{fontSize:11,fontWeight:700}}>{e?.portfolioType}</span></MDTypography>
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={6} mb={1} display="flex" justifyContent="center">
+                    <Grid item xs={12} md={6} lg={6} mb={1} display="flex" justifyContent="right">
                         <MDTypography fontSize={9} style={{color:"white"}}>Portfolio Account <span style={{fontSize:11,fontWeight:700}}>{e.portfolioAccount}</span></MDTypography>
                     </Grid>
 
-                    <Grid item xs={12} md={12} lg={12} display="flex" mt={1} justifyContent="center" alignItems="center" alignContent="center">
+                    <Grid item xs={12} md={12} lg={12} display="flex" mt={1} justifyContent="space-between" alignItems="center" alignContent="center">
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Linked Users : {e?.users?.length}</span>
+                        </MDTypography>
+                        <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
+                            <span style={{marginLeft:2,fontWeight:700}}>Status : {e?.status}</span>
                         </MDTypography>
                     </Grid>
 
