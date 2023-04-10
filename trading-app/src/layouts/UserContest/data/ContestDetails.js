@@ -10,10 +10,12 @@ import { Link } from 'react-router-dom';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
+import { CircularProgress } from '@mui/material';
 
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 function ContestDetails () {
+    const [isLoading,setIsLoading] = useState(false);
     const [contest,setContest] = useState();
     const location = useLocation();
     const  id  = location?.state?.data;
@@ -24,8 +26,12 @@ function ContestDetails () {
       
         axios.get(`${baseUrl}api/v1/contest/${id}`)
         .then((res)=>{
+                setIsLoading(true);
                 setContest(res?.data?.data);
                 console.log(res?.data?.data)
+                setTimeout((e)=>{
+                    setIsLoading(false)
+                },500)
         }).catch((err)=>{
             return new Error(err);
         })
@@ -36,7 +42,13 @@ function ContestDetails () {
     console.log(`/arena/${contest?.contestName}/${contest?._id}`)
   
     return (
-    <MDBox key={contest?._id} width="100%" bgColor="dark" color="light" p={2}>
+    <>
+    {isLoading ? 
+        <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+            <CircularProgress color="info" />
+        </MDBox>
+        : 
+        <MDBox key={contest?._id} width="100%" bgColor="dark" color="light" p={2}>
         <Grid container spacing={2}>
 
             <Grid item xs={12} md={6} lg={4.5} mb={2}>
@@ -120,16 +132,19 @@ function ContestDetails () {
                                 Register
                             </MDButton>
                            
-                            <Link variant="contained" color="dark" size="small" 
-                                // component={Link} 
-                                // to={`/contestPage/${e.contestName}`} 
+                            <MDButton 
+                                variant="outlined" 
+                                color="light" 
+                                size="small" 
+                                component={Link} 
                                 to={{
-                                pathname: `/arena/${contest?._id}`,
-                                }}
-                                state= {{data:contest?._id}}
+                                    pathname: `/arena`,
+                                  }}
+                                //   state= {{data:contest?._id}}
                             >
-                                Register
-                            </Link>
+                                Go Back
+                            </MDButton>
+
                         </Grid>
 
 
@@ -316,6 +331,8 @@ function ContestDetails () {
 
         </Grid>
     </MDBox>
+    }
+    </>
   )
 
 }
