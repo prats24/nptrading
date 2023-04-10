@@ -238,6 +238,13 @@ const userDetailSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'user-personal-detail'
     }],
+    portfolio:[{
+        activationDate: {type: Date},
+        portfolioId: {
+            type: Schema.Types.ObjectId,
+            ref: 'user-portfolio'
+        }
+    }],
     isAlgoTrader:{
         type: Boolean,
         default: false

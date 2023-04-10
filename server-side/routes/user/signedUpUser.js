@@ -11,6 +11,7 @@ const sendSMS = require('../../utils/smsService');
 const Referral = require("../../models/campaigns/referralProgram");
 const Lead = require("../../models/leads/leads");
 const MarginAllocation = require("../../models/marginAllocation/marginAllocationSchema")
+const PortFolio = require("../../models/userPortfolio/UserPortfolio")
 
 router.post("/signup", async (req, res)=>{
     console.log("Inside SignUp Routes")
@@ -228,12 +229,21 @@ router.patch("/verifyotp", async (req, res)=>{
         }
         
         console.log("user Id(Line 204): ",userId)
-
-
-        // let referralDocs = [];
-        // referralDocs.push(referral._id)
         let referral = await Referral.findOne({status: "Active"});
         console.log("referral", referral)
+
+        // free portfolio adding in user collection
+        const activeFreePortfolios = await PortFolio.find({status: "Active", portfolioAccount: "Free"});
+        console.log("active portfolio", activeFreePortfolios);
+        let portfolioArr = [];
+        for (const portfolio of activeFreePortfolios) {
+            let obj = {};
+            obj.portfolioId = portfolio._id;
+            obj.activationDate = new Date();
+            portfolioArr.push(obj);
+        }
+
+        console.log("portfolio arr", portfolioArr);
         try{
         let obj = {
             first_name, last_name, designation: 'Equity Trader', email, 
@@ -245,12 +255,24 @@ router.patch("/verifyotp", async (req, res)=>{
             employeeid: userId,fund: 1000000, creationProcess: 'Auto SignUp',
             joining_date:user.last_modifiedOn,myReferralCode:(await myReferralCode).toString(), referrerCode:referrerCode,
             // referredBy: referredBy,
+            portfolio: portfolioArr,
             referralProgramme: referral._id
         }
         if(referredBy){
             obj.referredBy = referredBy;
         }
         const newuser = await User.create(obj);
+
+        const idOfUser = newuser._id;
+
+        for (const portfolio of activeFreePortfolios) {
+            const portfolioValue = portfolio.portfolioValue;
+          
+            await PortFolio.findByIdAndUpdate(
+              portfolio._id,
+              { $push: { users: { userId: idOfUser, portfolioValue: portfolioValue } } }
+            );
+        }
 
         referral?.users?.push(newuser._id)
         const referralProgramme = await Referral.findOneAndUpdate({status: "Active"}, {
