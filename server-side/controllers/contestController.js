@@ -43,7 +43,7 @@ exports.getContests = async(req, res, next)=>{
 };
 exports.getActiveContests = async(req, res, next)=>{
     try {
-        const contests = await Contest.find({ contestEndDate: { $gte: new Date() } }).populate('contestRule','ruleName'); 
+        const contests = await Contest.find({ contestEndDate: { $gte: new Date() }, status: 'Live', entryClosingDate:{$gte: new Date()} }).populate('contestRule','ruleName'); 
     
         res.status(201).json({status: 'success', data: contests, results: contests.length}); 
         
@@ -203,6 +203,21 @@ exports.myContests = async(req,res,next) => {
         res.status(500).json({status: 'error', message: 'Something went wrong'});
     }
 }
+exports.contestHistory = async(req, res, next) => {
+    const userId = req.user._id;
+    try{
+       const myContestHistory = await Contest.find({"participants.userId": userId, contestEndDate: {$lt: new Date()}});
+       if(!myContestHistory){
+           return res.status(404).json({status:'error', message: 'No contests found'});
+       }
+   
+       res.status(200).json({status: 'success', data: myContestHistory, results: myContestHistory.length});
+   
+    }catch(e){
+       console.log(e);
+       res.status(500).json({status: 'error', message: 'Something went wrong'});
+     } 
+   }
 
 exports.myPortfolio = async(req,res,next) => {
     const userId = req.user._id;
@@ -220,18 +235,3 @@ exports.myPortfolio = async(req,res,next) => {
         res.status(500).json({status: 'error', message: 'Something went wrong'});
     }
 }
-exports.contestHistory = async(req, res, next) => {
-    const userId = req.user._id;
-    try{
-       const myContestHistory = await Contest.find({"participants.userId": userId, contestEndDate: {$lt: new Date()}});
-       if(!myContestHistory){
-           return res.status(404).json({status:'error', message: 'No contests found'});
-       }
-   
-       res.status(200).json({status: 'success', data: myContestHistory, results: myContestHistory.length});
-   
-    }catch(e){
-       console.log(e);
-       res.status(500).json({status: 'error', message: 'Something went wrong'});
-     } 
-   }

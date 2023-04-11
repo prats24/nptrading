@@ -209,3 +209,50 @@ exports.getContestPnl = async(req, res, next) => {
         return res.status(500).json({status:'success', message: 'something went wrong.'})
     }
 }
+
+exports.getContestRank = async (req, res, next) => {
+    const contestId = req.params.id;
+    try{
+
+        const ranks = await ContestTrade.aggregate([
+            // Match documents for the given contestId
+            {
+              $match: {
+                contestId: new ObjectId(contestId)
+              }
+            },
+            // Group by userId and sum the amount
+            {
+              $group: {
+                _id: "$userId",
+                totalAmount: { $sum: "$amount" }
+              }
+            },
+            // Sort by totalAmount in descending order
+            {
+              $sort: {
+                totalAmount: -1
+              }
+            },
+            // Project the result to include only userId and totalAmount
+            {
+              $project: {
+                _id: 0,
+                userId: "$_id",
+                totalAmount: 1
+              }
+            },
+            {
+                $limit: 20
+              }
+          ]);
+        
+        if(!ranks){
+            return res.status(404).json({status:'error', message:'No ranking for the contest'});
+        }
+        
+        res.status(200).json({status: 'success', data: ranks});
+    }catch(e){
+        res.status(500).json({status:'error', message: 'Something went wrong'});
+    }
+}
