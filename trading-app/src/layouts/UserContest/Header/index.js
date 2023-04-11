@@ -9,6 +9,8 @@ import MDBox from '../../../components/MDBox';
 
 //data
 import UpcomingContest from '../data/UserContestCard'
+import MyContestCard from '../data/MyContestCard'
+import MyContestHistoryCard from '../data/MyContestHistoryCard'
 
 export default function LabTabs() {
   const [value, setValue] = React.useState('1');
@@ -40,9 +42,27 @@ export default function LabTabs() {
           : 
           <UpcomingContest />
           }
-          </TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel>
+        </TabPanel>
+        <TabPanel value="2">
+          {isLoading ? 
+          <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+            <CircularProgress color="info" />
+          </MDBox>
+          : 
+          <MyContestCard />
+          }
+        </TabPanel>
+        <TabPanel value="3">
+          {isLoading ? 
+          <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+            <CircularProgress color="info" />
+          </MDBox>
+          : 
+          <MyContestHistoryCard />
+          }
+        </TabPanel>
+        {/* <TabPanel value="2">Item Two</TabPanel>
+        <TabPanel value="3">Item Three</TabPanel> */}
       </TabContext>
     </Box>
   );

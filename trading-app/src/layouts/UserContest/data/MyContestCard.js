@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import axios from "axios";
@@ -13,6 +13,7 @@ import Timer from '../timer'
 import { Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
+import { userContext } from '../../../AuthContext';
   
 
 const ContestCard = ({isObjectNew,setIsObjectNew}) => {
@@ -20,7 +21,8 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
   const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
   const [objectId,setObjectId] = useState('')
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/";
+  const getDetails = useContext(userContext)
 
   React.useEffect(() => {
     const timer = setInterval(() => {
@@ -39,50 +41,23 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
   }, []);
 
 
-  //   useEffect(()=>{
-  
-  //     axios.get(`${baseUrl}api/v1/contest/active`)
-  //     .then((res)=>{
-  //               setContestData(res.data.data);
-  //               console.log(res.data.data)
-  //       }).catch((err)=>{
-  //         return new Error(err);
-  //     })
-  // },[])
-
   useEffect(()=>{
   
-    // promise.all[]
-    let call1 = axios.get(`${baseUrl}api/v1/contest/active`)
-    let call2 = axios.get(`${baseUrl}api/v1/contest/mycontests`,{
-                withCredentials: true,
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Credentials": true
-                  },
-                })
-    Promise.all([call1, call2])
-    .then(([api1Response, api2Response]) => {
-      // Process the responses here
-      console.log(api1Response.data.data);
-      console.log(api2Response.data.data);
-      let activeData = api1Response.data.data;
-      let myData = api2Response.data.data;
-
-      activeData = activeData.filter((elem1) => !myData.some((elem2) => elem1._id === elem2._id));
-
-      console.log(activeData);
-      setContestData(activeData);
-    
+    axios.get(`${baseUrl}api/v1/contest/mycontests`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
     })
-    .catch((error) => {
-      // Handle errors here
-      console.error(error);
-    });  
-              
-  },[])
-
+    .then((res)=>{
+              setContestData(res.data.data);
+              console.log(res.data.data)
+      }).catch((err)=>{
+        return new Error(err);
+    })
+},[])
 
       // console.log("Contest Data: ",contestData)
 
@@ -127,6 +102,9 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
+        let portfolioId = e?.participants.filter((elem)=>{
+            return elem.userId == getDetails.userDetails._id
+        })
 
         return <>
         
@@ -135,9 +113,9 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/${e.contestName}`,
+              pathname: `/arena/contest/trade`,
             }}
-            state= {{data:e._id}}
+            state= {{contestId: e?._id, portfolioId: portfolioId[0].portfolioId}}
             >
                 <Grid container>
                     <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">

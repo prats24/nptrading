@@ -90,7 +90,7 @@ exports.joinContest = async(req, res, next) => {
     const userId = req.user._id;
     const contestId = req.params.id;
     const {paymentId, portfolioId} = req.body;
-
+    console.log(req.body, contestId)
     try{
         const contest = await Contest.findById(contestId);
         if(!contest){
@@ -147,7 +147,7 @@ exports.joinContest = async(req, res, next) => {
         //       });
         // }
         
-        contest.participants.push({userId, registeredOn: Date.now(), paymentId, portfolioId, status: "Joined"});
+        contest.participants.push({userId, registeredOn: Date.now(), paymentId, portfolioId: portfolioId, status: "Joined"});
         await contest.save({validateBeforeSave: false});
         const user = await User.findById(userId);
         user.contests.push(contest._id);

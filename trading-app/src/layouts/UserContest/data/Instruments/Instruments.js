@@ -15,7 +15,7 @@ import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
 
 
-function InstrumentsData({contestId, socket}){
+function InstrumentsData({contestId, socket, portfolioId}){
 
     const marketDetails = useContext(marketDataContext)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -132,7 +132,7 @@ return (
     
                 <Grid item xs={12} md={12} lg={1} display="flex" justifyContent="center">
                 {/* <MDButton variant="contained" color="info" style={{fontSize:12,minWidth:"80%",padding:'none',cursor:"pointer"}}>B</MDButton> */}
-                    <BuyModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument.splice(-7)} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
+                    <BuyModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
                 </Grid>
                 {/* reRender={reRender} setReRender={setReRender} */}
                 <Grid item xs={12} md={12} lg={0.5} display="flex" justifyContent="center">
@@ -141,7 +141,7 @@ return (
     
                 <Grid item xs={12} md={12} lg={1} display="flex" justifyContent="center">
                 {/* <MDButton variant="contained" color="error" style={{fontSize:12,minWidth:"80%",padding:'none',cursor:"pointer"}}>S</MDButton> */}
-                    <SellModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument.splice(-7)} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
+                    <SellModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
                 </Grid>
     
             </Grid>

@@ -15,7 +15,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
   
 
-const ContestCard = ({isObjectNew,setIsObjectNew}) => {
+const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
 
   const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
@@ -39,50 +39,23 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
   }, []);
 
 
-  //   useEffect(()=>{
-  
-  //     axios.get(`${baseUrl}api/v1/contest/active`)
-  //     .then((res)=>{
-  //               setContestData(res.data.data);
-  //               console.log(res.data.data)
-  //       }).catch((err)=>{
-  //         return new Error(err);
-  //     })
-  // },[])
-
   useEffect(()=>{
   
-    // promise.all[]
-    let call1 = axios.get(`${baseUrl}api/v1/contest/active`)
-    let call2 = axios.get(`${baseUrl}api/v1/contest/mycontests`,{
-                withCredentials: true,
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "Access-Control-Allow-Credentials": true
-                  },
-                })
-    Promise.all([call1, call2])
-    .then(([api1Response, api2Response]) => {
-      // Process the responses here
-      console.log(api1Response.data.data);
-      console.log(api2Response.data.data);
-      let activeData = api1Response.data.data;
-      let myData = api2Response.data.data;
-
-      activeData = activeData.filter((elem1) => !myData.some((elem2) => elem1._id === elem2._id));
-
-      console.log(activeData);
-      setContestData(activeData);
-    
+    axios.get(`${baseUrl}api/v1/contest/mycontests`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
     })
-    .catch((error) => {
-      // Handle errors here
-      console.error(error);
-    });  
-              
-  },[])
-
+    .then((res)=>{
+              setContestData(res.data.data);
+              console.log(res.data.data)
+      }).catch((err)=>{
+        return new Error(err);
+    })
+},[])
 
       // console.log("Contest Data: ",contestData)
 
@@ -189,7 +162,7 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
             </Grid>
         
         </>
-        })}
+    })}
     </Grid>
 
       </MDBox>
@@ -198,4 +171,4 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
 
 
 
-export default ContestCard;
+export default MyContestHistoryCard;

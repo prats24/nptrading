@@ -19,7 +19,7 @@ import Contest from "./layouts/user-contest"
 import UserContest from "./layouts/UserContest"
 import ContestPage from './layouts/UserContest/contestPage'
 import ContestRegisterPage from './layouts/UserContest/contestRegistrationPage'
-
+import ContestTradePage from './layouts/UserContest/ContestTrade'
 
 const routes = [
 
@@ -59,11 +59,19 @@ const routes = [
   },
   {
     // type: "collapse",
-    // name: "Arena",
+    // name: "Arena", ContestTradePage
     // key: "arena",
     // icon: <BusinessIcon/>,
     route: "arena/:name/register",
     component: <ContestRegisterPage />,
+  },
+  {
+    // type: "collapse",
+    // name: "Arena", 
+    // key: "arena",
+    // icon: <BusinessIcon/>,
+    route: "arena/contest/trade",
+    component: <ContestTradePage />,
   },
   {
     type: "collapse",

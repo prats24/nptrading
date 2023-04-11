@@ -209,7 +209,7 @@ function ContestDetails () {
                                   }}
                                   state= {{data:contest?._id}}
 
-                                  onClick={()=>{joinContest(contest?._id)}}
+                                //   onClick={()=>{joinContest(contest?._id)}}
                             >
                                 Register
                             </MDButton>
