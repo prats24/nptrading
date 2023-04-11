@@ -127,9 +127,14 @@ function ContestDetails () {
             <Grid item xs={12} md={6} lg={4.5} mb={2}>
                 <MDBox color="light">
 
-                    <MDTypography color="light" display="flex" justifyContent="center" flexDirection="row" alignItems="center" alignContent="center">
-                        <MDBox mr={2} fontSize={15} color="light">League is about to begin in</MDBox>
-                        <MDBox fontWeight={700} borderRadius={4} p={0.5} bgColor="light" fontSize={13} color="dark"><Timer targetDate={contest?.contestStartDate} text="Contest Started" /></MDBox>
+                    <MDTypography mb={2} color="light" display="flex" flexDirection="row" alignItems="center" alignContent="center">
+                        <MDBox mr={2} fontSize={14} display="flex" justifyContent="left" color="light">League is about to begin in</MDBox>
+                        <MDBox display="flex" justifyContent="right" fontWeight={700} borderRadius={4} p={0.5} bgColor="light" fontSize={12} color="dark"><Timer targetDate={contest?.contestStartDate} text="Contest has Started" /></MDBox>
+                    </MDTypography>
+
+                    <MDTypography color="light" display="flex" flexDirection="row" alignItems="center" alignContent="center">
+                        <MDBox mr={2} fontSize={14} display="flex" justifyContent="left" color="light">Registration Open in</MDBox>
+                        <MDBox fontWeight={700} borderRadius={4} p={0.5} display="flex" justifyContent="right" bgColor="light" fontSize={12} color="dark"><Timer targetDate={contest?.entryOpeningDate} text="Open for Registration now. Register!" /></MDBox>
                     </MDTypography>
 
                     <Grid container  spacing={2}>
