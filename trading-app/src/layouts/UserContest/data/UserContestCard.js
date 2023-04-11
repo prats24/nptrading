@@ -13,6 +13,7 @@ import Timer from '../timer'
 import { Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
+import ProgressBar from '../data/ProgressBar'
   
 
 const ContestCard = ({isObjectNew,setIsObjectNew}) => {
@@ -168,7 +169,7 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
                     </Grid>
                     
                     <Grid item xs={12} md={6} lg={12} sx={{width:"100%"}}>
-                        <LinearProgress  variant="determinate" value={progress} />
+                      <ProgressBar progress={((e?.participants?.length)/(e?.maxParticipants)*100)}/>
                     </Grid>
 
                     <Grid item xs={12} md={12} lg={12} display="flex" mt={1} ml={1} mr={1} justifyContent="space-between" alignItems="center" alignContent="center">
@@ -176,7 +177,7 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Min: {e?.minParticipants}</span>
                         </MDTypography>
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
-                            <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: {e?.minParticipants}</span>
+                            <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: {e?.participants?.length}</span>
                         </MDTypography>
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Max: {e?.maxParticipants}</span>

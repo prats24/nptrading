@@ -77,7 +77,7 @@ router.put("/contestrule/:id",authentication, async (req, res)=>{
 router.get("/contestrule/:id", (req, res)=>{
     const {id} = req.params;
 
-    ContestRule.find({ _id: id })
+    ContestRule.find({ _id: id }).populate('contestRules','rule')
     .populate('lastModifiedBy', { first_name: 1, last_name: 1 })
     .then((data) => {
         if (!data) {

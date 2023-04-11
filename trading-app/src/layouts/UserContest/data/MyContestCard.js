@@ -11,34 +11,17 @@ import ContestIcon from "../../../assets/images/contest.png";
 import { HiUserGroup } from 'react-icons/hi';
 import Timer from '../timer'
 import { Typography } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import { userContext } from '../../../AuthContext';
+import ProgressBar from '../data/ProgressBar'
   
 
-const ContestCard = ({isObjectNew,setIsObjectNew}) => {
+const ContestCard = () => {
 
-  const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
-  const [objectId,setObjectId] = useState('')
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/";
   const getDetails = useContext(userContext)
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
 
 
     useEffect(()=>{
@@ -102,8 +85,8 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
-        let portfolioId = e?.participants.filter((elem)=>{
-            return elem.userId == getDetails.userDetails._id
+        let portfolioId = e?.participants?.filter((elem)=>{
+            return elem?.userId == getDetails?.userDetails?._id
         })
 
         return <>
@@ -145,8 +128,10 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
                         <Typography fontSize={8} style={{color:"white"}}>Entry <span style={{fontSize:10,fontWeight:700}}>{e?.entryFee?.amount ? 'FREE' : e?.entryFee?.amount}</span></Typography>
                     </Grid>
                     
-                    <Grid item xs={12} md={6} lg={12} sx={{width:"100%"}}>
-                        <LinearProgress  variant="determinate" value={progress} />
+                    <Grid item xs={12} md={6} lg={12}>
+                      <MDBox sx={{ flexGrow: 1 }}>
+                      <ProgressBar progress={((e?.participants?.length)/(e?.maxParticipants)*100)}/>
+                      </MDBox>
                     </Grid>
 
                     <Grid item xs={12} md={12} lg={12} display="flex" mt={1} ml={1} mr={1} justifyContent="space-between" alignItems="center" alignContent="center">
@@ -154,7 +139,7 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Min: {e?.minParticipants}</span>
                         </MDTypography>
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
-                            <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: {e?.minParticipants}</span>
+                            <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: {e?.participants?.length}</span>
                         </MDTypography>
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Max: {e?.maxParticipants}</span>
@@ -163,9 +148,9 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
 
                 </Grid>
                 </MDButton>
+                
             </MDBox>
-            </Grid>
-        
+            </Grid>        
         </>
         })}
     </Grid>
