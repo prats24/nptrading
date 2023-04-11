@@ -21,6 +21,7 @@ const ContestCard = () => {
   const [contestData,setContestData] = useState([]);
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/";
   const getDetails = useContext(userContext)
+  let nextPagePath = 'notstarted';
 
 
 
@@ -88,7 +89,13 @@ const ContestCard = () => {
         let portfolioId = e?.participants?.filter((elem)=>{
             return elem?.userId == getDetails?.userDetails?._id
         })
-
+        if((new Date()) < new Date(e?.contestStartDate)){
+          nextPagePath = 'notstarted'
+        } else{
+          console.log(new Date(), new Date(e?.contestStartDate))
+          nextPagePath = 'trade'
+        }
+        // nextPagePath, setNextPagePath
         return <>
         
             <Grid key={e._id} item xs={12} md={6} lg={3} >
@@ -96,7 +103,7 @@ const ContestCard = () => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/contest/trade`,
+              pathname: `/arena/contest/${nextPagePath}`,
             }}
             state= {{contestId: e?._id, portfolioId: portfolioId[0].portfolioId}}
             >

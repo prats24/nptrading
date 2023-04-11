@@ -12,29 +12,38 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
 
 
-const ContestPortfolioCard = ({contestId}) => {
+const ContestPortfolioCard = ({contestId, endDate}) => {
   
   const [contestPortfolioData,setContestPortfolioData] = useState([]);
   const [objectId,setObjectId] = useState(contestId);
   const [selectedPortfolio, setSelectedPortfolio] = useState("");
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   console.log("contestId", contestId, objectId)
+
+  let nextPagePath = 'notstarted';
+  if((new Date()) < new Date(endDate)){
+    nextPagePath = 'notstarted'
+  } else{
+    console.log(new Date(), new Date(endDate))
+    nextPagePath = 'trade'
+  }
+
   useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/portfolio/user`,{
-        withCredentials: true,
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-      })
-      .then((res)=>{
-                setContestPortfolioData(res.data.data);
-                console.log(res.data.data)
-        }).catch((err)=>{
-          return new Error(err);
-      })
+    axios.get(`${baseUrl}api/v1/portfolio/user`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+    })
+    .then((res)=>{
+              setContestPortfolioData(res.data.data);
+              console.log(res.data.data)
+      }).catch((err)=>{
+        return new Error(err);
+    })
   },[])
 
   async function joinContest(){
@@ -71,6 +80,7 @@ const ContestPortfolioCard = ({contestId}) => {
 
         <Grid container spacing={1} xs={12} md={6} lg={12}>
           {contestPortfolioData?.map((e)=>{
+
             let color = (selectedPortfolio === e._id) ? "warning" : "light";
           return (
             
@@ -119,7 +129,7 @@ const ContestPortfolioCard = ({contestId}) => {
                 <MDButton variant="outlined" size="small" color="light"
                   component={Link} 
                   to={{
-                      pathname: `/arena/contest/trade`,
+                      pathname: `/arena/contest/${nextPagePath}`,
                     }}
                     state= {{contestId: contestId, portfolioId: selectedPortfolio}}
                   

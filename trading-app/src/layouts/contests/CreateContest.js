@@ -23,6 +23,7 @@ import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker
 import { IoMdAddCircle } from 'react-icons/io';
 import { useTheme } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import { useNavigate } from "react-router-dom";
 
 
 import CreateRewardForm from './CreateRewards'
@@ -61,6 +62,7 @@ function CreateContest({createContestForm, setCreateContestForm, oldObjectId, se
   const [addRewardObject,setAddRewardObject] = useState(false);
 
 let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+const navigate = useNavigate();
 
 const theme = useTheme();
   const [ruleName, setRuleName] = React.useState([]);
@@ -123,13 +125,13 @@ React.useEffect(()=>{
       return new Error(err)
   })
 
-  axios.get(`${baseUrl}api/v1/contestrule/${id}`)
-  .then((res)=>{
-    setContestRules(res.data);
-  }).catch((err)=>{
-      return new Error(err)
-  })
-},[isSubmitted])
+  // axios.get(`${baseUrl}api/v1/contestrule/${id}`)
+  // .then((res)=>{
+  //   setContestRules(res.data);
+  // }).catch((err)=>{
+  //     return new Error(err)
+  // })
+},[isSubmitted, editing])
 
 
 
@@ -220,6 +222,46 @@ async function onAddReward(e,childFormState,setChildFormState){
   }
 }
 
+async function onEdit(e,formState){
+  e.preventDefault()
+  setSaving(true)
+  console.log(formState)
+  if(
+    !formState?.contestName || !formState?.maxParticipants || !formState?.minParticipants || 
+    !formState?.stockType || !formState?.contestOn || !formState.contestRule || !formState?.contestStartDate || 
+    !formState?.contestEndDate || !formState?.entryOpeningDate || 
+    !formState?.entryClosingDate || !formState?.entryFee?.amount || 
+    !formState?.entryFee?.currency || !formState?.status){
+
+    setTimeout(()=>{setCreating(false);setIsSubmitted(false)},500)
+    return openErrorSB("Missing Field","Please fill all the mandatory fields")
+
+}
+  const { contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status, contestMargin } = formState;
+
+  const res = await fetch(`${baseUrl}api/v1/portfolio`, {
+      method: "PATCH",
+      credentials:"include",
+      headers: {
+          "content-type" : "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+      body: JSON.stringify({
+        contestName, contestRule, maxParticipants, minParticipants, stockType, contestOn, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, entryFee:{amount,currency}, status, contestMargin
+      })
+    });
+
+  const data = await res.json();
+  console.log(data);
+  if (data.status === 422 || data.error || !data) {
+      openErrorSB("Error","data.error")
+  } else {
+      openSuccessSB("Contest Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
+      setTimeout(()=>{setSaving(false);setEditing(false)},500)
+      console.log("entry succesfull");
+  }
+}
+
 
 const [title,setTitle] = useState('')
 const [content,setContent] = useState('')
@@ -231,7 +273,7 @@ setContent(content)
 setSuccessSB(true);
 }
 const closeSuccessSB = () => setSuccessSB(false);
-// console.log("Title, Content, Time: ",title,content,time)
+console.log("contestRules",contestRules)
 
 
 const renderSuccessSB = (
@@ -580,20 +622,21 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 <MDButton variant="contained" color="success" size="small" sx={{mr:1, ml:2}} disabled={editing} onClick={(e)=>{setEditing(true)}}>
                     {editing ? <CircularProgress size={20} color="inherit" /> : "Edit"}
                 </MDButton>
-                <MDButton variant="contained" color="error" size="small" disabled={editing} onClick={()=>{setCreateContestFormCard(false); setCreateContestForm(false)}}>
+                <MDButton variant="contained" color="error" size="small" disabled={editing} onClick={()=>{id ? navigate("/contests") : setIsSubmitted(false)}}>
                     Back
                 </MDButton>
+                {/* onClick={()=>{setCreateContestFormCard(false); setCreateContestForm(false)}} */}
                 </>
                 )}
                 {(isSubmitted || isObjectNew) && editing && (
                 <>
                 <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} 
-                onClick={(e)=>{setEditing(false)}}
+                onClick={(e)=>{onEdit(e,formState)}}
                 
                 >
                     {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
                 </MDButton>
-                <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setCreateContestForm(false)}}>
+                <MDButton variant="contained" color="error" size="small" disabled={saving} onClick={()=>{setEditing(false)}}>
                     Cancel
                 </MDButton>
                 </>
