@@ -5,13 +5,19 @@ const {newTrade, getUserTrades, currentUser, getContestRank} = require('../../co
 const authoizeTrade = require('../../controllers/authoriseTrade');
 
 router.route('/myTrades').get(Authenticate, currentUser , getUserTrades);
+router.route('/pnl').get(Authenticate, getContestPnl);
 
 router.route('/rank').get(getContestRank);
 
-router.route('/:id').post(Authenticate, authoizeTrade.contestFundCheck, newTrade);
-router.route('/:userId').get(Authenticate, getUserTrades);
+router.route('/').post(Authenticate, authoizeTrade.contestFundCheck, newTrade);
+// router.route('/:userId').get(Authenticate, getUserTrades);
+
+// router.route('/').post(Authenticate, newTrade);
+// // router.route('/').get(Authenticate, getUserTrades);
+
 
 
 
 module.exports = router;
+// , authoizeTrade.contestFundCheck
 

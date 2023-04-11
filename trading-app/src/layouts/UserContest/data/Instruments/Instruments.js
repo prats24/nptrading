@@ -20,6 +20,7 @@ function InstrumentsData({contestId, socket, portfolioId}){
     const marketDetails = useContext(marketDataContext)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [instrumentData, setInstrumentData] = useState([]);
+    const [marketData, setMarketData] = useState([]);
 
     useEffect(()=>{
         // console.log("contestId", contestId)
@@ -41,7 +42,7 @@ function InstrumentsData({contestId, socket, portfolioId}){
     useEffect(()=>{
         axios.get(`${baseUrl}api/v1/getliveprice`)
         .then((res) => {
-          marketDetails.setMarketData(res.data);
+          setMarketData(res.data);
         }).catch((err) => {
             return new Error(err);
         })
@@ -52,7 +53,7 @@ function InstrumentsData({contestId, socket, portfolioId}){
         // socket.on("tick", (data) => {
         socket.on("contest-ticks", (data) => {
           console.log('data from socket in instrument in parent', data);
-          marketDetails.setMarketData(prevInstruments => {
+          setMarketData(prevInstruments => {
             const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
             data.forEach(instrument => {
               instrumentMap.set(instrument.instrument_token, instrument);
@@ -63,7 +64,7 @@ function InstrumentsData({contestId, socket, portfolioId}){
         })
     }, [])
     
-      console.log("instrument", contestId, instrumentData)
+      console.log("instrument", contestId, portfolioId, marketData)
 
 return (
     <>
@@ -106,7 +107,7 @@ return (
         </Grid>
 
         {instrumentData.map((elem)=>{
-            let perticularInstrumentMarketData = marketDetails.marketData.filter((subelem)=>{
+            let perticularInstrumentMarketData = marketData.filter((subelem)=>{
             return elem.instrumentToken === subelem.instrument_token
             })
             return(
@@ -124,15 +125,24 @@ return (
                     <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>{"₹"+(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)}</MDTypography>
                 </Grid>
     
+                {perticularInstrumentMarketData[0]?.change !== undefined ?
                 <Grid item xs={12} md={12} lg={2} display="flex" justifyContent="center">
                     <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>
                         {perticularInstrumentMarketData[0]?.change >= 0 ? "+" + ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%" : ((perticularInstrumentMarketData[0]?.change)?.toFixed(2))+"%"}
                     </MDTypography>
                 </Grid>
+                :
+                <Grid item xs={12} md={12} lg={2} display="flex" justifyContent="center">
+                    <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>
+                        {(((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100) >= 0 ? "+" + (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%" : (((perticularInstrumentMarketData[0]?.last_price - perticularInstrumentMarketData[0]?.average_price) / perticularInstrumentMarketData[0]?.average_price)*100)?.toFixed(2)+"%"}
+                    </MDTypography>
+                </Grid>
+                }
+
     
                 <Grid item xs={12} md={12} lg={1} display="flex" justifyContent="center">
                 {/* <MDButton variant="contained" color="info" style={{fontSize:12,minWidth:"80%",padding:'none',cursor:"pointer"}}>B</MDButton> */}
-                    <BuyModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
+                    <BuyModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId} portfolioId={portfolioId}/>
                 </Grid>
                 {/* reRender={reRender} setReRender={setReRender} */}
                 <Grid item xs={12} md={12} lg={0.5} display="flex" justifyContent="center">
@@ -141,7 +151,7 @@ return (
     
                 <Grid item xs={12} md={12} lg={1} display="flex" justifyContent="center">
                 {/* <MDButton variant="contained" color="error" style={{fontSize:12,minWidth:"80%",padding:'none',cursor:"pointer"}}>S</MDButton> */}
-                    <SellModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId}/>
+                    <SellModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId} portfolioId={portfolioId}/>
                 </Grid>
     
             </Grid>

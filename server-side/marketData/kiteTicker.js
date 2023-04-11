@@ -32,6 +32,7 @@ const disconnectTicker = () => {
 const subscribeTokens = async() => {
   // getKiteCred.getAccess().then(async (data)=>{
     let tokens = await fetchToken();
+    console.log("token in kite", tokens)
     ticker?.subscribe(tokens);
   // });
 }
@@ -73,6 +74,7 @@ const getTicks = async (socket) => {
   // console.log("checking get ticks", contestInstrument, indecies)
   ticker.on('ticks', async (ticks) => {
     // console.log(ticks)
+
     socket.emit('tick', ticks);
     // socket.emit('check', ticks);
 
@@ -101,13 +103,13 @@ const getTicks = async (socket) => {
       // console.log("contest id is ", contestId)
       // let contestInstruments = await client.SMEMBERS((contestId).toString());
       // let contestInstrumentSet = new Set(contestInstruments); // create a Set of tokenArray elements
-      // console.log(contestId, contestInstruments)
+      // console.log("contestInstrumentData", contestInstrumentData, contestInstrument)
       let userId = await client.get(socket.id)
-      console.log("userId", userId, socket.id)
+      // console.log("userId", userId, socket.id)
       let instruments = await client.SMEMBERS(userId)
-      console.log(userId, instruments)
+      // console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
-      console.log(instrumentTokenArr)
+      // console.log(instrumentTokenArr)
       let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
       // let contestTicks = ticks.filter(tick => contestInstrumentSet.has((tick.instrument_token).toString()));
 

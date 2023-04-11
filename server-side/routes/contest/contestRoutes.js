@@ -104,6 +104,7 @@ patch(Authenticate, editContest);
 router.route('/mycontests').get(Authenticate, myContests);
 router.route('/history').get(Authenticate, myContestHistory);
 router.route('/active').get(getActiveContests)
+router.route('/history').get(Authenticate, contestHistory)
 router.route('/:id').get(getContest).post(Authenticate, joinContest).patch(Authenticate, editContest)
 router.use('/:id/trades', contestTradeRoutes);
 module.exports = router;

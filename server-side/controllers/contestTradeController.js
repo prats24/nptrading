@@ -6,6 +6,7 @@ const BrokerageDetail = require("../models/Trading Account/brokerageSchema");
 // const MockTradeDetailsTrader = require("../models/mock-trade/mockTradeTraders");
 const axios = require('axios')
 const uuid = require('uuid');
+const ObjectId = require('mongodb').ObjectId;
 
 
 exports.newTrade = async (req, res, next) => {
@@ -15,7 +16,7 @@ exports.newTrade = async (req, res, next) => {
   let {  exchange, symbol, buyOrSell, Quantity, Price, 
         Product, OrderType, TriggerPrice, stopLoss, uId,
         validity, variety, createdBy, order_id,
-        userId, instrumentToken, trader } = req.body
+        userId, instrumentToken, trader, portfolioId } = req.body
 
         console.log(req.body)
 
@@ -107,7 +108,7 @@ exports.newTrade = async (req, res, next) => {
           status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
           variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
           order_id, instrumentToken, brokerage: brokerageUser, contestId: contestId,
-          tradeBy: req.user._id,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time,
+          tradeBy: req.user._id,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time, portfolioId
           
       });
 
@@ -126,30 +127,6 @@ exports.newTrade = async (req, res, next) => {
   console.log("6st")
 
 }
-// exports.newTrade = async(req,res,next) => {
-//     const userId = req.user._id;
-//     const contestId = req.params.id;
-//     const{
-      
-//         average_price, Quantity, Product, buyOrSell, variety, validity, order_type, symbol, placed_by, brokerage, instrumentToken,
-//         amount, trade_time 
-//     } = req.body;
-//     try{
-//         const newTrade = await ContestTrade.create({
-//             order_id: uuid.v4(), contestId: contestId, status, average_price, Quantity,
-//             Product, buyOrSell, variety, validity, order_type, symbol, placed_by, 
-//             brokerage, instrumentToken, tradeBy: userId, amount, trade_time, trader: userId, createdBy: userId 
-//         });
-//         res.status(201).json({status: 'success', message:'Trade placed successfully.'});
-//     }catch(e){
-//         console.log(e);
-//         return res.status(500).json({status: 'error', message: 'Something went wrong'});
-//     }
-
-
-    
-
-// }
 
 exports.checkContestTradeEligibility = async(req, res,next) => {
 
@@ -173,9 +150,12 @@ exports.getUserTrades = async(req,res,next) => {
 }
 
 exports.getContestPnl = async(req, res, next) => {
-    const {userId, id} = req.params;
+  console.log("in get contest")
+    const userId = req.user._id;
+    const contestId = req.params.id;
+    const portfolioId = req.query.portfolioId;
     const today = new Date().toISOString().slice(0, 10);
-
+    console.log("in getContestPnl", userId, contestId, portfolioId, today)
     try{
         let pnlDetails = await ContestTrade.aggregate([
             {
@@ -184,7 +164,9 @@ exports.getContestPnl = async(req, res, next) => {
                   $regex: today,
                 },
                 status: "COMPLETE",
-                userId: id
+                trader: userId,
+                contestId: new ObjectId(contestId),
+                portfolioId: new ObjectId(portfolioId)
               },
             },
             {
@@ -218,7 +200,9 @@ exports.getContestPnl = async(req, res, next) => {
                 _id: -1,
               },
             },
-          ]);
+        ]);
+
+        res.status(201).json(pnlDetails);
 
     }catch(e){
         console.log(e);

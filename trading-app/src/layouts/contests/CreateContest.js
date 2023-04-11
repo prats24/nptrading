@@ -588,7 +588,8 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 {(isSubmitted || isObjectNew) && editing && (
                 <>
                 <MDButton variant="contained" color="warning" size="small" sx={{mr:1, ml:2}} disabled={saving} 
-                // onClick={(e)=>{onEdit(e,formState)}}
+                onClick={(e)=>{setEditing(false)}}
+                
                 >
                     {saving ? <CircularProgress size={20} color="inherit" /> : "Save"}
                 </MDButton>

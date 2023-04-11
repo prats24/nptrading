@@ -45,6 +45,7 @@ router.post("/contestInstrument", async (req, res)=>{
             instruments.save().then(async()=>{
                 //  const newredisClient = await client.SADD((_id).toString(), (instrumentToken).toString());
                 //  console.log("this is redis client", newredisClient)
+                client.del(socket.id);
                  await subscribeTokens();
                 res.status(201).json({massage : "data enter succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
