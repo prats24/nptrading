@@ -1,7 +1,7 @@
 const express = require("express");
 const Authenticate = require('../../authentication/authentication');
 const router = express.Router({mergeParams: true});
-const {newTrade, getUserTrades, currentUser, getContestRank} = require('../../controllers/contestTradeController');
+const {newTrade, getUserTrades, currentUser, getContestRank, getContestPnl} = require('../../controllers/contestTradeController');
 const authoizeTrade = require('../../controllers/authoriseTrade');
 
 router.route('/myTrades').get(Authenticate, currentUser , getUserTrades);
