@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, useContext} from 'react'
 // import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
@@ -10,9 +10,14 @@ import MDButton from '../../../../components/MDButton'
 // import TaskAltIcon from '@mui/icons-material/TaskAlt';
 // import { useLocation } from 'react-router-dom';
 import axios from "axios";
+import { marketDataContext } from '../../../../MarketDataContext';
+import BuyModel from "./BuyModel";
+import SellModel from "./SellModel";
+
 
 function InstrumentsData({contestId, socket}){
 
+    const marketDetails = useContext(marketDataContext)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [instrumentData, setInstrumentData] = useState([]);
 

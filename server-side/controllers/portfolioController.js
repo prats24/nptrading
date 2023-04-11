@@ -140,6 +140,7 @@ exports.getUserPortfolio = async(req,res,next) => {
     
     try{
         const userId = req.user._id;
+        // const userId = "64340f477818ebba306d49ad"
 
         const user = await User.findOne({_id: userId});
         const portfolioIds = user.portfolio.map(p => p.portfolioId);

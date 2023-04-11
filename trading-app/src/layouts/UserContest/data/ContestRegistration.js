@@ -1,4 +1,5 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
+import { io } from "socket.io-client";
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
@@ -35,7 +36,7 @@ function ContestRegistration () {
     useEffect(() => {
       socket.on("connect", () => {
         socket.emit("hi", true)
-        socket.emit('contest', contestId)
+        socket.emit('contest', id)
       })
     }, []);
     React.useEffect(()=>{
