@@ -129,7 +129,12 @@ const ContestPortfolioCard = ({contestId}) => {
                 </MDButton>
             </Grid>
             <Grid item mt={2} xs={6} md={3} lg={6} display="flex" justifyContent="center"> 
-                <MDButton variant="outlined" size="small" color="light">
+                <MDButton variant="outlined" size="small" color="light" 
+                  component={Link} 
+                  to={{
+                      pathname: `/arena`,
+                    }}
+                >
                     Back
                 </MDButton>
             </Grid>

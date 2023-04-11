@@ -41,7 +41,7 @@ const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
 
   useEffect(()=>{
   
-    axios.get(`${baseUrl}api/v1/contest/mycontests`,{
+    axios.get(`${baseUrl}api/v1/contest/history`,{
       withCredentials: true,
       headers: {
           Accept: "application/json",

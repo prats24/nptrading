@@ -187,7 +187,7 @@ exports.getContest = async (req,res,next) => {
 exports.myContests = async(req,res,next) => {
     const userId = req.user._id;
     try{
-        const myContests = await Contest.find({"participants.userId": userId});
+        const myContests = await Contest.find({"participants.userId": userId, contestEndDate: {$gte: new Date()}});
 
         if(!myContests){
             return res.status(404).json({status:'error', message: 'No contests found'});
@@ -217,3 +217,18 @@ exports.myPortfolio = async(req,res,next) => {
         res.status(500).json({status: 'error', message: 'Something went wrong'});
     }
 }
+exports.contestHistory = async(req, res, next) => {
+    const userId = req.user._id;
+    try{
+       const myContestHistory = await Contest.find({"participants.userId": userId, contestEndDate: {$lt: new Date()}});
+       if(!myContestHistory){
+           return res.status(404).json({status:'error', message: 'No contests found'});
+       }
+   
+       res.status(200).json({status: 'success', data: myContestHistory, results: myContestHistory.length});
+   
+    }catch(e){
+       console.log(e);
+       res.status(500).json({status: 'error', message: 'Something went wrong'});
+     } 
+   }
