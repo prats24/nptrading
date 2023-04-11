@@ -94,6 +94,7 @@ exports.joinContest = async(req, res, next) => {
     try{
         const contest = await Contest.findById(contestId);
         if(!contest){
+            console.log("in 1st")
             return res.status(404).json({
                 status: 'error',
                 message: 'No such contest exixts.'
@@ -102,6 +103,7 @@ exports.joinContest = async(req, res, next) => {
         
         //Check if the contest end date hasn't passed.
         if(Date.now()>Date.parse(contest.contestEndDate)){
+            console.log("in 2st")
             return res.status(400).json({
                 status: 'error',
                 message: 'The contest has expired. Join an active contest.'
@@ -110,6 +112,7 @@ exports.joinContest = async(req, res, next) => {
 
         //Check if the contest has reached maxParticipants
         if(contest.participants.length == contest.maxParticipants){
+            console.log("in 3st")
             return res.status(400).json({
                 status: 'error',
                 message: 'The contest is full. Join another contest'
@@ -118,6 +121,7 @@ exports.joinContest = async(req, res, next) => {
 
         //Check if the user has already joined the room
         if (contest.participants.some(elem => elem.userId == userId)) {
+            console.log("in 4st")
             return res.status(400).json({
               status: 'error',
               message: 'You have already registered for this contest.'
@@ -147,6 +151,7 @@ exports.joinContest = async(req, res, next) => {
         //       });
         // }
         
+        console.log("in 6st", {userId, registeredOn: Date.now(), paymentId, portfolioId: portfolioId, status: "Joined"})
         contest.participants.push({userId, registeredOn: Date.now(), paymentId, portfolioId: portfolioId, status: "Joined"});
         await contest.save({validateBeforeSave: false});
         const user = await User.findById(userId);
