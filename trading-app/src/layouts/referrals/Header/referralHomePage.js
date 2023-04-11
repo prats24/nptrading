@@ -38,7 +38,7 @@ function ReferralHomePage() {
   const [invitedCount,setInvitedCount] = useState([]);
   const [joinedData,setJoinedData] = useState([]);
   const [joinedCount,setJoinedCount] = useState([]);
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const id = getDetails.userDetails._id
   const referralCode = getDetails.userDetails.myReferralCode
   console.log(getDetails)

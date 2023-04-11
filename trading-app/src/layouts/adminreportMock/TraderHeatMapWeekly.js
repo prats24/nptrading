@@ -12,7 +12,7 @@ import {useState, useEffect} from "react"
 function TradersHeatMapWeekly() {
 
 const weekNumbers = Array.from({ length: 52 }, (_, i) => i + 1);
-let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 const [firstWeek, setFirstWeek] = useState(1);
 const [secondWeek, setSecondWeek] = useState(52);
 const [traders, setTraders] = useState([]);

@@ -54,6 +54,10 @@ getKiteCred.getAccess().then(async (data)=>{
       console.log("in index.js ", socket.id, data)
       await client.set(socket.id, data);
     })
+    socket.on('contest', async (contestId)=>{
+      socket.join(`${contestId}`)
+      console.log("contestId ", contestId)
+    })
 
     //  socket.emit('check', true)
 
@@ -153,6 +157,8 @@ app.use('/api/v1', require("./routes/HistoryPages/adminAuth"));
 app.use('/api/v1', require("./routes/marginAllocation/marginAllocationAuth"));
 app.use('/api/v1/contest', require("./routes/contest/contestRoutes"));
 app.use('/api/v1/referrals', require("./routes/campaigns/referralRoutes"));
+app.use('/api/v1/contestTrade', require("./routes/contest/contestTradeRoutes"));
+app.use('/api/v1/portfolio', require("./routes/userPortfolio/userPortfolioRoutes"));
 
 app.use('/api/v1', require("./routes/contest/contestRuleRoute"));
 app.use('/api/v1', require("./routes/dbEntry/dbEntryRoute"));

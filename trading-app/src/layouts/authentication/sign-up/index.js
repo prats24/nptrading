@@ -57,7 +57,7 @@ function Cover() {
     email_otp: "",
     mobile_otp:"",
   });
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   useEffect(() => {
     let countdownTimer = null;
@@ -201,7 +201,7 @@ function Cover() {
 
   const data = await res.json();
   console.log(data.status);
-  if(data.status === 200 || data.status === 201){ 
+  if(res.status === 200 || res.status === 201){ 
         openSuccessSB("OTP Sent",data.message);
   }else{
         openInfoSB("Something went wrong",data.mesaage);
@@ -425,7 +425,7 @@ function Cover() {
             </>
             )}
             
-            <MDBox mt={3} mb={1} textAlign="center">
+            {showConfirmation && <MDBox mt={3} mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Already have an account?{" "}
                 <MDTypography
@@ -439,7 +439,7 @@ function Cover() {
                   Sign In
                 </MDTypography>
               </MDTypography>
-            </MDBox>
+            </MDBox>}
           </MDBox>
         </MDBox>
         
@@ -447,7 +447,7 @@ function Cover() {
         {!showConfirmation && (
           <>
         <MDTypography variant="h4" fontWeight="medium" textAlign="center" color="secondary" mt={5}>
-            Your details has been submitted. We will contact you shortly.
+            Your account has been created. Please <Link to='/login'>Login</Link> to continue.
         </MDTypography>
         <MDTypography
                   component={Link}

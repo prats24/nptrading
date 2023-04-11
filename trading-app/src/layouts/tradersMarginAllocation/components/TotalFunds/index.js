@@ -35,7 +35,7 @@ function AddFunds({marginDetails, setMarginDetails}) {
   // const [marginDetails, setMarginDetails] = useState([]);
   let valueInTraderName = 'Praveen K'
   let [traderName, setTraderName] = useState(valueInTraderName);
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let [details, setDetails] = useState({
     traderName: valueInTraderName,
     amount: ""

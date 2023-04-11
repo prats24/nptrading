@@ -2,16 +2,20 @@ const express = require("express");
 const router = express.Router();
 require("../../db/conn");
 const Instrument = require("../../models/Instruments/instrumentSchema");
+const ContestInstrument = require("../../models/Instruments/contestInstrument");
+const client = require("../../marketData/redisClient");
+
 const axios = require('axios');
 const fetchToken = require("../../marketData/generateSingleToken");
 const RequestToken = require("../../models/Trading Account/requestTokenSchema");
 const Account = require("../../models/Trading Account/accountSchema");
 const {subscribeTokens, unSubscribeTokens} = require('../../marketData/kiteTicker');
 
-router.post("/instrument", async (req, res)=>{
+router.post("/contestInstrument", async (req, res)=>{
 
     try{
-        let {instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, createdByUserId, lotSize, contractDate, maxLot} = req.body;
+        let {instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, createdByUserId, lotSize, contractDate, maxLot, contest} = req.body;
+        const {_id, contestName} = contest;
         console.log("Request Body inside instrument auth: ",req.body);
         console.log("Exchange & Symbol: ", exchange,symbol)
         let instrumentToken = await fetchToken(exchange, symbol);
@@ -30,19 +34,21 @@ router.post("/instrument", async (req, res)=>{
             return res.status(422).json({error : "Any of one feild is incorrect..."})
         }
     
-        Instrument.findOne({uId : uId})
+        ContestInstrument.findOne({uId : uId})
         .then((dateExist)=>{
             if(dateExist){
                 console.log("data already");
                 return res.status(422).json({error : "date already exist..."})
             }
-            const instruments = new Instrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, createdByUserId, lotSize, instrumentToken, contractDate, maxLot});
+            const instruments = new ContestInstrument({instrument, exchange, symbol, status, uId, createdOn, lastModified, createdBy, createdByUserId, lotSize, instrumentToken, contractDate, maxLot, contest: {name: contestName, contestId: _id}});
             console.log("instruments", instruments)
             instruments.save().then(async()=>{
+                //  const newredisClient = await client.SADD((_id).toString(), (instrumentToken).toString());
+                //  console.log("this is redis client", newredisClient)
                  await subscribeTokens();
                 res.status(201).json({massage : "data enter succesfully"});
             }).catch((err)=> res.status(500).json({error:"Failed to enter data"}));
-        }).catch(err => {console.log( "fail")});
+        }).catch(err => {console.log( err,"fail")});
 
     } catch(err) {
         // res.status(500).json({error:"Failed to enter data Check access token"});
@@ -50,6 +56,36 @@ router.post("/instrument", async (req, res)=>{
         return new Error(err);
     }
 })
+
+router.get("/contestInstrument", (req, res)=>{
+    ContestInstrument.find({status: "Active"}, (err, data)=>{
+        if(err){
+            return res.status(500).send(err);
+        }else{
+            return res.status(200).send(data);
+        }
+    }).sort({$natural:-1})
+})
+
+router.get("/contestInstrument/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const data = await ContestInstrument.find(
+        { "contest.contestId": id, status: "Active" }
+      )
+        .sort({ date: -1 })
+        .exec();
+  
+      if (data.length === 0) {
+        return res.status(404).send("No data found");
+      }
+  
+      return res.status(200).send(data);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("Internal server error");
+    }
+  });
 
 router.get("/readInstrumentDetails", (req, res)=>{
     Instrument.find((err, data)=>{
@@ -73,10 +109,11 @@ router.get("/readInstrumentDetails/:id", (req, res)=>{
     })
 })
 
-router.put("/readInstrumentDetails/:id", async (req, res)=>{
+router.put("/contestInstrument/:id", async (req, res)=>{
     //console.log(req.params)
-    //console.log( req.body)
-    let {Exchange, Symbole, contract_Date, otm_p1, otm_p2, otm_p3} = req.body;
+    console.log( req.body)
+    let {contest, contract_Date, Exchange, Symbole} = req.body;
+    const {_id, contestName} = contest;
     
     if(contract_Date !== undefined){
         let firstDateSplit = (contract_Date).split(" ");
@@ -87,12 +124,8 @@ router.put("/readInstrumentDetails/:id", async (req, res)=>{
     try{ 
         const {id} = req.params
         const token = await fetchToken(Exchange, Symbole);
-        const otmP1Token = await fetchToken(Exchange, otm_p1);
-        const otmP2Token = await fetchToken(Exchange, otm_p2);
-        const otmP3Token = await fetchToken(Exchange, otm_p3);
-        //console.log(token)
-        const instrument = await Instrument.findOneAndUpdate({_id : id}, {
-            $set:{ 
+        const instrument = await ContestInstrument.findOneAndUpdate({_id : id}, {
+            $set:{ // contest: {name: contestName, contestId: _id}
                 instrument: req.body.Instrument,
                 exchange: req.body.Exchange,
                 symbol: req.body.Symbole,
@@ -102,22 +135,22 @@ router.put("/readInstrumentDetails/:id", async (req, res)=>{
                 instrumentToken: token,
                 contractDate: req.body.contract_Date, 
                 maxLot: req.body.maxLot,
-                otm_p1 : req.body.otm_p1,
-                otm_p2 : req.body.otm_p2,
-                otm_p3 : req.body.otm_p3,
-                otm_p1_Token: otmP1Token,
-                otm_p2_Token: otmP2Token,
-                otm_p3_Token: otmP3Token,
+                contest: {name: contestName, contestId: _id}
+                
             }
         })
         //console.log("this is role", instrument);
         if(((req.body).Symbole !== instrument.symbol) || (req.body).Status === "Inactive"){
+            // const redisClient = await client.SREM((_id).toString(), (instrument.instrumentToken).toString());
+            // console.log("redisClient", redisClient)
+
             unSubscribeTokens(instrument.instrumentToken).then(()=>{});
         }
         subscribeTokens().then(()=>{});           
 
         res.send(instrument)
     } catch (e){
+        console.log(e)
         res.status(500).json({error:"Failed to edit data Check access token"});
     }
 })

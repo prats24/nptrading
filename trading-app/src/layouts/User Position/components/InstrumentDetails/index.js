@@ -43,7 +43,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
     opacity: 0.7
   }
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   // const { reRender, setReRender } = Render;
   const [isAppLive, setisAppLive] = useState('');

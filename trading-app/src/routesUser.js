@@ -16,7 +16,10 @@ import UserPosition from "./layouts/User Position";
 import UserReport from "./layouts/userreports";
 import MyReferrals from "./layouts/referrals"
 import Contest from "./layouts/user-contest"
-
+import UserContest from "./layouts/UserContest"
+import ContestPage from './layouts/UserContest/contestPage'
+import ContestRegisterPage from './layouts/UserContest/contestRegistrationPage'
+import ContestTradePage from './layouts/UserContest/ContestTrade'
 
 const routes = [
 
@@ -37,6 +40,38 @@ const routes = [
     icon: <BusinessIcon/>,
     route: "/contest",
     component: <Contest />,
+  },
+  {
+    type: "collapse",
+    name: "Arena",
+    key: "arena",
+    icon: <BusinessIcon/>,
+    route: "/arena",
+    component: <UserContest />,
+  },
+  {
+    // type: "collapse",
+    // name: "Arena",
+    // key: "arena",
+    // icon: <BusinessIcon/>,
+    route: "/arena/:name",
+    component: <ContestPage />,
+  },
+  {
+    // type: "collapse",
+    // name: "Arena", ContestTradePage
+    // key: "arena",
+    // icon: <BusinessIcon/>,
+    route: "arena/:name/register",
+    component: <ContestRegisterPage />,
+  },
+  {
+    // type: "collapse",
+    // name: "Arena", 
+    // key: "arena",
+    // icon: <BusinessIcon/>,
+    route: "arena/contest/trade",
+    component: <ContestTradePage />,
   },
   {
     type: "collapse",
@@ -84,5 +119,7 @@ const routes = [
   },
 
 ];
+
+// console.log(routes)
 
 export default routes;

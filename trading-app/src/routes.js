@@ -31,6 +31,9 @@ import ResetPassword from './layouts/authentication/reset-password/cover'
 import Response from './layouts/authentication/sign-up/responseSubmit'
 import MyReferrals from "./layouts/referrals"
 import UserContest from "./layouts/contests"
+import Portfolio from './layouts/portfolio'
+import CreatePortfolio from './layouts/portfolio/createPortfolio'
+import ReferralProgramDetails from './layouts/referral-program/ReferralProgramDetails'
 
 
 // @mui icons
@@ -94,6 +97,22 @@ const routes = [
     component: <Response />,
   },
   {
+    // type: "collapse",
+    // name: "Company Dashboard",
+    key: "createportfolio",
+    // icon: <DashboardIcon/>,
+    route: "/createportfolio",
+    component: <CreatePortfolio />,
+  },
+  {
+    // type: "collapse",
+    // name: "Company Dashboard",
+    key: "referralprogramdetails",
+    // icon: <DashboardIcon/>,
+    route: "/referralprogramdetails",
+    component: <ReferralProgramDetails />,
+  },
+  {
     type: "collapse",
     name: "Company Position",
     key: "companyposition",
@@ -147,7 +166,7 @@ const routes = [
   {
     type: "collapse",
     name: "Referral Programme",
-    key: "referral",
+    key: "referralProgramme",
     icon: <DashboardIcon/>,
     route: "/referralProgramme",
     component: <Referral />,
@@ -227,11 +246,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Expenses",
-    key: "expense",
+    name: "Portfolio",
+    key: "portfolio",
     icon: <Shop2Icon/>,
-    route: "/expense",
-    component: <Expense />,
+    route: "/portfolio",
+    component: <Portfolio />,
   },
   {
     type: "collapse",
@@ -293,7 +312,7 @@ const routes = [
   {
     type: "collapse",
     name: "User Contest",
-    key: "contest",
+    key: "usercontest",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <PersonIcon/>,
     route: "/usercontest",

@@ -33,7 +33,7 @@ import SignedUpUserEditModel from "./SignedUpUserEditModel";
 const SignedUpUser = () => {
     const { columns, rows } = SignedUpUserData();
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     const [signedUpUserData, setSignedUpUserData] = useState([]);
     const [reRender, setReRender] = useState(true);

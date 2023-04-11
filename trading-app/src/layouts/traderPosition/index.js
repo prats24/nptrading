@@ -30,7 +30,7 @@ import Header from "./Header";
 
 function TraderPosition() {
 
-  // let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  // let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
   let socket;
   try{

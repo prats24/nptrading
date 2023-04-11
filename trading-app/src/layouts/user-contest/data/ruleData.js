@@ -38,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function CustomizedTables({id, addRuleObject, setAddRuleObject}) {
 console.log("rending...")
 const [ruleData,setRuleData] = useState();
-let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 React.useEffect(()=>{
 
   axios.get(`${baseUrl}api/v1/contestrule/${id}`)

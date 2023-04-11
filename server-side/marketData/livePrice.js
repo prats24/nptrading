@@ -6,18 +6,19 @@ const Account =  require('../models/Trading Account/accountSchema');
 const RequestToken = require("../models/Trading Account/requestTokenSchema");
 const Instrument = require("../models/Instruments/instrumentSchema");
 const InstrumentMapping = require("../models/AlgoBox/instrumentMappingSchema");
+const ContestInstrument = require("../models/Instruments/contestInstrument");
 
 
 router.get("/getliveprice", async (req, res)=>{
 
-  const apiKey = await Account.find();
-  const accessToken = await RequestToken.find();
+  const apiKey = await Account.find({status: "Active"});
+  const accessToken = await RequestToken.find({status: "Active"});
   let getApiKey, getAccessToken;
   let date = new Date();
   let today = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())}`;
   for(let elem of accessToken){
       for(let subElem of apiKey){
-          if(elem.accountId === subElem.accountId && elem.generatedOn === today && elem.status === "Active" && subElem.status === "Active"){
+          if(elem.accountId === subElem.accountId && elem.generatedOn === today ){
               getAccessToken = elem.accessToken;
               getApiKey = subElem.apiKey
           }
@@ -27,11 +28,12 @@ router.get("/getliveprice", async (req, res)=>{
 
 
 
-    const resp = await Instrument.find();
+    const ans = await Instrument.find({status: "Active"});
+    const contestInstrument = await ContestInstrument.find({status: "Active"});
     const resp2 = await InstrumentMapping.find({Status: "Active"})
-    let ans = resp.filter((elem) => {
-      return elem.status === 'Active'
-    });
+    // let ans = resp.filter((elem) => {
+    //   return elem.status === 'Active'
+    // });
     
     let addUrl;
     ans.forEach((elem, index) => {
@@ -40,6 +42,15 @@ router.get("/getliveprice", async (req, res)=>{
       } else {
         addUrl += ('&i=' + elem.exchange + ':' + elem.symbol + '&i=' + elem.exchange + ':' + elem.otm);
       }
+    });
+
+    contestInstrument.forEach((elem, index) => {
+      // if (index === 0) {
+      //   addUrl = ('i=' + elem.exchange + ':' + elem.symbol + '&i=' + elem.exchange + ':' + elem.otm);
+      // } else {
+      // }
+      addUrl += ('&i=' + elem.exchange + ':' + elem.symbol);
+
     });
 
     // resp2.forEach((elem, index) => {

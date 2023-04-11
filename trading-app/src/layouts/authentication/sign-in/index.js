@@ -58,7 +58,7 @@ function Basic() {
     setShowPassword(!showPassword);
   }
 
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     const navigate = useNavigate();
     let userData ;
@@ -177,8 +177,14 @@ function Basic() {
             setInvalidDetail(`Mobile number incorrect`);
 
         }else{
-            openSuccessSB("otp sent", data.message);
-            setOtpGen(true);
+          console.log(res.status);
+          if(res.status == 200 || res.status == 201){
+              openSuccessSB("otp sent", data.message);
+              setOtpGen(true);
+            }
+            else{
+              openSuccessSB("error", data.message);
+            }
         }
 
     }
@@ -272,6 +278,13 @@ function Basic() {
         messageObj.content = content;
 
     };
+    if(value === "error"){
+      messageObj.color = 'error'
+      messageObj.icon = 'error'
+      messageObj.title = "Error";
+      messageObj.content = content;
+
+  }
     if(value === "resent otp"){
       messageObj.color = 'info'
       messageObj.icon = 'check'

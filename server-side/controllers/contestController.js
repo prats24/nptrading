@@ -17,13 +17,13 @@ exports.createContest = async(req, res, next)=>{
     console.log(req.body)
     const{contestName, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, 
         stockType, contestOn, contestRule, rewards, entryFee, instruments, maxParticipants, 
-        minParticipants,status
+        minParticipants,status, contestMargin
     } = req.body;
     if(await Contest.findOne({contestName})) return res.status(400).json({message:'This contest already exists.'});
 
     const contest = await Contest.create({contestName, contestStartDate, contestEndDate, entryOpeningDate, entryClosingDate, 
         stockType, contestOn, contestRule, rewards, entryFee, instruments, maxParticipants, 
-        minParticipants, createdBy: req.user._id, lastModifiedBy: req.user._id,status});
+        minParticipants, createdBy: req.user._id, lastModifiedBy: req.user._id,status, contestMargin});
     
     res.status(201).json({message: 'Contest successfully created.', data:contest});    
         
@@ -43,7 +43,7 @@ exports.getContests = async(req, res, next)=>{
 };
 exports.getActiveContests = async(req, res, next)=>{
     try {
-        const contests = await Contest.find({ contestEndDate: { $gte: new Date() } }).populate('contestRule','ruleName'); 
+        const contests = await Contest.find({ contestEndDate: { $gte: new Date() }, status: 'Live', entryClosingDate:{$gte: new Date()} }).populate('contestRule','ruleName'); 
     
         res.status(201).json({status: 'success', data: contests, results: contests.length}); 
         
@@ -89,8 +89,8 @@ exports.editContest = async(req, res, next) => {
 exports.joinContest = async(req, res, next) => {
     const userId = req.user._id;
     const contestId = req.params.id;
-    const {paymentId} = req.body;
-
+    const {paymentId, portfolioId} = req.body;
+    console.log(req.body, contestId)
     try{
         const contest = await Contest.findById(contestId);
         if(!contest){
@@ -147,7 +147,7 @@ exports.joinContest = async(req, res, next) => {
         //       });
         // }
         
-        contest.participants.push({userId, registeredOn: Date.now(), paymentId});
+        contest.participants.push({userId, registeredOn: Date.now(), paymentId, portfolioId: portfolioId, status: "Joined"});
         await contest.save({validateBeforeSave: false});
         const user = await User.findById(userId);
         user.contests.push(contest._id);
@@ -210,3 +210,20 @@ exports.contestHistory = async(req, res, next) => {
        res.status(500).json({status: 'error', message: 'Something went wrong'});
      } 
    }
+
+exports.myPortfolio = async(req,res,next) => {
+    const userId = req.user._id;
+    try{
+        const myContests = await Contest.find({"participants.userId": userId});
+
+        if(!myContests){
+            return res.status(404).json({status:'error', message: 'No contests found'});
+        }
+
+        res.status(200).json({status: 'success', data: myContests, results: myContests.length});
+
+    }catch(e){
+        console.log(e);
+        res.status(500).json({status: 'error', message: 'Something went wrong'});
+    }
+}

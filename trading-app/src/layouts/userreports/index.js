@@ -42,7 +42,7 @@ import axios from "axios";
 
 
 function UserReport() {
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const getDetails = useContext(userContext);
 
   let url = getDetails.userDetails.isAlgoTrader ? "getuserreportdatewise" : "gettraderreportdatewise"

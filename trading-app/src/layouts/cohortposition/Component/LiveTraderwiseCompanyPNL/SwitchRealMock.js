@@ -9,7 +9,7 @@ import Switch from "@mui/material/Switch";
 
 export default function SwitchRealMock({userId, Render}) {
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [permissionDetail, setPermissionDetail] = useState({});
     const [tradeDetail, setTradeDetail] = useState([]);
     const [algoUsed, setAlgoUsed] = useState([]);

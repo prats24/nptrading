@@ -10,7 +10,7 @@ import Switch from "@mui/material/Switch";
 
 
 export default function RealTrade({Render, id, buttonTextBool, tradingAlgo}) {
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const getDetails = useContext(userContext);
     const { reRender, setReRender } = Render;
     let realTrade = useRef(buttonTextBool);

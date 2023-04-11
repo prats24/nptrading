@@ -20,7 +20,7 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
   const [contestData,setContestData] = useState([]);
   const [contestDetailsForm,setContestDetailsForm] = useState(false)
   const [objectId,setObjectId] = useState('')
-  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
   useEffect(()=>{
   
@@ -150,7 +150,9 @@ const MyContestCard = ({createContestForm,setCreateCOntestForm,isObjectNew,setIs
         </>
         :
         <>
-        <UserPosition />
+        <MDBox mt={6} ml={3} width="100%">
+        <UserPosition contestId = {objectId}/>
+        </MDBox>
         </>
         }
     </>

@@ -22,7 +22,7 @@ const StockIndex = () => {
     const { columns, rows } = indicesData();
     const [id,setId] = useState();
 
-    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5001/"
+    let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
     useEffect(()=>{
   

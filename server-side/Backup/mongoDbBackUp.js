@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-exports.backupDatabase = async(sourceUri, targetUri) => {
+exports.backupDatabase = async(sourceUri, targetUri, res) => {
 
 
     try {
@@ -46,6 +46,8 @@ exports.backupDatabase = async(sourceUri, targetUri) => {
     
         sourceClient.close();
         targetClient.close();
+        console.error(`backup completed`);
+        // res.send("ok");
       } catch (error) {
         console.error(`Error while backing up the database: ${error.message}`);
       }

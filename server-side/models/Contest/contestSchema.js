@@ -49,6 +49,10 @@ const contestSchema = new mongoose.Schema({
         userId:{type:Schema.Types.ObjectId, ref: 'user-personal-detail'},
         registeredOn:{type:Date},
         paymentId:{type:Schema.Types.ObjectId, ref: 'contest-payment'},
+        portfolioId:{type:Schema.Types.ObjectId, ref: 'user-portfolio'},
+        status:{type:String, enum:['Joined','Exited']},
+        exitDate:{type:Date, default: new Date()},
+
     }],
     instruments:[{
         displayName:String,

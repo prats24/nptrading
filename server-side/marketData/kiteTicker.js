@@ -3,6 +3,8 @@ const fetchToken = require('./fetchToken');
 const getKiteCred = require('./getKiteCred'); 
 const RetreiveOrder = require("../models/TradeDetails/retreiveOrder")
 const StockIndex = require("../models/StockIndex/stockIndexSchema");
+const ContestInstrument = require("../models/Instruments/contestInstrument");
+
 const io = require('../marketData/socketio');
 const client = require("./redisClient");
 
@@ -57,28 +59,49 @@ const getTicks = async (socket) => {
   } else{
     indecies = JSON.parse(indecies);  
   }
+
+  let contestInstrument = await client.get("contest")
+  if(!contestInstrument){
+    contestInstrument = await ContestInstrument.find({status: "Active"});
+    await client.set("contest", JSON.stringify(contestInstrument));
+  } else{
+    contestInstrument = JSON.parse(contestInstrument);  
+  }
+
   
 
-  console.log("checking get ticks", socket?.emit('check', false))
+  // console.log("checking get ticks", contestInstrument, indecies)
   ticker.on('ticks', async (ticks) => {
     // console.log(ticks)
     socket.emit('tick', ticks);
     // socket.emit('check', ticks);
 
     let indexObj = {};
-
     let now = performance.now();
     // populate hash table with indexObj from indecies
     for (let i = 0; i < indecies?.length; i++) {
       indexObj[indecies[i]?.instrumentToken] = true;
     }
-
     // filter ticks using hash table lookups
     let indexData = ticks.filter(function(item) {
       return indexObj[item.instrument_token];
     });
 
+    let contestObj = {};
+    // populate hash table with indexObj from indecies
+    for (let i = 0; i < contestInstrument?.length; i++) {
+      contestObj[contestInstrument[i]?.instrumentToken] = true;
+    }
+    // filter ticks using hash table lookups
+    let contestInstrumentData = ticks.filter(function(item) {
+      return contestObj[item.instrument_token];
+    });
+
     try{
+      // console.log("contest id is ", contestId)
+      // let contestInstruments = await client.SMEMBERS((contestId).toString());
+      // let contestInstrumentSet = new Set(contestInstruments); // create a Set of tokenArray elements
+      // console.log(contestId, contestInstruments)
       let userId = await client.get(socket.id)
       console.log("userId", userId, socket.id)
       let instruments = await client.SMEMBERS(userId)
@@ -86,6 +109,7 @@ const getTicks = async (socket) => {
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
       console.log(instrumentTokenArr)
       let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+      // let contestTicks = ticks.filter(tick => contestInstrumentSet.has((tick.instrument_token).toString()));
 
       // let userId = await client.get(socket.id)
       // let instruments = await client.SMEMBERS(await client.get(socket.id))
@@ -97,7 +121,7 @@ const getTicks = async (socket) => {
       // })
 
   
-      console.log("indexData", filteredTicks?.length);
+      // console.log("indexData", filteredTicks?.length, contestInstrumentData, indexData);
       if(indexData?.length > 0){
         socket.emit('index-tick', indexData)
       }
@@ -107,6 +131,8 @@ const getTicks = async (socket) => {
         // socket.emit('tick-room', ticks);
         socket.emit('check', false)
         io.to(`${userId}`).emit('tick-room', filteredTicks);
+        socket.emit('contest-ticks', contestInstrumentData);
+
       // }
       console.log("performance", performance.now()-now, socket.id);
 
