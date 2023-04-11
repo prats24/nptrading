@@ -15,33 +15,37 @@ import axios from "axios";
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Portfolios from '../data/Portfolios'
 import MYPNLData from '../data/PnL/MyPNLData'
+import InstrumentsData from '../data/Instruments/Instruments'
 import DemoTradersRanking from '../data/DemoTradersRanking'
 
-function ContestRegistration () {
+function ContestTradeView () {
     const [contest,setContest] = useState();
     const location = useLocation();
-    const  id  = location?.state?.data;
+    const  contestId  = location?.state?.contestId;
+    // const  contestName  = location?.state?.data;
+    const  portfolioId  = location?.state?.portfolioId;
+
     console.log("Location: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    // let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
+    let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
 
-    // let socket;
-    // try {
-    //   socket = io.connect(`${baseUrl1}`)
-    // } catch (err) {
-    //   throw new Error(err);
-    // }
+    let socket;
+    try {
+      socket = io.connect(`${baseUrl1}`)
+    } catch (err) {
+      throw new Error(err);
+    }
   
   
-    // useEffect(() => {
-    //   socket.on("connect", () => {
-    //     socket.emit("hi", true)
-    //     socket.emit('contest', id)
-    //   })
-    // }, []);
+    useEffect(() => {
+      socket.on("connect", () => {
+        socket.emit("hi", true)
+        socket.emit('contest', contestId)
+      })
+    }, []);
     React.useEffect(()=>{
       
-        axios.get(`${baseUrl}api/v1/contest/${id}`)
+        axios.get(`${baseUrl}api/v1/contest/${contestId}`)
         .then((res)=>{
                 setContest(res?.data?.data);
                 console.log(res?.data?.data)
@@ -51,8 +55,8 @@ function ContestRegistration () {
 
     },[])
 
-    console.log("Contest Registration Data: ",id)
-    console.log(`/arena/${contest?.contestName}/${contest?._id}`)
+    // console.log("Contest Registration Data: ",id)
+    // console.log(`/arena/${contest?.contestName}/${contest?._id}`)
   
     return (
     <MDBox key={contest?._id} width="100%" bgColor="dark" color="light" p={2}>
@@ -65,10 +69,10 @@ function ContestRegistration () {
                         {contest?.contestName}
                     </MDTypography>
                     
-                    {/* <InstrumentsData contestId={id} socket={socket}/>
+                    <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} />
 
-                    <MYPNLData contestId={id} socket={socket}/> */}
-                    <Portfolios contestId={id}/>
+                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} />
+                    {/* <Portfolios contestId={id}/> */}
 
                     
 
@@ -79,9 +83,9 @@ function ContestRegistration () {
                 <Divider orientation="vertical" style={{backgroundColor: 'white', height: '100%'}} />
             </Grid>
 
-            {/* Ranking View */}
+            Ranking View
             
-            <DemoTradersRanking />
+            {/* <DemoTradersRanking /> */}
             
 
 
@@ -91,4 +95,4 @@ function ContestRegistration () {
   )
 
 }
-export default ContestRegistration;
+export default ContestTradeView;

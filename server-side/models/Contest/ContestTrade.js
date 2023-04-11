@@ -84,6 +84,11 @@ const ContestTrade = new mongoose.Schema({
         ref: 'contest',
         // required : true
     },
+    portfolioId:{
+        type: Schema.Types.ObjectId,
+        ref: 'user-portfolio',
+        // required : true
+    }
 })
 
 const contestTrade = mongoose.model("contestTrade", ContestTrade);

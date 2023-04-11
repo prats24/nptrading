@@ -199,7 +199,7 @@ const JoinContest = ({id, setContestDetailsForm}) => {
                             <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Left: 1500</MDTypography>
                             </Grid>
                             <Grid item xs={4} md={3} lg={4} width="100%" display="flex" justifyContent="right">
-                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Max: {contestData?.maxParticipants}</MDTypography>
+                            <MDTypography style={{fontSize:12}} mt={1} color="info"><HiUserGroup />Max: {contestData?.minParticipants}</MDTypography>
                             </Grid>
                             </Grid>
 
