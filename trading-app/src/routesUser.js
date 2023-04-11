@@ -34,15 +34,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Contests",
-    key: "Contest",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <BusinessIcon/>,
-    route: "/contest",
-    component: <Contest />,
-  },
-  {
-    type: "collapse",
     name: "Arena",
     key: "arena",
     icon: <BusinessIcon/>,
