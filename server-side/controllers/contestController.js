@@ -94,6 +94,7 @@ exports.joinContest = async(req, res, next) => {
     try{
         const contest = await Contest.findById(contestId);
         if(!contest){
+            console.log("in 1st")
             return res.status(404).json({
                 status: 'error',
                 message: 'No such contest exixts.'
@@ -102,6 +103,7 @@ exports.joinContest = async(req, res, next) => {
         
         //Check if the contest end date hasn't passed.
         if(Date.now()>Date.parse(contest.contestEndDate)){
+            console.log("in 2st")
             return res.status(400).json({
                 status: 'error',
                 message: 'The contest has expired. Join an active contest.'
@@ -110,6 +112,7 @@ exports.joinContest = async(req, res, next) => {
 
         //Check if the contest has reached maxParticipants
         if(contest.participants.length == contest.maxParticipants){
+            console.log("in 3st")
             return res.status(400).json({
                 status: 'error',
                 message: 'The contest is full. Join another contest'
@@ -118,6 +121,7 @@ exports.joinContest = async(req, res, next) => {
 
         //Check if the user has already joined the room
         if (contest.participants.some(elem => elem.userId == userId)) {
+            console.log("in 4st")
             return res.status(400).json({
               status: 'error',
               message: 'You have already registered for this contest.'
@@ -147,6 +151,7 @@ exports.joinContest = async(req, res, next) => {
         //       });
         // }
         
+        console.log("in 6st", {userId, registeredOn: Date.now(), paymentId, portfolioId: portfolioId, status: "Joined"})
         contest.participants.push({userId, registeredOn: Date.now(), paymentId, portfolioId: portfolioId, status: "Joined"});
         await contest.save({validateBeforeSave: false});
         const user = await User.findById(userId);
@@ -182,7 +187,7 @@ exports.getContest = async (req,res,next) => {
 exports.myContests = async(req,res,next) => {
     const userId = req.user._id;
     try{
-        const myContests = await Contest.find({"participants.userId": userId});
+        const myContests = await Contest.find({"participants.userId": userId, contestEndDate: {$gte: new Date()}});
 
         if(!myContests){
             return res.status(404).json({status:'error', message: 'No contests found'});
@@ -212,3 +217,18 @@ exports.myPortfolio = async(req,res,next) => {
         res.status(500).json({status: 'error', message: 'Something went wrong'});
     }
 }
+exports.contestHistory = async(req, res, next) => {
+    const userId = req.user._id;
+    try{
+       const myContestHistory = await Contest.find({"participants.userId": userId, contestEndDate: {$lt: new Date()}});
+       if(!myContestHistory){
+           return res.status(404).json({status:'error', message: 'No contests found'});
+       }
+   
+       res.status(200).json({status: 'success', data: myContestHistory, results: myContestHistory.length});
+   
+    }catch(e){
+       console.log(e);
+       res.status(500).json({status: 'error', message: 'Something went wrong'});
+     } 
+   }
