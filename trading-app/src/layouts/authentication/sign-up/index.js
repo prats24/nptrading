@@ -446,8 +446,9 @@ function Cover() {
 
         {!showConfirmation && (
           <>
-        <MDTypography variant="h4" fontWeight="medium" textAlign="center" color="secondary" mt={5}>
-            Your account has been created. Please <Link to='/login'>Login</Link> to continue.
+        <MDTypography fontSize={15} display="flex" flexDirection="column" variant="text" p={3} fontWeight="medium" textAlign="center" color="secondary" mt={5}>
+            <span>Your account has been created and your userid and password has been sent to your email id.</span>
+            <span>Please <Link to='/'>Login</Link> to your account using the userid and password.</span>
         </MDTypography>
         <MDTypography
                   component={Link}
