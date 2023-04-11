@@ -12,11 +12,11 @@ import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import Portfolios from '../data/Portfolios'
+import InstrumentsData from '../data/Instruments/Instruments'
 import MYPNLData from '../data/PnL/MyPNLData'
-import DemoTradersRanking from '../data/DemoTradersRanking'
+import TradersRanking from '../data/TradersRanking'
 
-function ContestRegistration () {
+function Contest () {
     const [contest,setContest] = useState();
     const location = useLocation();
     const  id  = location?.state?.data;
@@ -49,9 +49,9 @@ function ContestRegistration () {
                         {contest?.contestName}
                     </MDTypography>
                     
-                    <Portfolios contestId={id}/>
+                    <InstrumentsData contestId={id}/>
 
-                    
+                    <MYPNLData contestId={id} />
 
                 </MDBox>
             </Grid>
@@ -61,9 +61,7 @@ function ContestRegistration () {
             </Grid>
 
             {/* Ranking View */}
-            
-            <DemoTradersRanking />
-            
+            <TradersRanking />
 
 
 
@@ -72,4 +70,4 @@ function ContestRegistration () {
   )
 
 }
-export default ContestRegistration;
+export default Contest;
