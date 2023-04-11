@@ -24,7 +24,7 @@ const ContestCard = () => {
 
 
 
-  useEffect(()=>{
+    useEffect(()=>{
   
     axios.get(`${baseUrl}api/v1/contest/mycontests`,{
       withCredentials: true,
@@ -40,11 +40,11 @@ const ContestCard = () => {
       }).catch((err)=>{
         return new Error(err);
     })
-},[])
+    },[])
 
       // console.log("Contest Data: ",contestData)
 
-      function dateConvert(dateConvert){
+    function dateConvert(dateConvert){
         const dateString = dateConvert;
         const date = new Date(dateString);
         const options = { 
