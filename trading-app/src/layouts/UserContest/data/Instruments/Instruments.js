@@ -15,13 +15,13 @@ import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
 
 
-function InstrumentsData({contestId, socket, portfolioId}){
+function InstrumentsData({contestId, socket, portfolioId, Render}){
 
-    const marketDetails = useContext(marketDataContext)
+    // const marketDetails = useContext(marketDataContext)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [instrumentData, setInstrumentData] = useState([]);
     const [marketData, setMarketData] = useState([]);
-
+    const {render, setReRender} = Render;
     useEffect(()=>{
         // console.log("contestId", contestId)
         axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
@@ -37,6 +37,8 @@ function InstrumentsData({contestId, socket, portfolioId}){
         }).catch((err) => {
             return new Error(err);
         })
+        render ? setReRender(false) : setReRender(true)
+
     }, [])
 
     useEffect(()=>{
@@ -142,16 +144,16 @@ return (
     
                 <Grid item xs={12} md={12} lg={1} display="flex" justifyContent="center">
                 {/* <MDButton variant="contained" color="info" style={{fontSize:12,minWidth:"80%",padding:'none',cursor:"pointer"}}>B</MDButton> */}
-                    <BuyModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId} portfolioId={portfolioId}/>
+                    <BuyModel render={render} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId} portfolioId={portfolioId}/>
                 </Grid>
-                {/* reRender={reRender} setReRender={setReRender} */}
+                {/* render={render} setReRender={setReRender} */}
                 <Grid item xs={12} md={12} lg={0.5} display="flex" justifyContent="center">
                 
                 </Grid>
     
                 <Grid item xs={12} md={12} lg={1} display="flex" justifyContent="center">
                 {/* <MDButton variant="contained" color="error" style={{fontSize:12,minWidth:"80%",padding:'none',cursor:"pointer"}}>S</MDButton> */}
-                    <SellModel  symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId} portfolioId={portfolioId}/>
+                    <SellModel render={render} setReRender={setReRender} symbol={elem.symbol} exchange={elem.exchange} instrumentToken={elem.instrumentToken} symbolName={elem.instrument} lotSize={elem.lotSize} maxLot={elem.maxLot} ltp={(perticularInstrumentMarketData[0]?.last_price)?.toFixed(2)} contestId={contestId} portfolioId={portfolioId}/>
                 </Grid>
     
             </Grid>

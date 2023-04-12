@@ -24,6 +24,7 @@ function ContestTradeView () {
     const  contestId  = location?.state?.contestId;
     // const  contestName  = location?.state?.data;
     const  portfolioId  = location?.state?.portfolioId;
+    const [render, setReRender] = useState(true);
 
     console.log("Location: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -71,9 +72,9 @@ function ContestTradeView () {
                         {contest?.contestName}
                     </MDTypography>
                     
-                    <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} />
+                    <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
 
-                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} />
+                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
                     {/* <Portfolios contestId={id}/> */}
 
                     

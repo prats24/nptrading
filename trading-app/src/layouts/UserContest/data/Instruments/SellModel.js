@@ -28,7 +28,7 @@ import { Box, Typography } from '@mui/material';
 import { marketDataContext } from "../../../../MarketDataContext";
 
 
-const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos, expiry, contestId, portfolioId}) => {
+const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, render, setReRender, fromUserPos, expiry, contestId, portfolioId}) => {
   console.log("rendering in userPosition: sellModel")
 
   // const marketDetails = useContext(marketDataContext)
@@ -155,7 +155,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
       placeOrder();
 
       let id = setTimeout(()=>{
-          reRender ? setReRender(false) : setReRender(true)
+        render ? setReRender(false) : setReRender(true)
       }, 1000);
       
   }
