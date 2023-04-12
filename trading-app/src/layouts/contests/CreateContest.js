@@ -57,7 +57,7 @@ function CreateContest({createContestForm, setCreateContestForm, oldObjectId, se
   const [editing,setEditing] = useState(false)
   const [saving,setSaving] = useState(false)
   const [creating,setCreating] = useState(false)
-  const [newObjectId,setNewObjectId] = useState()
+  const [newObjectId,setNewObjectId] = useState(oldObjectId)
   const [contestRules,setContestRules] = useState([])
   const [addRewardObject,setAddRewardObject] = useState(false);
 
@@ -182,7 +182,7 @@ if (data.status === 422 || data.error || !data) {
     // console.log(data.data)
     setContestData(data.data)
     setTimeout(()=>{setCreating(false);setIsSubmitted(true)},500)
-}
+  }
 }
 
 async function onAddReward(e,childFormState,setChildFormState){
@@ -218,6 +218,17 @@ async function onAddReward(e,childFormState,setChildFormState){
       openSuccessSB("New Reward Added","New Reward line item has been added in the contest")
       setTimeout(()=>{setSaving(false);setEditing(false)},500)
       setAddRewardObject(!addRewardObject);
+      
+        // formState?.rewards?.rankStart = ""
+        // formState?.rewards?.rankEnd = ""
+        // formState?.rewards?.reward  = ""
+        // formState?.rewards?.currency = ""
+        // setFormState({...formState, formState?.rewards: {}})
+        setFormState(prevState => ({
+          ...prevState,
+          rewards: {}
+      }))
+
       // console.log("Entry Succesfull");
   }
 }
@@ -643,7 +654,7 @@ console.log("Rule Name: ",contestData?.contestRule?.ruleName)
                 )}
           </Grid>
 
-          {isSubmitted && <Grid item xs={12} md={6} xl={12}>
+          {(isSubmitted || isObjectNew) && !editing && <Grid item xs={12} md={6} xl={12}>
                 
                 <Grid container spacing={1}>
 

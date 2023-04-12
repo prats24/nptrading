@@ -70,6 +70,7 @@ exports.getContest = async(req, res, next)=>{
 exports.editContest = async(req, res, next) => {
     const id = req.params.id;
 
+    console.log("id is ,", id)
     const contest = await Contest.findById(id);
 
     const filteredBody = filterObj(req.body, "contestName", "contestStartDate", "contestEndDate", "entryOpeningDate", "entryClosingDate", 

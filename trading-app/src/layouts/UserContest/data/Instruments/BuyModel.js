@@ -28,7 +28,7 @@ import MDBox from '../../../../components/MDBox';
 import { borderBottom } from '@mui/system';
 import { marketDataContext } from "../../../../MarketDataContext";
 
-const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos, expiry, contestId, portfolioId}) => {
+const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, render, setReRender, fromUserPos, expiry, contestId, portfolioId}) => {
 
   console.log("rendering in userPosition: buyModel")
 
@@ -154,7 +154,7 @@ const BuyModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLo
 
 
       let id = setTimeout(()=>{
-          reRender ? setReRender(false) : setReRender(true)
+        render ? setReRender(false) : setReRender(true)
       }, 1000);
       
   }
