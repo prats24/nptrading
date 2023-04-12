@@ -166,7 +166,7 @@ exports.getContestPnl = async(req, res, next) => {
                 status: "COMPLETE",
                 trader: userId,
                 contestId: new ObjectId(contestId),
-                portfolioId: new ObjectId(portfolioId)
+                // portfolioId: new ObjectId(portfolioId)
               },
             },
             {
@@ -224,8 +224,21 @@ exports.getContestRank = async (req, res, next) => {
             // Group by userId and sum the amount
             {
               $group: {
-                _id: "$userId",
-                totalAmount: { $sum: "$amount" }
+                _id: {
+                  trader: "$trader",
+                  createdBy: "$createdBy"
+                },
+                totalAmount: { $sum: "$amount" },
+                investedAmount: {
+                  $sum: {
+                    $abs: "$amount"
+                  }
+                },
+                brokerage: {
+                  $sum: {
+                    $toDouble: "$brokerage",
+                  },
+                }
               }
             },
             // Sort by totalAmount in descending order
@@ -239,7 +252,9 @@ exports.getContestRank = async (req, res, next) => {
               $project: {
                 _id: 0,
                 userId: "$_id",
-                totalAmount: 1
+                totalAmount: 1,
+                investedAmount: 1,
+                brokerage: 1
               }
             },
             {
@@ -253,6 +268,7 @@ exports.getContestRank = async (req, res, next) => {
         
         res.status(200).json({status: 'success', data: ranks});
     }catch(e){
+      console.log(e)
         res.status(500).json({status:'error', message: 'Something went wrong'});
     }
 }

@@ -1,17 +1,39 @@
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
-import MDButton from '../../../components/MDButton'
-import Logo from '../../../assets/images/logo1.jpeg'
-import { Divider } from '@mui/material'
-import { HiUserGroup } from 'react-icons/hi';
-import { Link } from 'react-router-dom';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useLocation } from 'react-router-dom';
+// import MDButton from '../../../components/MDButton'
+// import Logo from '../../../assets/images/logo1.jpeg'
+// import { Divider } from '@mui/material'
+// import { HiUserGroup } from 'react-icons/hi';
+// import { Link } from 'react-router-dom';
+// import TaskAltIcon from '@mui/icons-material/TaskAlt';
+// import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
-function TradersRanking(){
+function TradersRanking({contestId}){
+
+  let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const [rankData, setRankData] = useState([]);
+  useEffect(()=>{
+  
+    axios.get(`${baseUrl}api/v1/contest/${contestId}/trades/rank`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+    })
+    .then((res)=>{
+        setRankData(res.data.data);
+          console.log("in use effect", res.data)
+      }).catch((err)=>{
+        return new Error(err);
+    })
+  },[])
+
+  console.log("in use effect", rankData)
 
 return (
     <>
@@ -68,175 +90,33 @@ return (
                         </Grid>
                     </Grid>
 
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">1</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Aman Gupta</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹18,000</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+21%</MDTypography>
-                        </Grid>
+                    {rankData.map((elem, index)=>{
+                      let netPnl = elem?.totalAmount - elem?.brokerage;
+                      let profitChange = netPnl*100/elem?.investedAmount;
+                      return(
+                        <Grid key={elem.userId.trader} container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
+      
+                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                            <MDTypography fontSize={13} color="light">{index+1}</MDTypography>
+                          </Grid>
+                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                            <MDTypography fontSize={13} color="light">{elem.userId.createdBy}</MDTypography>
+                          </Grid>
+                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                            <MDTypography fontSize={13} color={netPnl >= 0 ? "success" : "error"}>
+                                {netPnl >= 0.00 ? "+₹" + (netPnl?.toFixed(2)): "-₹" + ((-netPnl).toFixed(2))}
+                            </MDTypography>
+                          </Grid>
+                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                            <MDTypography fontSize={13} color={profitChange >= 0 ? "success" : "error"}>
+                                {profitChange >= 0.00 ? "+" + (profitChange?.toFixed(2)): "-" + ((-profitChange).toFixed(2))}%
+                            </MDTypography>
+                          </Grid>
     
-                    </Grid>
+                        </Grid>
+                      )
 
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">2</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Rajeev Ranjan</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹17,500</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+21%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">3</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Piyush Bansal</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹17,000</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+21%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">4</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Piyush Bansal</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹16,000</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+21%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">5</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Piyush Bansal</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹14,000</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+21%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">6</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Piyush Bansal</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹10,300</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+21%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">7</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Amit Kumar</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹10,250</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+11%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">8</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Jitesh Duggar</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹10,100</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+11%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">9</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Rajesh Sharma</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹9,300</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+8%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">10</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Kumar Jitendra</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+₹7,500</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="success">+3%</MDTypography>
-                        </Grid>
-    
-                    </Grid>
+                    })}
 
                 </MDBox>
             </Grid> 

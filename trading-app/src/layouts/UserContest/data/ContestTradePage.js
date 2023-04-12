@@ -16,7 +16,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Portfolios from '../data/Portfolios'
 import MYPNLData from '../data/PnL/MyPNLData'
 import InstrumentsData from '../data/Instruments/Instruments'
-import DemoTradersRanking from '../data/DemoTradersRanking'
+import TradersRanking from '../data/TradersRanking'
 
 function ContestTradeView () {
     const [contest,setContest] = useState();
@@ -86,10 +86,10 @@ function ContestTradeView () {
                 <Divider orientation="vertical" style={{backgroundColor: 'white', height: '100%'}} />
             </Grid>
 
-            Ranking View
+            {/* Ranking View */}
             
             {/* <DemoTradersRanking /> */}
-            
+            <TradersRanking contestId={contestId} />
 
 
 
