@@ -19,5 +19,10 @@ router.route('/').post(Authenticate, authoizeTrade.contestFundCheck, newTrade);
 
 
 module.exports = router;
-// , authoizeTrade.contestFundCheck
+// portfolio id se portfolio get krna
+// userid se perticular user get krna
+// then us user ka portfolio get krna
 
+// step 2
+
+// portfolio id and userid se us portfolio ka pnl get krna

@@ -145,7 +145,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
             "Access-Control-Allow-Credentials": true
         },
         body: formData 
-    });
+      });
       let response = await res.json()
       // console.log('response', response);
       if(response.status === 'success'){
