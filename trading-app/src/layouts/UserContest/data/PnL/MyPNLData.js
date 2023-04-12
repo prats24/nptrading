@@ -11,10 +11,11 @@ import MDTypography from '../../../../components/MDTypography'
 // import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
-function MYPNLData({contestId, portfolioId, socket}){
+function MYPNLData({contestId, portfolioId, socket, Render}){
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const {render, setReRender} = Render
   let totalTransactionCost = 0;
   let totalGrossPnl = 0;
   let totalRunningLots = 0;
@@ -80,7 +81,7 @@ function MYPNLData({contestId, portfolioId, socket}){
 
     // reRender ? setRender(false) : setRender(true);
     return () => abortController.abort();
-  }, [marketData])
+  }, [marketData, render])
 
   useEffect(() => {
     return () => {

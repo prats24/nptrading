@@ -6,12 +6,15 @@ const MockTradeTrader = require("../models/mock-trade/mockTradeTraders");
 const MockTradeContest = require("../models/Contest/ContestTrade");
 
 const Contest = require("../models/Contest/contestSchema");
+const Portfolio = require("../models/userPortfolio/UserPortfolio");
 
 const UserDetail = require("../models/User/userDetailSchema");
 const MarginAllocation = require('../models/marginAllocation/marginAllocationSchema');
 const axios = require("axios");
 const getKiteCred = require('../marketData/getKiteCred'); 
 const MarginCall = require('../models/marginAllocation/MarginCall');
+const ObjectId = require('mongodb').ObjectId;
+
 const { v4: uuidv4 } = require('uuid');
  
 
@@ -232,9 +235,10 @@ exports.fundCheck = async(req, res, next) => {
 exports.contestFundCheck = async(req, res, next) => {
 
     const {exchange, symbol, buyOrSell, variety,
-           Product, OrderType, Quantity, userId} = req.body;
+           Product, OrderType, Quantity, portfolioId} = req.body;
 
     const contestId = req.params.id;
+    const userId = req.user._id;
            // const MockTrade = req.user.isAlgoTrader ? MockTradeDataUser : MockTradeTrader;
     ////console.log("margin req", req.body)
 
@@ -267,8 +271,17 @@ exports.contestFundCheck = async(req, res, next) => {
             }]
             let contestFunds;
             try{
-                const contest = await Contest.findOne({_id: contestId});
-                contestFunds = contest.contestMargin;
+                const portfolio = await Portfolio.findById({_id: portfolioId});
+                // console.log("portfolio", portfolio)
+                const users = portfolio.users.filter((elem)=>{
+                    return (elem.userId).toString() == (userId).toString();
+                })   
+
+                // console.log("users", users)
+                // (user => user.userId);
+
+                // const contest = await Contest.findOne({_id: contestId});
+                contestFunds = users[0].portfolioValue;
             }catch(e){
                 console.log("errro fetching contest", e);
             }
@@ -282,8 +295,9 @@ exports.contestFundCheck = async(req, res, next) => {
                         {
                             trade_time: {$regex: todayDate},
                             symbol: symbol,
-                            userId: userId,
+                            trader: userId,
                             status: "COMPLETE",
+                            contestId: new ObjectId(contestId)
                         }
                     },
                     {
@@ -341,10 +355,14 @@ exports.contestFundCheck = async(req, res, next) => {
 
             let pnlDetails = await MockTradeContest.aggregate([
                 {
-                $match:
-                    {
-                    userId: userId,
-                    status: "COMPLETE",
+                    $match: {
+                      trade_time: {
+                        $regex: todayDate,
+                      },
+                      status: "COMPLETE",
+                      trader: userId,
+                      contestId: new ObjectId(contestId),
+                      portfolioId: new ObjectId(portfolioId)
                     },
                 },
                 {
