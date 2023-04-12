@@ -18,7 +18,7 @@ const carouselSchema = new mongoose.Schema({
         type:Date,
         required: true
     },
-    stauts:{
+    status:{
         type:String,
         required:true,
         enum: ['Live','Draft','Rejected']
@@ -26,11 +26,11 @@ const carouselSchema = new mongoose.Schema({
     objectType:{
         type:String,
         required:true,
-        enum: ['Campaign','Referral','Contest']
+        enum: ['campaign','referral-program','contest']
     },
     objectId:{
-        type: String,
-        required: true,
+        type: Schema.Types.objectId,
+        refPath: 'objectType', 
     },
     carouselImage:{
         type:String,
