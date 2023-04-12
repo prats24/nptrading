@@ -37,6 +37,8 @@ import ReferralProgramDetails from './layouts/referral-program/ReferralProgramDe
 import ContestPage from './layouts/UserContest/contestPage'
 import ContestRegisterPage from './layouts/UserContest/contestRegistrationPage'
 import ContestTradePage from './layouts/UserContest/ContestTrade'
+import Home from './layouts/UserHome'
+import HomeIcon from '@mui/icons-material/OtherHouses';
 
 
 // @mui icons
@@ -303,6 +305,14 @@ const routes = [
   //   route: "/notifications",
   //   component: <Notifications />,
   // },
+  {
+    type: "collapse",
+    name: "Home",
+    key: "home",
+    icon: <HomeIcon/>,
+    route: "/home",
+    component: <Home />,
+  },
   {
     type: "collapse",
     name: "Position",
