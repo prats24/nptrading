@@ -26,11 +26,11 @@ const carouselSchema = new mongoose.Schema({
     objectType:{
         type:String,
         required:true,
-        enum: ['Campaign','Referral','Contest']
+        enum: ['campaign','referral-program','contest']
     },
     objectId:{
-        type: String,
-        required: true,
+        type: Schema.Types.ObjectId,
+        refPath: 'objectType'
     },
     carouselImage:{
         type:String,

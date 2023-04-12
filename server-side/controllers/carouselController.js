@@ -1,7 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
 import Carousel from '../models/Carousel';
-import {createCustomError} from '../errors/customError';
-import CatchAsync from '../middlewares/CatchAsync';
 import multer from 'multer';
 import AWS from 'aws-sdk';
 import sharp from 'sharp';
@@ -25,7 +22,7 @@ if (file.mimetype.startsWith("image/")) {
   
 //   });
   
-const upload = multer({ storage, fileFilter }).single("carouselPhoto");
+const upload = multer({ storage, fileFilter }).single("carouselImage");
 const s3 = new AWS.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
@@ -109,92 +106,111 @@ export const uploadToS3 = async(req, res, next) => {
   };
   
 
-  export const createCarousel =CatchAsync(async (req, res, next) => {
-    const{carouselName, description, carouselStartDate, carouselEndDate, objectType, objectId, status} = req.body;
+  export const createCarousel =async (req, res, next) => {
+    const{carouselName, description, carouselStartDate, carouselEndDate, objectType, objectId, status,} = req.body;
     const carouselImage = (req).uploadUrl;
 
-    console.log('kitchens', kitchens);
     console.log(req.body);
     //Check for required fields 
-    if(!(carouselName))return next(createCustomError('Enter all mandatory fields.', 400));
-
-    //Check if user exists
-    // if(await carousel.findOne({isDeleted: false, email})) return next(createCustomError('User with this email already exists. Please login with existing email.', 401));
-    const carousel = await Carousel.create({carouselName, description, startDate, endDate, kitchens,
-      createdBy: (req).user._id, carouselImage});
-
-    if(!carousel) return next(createCustomError('Couldn\'t create carousel', 400));
-
-    res.status(201).json({status: "success", data:carousel});
+    if(!(carouselName))return res.status(400).json({status: 'error', message: 'Enter all mandatory fields.'})
+    try{
+      //Check if user exists
+      // if(await carousel.findOne({isDeleted: false, email})) return res.json({})('User with this email already exists. Please login with existing email.', 401));
+      const carousel = await Carousel.create({carouselName, description, carouselStartDate, carouselEndDate, objectType, status,
+        objectId, createdBy: (req).user._id, carouselImage});
+  
+      if(!carousel) return res.status(400).json({status: 'error', message: 'Couldn\'t create carousel'});
+  
+      res.status(201).json({status: "success", data:carousel});
+    }catch(e){
+      console.log(e);
+      res.status(500).json({status:'error', message: 'Something went wrong.'});
+    }
     
-});
+};
 
-export const getCarousels = CatchAsync(async (req, res, next)=>{
-    const carousels = await Carousel.find({isDeleted: false}).populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({endDate:-1});
+export const getCarousels = async (req, res, next)=>{
+  try{
+    const carousels = await Carousel.find({isDeleted: false}).populate('objectId').sort({carouselEndDate:-1});
+  
+  
+      if(!carousels) return res.json({status:'error', message:'No carousels found.'});
+      
+      res.status(200).json({status:"success", data: carousels, results: carousels.length});
+  }catch(e){
+      console.log(e);
+      res.status(500).json({status:'error', message: 'Something went wrong.'});
+  }  
 
-
-    if(!carousels) return next(createCustomError('No users found.', 404));
-    
-    res.status(200).json({status:"success", data: carousels, results: carousels.length});
-
-});
-export const deleteCarousel = CatchAsync(async (req, res, next) => {
+};
+export const deleteCarousel = async (req, res, next) => {
     const {id} = req.params;
 
     const filter = { _id: id };
     const update = { isDeleted: true };
 
     try{
-        const userDetail = await Carousel.findByIdAndUpdate(id, update);
-        console.log("this is userdetail", userDetail);
-        res.status(200).json({massage : "data delete succesfully"});
+        const carousel = await Carousel.findByIdAndUpdate(id, update);
+        res.status(200).json({message : "data delete succesfully"});
     } catch (e){
-        res.status(500).json({error:"Failed to delete data"});
+      console.log(e);
+      res.status(500).json({status:'error', message: 'Something went wrong.'});
     }    
     
-});
+};
 
-export const getCarousel = CatchAsync(async (req, res, next) => {
+export const getCarousel = async (req, res, next) => {
     const id = req.params.id;
+    try{
+      const carousel = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password').
+      populate('objectId');
+  
+      if(!carousel) return res.status(404).json({status: 'error', message: 'No such carousel found.'});
+      
+      res.status(200).json({status:"success", data: carousel});
+    }catch(e){
+      console.log(e);
+      res.status(500).json({status:'error', message: 'Something went wrong.'});
+    }
 
-    const user = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password').
-    populate({path: 'kitchens', populate:{path:'society', model:'Society'}});
-
-    if(!user) return next(createCustomError('No such carousel found.', 404));
-    
-    res.status(200).json({status:"success", data: user});
-
-});
+};
 
 
-export const editCarousel = CatchAsync(async (req, res, next) => {
+export const editCarousel = async (req, res, next) => {
     const id = req.params.id;
-    const carousel = await Carousel.findOne({_id: id}).select('-__v -password -role');
+    try{
 
-    if(!carousel) return next(createCustomError('No such carousel found.', 404));
+      const carousel = await Carousel.findOne({_id: id}).select('-__v -password -role');
+  
+      if(!carousel) return res.status(404).json({status: 'error', message: 'No such carousel found.'});
+  
+      const filteredBody = filterObj(req.body, 'carouselName', 'description', 'carouselEndDate', 
+      'status', 'ObjectType', 'ObjectId', 'carouselStartDate','lastModifiedBy');
+      
+      filteredBody.lastModifiedBy = id;
+      console.log((req).uploadUrl);
+      if ((req).file) filteredBody.carouselImage = (req).uploadUrl;
+  
+      
+      const updatedCarousel = await Carousel.findByIdAndUpdate(id, filteredBody, {
+          new: true,
+          runValidators: true
+        }).select('-__v');
+      res.status(200).json({status: "success", data:updatedCarousel});
+    }catch(e){
+      console.log(e);
+      res.status(500).json({status:'error', message: 'Something went wrong.'});
+    }
 
-    const filteredBody = filterObj(req.body, 'carouselName', 'description', 'endDate', 'startDate', 'lastModifiedBy');
-    
-    filteredBody.lastModifiedBy = id;
-    console.log((req).puploadUrl);
-    if ((req).file) filteredBody.carouselPhoto = (req).uploadUrl;
+};
 
-    
-    const updatedCarousel = await Carousel.findByIdAndUpdate(id, filteredBody, {
-        new: true,
-        runValidators: true
-      }).select('-__v -password -role');
-    res.status(200).json({status: "success", data:updatedCarousel});
-
-});
-
-export const getActiveCarousels = CatchAsync(async (req, res, next)=>{
+export const getActiveCarousels = async (req, res, next)=>{
   let date = new Date();
-  const carousels = await Carousel.find({isDeleted: false, startDate : {$gte : date}, endDate :{$lte : date}})
-  .populate({path: 'kitchens', populate:{path:'society', model:'Society'}}).sort({endDate:-1});
+  const carousels = await Carousel.find({isDeleted: false, carouselStartDate : {$gte : date}, endDate :{$lte : date}})
+  .populate('objectId').sort({endDate:-1});
 
-  if(!carousels) return next(createCustomError('No users found.', 404));
+  if(!carousels) return res.status(404).json({status: 'error' ,message:'No carousels found.'});
   
   res.status(200).json({status:"success", data: carousels, results: carousels.length});
 
-});
+};
