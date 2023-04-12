@@ -226,7 +226,8 @@ exports.getContestRank = async (req, res, next) => {
               $group: {
                 _id: {
                   trader: "$trader",
-                  createdBy: "$createdBy"
+                  createdBy: "$createdBy",
+                  instrumentToken: "$instrumentToken"
                 },
                 totalAmount: { $sum: "$amount" },
                 investedAmount: {
@@ -238,6 +239,9 @@ exports.getContestRank = async (req, res, next) => {
                   $sum: {
                     $toDouble: "$brokerage",
                   },
+                },
+                lots: {
+                    $sum: {$toInt : "$Quantity"}
                 }
               }
             },
@@ -254,7 +258,8 @@ exports.getContestRank = async (req, res, next) => {
                 userId: "$_id",
                 totalAmount: 1,
                 investedAmount: 1,
-                brokerage: 1
+                brokerage: 1,
+                lots: 1
               }
             },
             {
@@ -289,8 +294,25 @@ exports.getMyContestRank = async (req, res, next) => {
             // Group by userId and sum the amount
             {
               $group: {
-                _id: "$userId",
-                totalAmount: { $sum: "$amount" }
+                _id: {
+                  trader: "$trader",
+                  createdBy: "$createdBy",
+                  instrumentToken: "$instrumentToken"
+                },
+                totalAmount: { $sum: "$amount" },
+                investedAmount: {
+                  $sum: {
+                    $abs: "$amount"
+                  }
+                },
+                brokerage: {
+                  $sum: {
+                    $toDouble: "$brokerage",
+                  },
+                },
+                lots: {
+                    $sum: {$toInt : "$Quantity"}
+                }
               }
             },
             // Sort by totalAmount in descending order
@@ -304,20 +326,24 @@ exports.getMyContestRank = async (req, res, next) => {
               $project: {
                 _id: 0,
                 userId: "$_id",
-                totalAmount: 1
+                totalAmount: 1,
+                investedAmount: 1,
+                brokerage: 1,
+                lots: 1
               }
             },
           ]);
-        
+        console.log(ranks, userId)
         if(!ranks){
             return res.status(404).json({status:'error', message:'No ranking for the contest'});
         }
-        const index = ranks.findIndex(obj => obj.userId === userId);
+        const user = ranks.filter(obj => (obj.userId.trader).toString() === (userId).toString());
+        const index = ranks.findIndex(obj => (obj.userId.trader).toString() === (userId).toString());
         if(index == -1){
             return res.status(404).json({status: 'error', message: 'User doesn\'t have a rank'});
         }
         
-        res.status(200).json({status: 'success', data: index+1});
+        res.status(200).json({status: 'success', data: {rank: index+1, data: user}});
     }catch(e){
         res.status(500).json({status:'error', message: 'Something went wrong'});
     }

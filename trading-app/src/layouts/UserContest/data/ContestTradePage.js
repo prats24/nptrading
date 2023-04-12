@@ -89,7 +89,7 @@ function ContestTradeView () {
             {/* Ranking View */}
             
             {/* <DemoTradersRanking /> */}
-            <TradersRanking contestId={contestId} />
+            <TradersRanking contestId={contestId} socket={socket}/>
 
 
 

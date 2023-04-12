@@ -38,7 +38,7 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
             return new Error(err);
         })
         render ? setReRender(false) : setReRender(true)
-
+        socket.emit('hi')
     }, [])
 
     useEffect(()=>{
@@ -65,8 +65,14 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
     
         })
     }, [socket])
+
+    useEffect(() => {
+        return () => {
+            socket.close();
+        }
+    }, [])
     
-      console.log("instrument", contestId, portfolioId, marketData)
+    console.log("instrument", contestId, portfolioId, marketData)
 
 return (
     <>

@@ -76,6 +76,7 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
 
          console.log("in mypnl", data)
          setTradeData(data);
+         socket.emit('hi')
 
     })();
 

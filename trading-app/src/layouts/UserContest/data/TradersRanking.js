@@ -11,115 +11,222 @@ import MDTypography from '../../../components/MDTypography'
 // import { useLocation } from 'react-router-dom';
 import axios from "axios";
 
-function TradersRanking({contestId}){
+function TradersRanking({contestId, socket}){
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [rankData, setRankData] = useState([]);
-  useEffect(()=>{
+  const [myRank, setMyRank] = useState({});
+  const [marketData, setMarketData] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const [api1Response, api2Response] = await Promise.all([
+        axios.get(`${baseUrl}api/v1/contest/${contestId}/trades/rank`),
+        axios.get(`${baseUrl}api/v1/contest/${contestId}/trades/myrank`, {
+          withCredentials: true,
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true
+          },
+        })
+      ]);
+      setRankData(api1Response.data.data);
+      setMyRank(api2Response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   
-    axios.get(`${baseUrl}api/v1/contest/${contestId}/trades/rank`,{
-      withCredentials: true,
-      headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Credentials": true
-      },
-    })
-    .then((res)=>{
-        setRankData(res.data.data);
-          console.log("in use effect", res.data)
-      }).catch((err)=>{
+  useEffect(() => {
+    const intervalId = setInterval(fetchData, 10000); // run every 10 seconds
+    fetchData(); // run once on mount
+    socket.emit('hi')
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(()=>{
+    axios.get(`${baseUrl}api/v1/getliveprice`)
+    .then((res) => {
+      setMarketData(res.data);
+    }).catch((err) => {
         return new Error(err);
     })
-  },[])
+    socket?.on('check', (data)=>{
+      console.log("data from socket in instrument in parent", data)
+    })
 
-  console.log("in use effect", rankData)
+    // socket.on("tick", (data) => {
+    socket?.on("contest-ticks", (data) => {
+      console.log('data from socket in instrument in parent', data);
+      setMarketData(prevInstruments => {
+        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+        data.forEach(instrument => {
+          instrumentMap.set(instrument.instrument_token, instrument);
+        });
+        return Array.from(instrumentMap.values());
+      });
+
+    })
+  }, [socket])
+
+  useEffect(() => {
+    return () => {
+        socket.close();
+    }
+  }, [])
+
+  console.log("in use effect", rankData, myRank)
+
+  let allRank = receiveFinalArr(rankData);
+  let myRankArr = receiveFinalArr(myRank?.data);
+
+
+  console.log("finalTraderRank", allRank, myRankArr);
+
+  let myNetPnl = myRankArr[0] && myRankArr[0].totalPnl - myRankArr[0].brokerage
+  let myProfitChange = myRankArr[0] && myNetPnl*100/myRankArr[0].investedAmount;
+
+
+
+
+
+
+
+
+  function receiveFinalArr(rankData){
+    let finalTraderRank = [];
+    if(rankData?.length !== 0){
+      let mapForParticularUser = new Map();
+      for(let i = 0; i < rankData?.length; i++){
+        if(mapForParticularUser.has(rankData[i].userId.trader)){
+          let marketDataInstrument = marketData.filter((elem)=>{
+            return elem.instrument_token == Number(rankData[i].userId.instrumentToken)
+          })
+  
+          let obj = mapForParticularUser.get(rankData[i].userId.trader)
+          obj.totalPnl += ((rankData[i].totalAmount+((rankData[i].lots)*marketDataInstrument[0]?.last_price)));
+          obj.runninglots += rankData[i].lots;
+          obj.brokerage += rankData[i].brokerage;
+  
+        } else{
+          let marketDataInstrument = marketData.filter((elem)=>{
+            return elem !== undefined && elem.instrument_token === Number(rankData[i].userId.instrumentToken)
+          })
+          mapForParticularUser.set(rankData[i].userId.traderId, {
+            name : rankData[i].userId.traderName,
+            totalPnl : ((rankData[i].totalAmount+((rankData[i].lots)*marketDataInstrument[0]?.last_price))),
+            runninglots : rankData[i].lots,
+            brokerage: rankData[i].brokerage,
+            name: rankData[i].userId.createdBy,
+            investedAmount: rankData[i].investedAmount
+          }) 
+        }
+  
+      }
+  
+  
+      for (let value of mapForParticularUser.values()){
+        finalTraderRank.push(value);
+      }
+  
+      finalTraderRank.sort((a, b)=> {
+        return (b.totalPnl-b.brokerage)-(a.totalPnl-a.brokerage)
+      });
+    }
+    return finalTraderRank;
+  }
+
 
 return (
     <>
         <Grid item xs={12} md={6} lg={5} mb={2}>
-                <MDBox color="light">
+            <MDBox color="light">
 
-                    <MDTypography mb={2} color="light" display="flex" justifyContent="center">
-                        Ranks
-                    </MDTypography>
+                <MDTypography mb={2} color="light" display="flex" justifyContent="center">
+                    Ranks
+                </MDTypography>
+                
+                <Grid container>
+                    <Grid item xs={12} md={12} lg={12}>
+                      <MDTypography fontSize={13} color="light">My Rank</MDTypography>
+                    </Grid>
+                </Grid>
+
+                <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
                     
-                    <Grid container>
-                        <Grid item xs={12} md={12} lg={12}>
-                          <MDTypography fontSize={13} color="light">My Rank</MDTypography>
-                        </Grid>
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                      <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>Rank</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                      <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>Name</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                      <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>P&L</MDTypography>
+                    </Grid>
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                      <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>Profit(%)</MDTypography>
                     </Grid>
 
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>Rank</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>Name</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>P&L</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light" style={{fontWeight:700}}>Profit(%)</MDTypography>
-                        </Grid>
-    
+                </Grid>
+
+                <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
+                    
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                      <MDTypography fontSize={13} color="light">{myRank?.rank}</MDTypography>
                     </Grid>
-
-                    <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-                        
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">121</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="light">Prateek Pawan</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="error">-₹2,000</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                          <MDTypography fontSize={13} color="error">-20%</MDTypography>
-                        </Grid>
-    
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                      <MDTypography fontSize={13} color="light">{myRankArr[0]?.name}</MDTypography>
                     </Grid>
+                    <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                        <MDTypography fontSize={13} color={myNetPnl >= 0 ? "success" : "error"}>
+                            {myNetPnl >= 0.00 ? "+₹" + (myNetPnl?.toFixed(2)): "-₹" + ((-myNetPnl).toFixed(2))}
+                        </MDTypography>
+                      </Grid>
+                      <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                        <MDTypography fontSize={13} color={myProfitChange >= 0 ? "success" : "error"}>
+                            {myProfitChange >= 0.00 ? "+" + (myProfitChange?.toFixed(2)): "-" + ((-myProfitChange).toFixed(2))}%
+                        </MDTypography>
+                      </Grid>
 
-                    <Grid container mt={2}>
-                        <Grid item xs={12} md={12} lg={12}>
-                          <MDTypography fontSize={13} color="light">Top 10 Traders Rank</MDTypography>
-                        </Grid>
+                </Grid>
+
+                <Grid container mt={2}>
+                    <Grid item xs={12} md={12} lg={12}>
+                      <MDTypography fontSize={13} color="light">Top 10 Traders Rank</MDTypography>
                     </Grid>
+                </Grid>
 
-                    {rankData.map((elem, index)=>{
-                      let netPnl = elem?.totalAmount - elem?.brokerage;
-                      let profitChange = netPnl*100/elem?.investedAmount;
-                      return(
-                        <Grid key={elem.userId.trader} container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
-      
-                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                            <MDTypography fontSize={13} color="light">{index+1}</MDTypography>
-                          </Grid>
-                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                            <MDTypography fontSize={13} color="light">{elem.userId.createdBy}</MDTypography>
-                          </Grid>
-                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                            <MDTypography fontSize={13} color={netPnl >= 0 ? "success" : "error"}>
-                                {netPnl >= 0.00 ? "+₹" + (netPnl?.toFixed(2)): "-₹" + ((-netPnl).toFixed(2))}
-                            </MDTypography>
-                          </Grid>
-                          <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-                            <MDTypography fontSize={13} color={profitChange >= 0 ? "success" : "error"}>
-                                {profitChange >= 0.00 ? "+" + (profitChange?.toFixed(2)): "-" + ((-profitChange).toFixed(2))}%
-                            </MDTypography>
-                          </Grid>
-    
-                        </Grid>
-                      )
+                {allRank.map((elem, index)=>{
+                  let netPnl = elem?.totalPnl - elem?.brokerage;
+                  let profitChange = netPnl*100/elem?.investedAmount;
+                  return(
+                    <Grid key={elem.name} container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
+  
+                      <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                        <MDTypography fontSize={13} color="light">{index+1}</MDTypography>
+                      </Grid>
+                      <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                        <MDTypography fontSize={13} color="light">{elem.name}</MDTypography>
+                      </Grid>
+                      <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                        <MDTypography fontSize={13} color={netPnl >= 0 ? "success" : "error"}>
+                            {netPnl >= 0.00 ? "+₹" + (netPnl?.toFixed(2)): "-₹" + ((-netPnl).toFixed(2))}
+                        </MDTypography>
+                      </Grid>
+                      <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
+                        <MDTypography fontSize={13} color={profitChange >= 0 ? "success" : "error"}>
+                            {profitChange >= 0.00 ? "+" + (profitChange?.toFixed(2)): "-" + ((-profitChange).toFixed(2))}%
+                        </MDTypography>
+                      </Grid>
 
-                    })}
+                    </Grid>
+                  )
 
-                </MDBox>
-            </Grid> 
+                })}
+
+            </MDBox>
+        </Grid> 
     </>
 );
 }

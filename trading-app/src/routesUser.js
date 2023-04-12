@@ -71,7 +71,7 @@ const routes = [
     // key: "arena",
     // icon: <BusinessIcon/>, DummyTradePage
     route: "arena/contest/notstarted",
-    component: <ContestTradePage />,
+    component: <DummyTradePage />,
   },
   {
     type: "collapse",
