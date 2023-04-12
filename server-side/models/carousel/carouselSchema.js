@@ -30,7 +30,7 @@ const carouselSchema = new mongoose.Schema({
     },
     objectId:{
         type: String,
-        // required: true,
+        required: true,
     },
     carouselImage:{
         type:String,
