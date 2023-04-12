@@ -68,10 +68,7 @@ function ContestRegistration () {
                     {/* <InstrumentsData contestId={id} socket={socket}/>
 
                     <MYPNLData contestId={id} socket={socket}/> */}
-                    <Portfolios contestId={id}/>
-
-                    
-
+                    <Portfolios contestId={id} endDate={contest?.contestStartDate}/>
                 </MDBox>
             </Grid>
 

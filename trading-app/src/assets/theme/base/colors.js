@@ -242,6 +242,7 @@ const colors = {
     },
   },
 
+
   coloredShadows: {
     primary: "#e91e62",
     secondary: "#110e0e",

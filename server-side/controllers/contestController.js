@@ -59,7 +59,8 @@ exports.getContest = async(req, res, next)=>{
     
     const id = req.params.id ? req.params.id : '';
     try{
-    const contest = await Contest.findById(id).populate('contestRule','ruleName'); 
+    const contest = await Contest.findById(id).populate('contestRule','ruleName')
+    .populate('lastModifiedBy', { first_name: 1, last_name: 1 });
 
     res.status(201).json({message: "Contest Retrived",data: contest});    
     }
@@ -69,6 +70,7 @@ exports.getContest = async(req, res, next)=>{
 exports.editContest = async(req, res, next) => {
     const id = req.params.id;
 
+    console.log("id is ,", id)
     const contest = await Contest.findById(id);
 
     const filteredBody = filterObj(req.body, "contestName", "contestStartDate", "contestEndDate", "entryOpeningDate", "entryClosingDate", 
@@ -172,7 +174,9 @@ exports.joinContest = async(req, res, next) => {
 exports.getContest = async (req,res,next) => {
     const {id} = req.params;
     try{
-        const contest = await Contest.findById(id);
+        const contest = await Contest.findById(id)
+        .populate('contestRule', { ruleName: 1, contestRules: 1 })
+        .populate('lastModifiedBy', { first_name: 1, last_name: 1 });
         if(!contest){
             return res.status(404).json({status: 'error', message: 'Contest not found.'});
         }

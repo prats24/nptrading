@@ -76,6 +76,7 @@ const getTicks = async (socket) => {
     // console.log(ticks)
 
     socket.emit('tick', ticks);
+
     // socket.emit('check', ticks);
 
     let indexObj = {};
@@ -98,6 +99,10 @@ const getTicks = async (socket) => {
     let contestInstrumentData = ticks.filter(function(item) {
       return contestObj[item.instrument_token];
     });
+    console.log("contestInstrumentData", contestInstrumentData)
+
+    socket.emit('contest-ticks', contestInstrumentData);
+
 
     try{
       // console.log("contest id is ", contestId)
@@ -122,7 +127,6 @@ const getTicks = async (socket) => {
       //   return await client.SISMEMBER(await client.get(socket.id), (tick.instrument_token).toString());
       // })
 
-  
       // console.log("indexData", filteredTicks?.length, contestInstrumentData, indexData);
       if(indexData?.length > 0){
         socket.emit('index-tick', indexData)
@@ -131,9 +135,8 @@ const getTicks = async (socket) => {
 
       // if(filteredTicks > 0){
         // socket.emit('tick-room', ticks);
-        socket.emit('check', false)
+        
         io.to(`${userId}`).emit('tick-room', filteredTicks);
-        socket.emit('contest-ticks', contestInstrumentData);
 
       // }
       console.log("performance", performance.now()-now, socket.id);

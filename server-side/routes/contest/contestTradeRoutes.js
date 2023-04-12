@@ -1,7 +1,7 @@
 const express = require("express");
 const Authenticate = require('../../authentication/authentication');
 const router = express.Router({mergeParams: true});
-const {newTrade, getUserTrades, currentUser, getContestRank} = require('../../controllers/contestTradeController');
+const {newTrade, getUserTrades, currentUser, getContestRank, getContestPnl} = require('../../controllers/contestTradeController');
 const authoizeTrade = require('../../controllers/authoriseTrade');
 
 router.route('/myTrades').get(Authenticate, currentUser , getUserTrades);
@@ -19,5 +19,10 @@ router.route('/').post(Authenticate, authoizeTrade.contestFundCheck, newTrade);
 
 
 module.exports = router;
-// , authoizeTrade.contestFundCheck
+// portfolio id se portfolio get krna
+// userid se perticular user get krna
+// then us user ka portfolio get krna
 
+// step 2
+
+// portfolio id and userid se us portfolio ka pnl get krna

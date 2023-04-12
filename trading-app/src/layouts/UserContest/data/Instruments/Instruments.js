@@ -37,7 +37,7 @@ function InstrumentsData({contestId, socket, portfolioId}){
         }).catch((err) => {
             return new Error(err);
         })
-    }, [socket])
+    }, [])
 
     useEffect(()=>{
         axios.get(`${baseUrl}api/v1/getliveprice`)
@@ -62,7 +62,7 @@ function InstrumentsData({contestId, socket, portfolioId}){
           });
     
         })
-    }, [])
+    }, [socket])
     
       console.log("instrument", contestId, portfolioId, marketData)
 

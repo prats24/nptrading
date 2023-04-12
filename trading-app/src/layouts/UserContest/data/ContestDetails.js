@@ -11,8 +11,11 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { CircularProgress } from '@mui/material';
+import Timer from '../timer'
 
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+
+import PrizeDistribution from './PrizeDistribution'
+import ContestRules from './ContestRules'
 
 function ContestDetails () {
     const [isLoading,setIsLoading] = useState(false);
@@ -21,17 +24,7 @@ function ContestDetails () {
     const  id  = location?.state?.data;
     console.log("Location: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
-    let rewards = 
-    [
-        {rank:"1",reward:'INR 200'},
-        {rank:"2",reward:'INR 150'},
-        {rank:"3",reward:'INR 100'},
-        {rank:"4-8",reward:'INR 80'},
-        {rank:"9-20",reward:'INR 60'},
-        {rank:"21-50",reward:'INR 30'},
-        {rank:"51-100",reward:'INR 10'},
-        {rank:"101-200",reward:'INR 5'}
-    ]
+  
     React.useEffect(()=>{
       
         axios.get(`${baseUrl}api/v1/contest/${id}`)
@@ -90,7 +83,7 @@ function ContestDetails () {
         const daysDiff = Math.floor(hoursDiff / 24);
         const remainingHours = hoursDiff % 24;
 
-        return (`${daysDiff} days, ${remainingHours} hours`);
+        return (`${daysDiff} days, ${remainingHours} hrs`);
     }
 
     async function joinContest(id){
@@ -134,8 +127,14 @@ function ContestDetails () {
             <Grid item xs={12} md={6} lg={4.5} mb={2}>
                 <MDBox color="light">
 
-                    <MDTypography color="light" display="flex" justifyContent="center">
-                        League is about to begin in {substractDate(contest?.contestEndDate)}
+                    <MDTypography mb={2} color="light" display="flex" flexDirection="row" alignItems="center" alignContent="center">
+                        <MDBox mr={2} fontSize={14} display="flex" justifyContent="left" color="light">League is about to begin in</MDBox>
+                        <MDBox display="flex" justifyContent="right" fontWeight={700} borderRadius={4} p={0.5} bgColor="light" fontSize={12} color="dark"><Timer targetDate={contest?.contestStartDate} text="Contest has Started" /></MDBox>
+                    </MDTypography>
+
+                    <MDTypography color="light" display="flex" flexDirection="row" alignItems="center" alignContent="center">
+                        <MDBox mr={2} fontSize={14} display="flex" justifyContent="left" color="light">Registration Open in</MDBox>
+                        <MDBox fontWeight={700} borderRadius={4} p={0.5} display="flex" justifyContent="right" bgColor="light" fontSize={12} color="dark"><Timer targetDate={contest?.entryOpeningDate} text="Open for Registration now. Register!" /></MDBox>
                     </MDTypography>
 
                     <Grid container  spacing={2}>
@@ -153,7 +152,9 @@ function ContestDetails () {
                         </Grid>
 
                         <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">
-                           <MDTypography color="light" fontSize={15}>INR 4,00,000</MDTypography>
+                           <MDTypography color="light" fontSize={15}>
+                            {contest?.entryFee?.currency} {contest?.rewards?.reduce((total, reward) => total + reward?.reward, 0)}
+                           </MDTypography>
                         </Grid>
 
                         <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">
@@ -181,14 +182,15 @@ function ContestDetails () {
                         </Grid>
 
                         <Grid item xs={12} md={12} lg={12} display="flex" mt={1} ml={1} mr={1} justifyContent="space-between" alignItems="center" alignContent="center">
-                            <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
-                                <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Min: {contest?.minParticipants}</span>
+                            <MDTypography color="white" fontSize={10} display="flex" justifyContent="space-between" alignItems="center">
+                                <HiUserGroup />
+                                <span style={{marginLeft:2,marginTop:2,fontWeight:700}}>Min Participants: {contest?.minParticipants}</span>
                             </MDTypography>
-                            <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
-                                <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: 20</span>
+                            <MDTypography color="white" fontSize={10} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                                <HiUserGroup /><span style={{marginLeft:2,marginTop:2,fontWeight:700}}>Entries so Far: {contest?.participants?.length}</span>
                             </MDTypography>
-                            <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
-                                <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Max: {contest?.minParticipants}</span>
+                            <MDTypography color="white" fontSize={10} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                                <HiUserGroup /><span style={{marginLeft:2,marginTop:2,fontWeight:700}}>Max Participants: {contest?.maxParticipants}</span>
                             </MDTypography>
                         </Grid>
 
@@ -239,130 +241,13 @@ function ContestDetails () {
                 <Divider orientation="vertical" style={{backgroundColor: 'white', height: '100%'}} />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={3} mb={2}>
-                <MDBox color="light">
-
-                    <MDTypography mb={4} color="light" display="flex" justifyContent="center">
-                        Prize Distribution
-                    </MDTypography>
-
-                    <MDBox display="flex" justifyContent="center" >
-                        <img src={Logo} width={60} height={60} style={{borderRadius:"50%"}}/> 
-                    </MDBox>
-
-                    <Grid container  mt={2} style={{border:'1px solid white',borderRadius:6}}>
-
-                        <Grid item xs={12} md={6} lg={5} mt={1} mb={1}display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Rank</MDTypography>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={7} mt={1} mb={1}display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Prize Amount</MDTypography>
-                        </Grid>
-
-                        {contest?.rewards?.length === 0 ?
-                                rewards.map((e)=>{
-                                 return <>
-
-                                    <Grid item xs={12} md={6} lg={5} display="flex" justifyContent="center" alignItems="center">
-                                        <MDTypography color="light" fontSize={15}>{e.rank}</MDTypography>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={7} display="flex" justifyContent="center" alignItems="center">
-                                        <MDTypography color="light" fontSize={15}>{e.reward}</MDTypography>
-                                    </Grid>
-
-                                    <Grid item xs={12} md={6} lg={12} mt={-2} ml={2} mr={1}>
-                                        <Divider style={{backgroundColor: 'white'}} />
-                                    </Grid>
-                                </>
-                                })
-                                :
-                                contest?.rewards?.map((e)=>{
-                                    return(
-                                        <>
-
-                                            <Grid item xs={12} md={6} lg={5} display="flex" justifyContent="center" alignItems="center">
-                                                <MDTypography color="light" fontSize={15}>{e?.rankStart == e?.rankEnd ? e?.rankStart : `${e?.rankStart}-${e?.rankEnd}`}</MDTypography>
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6} lg={7} display="flex" justifyContent="center" alignItems="center">
-                                                <MDTypography color="light" fontSize={15}>{`${e?.currency} ${e?.reward}`}</MDTypography>
-                                            </Grid>
-
-                                            <Grid item xs={12} md={6} lg={12} mt={-2} ml={2} mr={1}>
-                                                <Divider style={{backgroundColor: 'white'}} />
-                                            </Grid>
-                                        </>
-                                    )
-                                })
-                            }
-                            
-                    </Grid>
-
-                </MDBox>
-            </Grid>
+            <PrizeDistribution contest={contest}/>
 
             <Grid item xs={0} md={0} lg={0.5}>
                 <Divider orientation="vertical" style={{backgroundColor: 'white', height: '100%'}} />
             </Grid>
 
-            <Grid item xs={12} md={6} lg={3.5} mb={2}>
-                <MDBox color="light">
-
-                    <MDTypography mb={4} color="light" display="flex" justifyContent="center">
-                        Contest Rules
-                    </MDTypography>
-
-                    <MDBox display="flex" justifyContent="center" >
-                        <img src={Logo} width={60} height={60} style={{borderRadius:"50%"}}/> 
-                    </MDBox>
-
-                    <Grid container  mt={2} style={{border:'1px solid white',borderRadius:6}}>
-
-                        <Grid item xs={12} md={6} lg={2} mt={1} mb={1} pl={-2}  display="flex" justifyContent="center" alignItems="center">
-                           <KeyboardArrowRightIcon/>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={10} mt={1} mb={1}  display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Rule No. 1 is for thos who want to lay the game at cost of life</MDTypography>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={2} mt={1} mb={1} pl={-2}  display="flex" justifyContent="center" alignItems="center">
-                           <KeyboardArrowRightIcon/>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={10} mt={1} mb={1}  display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Rule No. 1 is for thos who want to lay the game at cost of life</MDTypography>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={2} mt={1} mb={1} pl={-2}  display="flex" justifyContent="center" alignItems="center">
-                           <KeyboardArrowRightIcon/>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={10} mt={1} mb={1}  display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Rule No. 1 is for thos who want to lay the game at cost of life</MDTypography>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={2} mt={1} mb={1} pl={-2}  display="flex" justifyContent="center" alignItems="center">
-                           <KeyboardArrowRightIcon/>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={10} mt={1} mb={1}  display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Rule No. 1 is for thos who want to lay the game at cost of life</MDTypography>
-                        </Grid>
-                        <Grid item xs={12} md={6} lg={2} mt={1} mb={1} pl={-2}  display="flex" justifyContent="center" alignItems="center">
-                           <KeyboardArrowRightIcon/>
-                        </Grid>
-
-                        <Grid item xs={12} md={6} lg={10} mt={1} mb={1}  display="flex" justifyContent="center" alignItems="center">
-                           <MDTypography color="light" fontSize={15}>Rule No. 1 is for thos who want to lay the game at cost of life</MDTypography>
-                        </Grid>
-    
-                    </Grid>
-
-                </MDBox>
-            </Grid>
+            <ContestRules contest={contest}/>
 
         </Grid>
     </MDBox>

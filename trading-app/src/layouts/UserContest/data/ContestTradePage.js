@@ -36,11 +36,13 @@ function ContestTradeView () {
       throw new Error(err);
     }
   
-  
+  console.log("in event running", socket.id, socket)
     useEffect(() => {
+      console.log("in event 1")
       socket.on("connect", () => {
+        console.log("in event 2")
         socket.emit("hi", true)
-        socket.emit('contest', contestId)
+        // socket.emit('contest', contestId)
       })
     }, []);
     React.useEffect(()=>{
