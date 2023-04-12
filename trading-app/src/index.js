@@ -9,7 +9,6 @@ import { MaterialUIControllerProvider } from "./context";
 import AuthContext, { userContext } from "./AuthContext";
 import {NetPnlProvider} from './PnlContext';
 import MarketDataContext from './MarketDataContext'
-import JoinContest from "../src/layouts/user-contest/joinContest/joinContest"
 
 ReactDOM.render(
   <AuthContext>
@@ -18,7 +17,6 @@ ReactDOM.render(
         <BrowserRouter>
           <MaterialUIControllerProvider>
             <App />
-            {/* <JoinContest /> */}
           </MaterialUIControllerProvider>
         </BrowserRouter>
       </MarketDataContext>
