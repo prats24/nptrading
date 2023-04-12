@@ -18,7 +18,7 @@ const carouselSchema = new mongoose.Schema({
         type:Date,
         required: true
     },
-    stauts:{
+    status:{
         type:String,
         required:true,
         enum: ['Live','Draft','Rejected']
