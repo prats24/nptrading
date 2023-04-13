@@ -28,7 +28,7 @@ import { Box, Typography } from '@mui/material';
 import { marketDataContext } from "../../../../MarketDataContext";
 
 
-const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, reRender, setReRender, fromUserPos, expiry, contestId}) => {
+const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxLot, ltp, render, setReRender, fromUserPos, expiry, contestId, portfolioId}) => {
   console.log("rendering in userPosition: sellModel")
 
   // const marketDetails = useContext(marketDataContext)
@@ -106,18 +106,10 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
   };
 
   const handleClickOpen = async () => {
-    if(fromUserPos){
-      addInstrument();
-    }
-    reRender ? setReRender(false) : setReRender(true);
     setOpen(true);
   }; 
 
   const handleClose = async (e) => {
-    if(fromUserPos){
-      removeInstrument()
-    }
-    reRender ? setReRender(false) : setReRender(true);
     setOpen(false);
   };
 
@@ -163,7 +155,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
       placeOrder();
 
       let id = setTimeout(()=>{
-          reRender ? setReRender(false) : setReRender(true)
+        render ? setReRender(false) : setReRender(true)
       }, 1000);
       
   }
@@ -173,7 +165,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     let createdOn = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${(date.getFullYear())} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}:${String(date.getMilliseconds()).padStart(2, '0')}`
 
     const { exchange, symbol, buyOrSell, Quantity, Price, Product, OrderType, TriggerPrice, stopLoss, validity, variety } = sellFormDetails;
-    const res = await fetch(`${baseUrl}api/v1/contestTrade/${contestId}`, {
+    const res = await fetch(`${baseUrl}api/v1/contest/${contestId}/trades/`, {
         method: "POST",
         credentials:"include",
         headers: {
@@ -184,7 +176,7 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
           exchange, symbol, buyOrSell, Quantity, Price, 
           Product, OrderType, TriggerPrice, stopLoss, uId,
           validity, variety, createdBy, order_id:dummyOrderId,
-          userId, instrumentToken, trader
+          userId, instrumentToken, trader, portfolioId
 
         })
     });
@@ -215,50 +207,6 @@ const SellModel = ({exchange, symbol, instrumentToken, symbolName, lotSize, maxL
     }
   }
 
-  async function addInstrument(){
-    const res = await fetch(`${baseUrl}api/v1/addInstrument`, {
-      method: "POST",
-      credentials:"include",
-      headers: {
-          "content-type" : "application/json",
-          "Access-Control-Allow-Credentials": true
-      },
-      body: JSON.stringify({
-        instrument: symbolName, exchange, status: "Active", 
-        symbol, lotSize, instrumentToken, 
-        uId, contractDate: expiry, maxLot: lotSize*36, notInWatchList: true
-      })
-    });
-  
-    const data = await res.json();
-    if(data.status === 422 || data.error || !data){
-        window.alert(data.error);
-    }else{
-      // openSuccessSB();
-      console.log(data.message)
-    }
-  }
-
-  async function removeInstrument(){
-    const response = await fetch(`${baseUrl}api/v1/inactiveInstrument/${instrumentToken}`, {
-      method: "PATCH",
-      credentials:"include",
-      headers: {
-          "Accept": "application/json",
-          "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        isAddedWatchlist: false
-      })
-    });
-
-    const permissionData = await response.json();
-    console.log("remove", permissionData)
-    if (permissionData.status === 422 || permissionData.error || !permissionData) {
-        window.alert(permissionData.error);
-    }else {
-    }
-  }
 
 
   const [successSB, setSuccessSB] = useState(false);

@@ -32,6 +32,7 @@ const disconnectTicker = () => {
 const subscribeTokens = async() => {
   // getKiteCred.getAccess().then(async (data)=>{
     let tokens = await fetchToken();
+    console.log("token in kite", tokens)
     ticker?.subscribe(tokens);
   // });
 }
@@ -60,20 +61,22 @@ const getTicks = async (socket) => {
     indecies = JSON.parse(indecies);  
   }
 
-  let contestInstrument = await client.get("contest")
-  if(!contestInstrument){
-    contestInstrument = await ContestInstrument.find({status: "Active"});
-    await client.set("contest", JSON.stringify(contestInstrument));
-  } else{
-    contestInstrument = JSON.parse(contestInstrument);  
-  }
+  // let contestInstrument = await client.get("contest")
+  // if(!contestInstrument){
+  //   contestInstrument = await ContestInstrument.find({status: "Active"});
+  //   await client.set("contest", JSON.stringify(contestInstrument));
+  // } else{
+  //   contestInstrument = JSON.parse(contestInstrument);  
+  // }
 
   
 
   // console.log("checking get ticks", contestInstrument, indecies)
   ticker.on('ticks', async (ticks) => {
     // console.log(ticks)
+
     socket.emit('tick', ticks);
+
     // socket.emit('check', ticks);
 
     let indexObj = {};
@@ -87,28 +90,34 @@ const getTicks = async (socket) => {
       return indexObj[item.instrument_token];
     });
 
-    let contestObj = {};
-    // populate hash table with indexObj from indecies
-    for (let i = 0; i < contestInstrument?.length; i++) {
-      contestObj[contestInstrument[i]?.instrumentToken] = true;
-    }
-    // filter ticks using hash table lookups
-    let contestInstrumentData = ticks.filter(function(item) {
-      return contestObj[item.instrument_token];
-    });
+    let filteredTicks = "dy=ummy data"
+    // console.log("contestInstrument", contestInstrument)
+    // let contestObj = {};
+    // // populate hash table with indexObj from indecies
+    // for (let i = 0; i < contestInstrument?.length; i++) {
+    //   contestObj[contestInstrument[i]?.instrumentToken] = true;
+    // }
+    // // filter ticks using hash table lookups
+    // let contestInstrumentData = ticks.filter(function(item) {
+    //   return contestObj[item.instrument_token];
+    // });
+    // console.log("contestInstrumentData", contestInstrumentData)
+
+    // socket.emit('contest-ticks', contestInstrumentData);
+
 
     try{
       // console.log("contest id is ", contestId)
       // let contestInstruments = await client.SMEMBERS((contestId).toString());
       // let contestInstrumentSet = new Set(contestInstruments); // create a Set of tokenArray elements
-      // console.log(contestId, contestInstruments)
+      // console.log("contestInstrumentData", contestInstrumentData, contestInstrument)
       let userId = await client.get(socket.id)
-      console.log("userId", userId, socket.id)
+      // console.log("userId", userId, socket.id)
       let instruments = await client.SMEMBERS(userId)
       console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
       console.log(instrumentTokenArr)
-      let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+      filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
       // let contestTicks = ticks.filter(tick => contestInstrumentSet.has((tick.instrument_token).toString()));
 
       // let userId = await client.get(socket.id)
@@ -120,8 +129,7 @@ const getTicks = async (socket) => {
       //   return await client.SISMEMBER(await client.get(socket.id), (tick.instrument_token).toString());
       // })
 
-  
-      // console.log("indexData", filteredTicks?.length, contestInstrumentData, indexData);
+      console.log("indexData", filteredTicks.length);
       if(indexData?.length > 0){
         socket.emit('index-tick', indexData)
       }
@@ -129,9 +137,9 @@ const getTicks = async (socket) => {
 
       // if(filteredTicks > 0){
         // socket.emit('tick-room', ticks);
-        socket.emit('check', false)
+        io.to(`${userId}`).emit('contest-ticks', filteredTicks);
+
         io.to(`${userId}`).emit('tick-room', filteredTicks);
-        socket.emit('contest-ticks', contestInstrumentData);
 
       // }
       console.log("performance", performance.now()-now, socket.id);
@@ -144,7 +152,7 @@ const getTicks = async (socket) => {
 
 
     } catch (err){
-      console.log(err)
+      // console.log(err)
     }
 
 

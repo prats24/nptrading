@@ -16,7 +16,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import Portfolios from '../data/Portfolios'
 import MYPNLData from '../data/PnL/MyPNLData'
 import InstrumentsData from '../data/Instruments/Instruments'
-import DemoTradersRanking from '../data/DemoTradersRanking'
+import TradersRanking from '../data/TradersRanking'
 
 function ContestTradeView () {
     const [contest,setContest] = useState();
@@ -24,6 +24,7 @@ function ContestTradeView () {
     const  contestId  = location?.state?.contestId;
     // const  contestName  = location?.state?.data;
     const  portfolioId  = location?.state?.portfolioId;
+    const [render, setReRender] = useState(true);
 
     console.log("Location: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -36,11 +37,15 @@ function ContestTradeView () {
       throw new Error(err);
     }
   
-  
+  console.log("in event running", socket.id, contestId)
     useEffect(() => {
+      console.log("in event 1")
       socket.on("connect", () => {
+        console.log("in event 2")
+        socket.emit('userId', contestId)
+
+        // socket.emit('contest', contestId)
         socket.emit("hi", true)
-        socket.emit('contest', contestId)
       })
     }, []);
     React.useEffect(()=>{
@@ -54,6 +59,12 @@ function ContestTradeView () {
         })
 
     },[])
+
+    useEffect(() => {
+      return () => {
+          socket.close();
+      }
+    }, [])
 
     // console.log("Contest Registration Data: ",id)
     // console.log(`/arena/${contest?.contestName}/${contest?._id}`)
@@ -69,9 +80,9 @@ function ContestTradeView () {
                         {contest?.contestName}
                     </MDTypography>
                     
-                    <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} />
+                    <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
 
-                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} />
+                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
                     {/* <Portfolios contestId={id}/> */}
 
                     
@@ -83,10 +94,10 @@ function ContestTradeView () {
                 <Divider orientation="vertical" style={{backgroundColor: 'white', height: '100%'}} />
             </Grid>
 
-            Ranking View
+            {/* Ranking View */}
             
             {/* <DemoTradersRanking /> */}
-            
+            <TradersRanking contestId={contestId} socket={socket}/>
 
 
 

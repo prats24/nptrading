@@ -92,7 +92,7 @@ function Index() {
         if (data.status === 422 || data.error || !data) {
             openErrorSB("Error","data.error")
         } else {
-            openSuccessSB("Index Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
+            openSuccessSB("Portfolio Edited",data.displayName + " | " + data.instrumentSymbol + " | " + data.exchange + " | " + data.status)
             setTimeout(()=>{setSaving(false);setEditing(false)},500)
             console.log("entry succesfull");
         }

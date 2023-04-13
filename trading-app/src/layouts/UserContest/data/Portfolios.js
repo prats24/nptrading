@@ -8,37 +8,53 @@ import MDTypography from "../../../components/MDTypography";
 import { HiUserGroup } from 'react-icons/hi';
 import {Link} from 'react-router-dom'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import MDSnackbar from "../../../components/MDSnackbar";
 
 
 
 
-const ContestPortfolioCard = ({contestId}) => {
+const ContestPortfolioCard = ({contestId, endDate}) => {
   
   const [contestPortfolioData,setContestPortfolioData] = useState([]);
   const [objectId,setObjectId] = useState(contestId);
   const [selectedPortfolio, setSelectedPortfolio] = useState("");
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   console.log("contestId", contestId, objectId)
+
+  let nextPagePath = 'notstarted';
+  if((new Date()) < new Date(endDate)){
+    nextPagePath = 'notstarted'
+  } else{
+    console.log(new Date(), new Date(endDate))
+    nextPagePath = 'trade'
+  }
+
   useEffect(()=>{
   
-      axios.get(`${baseUrl}api/v1/portfolio/user`,{
-        withCredentials: true,
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true
-        },
-      })
-      .then((res)=>{
-                setContestPortfolioData(res.data.data);
-                console.log(res.data.data)
-        }).catch((err)=>{
-          return new Error(err);
-      })
+    axios.get(`${baseUrl}api/v1/portfolio/user`,{
+      withCredentials: true,
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Credentials": true
+      },
+    })
+    .then((res)=>{
+              setContestPortfolioData(res.data.data);
+              console.log(res.data.data)
+      }).catch((err)=>{
+        return new Error(err);
+    })
   },[])
 
   async function joinContest(){
-    console.log("in joinContest func", contestId, selectedPortfolio)
+    console.log("in join")
+    if(!selectedPortfolio){
+      console.log("in join if")
+      openSuccessSB("Failed","Please select a portfolio")
+      return;
+    }
+    // console.log("in joinContest func", contestId, selectedPortfolio)
     const res = await fetch(`${baseUrl}api/v1/contest/${contestId}`, {
         method: "POST",
         credentials:"include",
@@ -62,15 +78,40 @@ const ContestPortfolioCard = ({contestId}) => {
         console.log("entry succesfull");
     }
 
-}
+  }
+
+  const [title,setTitle] = useState('')
+  const [content,setContent] = useState('')
+  const [successSB, setSuccessSB] = useState(false);
+  const openSuccessSB = (title,content) => {
+    setTitle(title)
+    setContent(content)
+    setSuccessSB(true);
+  }
+  const closeSuccessSB = () => setSuccessSB(false);
+
+
+  const renderSuccessSB = (
+  <MDSnackbar
+      color="error"
+      icon="warning"
+      title={title}
+      content={content}
+      open={successSB}
+      onClose={closeSuccessSB}
+      close={closeSuccessSB}
+      bgWhite="info"
+  />
+  );
       
   console.log(contestPortfolioData) 
     
     return (
       <>
-
+      {contestPortfolioData.length > 0 ?
         <Grid container spacing={1} xs={12} md={6} lg={12}>
           {contestPortfolioData?.map((e)=>{
+
             let color = (selectedPortfolio === e._id) ? "warning" : "light";
           return (
             
@@ -117,11 +158,11 @@ const ContestPortfolioCard = ({contestId}) => {
           </Grid>
             <Grid item mt={2} xs={6} md={3} lg={6} display="flex" justifyContent="center"> 
                 <MDButton variant="outlined" size="small" color="light"
-                  component={Link} 
-                  to={{
-                      pathname: `/arena/contest/trade`,
+                  component={selectedPortfolio && Link} 
+                  to={ selectedPortfolio && {
+                      pathname: `/arena/contest/${nextPagePath}`,
                     }}
-                    state= {{contestId: contestId, portfolioId: selectedPortfolio}}
+                    state= { selectedPortfolio && {contestId: contestId, portfolioId: selectedPortfolio}}
                   
                     onClick={()=>{joinContest()}}
                 >
@@ -129,12 +170,25 @@ const ContestPortfolioCard = ({contestId}) => {
                 </MDButton>
             </Grid>
             <Grid item mt={2} xs={6} md={3} lg={6} display="flex" justifyContent="center"> 
-                <MDButton variant="outlined" size="small" color="light">
+                <MDButton variant="outlined" size="small" color="light" 
+                  component={Link} 
+                  to={{
+                      pathname: `/arena`,
+                    }}
+                >
                     Back
                 </MDButton>
+                {renderSuccessSB}
             </Grid>
           </Grid>
         </Grid>
+          :
+         <Grid container spacing={1} xs={12} md={6} lg={12}>
+          <Grid item mt={2} xs={6} md={3} lg={12} display="flex" justifyContent="center">
+            <MDTypography color="light">You do not have any portfolio to join the contest</MDTypography>
+          </Grid>
+         </Grid>
+         } 
 
       </>
 )}

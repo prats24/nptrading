@@ -49,6 +49,7 @@ getKiteCred.getAccess().then(async (data)=>{
 
 
   io.on("connection", (socket) => {
+    console.log(socket.id, "socket id")
     socket.on('userId', async (data)=>{
       socket.join(`${data}`)
       // console.log("in index.js ", socket.id, data)
@@ -56,6 +57,8 @@ getKiteCred.getAccess().then(async (data)=>{
     })
     socket.on('contest', async (contestId)=>{
       socket.join(`${contestId}`)
+      // console.log("in index.js contest ", socket.id, data)
+      await client.set(socket.id, contestId);
       // console.log("contestId ", contestId)
     })
 
@@ -74,6 +77,8 @@ getKiteCred.getAccess().then(async (data)=>{
     // socket.on('removeKey', (key)=>{
     //   client.del(key);
     // })
+    socket.emit('check', false)
+
 
     socket.on('disconnect', ()=>{
       console.log("disconnecting socket")
@@ -82,7 +87,7 @@ getKiteCred.getAccess().then(async (data)=>{
 
     socket.on('hi', async (data) => {
       // getKiteCred.getAccess().then(async (data)=>{
-
+      console.log("in hii event")
         await getTicks(socket);
         await onError();
         await onOrderUpdate();

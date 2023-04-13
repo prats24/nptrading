@@ -32,7 +32,7 @@ const fetchData = async () => {
       tokens.push(elem.instrumentToken);
     }) 
   
-    // console.log("tokens", tokens);
+    console.log("tokens", tokens);
     // console.log("arr", arr);
 
     return tokens

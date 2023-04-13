@@ -53,14 +53,14 @@ contestData?.rewards.map((elem)=>{
     </MDTypography>
   );
   contestReward.edit = (
-    <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+    <MDButton component="a" variant="caption" color="text" fontWeight="medium">
       Edit
-    </MDTypography>
+    </MDButton>
   );
   contestReward.delete = (
-    <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+    <MDButton component="a" variant="caption" color="text" fontWeight="medium">
       Delete
-    </MDTypography>
+    </MDButton>
   );
 
   rows.push(contestReward)
