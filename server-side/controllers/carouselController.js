@@ -1,7 +1,10 @@
-import Carousel from '../models/Carousel';
-import multer from 'multer';
-import AWS from 'aws-sdk';
-import sharp from 'sharp';
+const Carousel = require('../models/carousel/carouselSchema');
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const sharp = require('sharp');
+
+
+
 
 
 
@@ -30,9 +33,9 @@ const s3 = new AWS.S3({
 
 console.log(process.env.AWS_ACCESS_KEY_ID, process.env.AWS_SECRET_ACCESS_KEY);
 
-export const uploadMulter = upload;
+exports.uploadMulter = upload;
 
-export const resizePhoto = (req, res, next) => {
+exports.resizePhoto = (req, res, next) => {
     if (!req.file) {
       // no file uploaded, skip to next middleware
       console.log('no file');
@@ -50,7 +53,7 @@ export const resizePhoto = (req, res, next) => {
     });
 }; 
 
-export const uploadToS3 = async(req, res, next) => {
+exports.uploadToS3 = async(req, res, next) => {
     if (!req.file) {
       // no file uploaded, skip to next middleware
       next();
@@ -106,7 +109,7 @@ export const uploadToS3 = async(req, res, next) => {
   };
   
 
-  export const createCarousel =async (req, res, next) => {
+  exports.createCarousel =async (req, res, next) => {
     const{carouselName, description, carouselStartDate, carouselEndDate, objectType, objectId, status,} = req.body;
     const carouselImage = (req).uploadUrl;
 
@@ -129,7 +132,7 @@ export const uploadToS3 = async(req, res, next) => {
     
 };
 
-export const getCarousels = async (req, res, next)=>{
+exports.getCarousels = async (req, res, next)=>{
   try{
     const carousels = await Carousel.find({isDeleted: false}).populate('objectId').sort({carouselEndDate:-1});
   
@@ -143,7 +146,7 @@ export const getCarousels = async (req, res, next)=>{
   }  
 
 };
-export const deleteCarousel = async (req, res, next) => {
+exports.deleteCarousel = async (req, res, next) => {
     const {id} = req.params;
 
     const filter = { _id: id };
@@ -159,7 +162,7 @@ export const deleteCarousel = async (req, res, next) => {
     
 };
 
-export const getCarousel = async (req, res, next) => {
+exports.getCarousel = async (req, res, next) => {
     const id = req.params.id;
     try{
       const carousel = await Carousel.findOne({_id: id, isDeleted: false}).select('-__v -password').
@@ -176,7 +179,7 @@ export const getCarousel = async (req, res, next) => {
 };
 
 
-export const editCarousel = async (req, res, next) => {
+exports.editCarousel = async (req, res, next) => {
     const id = req.params.id;
     try{
 
@@ -204,7 +207,7 @@ export const editCarousel = async (req, res, next) => {
 
 };
 
-export const getActiveCarousels = async (req, res, next)=>{
+exports.getActiveCarousels = async (req, res, next)=>{
   let date = new Date();
   const carousels = await Carousel.find({isDeleted: false, carouselStartDate : {$gte : date}, endDate :{$lte : date}})
   .populate('objectId').sort({endDate:-1});
