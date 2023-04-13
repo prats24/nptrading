@@ -89,7 +89,7 @@ exports.newTrade = async (req, res, next) => {
 
   let brokerageUser;
 
-  console.log("3st")
+  // console.log("3st")
   if(buyOrSell === "BUY"){
       brokerageUser = buyBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
   } else{
@@ -103,7 +103,7 @@ exports.newTrade = async (req, res, next) => {
           return res.status(422).json({error : "date already exist..."})
       }
 
-      console.log("4st")
+      // console.log("4st")
       const contestTrade = new ContestTrade({
           status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
           variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
@@ -121,10 +121,10 @@ exports.newTrade = async (req, res, next) => {
           // res.status(500).json({error:"Failed to enter data"})
       });
       
-      console.log("5st")
+      // console.log("5st")
   }).catch(err => {console.log(err, "fail")});  
   
-  console.log("6st")
+  // console.log("6st")
 
 }
 
@@ -150,12 +150,12 @@ exports.getUserTrades = async(req,res,next) => {
 }
 
 exports.getContestPnl = async(req, res, next) => {
-  console.log("in get contest")
+  // console.log("in get contest")
     const userId = req.user._id;
     const contestId = req.params.id;
     const portfolioId = req.query.portfolioId;
     const today = new Date().toISOString().slice(0, 10);
-    console.log("in getContestPnl", userId, contestId, portfolioId, today)
+    // console.log("in getContestPnl", userId, contestId, portfolioId, today)
     try{
         let pnlDetails = await ContestTrade.aggregate([
             {
@@ -333,7 +333,7 @@ exports.getMyContestRank = async (req, res, next) => {
               }
             },
           ]);
-        console.log(ranks, userId)
+        // console.log(ranks, userId)
         if(!ranks){
             return res.status(404).json({status:'error', message:'No ranking for the contest'});
         }

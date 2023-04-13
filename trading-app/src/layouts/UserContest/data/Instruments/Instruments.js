@@ -22,24 +22,6 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
     const [instrumentData, setInstrumentData] = useState([]);
     const [marketData, setMarketData] = useState([]);
     const {render, setReRender} = Render;
-    useEffect(()=>{
-        // console.log("contestId", contestId)
-        axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
-          withCredentials: true,
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Credentials": true
-          },
-        })
-        .then((res) => {
-            setInstrumentData(res.data)
-        }).catch((err) => {
-            return new Error(err);
-        })
-        render ? setReRender(false) : setReRender(true)
-        socket.emit('hi')
-    }, [])
 
     useEffect(()=>{
         axios.get(`${baseUrl}api/v1/getliveprice`)
@@ -70,6 +52,25 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
         return () => {
             socket.close();
         }
+    }, [])
+
+    useEffect(()=>{
+        // console.log("contestId", contestId)
+        axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
+          withCredentials: true,
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+        })
+        .then((res) => {
+            setInstrumentData(res.data)
+        }).catch((err) => {
+            return new Error(err);
+        })
+        render ? setReRender(false) : setReRender(true)
+        // socket.emit('hi')
     }, [])
     
     console.log("instrument", contestId, portfolioId, marketData)
@@ -165,7 +166,7 @@ return (
             </Grid>
             )
         })}
-        </>
+    </>
 );
 }
 

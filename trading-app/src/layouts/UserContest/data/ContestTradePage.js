@@ -47,7 +47,7 @@ function ContestTradeView () {
         // socket.emit('contest', contestId)
         socket.emit("hi", true)
       })
-    }, []);
+    }, [socket]);
     React.useEffect(()=>{
       
         axios.get(`${baseUrl}api/v1/contest/${contestId}`)

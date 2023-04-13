@@ -41,17 +41,17 @@ function TradersRanking({contestId, socket}){
   useEffect(() => {
     const intervalId = setInterval(fetchData, 10000); // run every 10 seconds
     fetchData(); // run once on mount
-    socket.emit('hi')
+    // socket.emit('hi')
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/getliveprice`)
-    .then((res) => {
-      setMarketData(res.data);
-    }).catch((err) => {
-        return new Error(err);
-    })
+    // axios.get(`${baseUrl}api/v1/getliveprice`)
+    // .then((res) => {
+    //   setMarketData(res.data);
+    // }).catch((err) => {
+    //     return new Error(err);
+    // })
     socket?.on('check', (data)=>{
       console.log("data from socket in instrument in parent", data)
     })
@@ -68,7 +68,7 @@ function TradersRanking({contestId, socket}){
       });
 
     })
-  }, [socket])
+  }, [])
 
   useEffect(() => {
     return () => {

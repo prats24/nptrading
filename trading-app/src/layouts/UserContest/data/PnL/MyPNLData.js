@@ -25,17 +25,17 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
   useEffect(()=>{
 
     let abortController;
-    (async () => {
-         abortController = new AbortController();
-         let signal = abortController.signal;    
+    // (async () => {
+    //      abortController = new AbortController();
+    //      let signal = abortController.signal;    
 
-         // the signal is passed into the request(s) we want to abort using this controller
-         const { data } = await axios.get(
-          `${baseUrl}api/v1/getliveprice`,
-             { signal: signal }
-         );
-         setMarketData(data);
-    })();
+    //      // the signal is passed into the request(s) we want to abort using this controller
+    //      const { data } = await axios.get(
+    //       `${baseUrl}api/v1/getliveprice`,
+    //          { signal: signal }
+    //      );
+    //      setMarketData(data);
+    // })();
 
 
     socket.on("contest-ticks", (data) => {
@@ -49,7 +49,7 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
       });
     })
 
-    return () => abortController.abort();
+    // return () => abortController.abort();
   }, [])
 
   useEffect(()=>{
@@ -76,7 +76,7 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
 
          console.log("in mypnl", data)
          setTradeData(data);
-         socket.emit('hi')
+        //  socket.emit('hi')
 
     })();
 

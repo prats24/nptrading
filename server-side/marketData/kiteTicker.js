@@ -90,7 +90,6 @@ const getTicks = async (socket) => {
       return indexObj[item.instrument_token];
     });
 
-    let filteredTicks = "dy=ummy data"
     // console.log("contestInstrument", contestInstrument)
     // let contestObj = {};
     // // populate hash table with indexObj from indecies
@@ -117,7 +116,7 @@ const getTicks = async (socket) => {
       console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
       console.log(instrumentTokenArr)
-      filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+      let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
       // let contestTicks = ticks.filter(tick => contestInstrumentSet.has((tick.instrument_token).toString()));
 
       // let userId = await client.get(socket.id)
@@ -152,7 +151,7 @@ const getTicks = async (socket) => {
 
 
     } catch (err){
-      // console.log(err)
+      console.log(err)
     }
 
 
@@ -223,6 +222,6 @@ const onOrderUpdate = ()=>{
 const getTicker = () => ticker;
 module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens, onOrderUpdate, subscribeSingleToken };
 
-
+//https://vvv201214.s3.ap-south-1.amazonaws.com/cbc1.jpeg
 
 
