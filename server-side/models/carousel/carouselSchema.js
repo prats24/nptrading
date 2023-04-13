@@ -29,8 +29,8 @@ const carouselSchema = new mongoose.Schema({
         enum: ['campaign','referral-program','contest']
     },
     objectId:{
-        type: Schema.Types.objectId,
-        refPath: 'objectType', 
+        type: Schema.Types.ObjectId,
+        refPath: 'objectType'
     },
     carouselImage:{
         type:String,

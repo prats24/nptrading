@@ -163,6 +163,7 @@ app.use('/api/v1/referrals', require("./routes/campaigns/referralRoutes"));
 app.use('/api/v1/contestTrade', require("./routes/contest/contestTradeRoutes"));
 app.use('/api/v1/portfolio', require("./routes/userPortfolio/userPortfolioRoutes"));
 
+app.use('/api/v1/carousels', require("./routes/carousel/carouselRoutes"));
 app.use('/api/v1', require("./routes/contest/contestRuleRoute"));
 app.use('/api/v1', require("./routes/dbEntry/dbEntryRoute"));
 app.use('/api/v1', require("./PlaceOrder/main"));
