@@ -55,10 +55,12 @@ getKiteCred.getAccess().then(async (data)=>{
       console.log("in index.js ", socket.id, data)
       await client.set(socket.id, data);
     })
-    // socket.on('contest', async (contestId)=>{
-    //   socket.join(`${contestId}`)
-    //   console.log("contestId ", contestId)
-    // })
+    socket.on('contest', async (contestId)=>{
+      socket.join(`${contestId}`)
+      console.log("in index.js contest ", socket.id, data)
+      await client.set(socket.id, contestId);
+      console.log("contestId ", contestId)
+    })
 
     //  socket.emit('check', true)
 

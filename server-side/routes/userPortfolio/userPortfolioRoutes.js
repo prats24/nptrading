@@ -7,7 +7,7 @@ const Authenticate = require('../../authentication/authentication');
 router.route('/').post(Authenticate, createPortfolio).get(getPortfolios).patch(Authenticate, editPortfolioWithName)
 // router.route('/mycontests').get(Authenticate, myContests); 
 router.route('/contest').get(getContestPortolios)
-router.route('/user').get(getUserPortfolio)
+router.route('/user').get(Authenticate, getUserPortfolio)
 router.route('/trading').get(getTradingPortolios)
 router.route('/inactive').get(getInactivePortolios)
 router.route('/:id').get(getPortfolio).patch(Authenticate, editPortfolio)

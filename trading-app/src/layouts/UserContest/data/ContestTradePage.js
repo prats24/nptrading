@@ -37,13 +37,15 @@ function ContestTradeView () {
       throw new Error(err);
     }
   
-  console.log("in event running", socket.id, socket)
+  console.log("in event running", socket.id, contestId)
     useEffect(() => {
       console.log("in event 1")
       socket.on("connect", () => {
         console.log("in event 2")
-        socket.emit("hi", true)
+        socket.emit('userId', contestId)
+
         // socket.emit('contest', contestId)
+        socket.emit("hi", true)
       })
     }, []);
     React.useEffect(()=>{
@@ -57,6 +59,12 @@ function ContestTradeView () {
         })
 
     },[])
+
+    useEffect(() => {
+      return () => {
+          socket.close();
+      }
+    }, [])
 
     // console.log("Contest Registration Data: ",id)
     // console.log(`/arena/${contest?.contestName}/${contest?._id}`)

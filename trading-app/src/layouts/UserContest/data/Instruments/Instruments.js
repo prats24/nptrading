@@ -64,7 +64,7 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
           });
     
         })
-    }, [socket])
+    }, [])
 
     useEffect(() => {
         return () => {

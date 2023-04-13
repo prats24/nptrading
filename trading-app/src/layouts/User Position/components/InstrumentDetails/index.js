@@ -96,7 +96,7 @@ function InstrumentDetails({socket, reRender, setReRender , setIsGetStartedClick
 
   useEffect(() => {    
     return () => {
-      socket.emit('removeKey', socket.id)
+      // socket.emit('removeKey', socket.id)
       socket.close();
     }
   }, []);
