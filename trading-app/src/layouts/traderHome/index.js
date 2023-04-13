@@ -2,27 +2,21 @@
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
-import { Grid } from "@mui/material";
-
 
 // Data
-import Carousel from "./data/Carousel";
-import Indicies from "../traderHome/components/IndicesComponent";
+import Home from "./home.js";
 
-function Tables() {
+function RefferalTable() {
 
   return (
     <>
     <DashboardLayout>
       <DashboardNavbar />
-      <Grid container spacing={2} mb={2}>
-                <Indicies/>
-      </Grid>
-      <Carousel/>
+      <Home/>
       <Footer />
     </DashboardLayout>
     </>
   );
 }
 
-export default Tables;
+export default RefferalTable;
