@@ -51,12 +51,12 @@ getKiteCred.getAccess().then(async (data)=>{
   io.on("connection", (socket) => {
     socket.on('userId', async (data)=>{
       socket.join(`${data}`)
-      console.log("in index.js ", socket.id, data)
+      // console.log("in index.js ", socket.id, data)
       await client.set(socket.id, data);
     })
     socket.on('contest', async (contestId)=>{
       socket.join(`${contestId}`)
-      console.log("contestId ", contestId)
+      // console.log("contestId ", contestId)
     })
 
     //  socket.emit('check', true)
