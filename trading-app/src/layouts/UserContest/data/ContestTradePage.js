@@ -37,34 +37,37 @@ function ContestTradeView () {
       throw new Error(err);
     }
   
-  console.log("in event running", socket.id, contestId)
+  // console.log("in event running", socket.id, contestId)
     useEffect(() => {
+
       console.log("in event 1")
       socket.on("connect", () => {
         console.log("in event 2")
-        socket.emit('userId', contestId)
+        // socket.emit('userId', contestId)
 
         // socket.emit('contest', contestId)
-        socket.emit("hi", true)
+        // socket.emit("hi", true)
       })
-    }, [socket]);
-    React.useEffect(()=>{
-      
-        axios.get(`${baseUrl}api/v1/contest/${contestId}`)
-        .then((res)=>{
-                setContest(res?.data?.data);
-                console.log(res?.data?.data)
-        }).catch((err)=>{
-            return new Error(err);
-        })
+    }, []);
 
-    },[])
 
     useEffect(() => {
       return () => {
           socket.close();
       }
     }, [])
+
+    React.useEffect(()=>{
+      
+      axios.get(`${baseUrl}api/v1/contest/${contestId}`)
+      .then((res)=>{
+              setContest(res?.data?.data);
+              console.log(res?.data?.data)
+      }).catch((err)=>{
+          return new Error(err);
+      })
+
+    },[])
 
     // console.log("Contest Registration Data: ",id)
     // console.log(`/arena/${contest?.contestName}/${contest?._id}`)
