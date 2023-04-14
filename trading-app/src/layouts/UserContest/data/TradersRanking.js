@@ -144,7 +144,7 @@ return (
             <MDBox color="light">
 
                 <MDTypography mb={2} color="light" display="flex" justifyContent="center">
-                    Ranks
+                    LeaderBoard
                 </MDTypography>
                 
                 <Grid container>
