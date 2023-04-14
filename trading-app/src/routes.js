@@ -41,6 +41,7 @@ import ContestTradePage from './layouts/UserContest/ContestTrade'
 import Carousel from './layouts/carousel'
 import Home from './layouts/UserHome'
 import HomeIcon from '@mui/icons-material/OtherHouses';
+import DummyPage from "./layouts/UserContest/dummyContestTradePage";
 
 
 // @mui icons
@@ -66,7 +67,6 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DBEntry from "./layouts/InsertData/DBEntry";
 import Referral from "./layouts/referral-program";
 import Contest from "./layouts/user-contest"
-
 
 const routes = [
   {
@@ -146,11 +146,19 @@ const routes = [
   {
     // type: "collapse",
     // name: "Arena", 
-    // key: "arena",
+    // key: "arena", DummyPage
     // icon: <BusinessIcon/>,
     route: "arena/contest/trade",
     component: <ContestTradePage />,
   },
+  // {
+  //   // type: "collapse",
+  //   // name: "Arena", 
+  //   // key: "arena", DummyPage
+  //   // icon: <BusinessIcon/>,
+  //   route: "arena/contest/notstarted",
+  //   component: <DummyPage />,
+  // },
   {
     type: "collapse",
     name: "Company Position",
@@ -325,7 +333,7 @@ const routes = [
   // },
   {
     type: "collapse",
-    name: "Home",
+    name: "User DashBoard",
     key: "home",
     icon: <HomeIcon/>,
     route: "/home",

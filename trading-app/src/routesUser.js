@@ -27,15 +27,15 @@ import Dashboard from './layouts/traderHome'
 
 const routes = [
 
-  {
-    type: "collapse",
-    name: "Dashboard",
-    key: "Dashboard",
-    // icon: <Icon fontSize="small">person</Icon>,
-    icon: <DashboardIcon/>,
-    route: "/Dashboard",
-    component: <Dashboard />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Dashboard",
+  //   key: "Dashboard",
+  //   // icon: <Icon fontSize="small">person</Icon>,
+  //   icon: <DashboardIcon/>,
+  //   route: "/Dashboard",
+  //   component: <Dashboard />,
+  // },
   {
     type: "collapse",
     name: "Position",
@@ -92,7 +92,7 @@ const routes = [
     // key: "arena",
     // icon: <BusinessIcon/>, DummyTradePage
     route: "arena/contest/notstarted",
-    component: <ContestTradePage />,
+    component: <DummyTradePage />,
   },
   {
     type: "collapse",

@@ -1,16 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.44489560.css",
-    "main.js": "/static/js/main.63dbde79.js",
+    "main.css": "/static/css/main.c8fb8d11.css",
+    "main.js": "/static/js/main.74eb391b.js",
     "static/js/498.e7cb86be.chunk.js": "/static/js/498.e7cb86be.chunk.js",
     "static/js/703.e5427e5c.chunk.js": "/static/js/703.e5427e5c.chunk.js",
-    "static/js/513.f7e92010.chunk.js": "/static/js/513.f7e92010.chunk.js",
+    "static/js/513.b4ac4a25.chunk.js": "/static/js/513.b4ac4a25.chunk.js",
     "static/media/pattern-tree.svg": "/static/media/pattern-tree.475ab2ca88d273ae8280db405b754ce4.svg",
     "static/media/trading.jpg": "/static/media/trading.37a53048ea613a761226.jpg",
     "static/media/contest.gif": "/static/media/contest.84314953ca66e6b72292.gif",
     "static/media/home-decor-3.jpg": "/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
     "static/media/home-decor-2.jpg": "/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
     "static/media/home-decor-1.jpg": "/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
+    "static/media/carousel1.png": "/static/media/carousel1.e3f477ffcb426529ead1.png",
     "static/media/referral.png": "/static/media/referral.852ef40a0cf7d4b0f0a1.png",
     "static/media/home-decor-4.jpeg": "/static/media/home-decor-4.5b448fd339a14695f6aa.jpeg",
     "static/media/rule.png": "/static/media/rule.de53acfc1a7069f9e714.png",
@@ -24,6 +25,7 @@
     "static/media/team-3.jpg": "/static/media/team-3.0ef0be95e6850814c79e.jpg",
     "static/media/ivana-square.jpg": "/static/media/ivana-square.f7bc23b269d1d2509c82.jpg",
     "static/media/kal-visuals-square.jpg": "/static/media/kal-visuals-square.3210e28a48ff572ae88b.jpg",
+    "static/media/carousel.png": "/static/media/carousel.7bf62f755e78625d9f19.png",
     "static/media/contest.png": "/static/media/contest.2fc14939bbfec540974b.png",
     "static/media/referral-program.png": "/static/media/referral-program.97400ebd6410eb7a7eae.png",
     "static/media/team-4.jpg": "/static/media/team-4.85c82b6e60178804017f.jpg",
@@ -33,19 +35,23 @@
     "static/media/logo-slack.svg": "/static/media/logo-slack.7c47c5aa474b5c4fb39fcf05ffb8e4e7.svg",
     "static/media/logo-xd.svg": "/static/media/logo-xd.6e37886f94dba0c2967ece68a152e30c.svg",
     "static/media/logo-invision.svg": "/static/media/logo-invision.a1062115730dcd10e1c4f4abe7b9ab33.svg",
+    "static/media/slick.svg": "/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/static/media/slick.a4e97f5a2a64f0ab1323.eot",
     "static/media/logo-spotify.svg": "/static/media/logo-spotify.e83cf56c9d99a1fdf59e8deb58bbe470.svg",
+    "static/media/slick.ttf": "/static/media/slick.c94f7671dcc99dce43e2.ttf",
     "static/media/logo-jira.svg": "/static/media/logo-jira.c19fd4e416babfbd0fdb0a794188c601.svg",
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.f2b0e8570a4b4ce768854ff3dad1a6e1.svg",
     "static/media/logo-asana.svg": "/static/media/logo-asana.d758f410d82760a61d1eabcb03409de6.svg",
+    "static/media/slick.woff": "/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/index.html",
-    "main.44489560.css.map": "/static/css/main.44489560.css.map",
-    "main.63dbde79.js.map": "/static/js/main.63dbde79.js.map",
+    "main.c8fb8d11.css.map": "/static/css/main.c8fb8d11.css.map",
+    "main.74eb391b.js.map": "/static/js/main.74eb391b.js.map",
     "498.e7cb86be.chunk.js.map": "/static/js/498.e7cb86be.chunk.js.map",
     "703.e5427e5c.chunk.js.map": "/static/js/703.e5427e5c.chunk.js.map",
-    "513.f7e92010.chunk.js.map": "/static/js/513.f7e92010.chunk.js.map"
+    "513.b4ac4a25.chunk.js.map": "/static/js/513.b4ac4a25.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.44489560.css",
-    "static/js/main.63dbde79.js"
+    "static/css/main.c8fb8d11.css",
+    "static/js/main.74eb391b.js"
   ]
 }

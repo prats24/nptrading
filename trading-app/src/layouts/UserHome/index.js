@@ -12,7 +12,9 @@ import ReportsLineChart from "../../examples/Charts/BarCharts/ReportsBarChart";
 import Carousel from "./data/Carousel";
 import Indicies from "../traderHome/components/IndicesComponent";
 import { display } from "@mui/system";
-import PnlPosition from "../../layouts/User Position/OverallP&L/OverallGrid";
+// import PnlPosition from "../../layouts/User Position/OverallP&L/OverallGrid";
+import PnlPosition from "./data/Pnl";
+
 
 function Tables() {
 
@@ -21,10 +23,13 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar />
       <Grid container spacing={2} mb={2}>
-                <Indicies/>
+        <Indicies/>
       </Grid>
       <Carousel/>
-      <PnlPosition />
+      <Grid sx={{mb: "40px", mt: "40px"}}>
+        <PnlPosition />
+      </Grid>
+      
       <Grid style={{display: 'flex'}} mt={4}>
           <MDBox style={{flex:2}}>
             <MDBox style={{position:'relative'}}>
