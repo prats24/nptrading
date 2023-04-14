@@ -9,24 +9,29 @@ import { HiUserGroup } from 'react-icons/hi';
 import {Link} from 'react-router-dom'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import MDSnackbar from "../../../components/MDSnackbar";
+import {useNavigate} from 'react-router-dom';
 
 
 
 
-const ContestPortfolioCard = ({contestId, endDate}) => {
+const ContestPortfolioCard = ({contestId, endDate, contestName}) => {
   
   const [contestPortfolioData,setContestPortfolioData] = useState([]);
   const [objectId,setObjectId] = useState(contestId);
   const [selectedPortfolio, setSelectedPortfolio] = useState("");
+  const [isDummy, setIsDummy] = useState(true);
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  const nevigate = useNavigate();
   console.log("contestId", contestId, objectId)
 
-  let nextPagePath = 'notstarted';
+  // let nextPagePath = 'notstarted';
   if((new Date()) < new Date(endDate)){
-    nextPagePath = 'notstarted'
+    // nextPagePath = 'notstarted'
+    setIsDummy(true);
   } else{
     console.log(new Date(), new Date(endDate))
-    nextPagePath = 'trade'
+    // nextPagePath = 'trade'
+    setIsDummy(false);
   }
 
   useEffect(()=>{
@@ -40,18 +45,49 @@ const ContestPortfolioCard = ({contestId, endDate}) => {
       },
     })
     .then((res)=>{
-              setContestPortfolioData(res.data.data);
-              console.log(res.data.data)
+        setContestPortfolioData(res.data.data);
+        console.log(res.data.data)
       }).catch((err)=>{
         return new Error(err);
     })
   },[])
 
+    const [buttonClicked, setButtonClicked] = useState(false);
+    const [shouldNavigate, setShouldNavigate] = useState(false);
+  
+    const handleButtonClick = async () => {
+      await joinContest();
+      setButtonClicked(true);
+    };
+  
+    useEffect(() => {
+      if (buttonClicked) {
+        setShouldNavigate(true);
+      }
+    }, [buttonClicked]);
+  
+    useEffect(() => {
+      if (shouldNavigate) {
+        nevigate(`/arena/${contestName}/trade`, {
+          state: {contestId: objectId, portfolioId: selectedPortfolio, isDummy: isDummy}
+        });
+      }
+    }, [shouldNavigate]);
+
+
+
+
+
+
+
+
   async function joinContest(){
     console.log("in join")
     if(!selectedPortfolio){
       console.log("in join if")
-      openSuccessSB("Failed","Please select a portfolio")
+      // openSuccessSB("Great",`You have successfully registered for the contest ${contestName}`, "SUCCESS")
+
+      openSuccessSB("Failed","Please select a portfolio", "FAIL")
       return;
     }
     // console.log("in joinContest func", contestId, selectedPortfolio)
@@ -75,28 +111,56 @@ const ContestPortfolioCard = ({contestId, endDate}) => {
     }else{
         // setNextPage(false)
         // window.alert("entry succesfull");
+        openSuccessSB("Great",`You have successfully registered for the contest ${contestName}`, "SUCCESS")
+        
         console.log("entry succesfull");
     }
 
   }
 
-  const [title,setTitle] = useState('')
-  const [content,setContent] = useState('')
+  // const [title,setTitle] = useState('')
+  // const [content,setContent] = useState('')
   const [successSB, setSuccessSB] = useState(false);
-  const openSuccessSB = (title,content) => {
-    setTitle(title)
-    setContent(content)
+  const [msgDetail, setMsgDetail] = useState({
+    title: "",
+    content: "",
+    // successSB: false,
+    color: "",
+    icon: ""
+  })
+  const openSuccessSB = (title,content, message) => {
+    msgDetail.title = title;
+    msgDetail.content = content;
+    // msgDetail.successSB = true;
+    if(message == "SUCCESS"){
+      msgDetail.color = 'success';
+      msgDetail.icon = 'check'
+    } else {
+      msgDetail.color = 'error';
+      msgDetail.icon = 'warning'
+    }
+    console.log(msgDetail)
+    setMsgDetail(msgDetail)
+    // setTitle(title)
+    // setContent(content)
     setSuccessSB(true);
   }
-  const closeSuccessSB = () => setSuccessSB(false);
+
+  const closeSuccessSB = () =>{
+    // msgDetail.successSB = false
+    setSuccessSB(false);
+
+  }
+
+  // const closeSuccessSB = () => msgDetail.successSB = false;
 
 
   const renderSuccessSB = (
   <MDSnackbar
-      color="error"
-      icon="warning"
-      title={title}
-      content={content}
+      color={msgDetail.color}
+      icon={msgDetail.icon}
+      title={msgDetail.title}
+      content={msgDetail.content}
       open={successSB}
       onClose={closeSuccessSB}
       close={closeSuccessSB}
@@ -104,7 +168,7 @@ const ContestPortfolioCard = ({contestId, endDate}) => {
   />
   );
       
-  console.log(contestPortfolioData) 
+  console.log(renderSuccessSB) 
     
     return (
       <>
@@ -159,15 +223,17 @@ const ContestPortfolioCard = ({contestId, endDate}) => {
             <Grid item mt={2} xs={6} md={3} lg={6} display="flex" justifyContent="center"> 
                 <MDButton variant="outlined" size="small" color="light"
                   component={selectedPortfolio && Link} 
-                  to={ selectedPortfolio && {
-                      pathname: `/arena/contest/${nextPagePath}`,
-                    }}
-                    state= { selectedPortfolio && {contestId: contestId, portfolioId: selectedPortfolio}}
-                  
-                    onClick={()=>{joinContest()}}
+                  // to={ selectedPortfolio && {
+                  //     pathname: `/arena/contest/${nextPagePath}`,
+                  //   }}
+                    // state= { selectedPortfolio && {contestId: contestId, portfolioId: selectedPortfolio}}
+
+                    onClick={handleButtonClick}
                 >
                     Join
                 </MDButton>
+                {buttonClicked && renderSuccessSB}
+                {/* {nevigate(`/arena/contest/${nextPagePath}`)} */}
             </Grid>
             <Grid item mt={2} xs={6} md={3} lg={6} display="flex" justifyContent="center"> 
                 <MDButton variant="outlined" size="small" color="light" 
@@ -178,7 +244,7 @@ const ContestPortfolioCard = ({contestId, endDate}) => {
                 >
                     Back
                 </MDButton>
-                {renderSuccessSB}
+                
             </Grid>
           </Grid>
         </Grid>

@@ -156,8 +156,9 @@ exports.getUserPortfolio = async(req,res,next) => {
             });
           });
           
+          
         // console.log("filteredPortfolioIds", filteredPortfolioIds)
-        const portfolios = await Portfolio.find({_id: {$in: filteredPortfolioIds}});
+        const portfolios = await Portfolio.find({status: "Active", _id: {$in: filteredPortfolioIds}});
 
 
 

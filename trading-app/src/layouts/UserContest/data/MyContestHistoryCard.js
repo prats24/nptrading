@@ -56,43 +56,43 @@ const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
       }).catch((err)=>{
         return new Error(err);
     })
-},[])
+  },[])
 
-      // console.log("Contest Data: ",contestData)
+  // console.log("Contest Data: ",contestData)
 
-      function dateConvert(dateConvert){
-        const dateString = dateConvert;
-        const date = new Date(dateString);
-        const options = { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric', 
-          hour: 'numeric', 
-          minute: 'numeric' 
-        };
-        
-        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
-        
-        // get day of month and add ordinal suffix
-        const dayOfMonth = date.getDate();
-        let suffix = "th";
-        if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
-          suffix = "st";
-        } else if (dayOfMonth === 2 || dayOfMonth === 22) {
-          suffix = "nd";
-        } else if (dayOfMonth === 3 || dayOfMonth === 23) {
-          suffix = "rd";
-        }
-        
-        // combine date and time string with suffix
-        const finalFormattedDate = `${dayOfMonth}${suffix} ${formattedDate?.split(" ")[0]}, ${date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-        
-        // console.log(finalFormattedDate);
-        
-     
-
-      return finalFormattedDate
+  function dateConvert(dateConvert){
+    const dateString = dateConvert;
+    const date = new Date(dateString);
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      hour: 'numeric', 
+      minute: 'numeric' 
+    };
+    
+    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
+    
+    // get day of month and add ordinal suffix
+    const dayOfMonth = date.getDate();
+    let suffix = "th";
+    if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
+      suffix = "st";
+    } else if (dayOfMonth === 2 || dayOfMonth === 22) {
+      suffix = "nd";
+    } else if (dayOfMonth === 3 || dayOfMonth === 23) {
+      suffix = "rd";
     }
+    
+    // combine date and time string with suffix
+    const finalFormattedDate = `${dayOfMonth}${suffix} ${formattedDate?.split(" ")[0]}, ${date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
+    
+    // console.log(finalFormattedDate);
+    
+  
+
+  return finalFormattedDate
+  }
       
     
 
@@ -112,6 +112,13 @@ const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
               pathname: `/arena/${e.contestName}`,
             }}
             state= {{data:e._id}}
+
+          // to={ selectedPortfolio && {
+          //     pathname: `/arena/contest/${nextPagePath}`,
+          //   }}
+          //   state= { selectedPortfolio && {contestId: contestId, portfolioId: selectedPortfolio}}
+          
+
             >
                 <Grid container>
                     <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">

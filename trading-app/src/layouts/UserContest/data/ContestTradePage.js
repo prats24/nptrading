@@ -17,16 +17,36 @@ import Portfolios from '../data/Portfolios'
 import MYPNLData from '../data/PnL/MyPNLData'
 import InstrumentsData from '../data/Instruments/Instruments'
 import TradersRanking from '../data/TradersRanking'
+import DummyInstrument from "../data/dummy/dummyInstrument"
+import DummyPnl from "../data/dummy/dummyPnl"
+import DummyRank from "./DemoTradersRanking";
+import AvTimerIcon from '@mui/icons-material/AvTimer';
+import Timer from '../timer';
+
 
 function ContestTradeView () {
     const [contest,setContest] = useState();
     const location = useLocation();
     const  contestId  = location?.state?.contestId;
-    // const  contestName  = location?.state?.data;
+    // const  contestName  = location?.state?.data; isDummy
     const  portfolioId  = location?.state?.portfolioId;
-    const [render, setReRender] = useState(true);
+    // const  isDummy  = location?.state?.isDummy;
+    const  isDummy  = false;
 
-    console.log("Location: ",location)
+    const [render, setReRender] = useState(true);
+    let style = {
+      textAlign: "center", 
+      fontSize: ".75rem", 
+      color: "#003366", 
+      backgroundColor: "#CCCCCC", 
+      borderRadius: "5px", 
+      padding: "5px",  
+      fontWeight: "600",
+      display: "flex", 
+      alignItems: "center"
+    }
+
+    console.log("Location in tradePage: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     let baseUrl1 = process.env.NODE_ENV === "production" ? "/" : "http://localhost:9000/"
 
@@ -79,16 +99,27 @@ function ContestTradeView () {
         <Grid item xs={12} md={6} lg={6.5} mb={2}>
                 <MDBox color="light">
 
-                    <MDTypography mb={2} color="light" display="flex" justifyContent="center" style={{fontWeight:700}}>
+                    <MDTypography mb={2} color="light" display="flex" justifyContent="center" style={{fontWeight:700, filter: isDummy && 'blur(2px)'}}>
                         {contest?.contestName}
                     </MDTypography>
+
+                    {isDummy &&
+                      <Grid item mb={1} style={{color:"white",fontSize:20}} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                        <span style={{fontSize: ".90rem", fontWeight: "600", textAlign: "center", marginRight: "8px"}}>Contest is Starts in:</span> <div style={style} ><AvTimerIcon/><Timer targetDate={contest?.contestStartDate} text="Contest Started" /></div>
+                      </Grid>
+                    }
                     
+                    {!isDummy ?
+                    <>
                     <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
-
                     <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
-                    {/* <Portfolios contestId={id}/> */}
-
-                    
+                    </>
+                    :
+                    <>
+                    <DummyInstrument />
+                    <DummyPnl />
+                    </>
+                    }
 
                 </MDBox>
             </Grid>
@@ -96,12 +127,11 @@ function ContestTradeView () {
             <Grid item xs={0} md={0} lg={0.5}>
                 <Divider orientation="vertical" style={{backgroundColor: 'white', height: '100%'}} />
             </Grid>
-
-            {/* Ranking View */}
-            
-            {/* <DemoTradersRanking /> */}
+            {isDummy ?
+            <DummyRank />
+            :
             <TradersRanking contestId={contestId} socket={socket}/>
-
+            }
 
 
         </Grid>

@@ -13,6 +13,8 @@ import axios from "axios";
 import { marketDataContext } from '../../../../MarketDataContext';
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
+import { CircularProgress } from "@mui/material";
+
 
 
 function InstrumentsData({contestId, socket, portfolioId, Render}){
@@ -21,6 +23,7 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [instrumentData, setInstrumentData] = useState([]);
     const [marketData, setMarketData] = useState([]);
+    const [isLoading,setIsLoading] = useState(true)
     const {render, setReRender} = Render;
 
     useEffect(()=>{
@@ -76,7 +79,8 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
             return new Error(err);
         })
         render ? setReRender(false) : setReRender(true)
-        // socket.emit('hi')
+        setTimeout(()=>{setIsLoading(false)},500)
+
     }, [])
     
     console.log("instrument", contestId, portfolioId, marketData)
@@ -88,6 +92,15 @@ return (
                 <MDTypography fontSize={13} color="light">Instruments</MDTypography>
             </Grid>
         </Grid>
+
+
+        {isLoading ?
+        <Grid mt={1} mb={1} display="flex" width="100%" justifyContent="center" alignItems="center">
+            <CircularProgress color="light" />
+        </Grid>
+
+        :
+        <>
 
         <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
             
@@ -172,6 +185,8 @@ return (
             </Grid>
             )
         })}
+        </>
+        }
     </>
 );
 }

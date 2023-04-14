@@ -83,17 +83,17 @@ const routes = [
     // name: "Arena", 
     // key: "arena",
     // icon: <BusinessIcon/>,
-    route: "arena/contest/trade",
+    route: "arena/:name/trade",
     component: <ContestTradePage />,
   },
-  {
-    // type: "collapse",
-    // name: "Arena", 
-    // key: "arena",
-    // icon: <BusinessIcon/>, DummyTradePage
-    route: "arena/contest/notstarted",
-    component: <DummyTradePage />,
-  },
+  // {
+  //   // type: "collapse",
+  //   // name: "Arena", 
+  //   // key: "arena",
+  //   // icon: <BusinessIcon/>, DummyTradePage
+  //   route: "arena/notstarted",
+  //   component: <ContestTradePage />,
+  // },
   {
     type: "collapse",
     name: "Trades",
