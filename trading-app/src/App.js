@@ -193,11 +193,6 @@ export default function App() {
                 color={sidenavColor}
                 brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
                 brandName="StoxHero"
-                // routes=
-                // {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? 
-                // routes : ((detailUser.role === "user" || getDetails.userDetails.role === "user") ? userRoutes
-                // : (detailUser.role === "data" || getDetails.userDetails.role === "data") ? analyticsRoutes : '')}
-                // routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? routes :  analyticsRoutes }
                 routes={(detailUser.role === "admin" || getDetails.userDetails.role === "admin")
                 ? routes : (detailUser.role === "user" || getDetails.userDetails.role === "user") 
                 ? userRoutes : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
@@ -214,7 +209,6 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
-          {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "user" || getDetails.userDetails.role === "user") && getRoutes(userRoutes)}  */}
           {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}  
             <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
           </Routes>
@@ -222,7 +216,7 @@ export default function App() {
       </CacheProvider>
     
   ) : (
-    // (detailUser.role === "user" || getDetails.userDetails.role === "user") && 
+    
       <ThemeProvider theme={darkMode ? themeDark : theme}>
         <CssBaseline />
         {layout === "dashboard" && (
@@ -231,7 +225,6 @@ export default function App() {
             (getDetails?.userDetails?.role === "admin" || getDetails?.userDetails?.role === "user"|| getDetails?.userDetails?.role === "data") &&
             <Sidenav
               color={sidenavColor}
-              // brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
               brand={Logo}
               brandName="StoxHero"
               routes={(detailUser?.role === "admin" || getDetails?.userDetails?.role === "admin")
@@ -256,10 +249,6 @@ export default function App() {
         ? getRoutes(userRoutes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") 
         ? getRoutes(analyticsRoutes) : getRoutes(homeRoutes)
         }          
-         {/* <Route path="*" element={<Navigate to="/traderdashboard" />} /> */}
-         {/* console.log(detailUser.role,getDetails.userDetails.role) */}
-         {/* {(detailUser.role === "admin" || getDetails.userDetails.role === "admin") ? getRoutes(routes) : (detailUser.role === "data" || getDetails.userDetails.role === "data") && getRoutes(analyticsRoutes)}           */}
-          {/* <Route path="*" element={<SignIn />} /> */}
 
           {!cookieValue  ?  
 
