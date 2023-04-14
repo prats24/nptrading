@@ -1,7 +1,7 @@
 const Portfolio = require('../models/userPortfolio/UserPortfolio');
 const User = require('../models/User/userDetailSchema');
 const Contest = require('../models/Contest/contestSchema');
-
+const ContestTrade = require('../models/Contest/ContestTrade');
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -122,7 +122,7 @@ exports.editPortfolioWithName = async(req, res, next) => {
 exports.myPortfolios = async(req,res,next) => {
     const userId = req.user._id;
     try{
-        const myPortfolios = await Portfolio.find({"users.userId": userId});
+        const myPortfolios = await Portfolio.find({status: "Active", "users.userId": userId});
 
         if(!myPortfolios){
             return res.status(404).json({status:'error', message: 'No portfolio found'});
@@ -156,7 +156,7 @@ exports.getUserPortfolio = async(req,res,next) => {
             });
           });
           
-          
+
         // console.log("filteredPortfolioIds", filteredPortfolioIds)
         const portfolios = await Portfolio.find({status: "Active", _id: {$in: filteredPortfolioIds}});
 
@@ -167,5 +167,53 @@ exports.getUserPortfolio = async(req,res,next) => {
     }catch(e){
         console.log(e);
         res.status(500).json({status: 'error', message: 'Something went wrong'});
+    }
+}
+
+exports.getPortfolioPnl = async(req, res, next) => {
+    const userId = req.user._id;
+    try{
+        let pnlDetails = await ContestTrade.aggregate([
+            {
+              $match: {
+                status: "COMPLETE",
+                trader: userId,
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  portfolioId: "$portfolioId",
+                },
+                amount: {
+                  $sum: {$multiply : ["$amount",-1]},
+                },
+                brokerage: {
+                  $sum: {
+                    $toDouble: "$brokerage",
+                  },
+                },
+                lots: {
+                  $sum: {
+                    $toInt: "$Quantity",
+                  },
+                },
+                lastaverageprice: {
+                  $last: "$average_price",
+                },
+              },
+            },
+            {
+              $sort: {
+                _id: -1,
+              },
+            },
+        ]);
+
+        res.status(201).json(pnlDetails);
+
+    }catch(e){
+        console.log(e);
+        return res.status(500).json({status:'success', message: 'something went wrong.'})
     }
 }

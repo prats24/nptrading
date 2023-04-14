@@ -24,6 +24,7 @@ import ContestRegisterPage from './layouts/UserContest/contestRegistrationPage'
 import ContestTradePage from './layouts/UserContest/ContestTrade'
 import DummyTradePage from './layouts/UserContest/dummyContestTradePage'
 import Dashboard from './layouts/traderHome'
+import MyPortfolio from './layouts/UserPortfolio'
 
 const routes = [
 
@@ -120,13 +121,21 @@ const routes = [
     route: "/userreport",
     component: <UserReport />,
   },
+  // {
+  //   type: "collapse",
+  //   name: "Portfolio",
+  //   key: "funds",
+  //   icon: <BusinessCenterIcon/>,
+  //   route: "/funds",
+  //   component: <Funds/>,
+  // },
   {
     type: "collapse",
-    name: "Portfolio",
+    name: "My Portfolio",
     key: "funds",
     icon: <BusinessCenterIcon/>,
-    route: "/funds",
-    component: <Funds/>,
+    route: "/myportfolio",
+    component: <MyPortfolio />,
   },
   {
     type: "collapse",

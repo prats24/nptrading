@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import axios from "axios";
@@ -11,56 +11,49 @@ import ContestIcon from "../../../assets/images/contest.png";
 import { HiUserGroup } from 'react-icons/hi';
 import Timer from '../timer'
 import { Typography } from '@mui/material';
-import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import ProgressBar from '../data/ProgressBar'
-import { userContext } from '../../../AuthContext';
   
 
-const MyContestHistoryCard = () => {
+const ContestCard = () => {
 
-  // const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
-  const getDetails = useContext(userContext)
-
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  // React.useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((oldProgress) => {
-  //       if (oldProgress === 100) {
-  //         return 0;
-  //       }
-  //       const diff = Math.random() * 10;
-  //       return Math.min(oldProgress + diff, 100);
-  //     });
-  //   }, 500);
-
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
 
 
   useEffect(()=>{
   
-    axios.get(`${baseUrl}api/v1/contest/history`,{
-      withCredentials: true,
-      headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Credentials": true
-      },
-    })
-    .then((res)=>{
-              setContestData(res.data.data);
-              console.log(res.data.data)
-      }).catch((err)=>{
-        return new Error(err);
-    })
-  },[])
+    // promise.all[]
+    let call1 = axios.get(`${baseUrl}api/v1/contest/active`)
+    let call2 = axios.get(`${baseUrl}api/v1/contest/mycontests`,{
+                withCredentials: true,
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Credentials": true
+                  },
+                })
+    Promise.all([call1, call2])
+    .then(([api1Response, api2Response]) => {
+      // Process the responses here
+      console.log(api1Response.data.data);
+      console.log(api2Response.data.data);
+      let activeData = api1Response.data.data;
+      let myData = api2Response.data.data;
 
-  // console.log("Contest Data: ",contestData)
+      activeData = activeData.filter((elem1) => !myData.some((elem2) => elem1._id === elem2._id));
+
+      console.log(activeData);
+      setContestData(activeData);
+    
+    })
+    .catch((error) => {
+      // Handle errors here
+      console.error(error);
+    });  
+              
+  },[])
 
   function dateConvert(dateConvert){
     const dateString = dateConvert;
@@ -96,17 +89,11 @@ const MyContestHistoryCard = () => {
   return finalFormattedDate
   }
       
-    
-
-    return (
+  return (
       <>
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
-
-        let portfolioId = e?.participants?.filter((elem)=>{
-          return elem?.userId == getDetails?.userDetails?._id
-        })
 
         return <>
         
@@ -115,16 +102,9 @@ const MyContestHistoryCard = () => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/${e.contestName}/trade`,
+              pathname: `/arena/${e.contestName}`,
             }}
-            state= {{contestId: e?._id, portfolioId: portfolioId[0].portfolioId}}
-
-          // to={ selectedPortfolio && {
-          //     pathname: `/arena/contest/${nextPagePath}`,
-          //   }}
-          //   state= { selectedPortfolio && {contestId: contestId, portfolioId: selectedPortfolio}}
-          
-
+            state= {{data:e._id}}
             >
                 <Grid container>
                     <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">
@@ -163,7 +143,7 @@ const MyContestHistoryCard = () => {
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Min: {e?.minParticipants}</span>
                         </MDTypography>
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
-                            <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: {e?.minParticipants}</span>
+                            <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Entries: {e?.participants?.length}</span>
                         </MDTypography>
                         <MDTypography color="white" fontSize={10} display="flex" justifyContent="center">
                             <HiUserGroup /><span style={{marginLeft:2,fontWeight:700}}>Max: {e?.maxParticipants}</span>
@@ -176,13 +156,14 @@ const MyContestHistoryCard = () => {
             </Grid>
         
         </>
-    })}
+        })}
     </Grid>
 
       </MDBox>
       </>
-)}
+  )
+}
 
 
 
-export default MyContestHistoryCard;
+export default ContestCard;
