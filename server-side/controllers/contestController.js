@@ -204,6 +204,7 @@ exports.myContests = async(req,res,next) => {
         res.status(500).json({status: 'error', message: 'Something went wrong'});
     }
 }
+
 exports.contestHistory = async(req, res, next) => {
     const userId = req.user._id;
     try{
@@ -218,7 +219,7 @@ exports.contestHistory = async(req, res, next) => {
        console.log(e);
        res.status(500).json({status: 'error', message: 'Something went wrong'});
      } 
-   }
+}
 
 exports.myPortfolio = async(req,res,next) => {
     const userId = req.user._id;

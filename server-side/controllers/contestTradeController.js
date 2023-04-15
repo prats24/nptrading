@@ -7,6 +7,7 @@ const BrokerageDetail = require("../models/Trading Account/brokerageSchema");
 const axios = require('axios')
 const uuid = require('uuid');
 const ObjectId = require('mongodb').ObjectId;
+const Contest = require('../models/Contest/contestSchema')
 
 
 exports.newTrade = async (req, res, next) => {
@@ -210,7 +211,6 @@ exports.getContestPnl = async(req, res, next) => {
     }
 }
 
-
 exports.getContestRank = async (req, res, next) => {
     const contestId = req.params.id;
     try{
@@ -350,4 +350,86 @@ exports.getMyContestRank = async (req, res, next) => {
     }
 
 
+}
+
+exports.getUserRunningLots = async(req, res, next) => {
+  // console.log("in get contest")
+    const userId = req.user._id;
+    const contestId = req.params.id;
+    // const portfolioId = req.query.portfolioId;
+    const now = new Date();
+    const thirtyMinutesBeforeNow = new Date(now.getTime() - 30 * 60000); // 30 minutes * 60 seconds * 1000 milliseconds
+
+    const today = new Date().toISOString().slice(0, 10);
+    // console.log("in getContestPnl", userId, contestId, portfolioId, today)
+    const contests = await Contest.find({
+      contestEndDate: {
+        $gte: thirtyMinutesBeforeNow,
+        $lte: now,
+      },
+    }, {
+      participants: {
+        $elemMatch: {},
+      },
+    });
+    
+    const userIds = contests.map((contest) => {
+      return contest.participants.map((participant) => {
+        return participant.userId;
+      });
+    }).flat();
+
+    console.log(userIds)
+    // try{
+    //     let pnlDetails = await ContestTrade.aggregate([
+    //         {
+    //           $match: {
+    //             trade_time: {
+    //               $regex: today,
+    //             },
+    //             status: "COMPLETE",
+    //             trader: userId,
+    //             contestId: new ObjectId(contestId),
+    //             // portfolioId: new ObjectId(portfolioId)
+    //           },
+    //         },
+    //         {
+    //           $group: {
+    //             _id: {
+    //               symbol: "$symbol",
+    //               product: "$Product",
+    //               instrumentToken: "$instrumentToken",
+    //               exchange: "$exchange"
+    //             },
+    //             amount: {
+    //               $sum: {$multiply : ["$amount",-1]},
+    //             },
+    //             brokerage: {
+    //               $sum: {
+    //                 $toDouble: "$brokerage",
+    //               },
+    //             },
+    //             lots: {
+    //               $sum: {
+    //                 $toInt: "$Quantity",
+    //               },
+    //             },
+    //             lastaverageprice: {
+    //               $last: "$average_price",
+    //             },
+    //           },
+    //         },
+    //         {
+    //           $sort: {
+    //             _id: -1,
+    //           },
+    //         },
+    //     ]);
+
+    //     res.status(201).json(pnlDetails);
+
+    // }catch(e){
+    //     console.log(e);
+    //     return res.status(500).json({status:'success', message: 'something went wrong.'})
+    // }
 }

@@ -144,20 +144,25 @@ exports.getUserPortfolio = async(req,res,next) => {
 
         const user = await User.findOne({_id: userId});
         const portfolioIds = user.portfolio.map(p => p.portfolioId);
-        // console.log("portfolioIds", portfolioIds)
-        const myContests = await Contest.find({"participants.userId": userId, "participants.status": "Joined"});
-        // console.log("myContests", myContests)
+        console.log("portfolioIds", portfolioIds)
+        // const myContests = await Contest.find({"participants.userId": userId, "participants.status": "Joined"});
+        const myContests = await Contest.find({
+          "participants.userId": userId,
+          "participants.status": "Joined",
+          "contestEndDate": { $gt: new Date() }
+        });
+        console.log("myContests", myContests)
         const filteredPortfolioIds = portfolioIds.filter(portfolioId => {
             // Check if the portfolioId is present in any of the myContests' participants
             return !myContests.some(contest => {
               return contest.participants && contest.participants.some(participant => {
-                return participant.portfolioId && participant.portfolioId.equals(portfolioId);
+                return participant.portfolioId && (participant.portfolioId).equals(portfolioId);
               });
             });
           });
           
 
-        // console.log("filteredPortfolioIds", filteredPortfolioIds)
+        console.log("filteredPortfolioIds", result)
         const portfolios = await Portfolio.find({status: "Active", _id: {$in: filteredPortfolioIds}});
 
 
@@ -217,3 +222,58 @@ exports.getPortfolioPnl = async(req, res, next) => {
         return res.status(500).json({status:'success', message: 'something went wrong.'})
     }
 }
+
+
+
+// myContests =  [
+//   {
+//     entryFee: { amount: 0, currency: 'INR' },
+//     _id: new ObjectId("6438e04991b137b346afb4b9"),
+//     contestName: 'Monday Madness',
+//     contestStartDate: 2023-04-17T03:45:02.000Z,
+//     contestEndDate: 2023-04-17T09:55:02.000Z,
+//     contestMargin: 1000000,
+//     entryOpeningDate: 2023-04-14T05:15:02.000Z,
+//     entryClosingDate: 2023-04-16T17:00:02.000Z,
+//     stockType: 'Options',
+//     contestOn: 'NIFTY 50',
+//     rewards: [ [Object], [Object], [Object] ],
+//     contestRule: new ObjectId("64285b52a13b875fa2da713b"),
+//     instruments: [],
+//     maxParticipants: 10,
+//     minParticipants: 3,
+//     status: 'Live',
+//     createdOn: 2023-04-14T04:48:01.761Z,
+//     lastModifiedOn: 2023-04-14T04:48:01.761Z,
+//     createdBy: new ObjectId("63788f7591fc4bf629de6e59"),
+//     lastModifiedBy: new ObjectId("63788f7591fc4bf629de6e59"),
+//     participants: [ ],
+//     __v: 2
+//   },
+//   {
+//     entryFee: { amount: 0, currency: 'INR' },
+//     _id: new ObjectId("6438e36ae1613d101b36c3f6"),
+//     contestName: 'Wednesday Break',
+//     contestStartDate: 2023-04-19T03:45:05.000Z,
+//     contestEndDate: 2023-04-19T07:00:05.000Z,
+//     contestMargin: 1000000,
+//     entryOpeningDate: 2023-04-14T04:00:05.000Z,
+//     entryClosingDate: 2023-04-16T17:00:05.000Z,
+//     stockType: 'Options',
+//     contestOn: 'NIFTY 50',
+//     rewards: [ [Object], [Object], [Object] ],
+//     contestRule: new ObjectId("64285b52a13b875fa2da713b"),
+//     instruments: [],
+//     maxParticipants: 4,
+//     minParticipants: 50,
+//     status: 'Live',
+//     createdOn: 2023-04-14T05:19:31.170Z,
+//     lastModifiedOn: 2023-04-14T05:19:31.170Z,
+//     createdBy: new ObjectId("63788f7591fc4bf629de6e59"),
+//     lastModifiedBy: new ObjectId("63788f7591fc4bf629de6e59"),
+//     __v: 9,
+//     participants: [ {
+
+//     } ]
+//   }
+// ]
