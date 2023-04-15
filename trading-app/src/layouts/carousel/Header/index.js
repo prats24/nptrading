@@ -6,11 +6,14 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { CircularProgress } from '@mui/material';
 import MDBox from '../../../components/MDBox';
+import MDButton from '../../../components/MDButton';
+import {Link} from 'react-router-dom'
+// import ContestPortfolioCard from '../data/contestPortfolioCard'
+// import TradingPortfolioCard from '../data/tradingPortfolioCard'
+// import InactivePortfolioCard from '../data/inactivePortfolioCard'
 
 //data
-import UpcomingContest from '../data/UserContestCard'
-import MyContestCard from '../data/MyContestCard'
-import MyContestHistoryCard from '../data/MyContestHistoryCard'
+// import UpcomingContest from '../data/UserContestCard'
 
 export default function LabTabs() {
   const [value, setValue] = React.useState('1');
@@ -26,12 +29,23 @@ export default function LabTabs() {
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
+    <Box mb={1} display="flex" justifyContent="right">
+    <MDButton 
+    variant="contained" 
+    color="success" 
+    fontSize="small"
+    component={Link}
+    to='/Carousel Details'
+    >
+        Create Craousel
+    </MDButton>
+    </Box>
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Upcoming Battles" value="1" />
-            <Tab label="My Battles" value="2" />
-            <Tab label="History" value="3" />
+            <Tab label="Live Carousels" value="1" />
+            <Tab label="Draft Carousels" value="2" />
+            <Tab label="Rejected/Inactive Carousels" value="3" />
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -40,16 +54,18 @@ export default function LabTabs() {
             <CircularProgress color="info" />
           </MDBox>
           : 
-          <UpcomingContest isLoading={isLoading} setIsLoading={setIsLoading}/>
+        //   <ContestPortfolioCard/>
+        <></>
           }
-        </TabPanel>
+          </TabPanel>
         <TabPanel value="2">
           {isLoading ? 
           <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
             <CircularProgress color="info" />
           </MDBox>
           : 
-          <MyContestCard />
+        //   <TradingPortfolioCard/>
+        <></>
           }
         </TabPanel>
         <TabPanel value="3">
@@ -58,11 +74,10 @@ export default function LabTabs() {
             <CircularProgress color="info" />
           </MDBox>
           : 
-          <MyContestHistoryCard />
+        //   <InactivePortfolioCard/>
+        <></>
           }
         </TabPanel>
-        {/* <TabPanel value="2">Item Two</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel> */}
       </TabContext>
     </Box>
   );

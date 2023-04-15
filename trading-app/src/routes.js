@@ -33,10 +33,14 @@ import MyReferrals from "./layouts/referrals"
 import UserContest from "./layouts/UserContest"
 import Portfolio from './layouts/portfolio'
 import CreatePortfolio from './layouts/portfolio/createPortfolio'
+import CarouselDetails from './layouts/carousel/carouselDetails'
 import ReferralProgramDetails from './layouts/referral-program/ReferralProgramDetails'
 import ContestPage from './layouts/UserContest/contestPage'
 import ContestRegisterPage from './layouts/UserContest/contestRegistrationPage'
 import ContestTradePage from './layouts/UserContest/ContestTrade'
+import Carousel from './layouts/carousel'
+import Home from './layouts/UserHome'
+import HomeIcon from '@mui/icons-material/OtherHouses';
 
 
 // @mui icons
@@ -110,6 +114,14 @@ const routes = [
   {
     // type: "collapse",
     // name: "Company Dashboard",
+    key: "carouselDetails",
+    // icon: <DashboardIcon/>,
+    route: "/Carousel Details",
+    component: <CarouselDetails />,
+  },
+  {
+    // type: "collapse",
+    // name: "Company Dashboard",
     key: "referralprogramdetails",
     // icon: <DashboardIcon/>,
     route: "/referralprogramdetails",
@@ -179,6 +191,14 @@ const routes = [
     icon: <WalletIcon/>,
     route: "/contests",
     component: <Contests />,
+  },
+  {
+    type: "collapse",
+    name: "Carousel",
+    key: "carousel",
+    icon: <HomeIcon/>,
+    route: "/carousel",
+    component: <Carousel />,
   },
 
   {
@@ -303,6 +323,14 @@ const routes = [
   //   route: "/notifications",
   //   component: <Notifications />,
   // },
+  {
+    type: "collapse",
+    name: "Home",
+    key: "home",
+    icon: <HomeIcon/>,
+    route: "/home",
+    component: <Home />,
+  },
   {
     type: "collapse",
     name: "Position",

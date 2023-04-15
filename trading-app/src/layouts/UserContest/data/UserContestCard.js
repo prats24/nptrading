@@ -16,7 +16,7 @@ import AvTimerIcon from '@mui/icons-material/AvTimer';
 import ProgressBar from '../data/ProgressBar'
   
 
-const ContestCard = ({isObjectNew,setIsObjectNew}) => {
+const ContestCard = ({isLoading,setIsLoading}) => {
 
   const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
@@ -39,21 +39,11 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
     };
   }, []);
 
-
-  //   useEffect(()=>{
-  
-  //     axios.get(`${baseUrl}api/v1/contest/active`)
-  //     .then((res)=>{
-  //               setContestData(res.data.data);
-  //               console.log(res.data.data)
-  //       }).catch((err)=>{
-  //         return new Error(err);
-  //     })
-  // },[])
-
   useEffect(()=>{
   
     // promise.all[]
+    // setIsLoading(true)
+    console.log("Is Loading: ",isLoading)
     let call1 = axios.get(`${baseUrl}api/v1/contest/active`)
     let call2 = axios.get(`${baseUrl}api/v1/contest/mycontests`,{
                 withCredentials: true,
@@ -66,8 +56,8 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
     Promise.all([call1, call2])
     .then(([api1Response, api2Response]) => {
       // Process the responses here
-      console.log(api1Response.data.data);
-      console.log(api2Response.data.data);
+      // console.log(api1Response.data.data);
+      // console.log(api2Response.data.data);
       let activeData = api1Response.data.data;
       let myData = api2Response.data.data;
 
@@ -75,7 +65,8 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
 
       console.log(activeData);
       setContestData(activeData);
-    
+      setIsLoading(false)
+      // console.log("isLoading: ",isLoading)
     })
     .catch((error) => {
       // Handle errors here
@@ -85,7 +76,7 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
   },[])
 
 
-      // console.log("Contest Data: ",contestData)
+      console.log("isLoading: ",isLoading)
 
       function dateConvert(dateConvert){
         const dateString = dateConvert;

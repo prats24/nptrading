@@ -47,10 +47,10 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Arena",
-    key: "arena",
+    name: "Battle Ground",
+    key: "BattleGround",
     icon: <StadiumIcon/>,
-    route: "/arena",
+    route: "/BattleGround",
     component: <UserContest />,
   },
   {
