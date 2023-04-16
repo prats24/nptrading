@@ -22,6 +22,7 @@ import DummyPnl from "../data/dummy/dummyPnl"
 import DummyRank from "./DemoTradersRanking";
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import Timer from '../timer';
+import MDButton from '../../../components/MDButton';
 
 
 function ContestTradeView () {
@@ -98,10 +99,12 @@ function ContestTradeView () {
 
         <Grid item xs={12} md={6} lg={6.5} mb={2}>
                 <MDBox color="light">
-
+                  {/* <MDBox style={{display: 'flex', alignItems: 'center'}} > */}
+                    {/* <span style={{color:'white'}}>Back</span> */}
                     <MDTypography mb={2} color="light" display="flex" justifyContent="center" style={{fontWeight:700, filter: isDummy && 'blur(2px)'}}>
                         {contest?.contestName}
                     </MDTypography>
+                  {/* </MDBox> */}
 
                     {isDummy &&
                       <Grid item mb={1} style={{color:"white",fontSize:20}} display="flex" justifyContent="center" alignItems="center" alignContent="center">

@@ -7,7 +7,8 @@ const BrokerageDetail = require("../models/Trading Account/brokerageSchema");
 const axios = require('axios')
 const uuid = require('uuid');
 const ObjectId = require('mongodb').ObjectId;
-const Contest = require('../models/Contest/contestSchema')
+const Contest = require('../models/Contest/contestSchema');
+const client = require('../marketData/redisClient');
 
 
 exports.newTrade = async (req, res, next) => {
@@ -263,16 +264,13 @@ exports.getContestRank = async (req, res, next) => {
                 lots: 1
               }
             },
-            {
-                $limit: 20
-              }
           ]);
         
         if(!ranks){
             return res.status(404).json({status:'error', message:'No ranking for the contest'});
         }
         
-        res.status(200).json({status: 'success', data: ranks});
+        res.status(200).json({status: 'success', results: ranks.length, data: ranks});
     }catch(e){
       console.log(e)
         res.status(500).json({status:'error', message: 'Something went wrong'});
@@ -432,4 +430,34 @@ exports.getUserRunningLots = async(req, res, next) => {
     //     console.log(e);
     //     return res.status(500).json({status:'success', message: 'something went wrong.'})
     // }
+}
+
+
+exports.editLeaderboard = async(req,res,next) => {
+  const {id} = req.params;
+  const {userData, score} = req.body;
+  await client.ZADD(`contest:${id}`, score, JSON.stringify(userData));
+}
+
+
+exports.getLeaderBoard = async(req,res,next) => {
+  const leaderBoard = await client.ZREVRANGE(`contest:${id}`, 0, 19, 'WITHSCORES');
+  
+  res.status(200).json({
+    status: 'success',
+    results: leaderBoard.length,
+    data: leaderBoard
+  });  
+
+}
+
+exports.getMyLeaderBoardRank = async(req,res, next) => {
+  const {id} = req.params.id;
+  const userData = {userId: req.user._id, name: req.user.firstName + ' '+ req.user.lastName};
+  const myRank = await ZREVRANK(`contest:${id}`, JSON.stringify(userData));
+
+  res.status(200).json({
+    status: 'success',
+    data: myRank,
+  });
 }

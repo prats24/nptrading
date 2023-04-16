@@ -207,7 +207,7 @@ function ContestDetails () {
                                 size="small" 
                                 component={Link} 
                                 to={{
-                                    pathname: `/arena/${contest?.contestName}/register`,
+                                    pathname: `/battleground/${contest?.contestName}/register`,
                                   }}
                                   state= {{data:contest?._id}}
 
@@ -222,7 +222,7 @@ function ContestDetails () {
                                 size="small" 
                                 component={Link} 
                                 to={{
-                                    pathname: `/arena`,
+                                    pathname: `/battleground`,
                                   }}
                                 //   state= {{data:contest?._id}}
                             >

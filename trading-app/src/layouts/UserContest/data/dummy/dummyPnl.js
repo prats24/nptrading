@@ -8,7 +8,7 @@ import {useNavigate} from 'react-router-dom';
 
 
 function MYPNLData(){
-  const nevigate = useNavigate();
+  const navigate = useNavigate();
 
 
 return (
@@ -118,7 +118,7 @@ return (
       style={{border:'1px solid white',borderRadius:4, cursor: "pointer", width: "100%"}} 
       display="flex" 
       justifyContent="center"
-      onClick={()=>{nevigate('/arena')}}
+      onClick={()=>{navigate('/battleground')}}
       
       
       >
