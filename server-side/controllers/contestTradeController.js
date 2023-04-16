@@ -490,3 +490,17 @@ exports.autoTradeContest = async(req, res, next) => {
     // }
 
 }
+
+exports.getLastFiveTrade = async(req, res, next) => {
+    const userId = req.user._id;
+    const contestId = req.params.id;
+
+    try{
+      const lastTrade = await ContestTrade.find({trader: userId, contestId}, {'symbol': 1, 'buyOrSell': 1, 'Product': 1, 'Quantity': 1, 'amount': 1, 'status': 1, 'average_price': 1}).sort({_id: -1}).limit(5);
+      res.status(200).json({status: 'success', data: lastTrade});
+    }catch(e){
+      console.log(e)
+        res.status(500).json({status:'error', message: 'Something went wrong'});
+    }
+
+}

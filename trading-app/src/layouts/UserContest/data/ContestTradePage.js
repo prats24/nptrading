@@ -22,6 +22,7 @@ import DummyPnl from "../data/dummy/dummyPnl"
 import DummyRank from "./DemoTradersRanking";
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import Timer from '../timer';
+import LastTrade from '../data/contestTrade/LastTrade'
 
 
 function ContestTradeView () {
@@ -113,11 +114,13 @@ function ContestTradeView () {
                     <>
                     <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
                     <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
+                    <LastTrade contestId={contestId} Render={{render, setReRender}}/>
                     </>
                     :
                     <>
                     <DummyInstrument />
                     <DummyPnl />
+
                     </>
                     }
 

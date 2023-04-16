@@ -220,7 +220,7 @@ return (
       )})
       }
 
-        <Grid container  mt={1} mb={3} p={1} style={{border:'1px solid white',borderRadius:4, }}>
+        <Grid container  mt={1} mb={2} p={1} style={{border:'1px solid white',borderRadius:4, }}>
       
             <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
               <MDTypography fontSize={13} color="light">Open Quantity : {totalRunningLots}</MDTypography>
@@ -236,7 +236,7 @@ return (
             </Grid>
 
         </Grid>
-        <MDButton 
+        {/* <MDButton 
           fontFamily={"Open Sans"} 
           color="light" mt={1} p={1} 
           style={{border:'1px solid white',borderRadius:4, mt: "20px", width: "100%"}} 
@@ -247,7 +247,7 @@ return (
           
           >
             BACK
-        </MDButton>
+        </MDButton> */}
         </>
         }
 
