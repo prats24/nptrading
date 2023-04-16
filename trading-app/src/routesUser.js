@@ -43,7 +43,7 @@ const routes = [
     key: "Position",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <MilitaryTechIcon/>,
-    route: "/Position",
+    route: "/position",
     component: <UserPosition />,
   },
   // {
@@ -98,10 +98,10 @@ const routes = [
   {
     type: "collapse",
     name: "Trades",
-    key: "userorders",
+    key: "orders",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <ReorderIcon/>,
-    route: "/userorders",
+    route: "/orders",
     component: <UserOrders />,
   },
   {
@@ -134,7 +134,7 @@ const routes = [
     name: "My Portfolio",
     key: "funds",
     icon: <BusinessCenterIcon/>,
-    route: "/myportfolio",
+    route: "/portfolio",
     component: <MyPortfolio />,
   },
   {
