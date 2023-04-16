@@ -27,12 +27,12 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
     const {render, setReRender} = Render;
 
     useEffect(()=>{
-        axios.get(`${baseUrl}api/v1/getliveprice`)
-        .then((res) => {
-          setMarketData(res.data);
-        }).catch((err) => {
-            return new Error(err);
-        })
+        // axios.get(`${baseUrl}api/v1/getliveprice`)
+        // .then((res) => {
+        //   setMarketData(res.data);
+        // }).catch((err) => {
+        //     return new Error(err);
+        // })
         // socket.on('check', (data)=>{
         //   console.log("data from socket in instrument in parent", data)
         // })
@@ -57,6 +57,7 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
         })
     }, [])
 
+    
     useEffect(() => {
         return () => {
             socket.close();

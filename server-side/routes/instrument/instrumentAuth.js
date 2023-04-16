@@ -147,6 +147,7 @@ router.put("/contestInstrument/:id", async (req, res)=>{
 
             unSubscribeTokens(instrument.instrumentToken).then(()=>{});
         }
+        const newredisClient = await client.SADD((_id).toString(), (instrument.instrumentToken).toString());
         subscribeTokens().then(()=>{});           
 
         res.send(instrument)

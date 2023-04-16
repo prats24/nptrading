@@ -242,7 +242,7 @@ return (
           style={{border:'1px solid white',borderRadius:4, mt: "20px", width: "100%"}} 
           display="flex" 
           justifyContent="center"
-          onClick={()=>{nevigate('/arena')}}
+          onClick={()=>{nevigate('/battleground')}}
           
           
           >

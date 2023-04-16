@@ -127,9 +127,9 @@ const MyContestHistoryCard = () => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/${e.contestName}/trade`,
+              pathname: `/battleground/${e.contestName}/trade`,
             }}
-            state= {{contestId: e?._id, portfolioId: portfolioId[0].portfolioId}}
+            state= {{contestId: e?._id, portfolioId: portfolioId[0].portfolioId, isFromHistory: true}}
 
           // to={ selectedPortfolio && {
           //     pathname: `/arena/contest/${nextPagePath}`,

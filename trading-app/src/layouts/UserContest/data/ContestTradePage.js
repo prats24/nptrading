@@ -9,7 +9,7 @@ import { Divider } from '@mui/material'
 // import { HiUserGroup } from 'react-icons/hi';
 // import { Link } from 'react-router-dom';
 // import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
@@ -23,6 +23,11 @@ import DummyRank from "./DemoTradersRanking";
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import Timer from '../timer';
 import LastTrade from '../data/contestTrade/LastTrade'
+import MDButton from '../../../components/MDButton';
+import FastRewindIcon from '@mui/icons-material/FastRewind';
+import Button from '@mui/material/Button'
+import UsedPortfolio from './PnL/UsedPortfolio';
+
 
 
 function ContestTradeView () {
@@ -31,8 +36,11 @@ function ContestTradeView () {
     const  contestId  = location?.state?.contestId;
     // const  contestName  = location?.state?.data; isDummy
     const  portfolioId  = location?.state?.portfolioId;
-    const  isDummy  = location?.state?.isDummy;
-    // const  isDummy  = false;
+    const isFromHistory = location?.state?.isFromHistory
+    // const  isDummy  = location?.state?.isDummy;
+    const nevigate = useNavigate();
+
+    const  isDummy  = false;
 
     const [render, setReRender] = useState(true);
     let style = {
@@ -67,7 +75,7 @@ function ContestTradeView () {
         // socket.emit('userId', contestId)
 
         // socket.emit('contest', contestId)
-        // socket.emit("hi", true)
+        socket.emit("hi", true)
       })
     }, []);
 
@@ -96,16 +104,18 @@ function ContestTradeView () {
     return (
     <MDBox key={contest?._id} width="100%" bgColor="dark" color="light" p={2}>
         <Grid container spacing={2}>
-
+        {/* display="flex" justifyContent="flexEnd" display="flex" justifyContent="center"*/}
         <Grid item xs={12} md={6} lg={6.5} mb={2}>
-                <MDBox color="light">
-
-                    <MDTypography mb={2} color="light" display="flex" justifyContent="center" style={{fontWeight:700, filter: isDummy && 'blur(2px)'}}>
+                <MDBox color="light" >
+                  <MDBox display="flex" alignItems= "center" gap={"130px"} mb={1} >
+                    <Button mb={2} color="light" style={{border: "1px solid white", borderRadius: "7px"}} onClick={()=>{nevigate('/battleground')}}>< FastRewindIcon/></Button>
+                    <MDTypography mt={1.5} color="light"  style={{fontWeight:700, filter: isDummy && 'blur(2px)'}}>
                         {contest?.contestName}
                     </MDTypography>
+                  </MDBox>
 
                     {isDummy &&
-                      <Grid item mb={1} style={{color:"white",fontSize:20}} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                      <Grid item mb={1} mt={2} style={{color:"white",fontSize:20}} display="flex" justifyContent="center" alignItems="center" alignContent="center">
                         <span style={{fontSize: ".90rem", fontWeight: "600", textAlign: "center", marginRight: "8px"}}>Contest is Starts in:</span> <div style={style} ><AvTimerIcon/><Timer targetDate={contest?.contestStartDate} text="Contest Started" /></div>
                       </Grid>
                     }
@@ -114,6 +124,7 @@ function ContestTradeView () {
                     <>
                     <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
                     <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
+                    {isFromHistory && <UsedPortfolio portfolioId={portfolioId} />}
                     <LastTrade contestId={contestId} Render={{render, setReRender}}/>
                     </>
                     :

@@ -40,7 +40,7 @@ return (
     <>
         <Grid container>
             <Grid item xs={12} md={12} lg={12}>
-                <MDTypography fontSize={13} style={{fontWeight:500}} color="light">Last Five Trade</MDTypography>
+                <MDTypography fontSize={13} style={{fontWeight:500}} color="light">Contest Order</MDTypography>
             </Grid>
         </Grid>
 

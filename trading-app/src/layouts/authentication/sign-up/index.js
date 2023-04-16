@@ -1,6 +1,6 @@
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React, {useState, useContext, useEffect} from "react"
 import { useNavigate } from "react-router-dom";
 import OtpInput from 'react-otp-input';
@@ -25,7 +25,7 @@ import bgImage from "../../../assets/images/trading.jpg";
 
 
 
-function Cover() {
+function Cover(props) {
 
   // console.log("Inside Sign UP")
 
@@ -36,6 +36,7 @@ function Cover() {
   const [resendTimer, setResendTimer] = useState(30); // Resend timer in seconds
   const [timerActive, setTimerActive] = useState(false); // Flag to check if timer is active
   const [submitClicked, setSubmitClicked] = useState(false);
+  const location = useLocation();
 
   const [formstate, setformstate] = useState({
     first_name:"", 
@@ -57,7 +58,12 @@ function Cover() {
     email_otp: "",
     mobile_otp:"",
   });
+  // console.log('search params', location.search.split('=')[1]);
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
+  
+  useEffect(()=>{
+    setformstate(prevState => ({...prevState, referrerCode: location.search.split('=')[1]??''}));
+  },[]);
 
   useEffect(() => {
     let countdownTimer = null;
@@ -365,8 +371,9 @@ function Cover() {
                         // required
                         // disabled={showEmailOTP}
                         id="outlined-required"
-                        label="Referrer Code"
+                        label={formstate.referrerCode?'':"Referrer Code"}
                         fullWidth
+                        value={formstate.referrerCode}
                         onChange={(e)=>{formstate.referrerCode = e.target.value}}
                       />
                   </Grid>

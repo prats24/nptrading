@@ -130,9 +130,9 @@ function Header({ children }) {
                  %0A%0AUse my below invitation code 👇 and get INR ₹10,00,000 in your wallet snd start trading
                  %0A%0A*${userDetail.myReferralCode}*`}
                   target="_blank">
-                  <MDButton variant="contained" mt={2} startIcon={<IoLogoWhatsapp color="green" />}>
+                  {/* <MDButton variant="contained" mt={2} startIcon={<IoLogoWhatsapp color="green" />}>
                     Share on WhatsApp
-                  </MDButton>
+                  </MDButton> */}
                 </a>
               </MDBox>
             </MDBox>

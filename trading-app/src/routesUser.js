@@ -43,7 +43,7 @@ const routes = [
     key: "Position",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <MilitaryTechIcon/>,
-    route: "/Position",
+    route: "/position",
     component: <UserPosition />,
   },
   // {
@@ -57,10 +57,10 @@ const routes = [
   // },
   {
     type: "collapse",
-    name: "Arena",
-    key: "arena",
+    name: "Battleground",
+    key: "battleground",
     icon: <StadiumIcon/>,
-    route: "/arena",
+    route: "/battleground",
     component: <UserContest />,
   },
   {
@@ -68,7 +68,7 @@ const routes = [
     // name: "Arena",
     // key: "arena",
     // icon: <BusinessIcon/>,
-    route: "/arena/:name",
+    route: "/battleground/:name",
     component: <ContestPage />,
   },
   {
@@ -76,7 +76,7 @@ const routes = [
     // name: "Arena", ContestTradePage
     // key: "arena",
     // icon: <BusinessIcon/>,
-    route: "arena/:name/register",
+    route: "battleground/:name/register",
     component: <ContestRegisterPage />,
   },
   {
@@ -84,7 +84,7 @@ const routes = [
     // name: "Arena", 
     // key: "arena",
     // icon: <BusinessIcon/>,
-    route: "arena/:name/trade",
+    route: "battleground/:name/trade",
     component: <ContestTradePage />,
   },
   // {
@@ -98,18 +98,18 @@ const routes = [
   {
     type: "collapse",
     name: "Trades",
-    key: "userorders",
+    key: "orders",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <ReorderIcon/>,
-    route: "/userorders",
+    route: "/orders",
     component: <UserOrders />,
   },
   {
     type: "collapse",
     name: "Referrals",
-    key: "myreferrals",
+    key: "referrals",
     icon: <Diversity3Icon/>,
-    route: "/myreferrals",
+    route: "/referrals",
     component: <MyReferrals />,
   },
   {
@@ -134,7 +134,7 @@ const routes = [
     name: "My Portfolio",
     key: "funds",
     icon: <BusinessCenterIcon/>,
-    route: "/myportfolio",
+    route: "/portfolio",
     component: <MyPortfolio />,
   },
   {

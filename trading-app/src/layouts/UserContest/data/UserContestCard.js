@@ -134,7 +134,7 @@ const ContestCard = () => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/${e.contestName}`,
+              pathname: `/battleground/${e.contestName}`,
             }}
             state= {{data:e._id}}
             >

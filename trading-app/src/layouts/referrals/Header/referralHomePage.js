@@ -235,9 +235,9 @@ function ReferralHomePage() {
                                 %0A%0AUse my below invitation code 👇 and get INR ₹10,00,000 in your wallet and start trading.
                                 %0A%0AMy Referral Code to join the StoxHero: *${getDetails.userDetails.myReferralCode}*`}
                                 target="_blank">
-                                <MDTypography variant="contained" display="flex" justifyContent="center" style={{fontSize:"12px",lineHeight:1}}>
+                                {/* <MDTypography variant="contained" display="flex" justifyContent="center" style={{fontSize:"12px",lineHeight:1}}>
                                     Click to Share on &nbsp;<IoLogoWhatsapp color="green" lineHeight={1} />
-                                </MDTypography>
+                                </MDTypography> */}
                                 </a>
                         </MDBox>
                     </MDBox>
