@@ -7,6 +7,7 @@ import MDButton from '../../../../components/MDButton'
 function InstrumentsData(){
 
 return (
+
     <>
     <Grid  style={{ filter: 'blur(2px)' }}>
 
@@ -131,7 +132,8 @@ return (
           <MDTypography fontSize={20} fontWeight={900} color="light">Your Instruments will show here</MDTypography>
         </Grid>
       </Grid>
-      </>
+    </>
+
 );
 }
 

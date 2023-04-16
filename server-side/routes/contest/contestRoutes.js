@@ -6,7 +6,9 @@ const sharp = require('sharp');
 const axios = require('axios');
 const Contest = require('../../models/Contest/contestSchema');
 const {createContest, getContests, editContest, 
-  getActiveContests, getContest, joinContest, myContests, contestHistory} = require('../../controllers/contestController');
+       getActiveContests, getContest, joinContest, 
+       myContests, contestHistory} = require('../../controllers/contestController');
+const {autoTradeContest} = require('../../controllers/contestTradeController');
 const Authenticate = require('../../authentication/authentication');
 const contestTradeRoutes = require('../../routes/contest/contestTradeRoutes');
 
@@ -102,7 +104,7 @@ const uploadToS3 = async (req, res, next) => {
 router.route('/').post(Authenticate, uploadArray, resizePhoto, uploadToS3, createContest).get(getContests).
 patch(Authenticate, editContest);
 router.route('/mycontests').get(Authenticate, myContests);
-// router.route('/history').get(Authenticate, myContestHistory);
+router.route('/lots').get(autoTradeContest);
 router.route('/active').get(getActiveContests)
 router.route('/history').get(Authenticate, contestHistory)
 router.route('/:id').get(getContest).post(Authenticate, joinContest).patch(Authenticate, editContest)

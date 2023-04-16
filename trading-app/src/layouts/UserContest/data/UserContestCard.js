@@ -14,42 +14,31 @@ import { Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import ProgressBar from '../data/ProgressBar'
+import { CircularProgress } from "@mui/material";
+
   
 
-const ContestCard = ({isObjectNew,setIsObjectNew}) => {
+const ContestCard = () => {
 
-  const [progress, setProgress] = React.useState(10);
+  // const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
-  const [objectId,setObjectId] = useState('')
+  const [isLoading,setIsLoading] = useState(false);
+
+  // const [objectId,setObjectId] = useState('')
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+  let timerStyle = {
+    textAlign: "center", 
+    fontSize: ".75rem", 
+    color: "#003366", 
+    backgroundColor: "white", 
+    borderRadius: "5px", 
+    padding: "5px",  
+    fontWeight: "600",
+    display: "flex", 
+    alignItems: "center"
+  }
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-
-  //   useEffect(()=>{
-  
-  //     axios.get(`${baseUrl}api/v1/contest/active`)
-  //     .then((res)=>{
-  //               setContestData(res.data.data);
-  //               console.log(res.data.data)
-  //       }).catch((err)=>{
-  //         return new Error(err);
-  //     })
-  // },[])
 
   useEffect(()=>{
   
@@ -75,6 +64,7 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
 
       console.log(activeData);
       setContestData(activeData);
+      setIsLoading(true)
     
     })
     .catch((error) => {
@@ -125,6 +115,14 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
 
     return (
       <>
+      {!isLoading ?    
+      <>
+      <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+      <CircularProgress color="info" />
+      </MDBox>
+      </>
+      :
+      <>
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
@@ -157,7 +155,9 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={12} mb={1} style={{color:"white",fontSize:11}} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                      <span style={timerStyle}>
                         <AvTimerIcon/><Timer targetDate={e.contestStartDate} text="Contest Started" />
+                      </span>
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={8} mb={1} display="flex" justifyContent="center">
@@ -194,6 +194,8 @@ const ContestCard = ({isObjectNew,setIsObjectNew}) => {
     </Grid>
 
       </MDBox>
+      </>
+      }
       </>
 )}
 

@@ -144,25 +144,26 @@ exports.getUserPortfolio = async(req,res,next) => {
 
         const user = await User.findOne({_id: userId});
         const portfolioIds = user.portfolio.map(p => p.portfolioId);
-        console.log("portfolioIds", portfolioIds)
+        // console.log("portfolioIds", portfolioIds)
         // const myContests = await Contest.find({"participants.userId": userId, "participants.status": "Joined"});
+        // console.log(new Date())
         const myContests = await Contest.find({
           "participants.userId": userId,
           "participants.status": "Joined",
           "contestEndDate": { $gt: new Date() }
         });
-        console.log("myContests", myContests)
+        // console.log("myContests", myContests)
         const filteredPortfolioIds = portfolioIds.filter(portfolioId => {
             // Check if the portfolioId is present in any of the myContests' participants
             return !myContests.some(contest => {
               return contest.participants && contest.participants.some(participant => {
-                return participant.portfolioId && (participant.portfolioId).equals(portfolioId);
+                return participant.portfolioId && ((participant.portfolioId).equals(portfolioId) && (participant.userId).equals(userId));
               });
             });
           });
           
 
-        console.log("filteredPortfolioIds", result)
+        // console.log("filteredPortfolioIds", result)
         const portfolios = await Portfolio.find({status: "Active", _id: {$in: filteredPortfolioIds}});
 
 

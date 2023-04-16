@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 // Material Dashboard 2 React components
@@ -21,6 +22,8 @@ const MyContestHistoryCard = () => {
 
   // const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
+  const [isLoading,setIsLoading] = useState(false);
+
   const getDetails = useContext(userContext)
 
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
@@ -54,6 +57,7 @@ const MyContestHistoryCard = () => {
     })
     .then((res)=>{
               setContestData(res.data.data);
+              setIsLoading(true)
               console.log(res.data.data)
       }).catch((err)=>{
         return new Error(err);
@@ -99,6 +103,14 @@ const MyContestHistoryCard = () => {
     
 
     return (
+      <>
+      {!isLoading ?    
+      <>
+      <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+      <CircularProgress color="info" />
+      </MDBox>
+      </>
+      :
       <>
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
@@ -180,6 +192,8 @@ const MyContestHistoryCard = () => {
     </Grid>
 
       </MDBox>
+      </>
+      }
       </>
 )}
 

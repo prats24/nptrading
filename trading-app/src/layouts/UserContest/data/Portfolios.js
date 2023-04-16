@@ -10,6 +10,8 @@ import {Link} from 'react-router-dom'
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import MDSnackbar from "../../../components/MDSnackbar";
 import {useNavigate} from 'react-router-dom';
+import { CircularProgress } from "@mui/material";
+
 
 
 
@@ -19,7 +21,8 @@ const ContestPortfolioCard = ({contestId, endDate, contestName}) => {
   const [contestPortfolioData,setContestPortfolioData] = useState([]);
   const [objectId,setObjectId] = useState(contestId);
   const [selectedPortfolio, setSelectedPortfolio] = useState("");
-  // const [isDummy, setIsDummy] = useState(true);
+  const [isLoading,setIsLoading] = useState(true)
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const nevigate = useNavigate();
   console.log("contestId", contestId, objectId)
@@ -49,6 +52,7 @@ const ContestPortfolioCard = ({contestId, endDate, contestName}) => {
     })
     .then((res)=>{
         setContestPortfolioData(res.data.data);
+        setIsLoading(false);
         console.log(res.data.data)
       }).catch((err)=>{
         return new Error(err);
@@ -175,6 +179,12 @@ const ContestPortfolioCard = ({contestId, endDate, contestName}) => {
     
     return (
       <>
+      {isLoading ?
+      <Grid mt={1} mb={1} display="flex" width="100%" justifyContent="center" alignItems="center">
+          <CircularProgress color="light" />
+      </Grid>
+      :
+      <>
       {contestPortfolioData.length > 0 ?
         <Grid container spacing={1} xs={12} md={6} lg={12}>
           {contestPortfolioData?.map((e)=>{
@@ -259,6 +269,8 @@ const ContestPortfolioCard = ({contestId, endDate, contestName}) => {
          </Grid>
          } 
 
+      </>
+      }
       </>
 )}
 

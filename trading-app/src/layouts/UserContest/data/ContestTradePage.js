@@ -30,8 +30,8 @@ function ContestTradeView () {
     const  contestId  = location?.state?.contestId;
     // const  contestName  = location?.state?.data; isDummy
     const  portfolioId  = location?.state?.portfolioId;
-    // const  isDummy  = location?.state?.isDummy;
-    const  isDummy  = false;
+    const  isDummy  = location?.state?.isDummy;
+    // const  isDummy  = false;
 
     const [render, setReRender] = useState(true);
     let style = {

@@ -74,8 +74,12 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
          );
 
          console.log("in mypnl", data)
-         setTradeData(data);
-         setTimeout(()=>{setIsLoading(false)},500)
+         if(data){
+          setTradeData(data);
+          setIsLoading(false)
+         }
+
+        //  setTimeout(()=>{setIsLoading(false)},500)
         //  socket.emit('hi')
 
     })();

@@ -16,6 +16,7 @@ const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require("xss-clean");
 const client = require("./marketData/redisClient");
+const {autoTradeContest} = require('./controllers/contestTradeController')
 // import * as ioredis from 'ioredis';
 
 // const redis = require('redis');
@@ -174,6 +175,10 @@ app.use('/api/v1', require("./PlaceOrder/switching"));
 
 require('./db/conn');
 
+const autoTradeWrapper = (req, res, next) => {
+  autoTradeContest(req, res, next);
+};
+
 
 let date = new Date();
 let weekDay = date.getDay();
@@ -182,10 +187,18 @@ let weekDay = date.getDay();
     let weekDay = date.getDay();
     if(weekDay > 0 && weekDay < 6){
         const job = nodeCron.schedule(`0 0 16 * * ${weekDay}`, cronJobForHistoryData);
+        // const autotrade = nodeCron.schedule(`45-59/1 3-9 * * ${weekDay}`, autoTradeWrapper);
     }
 
   }
 
+  try{
+    const autotrade = nodeCron.schedule(`*/1 * 3-10 * * *`, autoTradeWrapper);
+
+  } catch(err){
+    console.log("err from cronjob", err)
+  }
+  // console.log(autotrade)
 
 const PORT = process.env.PORT;
 
