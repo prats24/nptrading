@@ -85,6 +85,7 @@ router.get("/getliveprice", async (req, res)=>{
         return res.status(201).send((arr));
   
       } catch (err){
+        console.log(err)
         return res.status(422).json({error : "Failed to send data"});
     }  
   

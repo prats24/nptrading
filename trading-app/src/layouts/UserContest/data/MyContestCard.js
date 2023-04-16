@@ -13,17 +13,29 @@ import Timer from '../timer'
 import { Typography } from '@mui/material';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import { userContext } from '../../../AuthContext';
-import ProgressBar from '../data/ProgressBar'
+import ProgressBar from '../data/ProgressBar';
+import { CircularProgress } from "@mui/material";
+
   
 
 const ContestCard = () => {
 
   const [contestData,setContestData] = useState([]);
+  const [isLoading,setIsLoading] = useState(false);
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/";
   const getDetails = useContext(userContext)
-  // const [isDummy, setIsDummy] = useState(true);
-
-  // let nextPagePath = 'notstarted';
+  let timerStyle = {
+    textAlign: "center", 
+    fontSize: ".75rem", 
+    color: "#003366", 
+    backgroundColor: "white", 
+    borderRadius: "5px", 
+    padding: "5px",  
+    fontWeight: "600",
+    display: "flex", 
+    alignItems: "center"
+  }
 
 
 
@@ -39,6 +51,7 @@ const ContestCard = () => {
     })
     .then((res)=>{
               setContestData(res.data.data);
+              setIsLoading(true)
               console.log(res.data.data)
       }).catch((err)=>{
         return new Error(err);
@@ -85,18 +98,21 @@ const ContestCard = () => {
 
     return (
       <>
+      {!isLoading ?    
+      <>
+      <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+      <CircularProgress color="info" />
+      </MDBox>
+      </>
+      :
+      <>
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
         let portfolioId = e?.participants?.filter((elem)=>{
             return elem?.userId == getDetails?.userDetails?._id
         })
-        // if((new Date()) < new Date(e?.contestStartDate)){
-        //   setIsDummy(true);
-        // } else{
-        //   console.log(new Date(), new Date(e?.contestStartDate))
-        //   setIsDummy(false);
-        // }
+
         const isDummy = (new Date()) < new Date(e?.contestStartDate);
         return <>
         
@@ -126,7 +142,9 @@ const ContestCard = () => {
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={12} mb={1} style={{color:"white",fontSize:11}} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                      <span style={timerStyle}>
                         <AvTimerIcon/><Timer targetDate={e.contestStartDate} text="Contest Started" />
+                      </span>
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={8} mb={1} display="flex" justifyContent="center">
@@ -165,6 +183,8 @@ const ContestCard = () => {
     </Grid>
 
       </MDBox>
+      </>
+      }
       </>
 )}
 

@@ -57,6 +57,7 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
         })
     }, [])
 
+    
     useEffect(() => {
         return () => {
             socket.close();
@@ -75,11 +76,12 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
         })
         .then((res) => {
             setInstrumentData(res.data)
+            setIsLoading(false)
         }).catch((err) => {
             return new Error(err);
         })
         render ? setReRender(false) : setReRender(true)
-        setTimeout(()=>{setIsLoading(false)},500)
+        // setTimeout(()=>{setIsLoading(false)},500)
 
     }, [])
     

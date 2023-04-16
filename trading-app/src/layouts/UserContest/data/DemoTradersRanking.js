@@ -11,7 +11,7 @@ return (
         <MDBox color="light">
 
             <MDTypography mb={2} color="light" display="flex" justifyContent="center">
-                Ranks
+                LeaderBoard
             </MDTypography>
             
             <Grid container>
@@ -235,7 +235,7 @@ return (
 
       <Grid  container mt={2} zIndex={1} position={'relative'}>
         <Grid item xs={12} md={12} lg={12} style={{ position: "absolute", top: "-300px", left: "70%" }}>
-          <MDTypography fontSize={20} fontWeight={900} color="light">Your Rank will show here</MDTypography>
+          <MDTypography fontSize={20} fontWeight={900} color="light">LeaderBoard will show here</MDTypography>
         </Grid>
       </Grid>
     </>

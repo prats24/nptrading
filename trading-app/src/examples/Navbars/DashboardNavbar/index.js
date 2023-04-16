@@ -144,7 +144,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/profile">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <img src={getDetails.userDetails.profilePhoto.url} width={30} height={30} style={{borderRadius:'50%'}}/>
+                  <img src={getDetails.userDetails?.profilePhoto?.url} width={30} height={30} style={{borderRadius:'50%'}}/>
                 </IconButton>
               </Link>
               <IconButton

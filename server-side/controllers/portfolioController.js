@@ -2,6 +2,8 @@ const Portfolio = require('../models/userPortfolio/UserPortfolio');
 const User = require('../models/User/userDetailSchema');
 const Contest = require('../models/Contest/contestSchema');
 const ContestTrade = require('../models/Contest/ContestTrade');
+const ObjectId = require('mongodb').ObjectId;
+
 
 const filterObj = (obj, ...allowedFields) => {
     const newObj = {};
@@ -144,25 +146,26 @@ exports.getUserPortfolio = async(req,res,next) => {
 
         const user = await User.findOne({_id: userId});
         const portfolioIds = user.portfolio.map(p => p.portfolioId);
-        console.log("portfolioIds", portfolioIds)
+        // console.log("portfolioIds", portfolioIds)
         // const myContests = await Contest.find({"participants.userId": userId, "participants.status": "Joined"});
+        // console.log(new Date())
         const myContests = await Contest.find({
           "participants.userId": userId,
           "participants.status": "Joined",
           "contestEndDate": { $gt: new Date() }
         });
-        console.log("myContests", myContests)
+        // console.log("myContests", myContests)
         const filteredPortfolioIds = portfolioIds.filter(portfolioId => {
             // Check if the portfolioId is present in any of the myContests' participants
             return !myContests.some(contest => {
               return contest.participants && contest.participants.some(participant => {
-                return participant.portfolioId && (participant.portfolioId).equals(portfolioId);
+                return participant.portfolioId && ((participant.portfolioId).equals(portfolioId) && (participant.userId).equals(userId));
               });
             });
           });
           
 
-        console.log("filteredPortfolioIds", result)
+        // console.log("filteredPortfolioIds", result)
         const portfolios = await Portfolio.find({status: "Active", _id: {$in: filteredPortfolioIds}});
 
 
@@ -175,14 +178,16 @@ exports.getUserPortfolio = async(req,res,next) => {
     }
 }
 
-exports.getPortfolioPnl = async(req, res, next) => {
+exports.getPortfolioRemainingAmount = async(req, res, next) => {
     const userId = req.user._id;
+    const id = req.params.id
     try{
         let pnlDetails = await ContestTrade.aggregate([
             {
               $match: {
                 status: "COMPLETE",
                 trader: userId,
+                portfolioId: new ObjectId(id)
               },
             },
             {
@@ -215,65 +220,63 @@ exports.getPortfolioPnl = async(req, res, next) => {
             },
         ]);
 
-        res.status(201).json(pnlDetails);
+        console.log(userId, id)
+        const portfolio = await Portfolio.findById(id)  
+
+        res.status(201).json({pnl: pnlDetails, portfolio: portfolio});
 
     }catch(e){
         console.log(e);
-        return res.status(500).json({status:'success', message: 'something went wrong.'})
+        return res.status(500).json({status:'error', message: 'something went wrong.'})
     }
 }
 
+exports.getPortfolioPnl = async(req, res, next) => {
+  const userId = req.user._id;
+  try{
+      let pnlDetails = await ContestTrade.aggregate([
+          {
+            $match: {
+              status: "COMPLETE",
+              trader: userId,
+            },
+          },
+          {
+            $group: {
+              _id: {
+                portfolioId: "$portfolioId",
+              },
+              amount: {
+                $sum: {$multiply : ["$amount",-1]},
+              },
+              brokerage: {
+                $sum: {
+                  $toDouble: "$brokerage",
+                },
+              },
+              lots: {
+                $sum: {
+                  $toInt: "$Quantity",
+                },
+              },
+              lastaverageprice: {
+                $last: "$average_price",
+              },
+            },
+          },
+          {
+            $sort: {
+              _id: -1,
+            },
+          },
+      ]);
+
+      res.status(201).json(pnlDetails);
+
+  }catch(e){
+      console.log(e);
+      return res.status(500).json({status:'success', message: 'something went wrong.'})
+  }
+}
 
 
-// myContests =  [
-//   {
-//     entryFee: { amount: 0, currency: 'INR' },
-//     _id: new ObjectId("6438e04991b137b346afb4b9"),
-//     contestName: 'Monday Madness',
-//     contestStartDate: 2023-04-17T03:45:02.000Z,
-//     contestEndDate: 2023-04-17T09:55:02.000Z,
-//     contestMargin: 1000000,
-//     entryOpeningDate: 2023-04-14T05:15:02.000Z,
-//     entryClosingDate: 2023-04-16T17:00:02.000Z,
-//     stockType: 'Options',
-//     contestOn: 'NIFTY 50',
-//     rewards: [ [Object], [Object], [Object] ],
-//     contestRule: new ObjectId("64285b52a13b875fa2da713b"),
-//     instruments: [],
-//     maxParticipants: 10,
-//     minParticipants: 3,
-//     status: 'Live',
-//     createdOn: 2023-04-14T04:48:01.761Z,
-//     lastModifiedOn: 2023-04-14T04:48:01.761Z,
-//     createdBy: new ObjectId("63788f7591fc4bf629de6e59"),
-//     lastModifiedBy: new ObjectId("63788f7591fc4bf629de6e59"),
-//     participants: [ ],
-//     __v: 2
-//   },
-//   {
-//     entryFee: { amount: 0, currency: 'INR' },
-//     _id: new ObjectId("6438e36ae1613d101b36c3f6"),
-//     contestName: 'Wednesday Break',
-//     contestStartDate: 2023-04-19T03:45:05.000Z,
-//     contestEndDate: 2023-04-19T07:00:05.000Z,
-//     contestMargin: 1000000,
-//     entryOpeningDate: 2023-04-14T04:00:05.000Z,
-//     entryClosingDate: 2023-04-16T17:00:05.000Z,
-//     stockType: 'Options',
-//     contestOn: 'NIFTY 50',
-//     rewards: [ [Object], [Object], [Object] ],
-//     contestRule: new ObjectId("64285b52a13b875fa2da713b"),
-//     instruments: [],
-//     maxParticipants: 4,
-//     minParticipants: 50,
-//     status: 'Live',
-//     createdOn: 2023-04-14T05:19:31.170Z,
-//     lastModifiedOn: 2023-04-14T05:19:31.170Z,
-//     createdBy: new ObjectId("63788f7591fc4bf629de6e59"),
-//     lastModifiedBy: new ObjectId("63788f7591fc4bf629de6e59"),
-//     __v: 9,
-//     participants: [ {
-
-//     } ]
-//   }
-// ]

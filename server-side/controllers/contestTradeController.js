@@ -8,6 +8,7 @@ const axios = require('axios')
 const uuid = require('uuid');
 const ObjectId = require('mongodb').ObjectId;
 const Contest = require('../models/Contest/contestSchema');
+const autoTrade = require('../PlaceOrder/autoTradeContest')
 const client = require('../marketData/redisClient');
 const getKiteCred = require('../marketData/getKiteCred');
 const ContestInstrument = require('../models/Instruments/contestInstrument') 
@@ -20,9 +21,15 @@ exports.newTrade = async (req, res, next) => {
   let {  exchange, symbol, buyOrSell, Quantity, Price, 
         Product, OrderType, TriggerPrice, stopLoss, uId,
         validity, variety, createdBy, order_id,
-        userId, instrumentToken, trader, portfolioId } = req.body
+        userId, instrumentToken, trader, portfolioId, autoTrade, dontSendResp} = JSON.parse(JSON.stringify(req.body));
 
-        console.log(req.body)
+        let tradeBy ;
+        if(autoTrade){
+          tradeBy = new ObjectId("63ecbc570302e7cf0153370c")
+        } else{
+          tradeBy = req.user._id
+        }
+        console.log("req.body", req.body)
 
     const brokerageDetailBuy = await BrokerageDetail.find({transaction:"BUY"});
     const brokerageDetailSell = await BrokerageDetail.find({transaction:"SELL"});
@@ -30,7 +37,11 @@ exports.newTrade = async (req, res, next) => {
 
   if(!exchange || !symbol || !buyOrSell || !Quantity || !Product || !OrderType || !validity || !variety){
       //console.log(Boolean(exchange)); //console.log(Boolean(symbol)); //console.log(Boolean(buyOrSell)); //console.log(Boolean(Quantity)); //console.log(Boolean(Product)); //console.log(Boolean(OrderType)); //console.log(Boolean(validity)); //console.log(Boolean(variety));  //console.log(Boolean(algoName)); //console.log(Boolean(transactionChange)); //console.log(Boolean(instrumentChange)); //console.log(Boolean(exchangeChange)); //console.log(Boolean(lotMultipler)); //console.log(Boolean(productChange)); //console.log(Boolean(tradingAccount));
-      return res.status(422).json({error : "please fill all the feilds..."})
+      if(!dontSendResp){
+        return res.status(422).json({error : "please fill all the feilds..."})
+      } else{
+        return;
+      }
   }
 
   if(buyOrSell === "SELL"){
@@ -63,7 +74,7 @@ exports.newTrade = async (req, res, next) => {
 
 
   } catch(err){
-    console.log(err)
+    // console.log(err)
       return new Error(err);
   }
 
@@ -100,33 +111,41 @@ exports.newTrade = async (req, res, next) => {
       brokerageUser = sellBrokerage(Math.abs(Number(Quantity)) * originalLastPriceUser);
   }
   
-  ContestTrade.findOne({order_id : order_id})
-  .then((dateExist)=>{
-      if(dateExist){
-          //console.log("data already");
-          return res.status(422).json({error : "date already exist..."})
-      }
-
-      // console.log("4st")
-      const contestTrade = new ContestTrade({
-          status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
-          variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
-          order_id, instrumentToken, brokerage: brokerageUser, contestId: contestId,
-          tradeBy: req.user._id,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time, portfolioId
+  // ContestTrade.findOne({order_id : order_id})
+  // .then((dateExist)=>{
+  //     if(dateExist){
+  //         //console.log("data already");
+  //         if(!dontSendResp){
+  //           return res.status(422).json({error : "date already exist..."})
+  //         } else{
+  //           return;
+  //         }
           
-      });
+  //     }
 
-      // console.log("mockTradeDetails", mockTradeDetailsUser);
-      contestTrade.save().then(()=>{
-          console.log("sending response");
-          res.status(201).json({status: 'Complete', message: 'COMPLETE'});
-      }).catch((err)=> {
-          console.log("in err", err)
-          // res.status(500).json({error:"Failed to enter data"})
-      });
+
+  //     // console.log("4st")
+  //     const contestTrade = new ContestTrade({
+  //         status:"COMPLETE", uId, createdBy, average_price: originalLastPriceUser, Quantity, Product, buyOrSell, order_timestamp: newTimeStamp,
+  //         variety, validity, exchange, order_type: OrderType, symbol, placed_by: "ninepointer", userId,
+  //         order_id, instrumentToken, brokerage: brokerageUser, contestId: contestId,
+  //         tradeBy: tradeBy,trader: trader, amount: (Number(Quantity)*originalLastPriceUser), trade_time:trade_time, portfolioId
+          
+  //     });
+
+  //     // console.log("mockTradeDetails", mockTradeDetailsUser);
+  //     contestTrade.save().then(()=>{
+  //         console.log("sending response");
+  //         if(!dontSendResp){
+  //           res.status(201).json({status: 'Complete', message: 'COMPLETE'});
+  //         }
+  //     }).catch((err)=> {
+  //         console.log("in err", )
+  //         // res.status(500).json({error:"Failed to enter data"})
+  //     });
       
-      // console.log("5st")
-  }).catch(err => {console.log(err, "fail")});  
+  //     // console.log("5st")
+  // }).catch(err => {console.log( "fail")});  
   
   // console.log("6st")
 
@@ -352,34 +371,71 @@ exports.getMyContestRank = async (req, res, next) => {
 
 }
 
-exports.getUserRunningLots = async(req, res, next) => {
+exports.autoTradeContest = async(req, res, next) => {
   // console.log("in get contest")
-    const userId = req.user._id;
-    const contestId = req.params.id;
+    // const userId = req.user._id;
+    // const contestId = req.params.id;
     // const portfolioId = req.query.portfolioId;
     const now = new Date();
     const thirtyMinutesBeforeNow = new Date(now.getTime() - 30 * 60000); // 30 minutes * 60 seconds * 1000 milliseconds
 
     const today = new Date().toISOString().slice(0, 10);
-    // console.log("in getContestPnl", userId, contestId, portfolioId, today)
+    console.log(now)
     const contests = await Contest.find({
       contestEndDate: {
         $gte: thirtyMinutesBeforeNow,
         $lte: now,
       },
-    }, {
-      participants: {
-        $elemMatch: {},
-      },
-    });
-    
-    const userIds = contests.map((contest) => {
+    }
+    );
+
+
+    console.log(contests)
+    const userIds = contests.map(async (contest) => {
+      // console.log(contest._id)
+      req.params.id = contest._id;
+      let openTrade = await ContestTrade.aggregate([
+        {
+          $match:
+            {
+              contestId: contest._id
+            },
+        },
+        {
+          $group:
+            {
+              _id: {
+                portfolioId: "$portfolioId",
+                symbol: "$symbol",
+                instrumentToken: "$instrumentToken",
+                trader: "$trader",
+                product: "$Product",
+                exchange: "$exchange",
+                validity: "$validity",
+                order_type: "$order_type",
+                variety: "$variety",
+                name: "$createdBy",
+              },
+              lots: {
+                $sum: {
+                  $toInt: "$Quantity",
+                },
+              },
+            },
+        },
+      ])
+  
+      // console.log("open trade", openTrade)
+  
+      // res.status(201).json(openTrade);
+      await autoTrade.switchAllTrade(openTrade, res, req)
       return contest.participants.map((participant) => {
         return participant.userId;
       });
-    }).flat();
+    
+    })
 
-    console.log(userIds)
+    // console.log(await userIds)
     // try{
     //     let pnlDetails = await ContestTrade.aggregate([
     //         {
@@ -426,13 +482,29 @@ exports.getUserRunningLots = async(req, res, next) => {
     //         },
     //     ]);
 
-    //     res.status(201).json(pnlDetails);
+    //     
 
     // }catch(e){
     //     console.log(e);
     //     return res.status(500).json({status:'success', message: 'something went wrong.'})
     // }
+
 }
+
+exports.getLastFiveTrade = async(req, res, next) => {
+    const userId = req.user._id;
+    const contestId = req.params.id;
+
+    try{
+      const lastTrade = await ContestTrade.find({trader: userId, contestId: contestId}, {'symbol': 1, 'buyOrSell': 1, 'Product': 1, 'Quantity': 1, 'amount': 1, 'status': 1, 'average_price': 1}).sort({_id: -1});
+      res.status(200).json({status: 'success', data: lastTrade});
+    }catch(e){
+      console.log(e)
+        res.status(500).json({status:'error', message: 'Something went wrong'});
+    }
+
+}
+
 
 
 exports.editLeaderboard = async(req,res,next) => {
