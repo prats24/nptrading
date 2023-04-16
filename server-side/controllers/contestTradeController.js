@@ -9,6 +9,8 @@ const uuid = require('uuid');
 const ObjectId = require('mongodb').ObjectId;
 const Contest = require('../models/Contest/contestSchema');
 const client = require('../marketData/redisClient');
+const getKiteCred = require('../marketData/getKiteCred');
+const ContestInstrument = require('../models/Instruments/contestInstrument') 
 
 
 exports.newTrade = async (req, res, next) => {
@@ -452,7 +454,7 @@ exports.getLeaderBoard = async(req,res,next) => {
 }
 
 exports.getMyLeaderBoardRank = async(req,res, next) => {
-  const {id} = req.params.id;
+  const {id} = req.params;
   const userData = {userId: req.user._id, name: req.user.firstName + ' '+ req.user.lastName};
   const myRank = await ZREVRANK(`contest:${id}`, JSON.stringify(userData));
 
@@ -461,3 +463,199 @@ exports.getMyLeaderBoardRank = async(req,res, next) => {
     data: myRank,
   });
 }
+
+
+exports.getRedisLeaderBoard = async(req,res,next) => {
+  const {id} = req.params;
+
+  //Check if leaderBoard for contest exists in Redis
+  try{
+    if(await client.exists(`leaderboard:${id}`)){
+      // const leaderBoard = await client.zRevrange(`leaderboard:${id}`, 0, 19);
+      const leaderBoard = await client.zRangeWithScores(`leaderboard:${id}`, 0, 19, {
+        // BY: 'SCORE',
+        REV: true,
+      })
+      // for await (const memberWithScore of client.zScanIterator(`leaderboard:${id}`)) {
+      //   console.log(memberWithScore);
+      // }
+      console.log('cached');
+      return res.status(200).json({
+        status: 'success',
+        results: leaderBoard.length,
+        data: leaderBoard
+      });    
+    }
+    else{
+      //get ltp for the contest instruments
+      // const contestInstruments = await Contest.findById(id).select('instruments');
+      const contestInstruments = await ContestInstrument.find({'contest.contestId': id}).select('instrumentToken exchange symbol');
+      // console.log('contest inst', contestInstruments);
+      // console.log('contest inst', contestInstruments);
+      const data = await getKiteCred.getAccess();
+      let addUrl;
+      contestInstruments.forEach((elem, index) => {
+        if (index === 0) {
+          addUrl = ('i=' + elem.exchange + ':'+ elem.symbol);
+        } else {
+          addUrl += ('&i=' + elem.exchange + ':' + elem.symbol);
+        }
+      });
+      // console.log(addUrl);
+      const ltpBaseUrl = `https://api.kite.trade/quote?${addUrl}`;
+      let auth = 'token' + data.getApiKey + ':' + data.getAccessToken;
+
+      let authOptions = {
+        headers: {
+          'X-Kite-Version': '3',
+          Authorization: auth,
+        },
+      };
+      let arr = [];
+      let livePrices = {};
+      const response = await axios.get(ltpBaseUrl, authOptions);
+      console.log('response is ', response.data.data);
+      for (let instrument in response.data.data) {
+          let obj = {};
+          // console.log(instrument, response.data.data[instrument].last_price);
+          livePrices[response.data.data[instrument].instrument_token] = response.data.data[instrument].last_price;
+          obj.last_price = response.data.data[instrument].last_price;
+          obj.instrument_token = response.data.data[instrument].instrument_token;
+          obj.average_price = response.data.data[instrument].ohlc.close;
+          obj.timestamp = response.data.data[instrument].timestamp
+          arr.push(obj);
+      }
+      const ranks = await ContestTrade.aggregate([
+        // Match documents for the given contestId
+        {
+          $match: {
+            contestId: new ObjectId(id)
+          }
+        },
+        // Group by userId and sum the amount
+        {
+          $group: {
+            _id: {
+              trader: "$trader",
+              createdBy: "$createdBy",
+              instrumentToken: "$instrumentToken"
+            },
+            totalAmount: { $sum: "$amount" },
+            investedAmount: {
+              $sum: {
+                $abs: "$amount"
+              }
+            },
+            brokerage: {
+              $sum: {
+                $toDouble: "$brokerage",
+              },
+            },
+            lots: {
+                $sum: {$toInt : "$Quantity"}
+            }
+          }
+        },
+        // Sort by totalAmount in descending order
+    
+        // Project the result to include only userId and totalAmount
+        {
+          $project: {
+            _id: 0,
+            userId: "$_id",
+            totalAmount: 1,
+            investedAmount: 1,
+            brokerage: 1,
+            lots: 1
+          }
+        },
+        {
+          $addFields: {
+            rpnl: {
+              $multiply: ["$lots", ]
+            }
+          }
+        },
+      ]);
+
+      // console.log(livePrices);
+
+      for(doc of ranks){
+        // console.log('doc is', doc);
+        doc.rpnl = doc.lots* livePrices[doc.userId.instrumentToken];
+        doc.npnl = doc.totalAmount + doc.rpnl - doc.brokerage;
+        // console.log('npnl is', doc?.npnl);
+      }
+
+      console.log('ranks',ranks);
+
+      const result = Object.values(ranks.reduce((acc, curr) => {
+        const { userId, npnl } = curr;
+        const traderId = userId.trader;
+        const createdBy = userId.createdBy;
+        if (!acc[traderId]) {
+          acc[traderId] = {
+            traderId,
+            name: createdBy,
+            npnl: 0
+          };
+        }
+        acc[traderId].npnl += npnl;
+        return acc;
+      }, {}));
+      console.log('result is', result);
+      //Add to redis sorted set
+      // result.forEach((rank)=>{
+      //   pipeline.ZADD( `leaderboard:${id}`, rank.npnl, `{id: ${doc.traderId}, name: ${doc.name} }`);
+      // });
+
+      for (rank of result){
+        // console.log(rank);
+        console.log(`leaderboard${id}`);
+        await client.ZADD(`leaderboard:${id}`, {
+          score: rank.npnl,
+          value: JSON.stringify({name: rank.name})
+        });
+      }
+      
+      // await pipeline.exec();
+      await client.expire(`leaderboard:${id}`,20);
+
+      // const leaderBoard = await client.ZREVRANGE(`leaderboard:${id}`, 0, 19, 'WITHSCORES');
+      const leaderBoard = await client.zRangeWithScores(`leaderboard:${id}`, 0, 19, {
+        // BY: 'SCORE',
+        REV: true,
+      })
+    
+      return res.status(200).json({
+        status: 'success',
+        results: leaderBoard.length,
+        data: leaderBoard
+      });    
+
+
+    }
+  }catch(e){
+    console.log(e);
+  }
+}
+
+exports.getRedisMyRank = async(req,res,next) => {
+  const {id} = req.params;
+
+  if(client.exists(`leaderboard:${id}`)){
+    const leaderBoardRank = await client.ZREVRANK(`leaderboard:${id}`, `{id: ObjectId(${req.user._id}, name:${req.user.name})}`);
+    
+    return res.status(200).json({
+      status: 'success',
+      data: leaderBoardRank+1
+    }); 
+
+  }else{
+      res.status(200).json({
+      status: 'loading',
+      message:'loading rank'
+    }); 
+  }
+}
+
