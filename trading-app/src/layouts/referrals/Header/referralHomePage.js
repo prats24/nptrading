@@ -64,7 +64,7 @@ function ReferralHomePage() {
 
     axios.get(`${baseUrl}api/v1/referrals/active`)
     .then((res)=>{
-    //    console.log(res?.data?.data[0])
+       console.log('ye hai ref', res?.data?.data[0])
        setActiveReferralProgram(res?.data?.data[0]);
     }).catch((err)=>{
         return new Error(err);
@@ -72,7 +72,7 @@ function ReferralHomePage() {
   },[invited])
 
 //   console.log("Invited Data: ",invitedData)
-//   console.log("Active Referral Program ID: ",activeReferralProgram?._id)
+  console.log("ye hai ref Active Referral Program ID: ",activeReferralProgram);
 
   invitedData?.map((elem)=>{
         
@@ -144,7 +144,7 @@ function ReferralHomePage() {
                     
                     <Grid item xs={12} md={12} lg={8}>
                         <MDBox color="light" pt={2.25} pb={2.25} display="flex" justifyContent="center">
-                            StoxHero Referral Program - {activeReferralProgram?.referrralProgramName}
+                            StoxHero Referral Program - {activeReferralProgram?.referralProgramName}
                         </MDBox>
                         <MDBox fontSize={15} display="flex" justifyContent="center">
                             <img alt="Referral Program" style={{ maxWidth: '100%', height: 'auto' }} src={ReferralImage}/>

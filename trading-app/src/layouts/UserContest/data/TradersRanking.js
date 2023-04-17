@@ -27,6 +27,8 @@ function TradersRanking({contestId, socket}){
           },
         })
       ]);
+
+      console.log("leaderboard", api1Response.data.data)
       setRankData(api1Response.data.data);
       setMyRank(api2Response.data.data);
       setTimeout(()=>{setIsLoading(false)},500)
@@ -43,12 +45,12 @@ function TradersRanking({contestId, socket}){
   }, []);
 
   useEffect(()=>{
-    // axios.get(`${baseUrl}api/v1/getliveprice`)
-    // .then((res) => {
-    //   setMarketData(res.data);
-    // }).catch((err) => {
-    //     return new Error(err);
-    // })
+    axios.get(`${baseUrl}api/v1/getliveprice`)
+    .then((res) => {
+      setMarketData(res.data);
+    }).catch((err) => {
+        return new Error(err);
+    })
     socket?.on('check', (data)=>{
       console.log("data from socket in instrument in parent", data)
     })
