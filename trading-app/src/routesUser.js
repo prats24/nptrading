@@ -40,7 +40,7 @@ const routes = [
   {
     type: "collapse",
     name: "Position",
-    key: "Position",
+    key: "position",
     // icon: <Icon fontSize="small">person</Icon>,
     icon: <MilitaryTechIcon/>,
     route: "/position",
@@ -132,7 +132,7 @@ const routes = [
   {
     type: "collapse",
     name: "My Portfolio",
-    key: "funds",
+    key: "portfolio",
     icon: <BusinessCenterIcon/>,
     route: "/portfolio",
     component: <MyPortfolio />,
