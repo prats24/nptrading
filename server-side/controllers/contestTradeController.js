@@ -1,4 +1,5 @@
 const ContestTrade = require('../models/Contest/ContestTrade');
+const util = require('util');
 
 // const MockTradeDetails = require("../models/mock-trade/mockTradeCompanySchema");
 // const MockTradeDetailsUser = require("../models/mock-trade/mockTradeUserSchema");
@@ -600,27 +601,20 @@ exports.getRedisLeaderBoard = async(req,res,next) => {
   //Check if leaderBoard for contest exists in Redis
   try{
     if(await client.exists(`leaderboard:${id}`)){
-      // const leaderBoard = await client.zRevrange(`leaderboard:${id}`, 0, 19);
-      const leaderBoard = await client.zRangeWithScores(`leaderboard:${id}`, 0, 19, {
-        // BY: 'SCORE',
-        REV: true,
-      })
-      // for await (const memberWithScore of client.zScanIterator(`leaderboard:${id}`)) {
-      //   console.log(memberWithScore);
-      // }
+      const leaderBoard = await client.sendCommand(['ZREVRANGE', `leaderboard:${id}`, "0", "19",  'WITHSCORES'])
+      const formattedLeaderboard = formatData(leaderBoard)
+
       console.log('cached');
       return res.status(200).json({
         status: 'success',
-        results: leaderBoard.length,
-        data: leaderBoard
+        results: formattedLeaderboard.length,
+        data: formattedLeaderboard
       });    
     }
     else{
       //get ltp for the contest instruments
       // const contestInstruments = await Contest.findById(id).select('instruments');
       const contestInstruments = await ContestInstrument.find({'contest.contestId': id}).select('instrumentToken exchange symbol');
-      // console.log('contest inst', contestInstruments);
-      // console.log('contest inst', contestInstruments);
       const data = await getKiteCred.getAccess();
       let addUrl;
       contestInstruments.forEach((elem, index) => {
@@ -643,7 +637,6 @@ exports.getRedisLeaderBoard = async(req,res,next) => {
       let arr = [];
       let livePrices = {};
       const response = await axios.get(ltpBaseUrl, authOptions);
-      console.log('response is ', response.data.data);
       for (let instrument in response.data.data) {
           let obj = {};
           // console.log(instrument, response.data.data[instrument].last_price);
@@ -719,24 +712,21 @@ exports.getRedisLeaderBoard = async(req,res,next) => {
       console.log('ranks',ranks);
 
       const result = Object.values(ranks.reduce((acc, curr) => {
-        const { userId, npnl } = curr;
+        const { userId, npnl, investedAmount } = curr;
         const traderId = userId.trader;
         const createdBy = userId.createdBy;
         if (!acc[traderId]) {
           acc[traderId] = {
             traderId,
             name: createdBy,
-            npnl: 0
+            npnl: 0,
+            // investedAmount: 0
           };
         }
         acc[traderId].npnl += npnl;
+        // acc[traderId].investedAmount += investedAmount
         return acc;
       }, {}));
-      console.log('result is', result);
-      //Add to redis sorted set
-      // result.forEach((rank)=>{
-      //   pipeline.ZADD( `leaderboard:${id}`, rank.npnl, `{id: ${doc.traderId}, name: ${doc.name} }`);
-      // });
 
       for (rank of result){
         // console.log(rank);
@@ -750,34 +740,50 @@ exports.getRedisLeaderBoard = async(req,res,next) => {
       // await pipeline.exec();
       await client.expire(`leaderboard:${id}`,20);
 
-      // const leaderBoard = await client.ZREVRANGE(`leaderboard:${id}`, 0, 19, 'WITHSCORES');
-      const leaderBoard = await client.zRangeWithScores(`leaderboard:${id}`, 0, 19, {
-        // BY: 'SCORE',
-        REV: true,
-      })
-    
+      const leaderBoard = await client.sendCommand(['ZREVRANGE', `leaderboard:${id}`, "0", "19",  'WITHSCORES'])
+      const formattedLeaderboard = formatData(leaderBoard)
+
+
       return res.status(200).json({
         status: 'success',
-        results: leaderBoard.length,
-        data: leaderBoard
-      });    
+        results: formattedLeaderboard.length,
+        data: formattedLeaderboard
+      });   
 
 
     }
   }catch(e){
-    console.log(e);
+    console.log("redis error", e);
   }
+
+  function formatData(arr){
+    const formattedLeaderboard = arr.reduce((acc, val, index, arr) => {
+      if (index % 2 === 0) {
+        // Parse the JSON string to an object
+        const obj = JSON.parse(val);
+        // Add the npnl property to the object
+        obj.npnl = Number(arr[index + 1]);
+        // Add the object to the accumulator array
+        acc.push(obj);
+      }
+      return acc;
+    }, []);
+    return formattedLeaderboard;
+  }
+
 }
 
 exports.getRedisMyRank = async(req,res,next) => {
   const {id} = req.params;
+  console.log(req.user.name)
+  if(await client.exists(`leaderboard:${id}`)){
+    const leaderBoardRank = await client.ZREVRANK(`leaderboard:${id}`, JSON.stringify({name:req.user.name}));
+    const leaderBoardScore = await client.ZSCORE(`leaderboard:${id}`, JSON.stringify({name:req.user.name}));
 
-  if(client.exists(`leaderboard:${id}`)){
-    const leaderBoardRank = await client.ZREVRANK(`leaderboard:${id}`, `{id: ObjectId(${req.user._id}, name:${req.user.name})}`);
-    
+    console.log(leaderBoardRank, leaderBoardScore)
     return res.status(200).json({
       status: 'success',
-      data: leaderBoardRank+1
+      data: {rank: leaderBoardRank+1, npnl: leaderBoardScore}
     }); 
 
   }else{
@@ -787,4 +793,5 @@ exports.getRedisMyRank = async(req,res,next) => {
     }); 
   }
 }
+
 

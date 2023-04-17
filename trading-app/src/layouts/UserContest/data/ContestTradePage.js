@@ -33,6 +33,7 @@ import UsedPortfolio from './PnL/UsedPortfolio';
 function ContestTradeView () {
     const [contest,setContest] = useState();
     const location = useLocation();
+    const [userPnl, setUserPnl] = useState();
     const  contestId  = location?.state?.contestId;
     // const  contestName  = location?.state?.data; isDummy
     const  portfolioId  = location?.state?.portfolioId;
@@ -123,7 +124,7 @@ function ContestTradeView () {
                     {!isDummy ?
                     <>
                     <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
-                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}} isFromHistory={isFromHistory}/>
+                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}} isFromHistory={isFromHistory} setUserPnl={setUserPnl}/>
                     {isFromHistory && <UsedPortfolio portfolioId={portfolioId} />}
                     <LastTrade contestId={contestId} Render={{render, setReRender}}/>
                     </>
@@ -144,7 +145,7 @@ function ContestTradeView () {
             {isDummy ?
             <DummyRank />
             :
-            <TradersRanking contestId={contestId} socket={socket}/>
+            <TradersRanking contestId={contestId} socket={socket} userPnl={userPnl}/>
             }
 
 

@@ -1,7 +1,7 @@
 const express = require("express");
 const Authenticate = require('../../authentication/authentication');
 const router = express.Router({mergeParams: true});
-const {newTrade, getUserTrades, currentUser, getContestRank, getMyContestRank, getContestPnl, getLastFiveTrade, getRedisLeaderBoard, getContestHistoryPnl} = require('../../controllers/contestTradeController');
+const {newTrade, getUserTrades, currentUser, getContestRank, getMyContestRank, getContestPnl, getLastFiveTrade, getRedisLeaderBoard, getContestHistoryPnl, getRedisMyRank} = require('../../controllers/contestTradeController');
 const authoizeTrade = require('../../controllers/authoriseTrade');
 const client = require('../../marketData/redisClient');
 
@@ -10,9 +10,10 @@ router.route('/pnl').get(Authenticate, getContestPnl);
 router.route('/historyPnl').get(Authenticate, getContestHistoryPnl);
 router.route('/lastFiveTrade').get(Authenticate, getLastFiveTrade);
 router.route('/rank').get(getContestRank);
-router.route('/myrank').get(Authenticate, getMyContestRank);
+// router.route('/myrank').get(Authenticate, getMyContestRank);
 
 router.route('/leaderboard').get(Authenticate, getRedisLeaderBoard);
+router.route('/myrank').get(Authenticate, getRedisMyRank);
 router.route('/redtest').get( async(req,res,next)=>{
     try{
         console.log('we\'re testing');
