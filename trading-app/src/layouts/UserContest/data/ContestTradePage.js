@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import { io } from "socket.io-client";
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
@@ -123,7 +123,7 @@ function ContestTradeView () {
                     {!isDummy ?
                     <>
                     <InstrumentsData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
-                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}}/>
+                    <MYPNLData contestId={contestId} socket={socket} portfolioId={portfolioId} Render={{render, setReRender}} isFromHistory={isFromHistory}/>
                     {isFromHistory && <UsedPortfolio portfolioId={portfolioId} />}
                     <LastTrade contestId={contestId} Render={{render, setReRender}}/>
                     </>
@@ -153,4 +153,4 @@ function ContestTradeView () {
   )
 
 }
-export default ContestTradeView;
+export default memo(ContestTradeView);

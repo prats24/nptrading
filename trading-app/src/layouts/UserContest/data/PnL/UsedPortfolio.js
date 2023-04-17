@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect,memo} from 'react'
 import Grid from "@mui/material/Grid";
 import axios from "axios";
 import MDBox from "../../../../components/MDBox";
@@ -92,4 +92,4 @@ const UsedPortfolio = ({portfolioId}) => {
 
 
 
-export default UsedPortfolio;
+export default memo(UsedPortfolio);

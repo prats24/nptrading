@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import { io } from "socket.io-client";
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
@@ -88,4 +88,4 @@ function ContestRegistration () {
   )
 
 }
-export default ContestRegistration;
+export default memo(ContestRegistration);

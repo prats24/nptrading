@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 
 const CountdownTimer = ({ targetDate,text }) => {
   const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
@@ -41,4 +41,4 @@ const CountdownTimer = ({ targetDate,text }) => {
   );
 };
 
-export default CountdownTimer;
+export default memo(CountdownTimer);

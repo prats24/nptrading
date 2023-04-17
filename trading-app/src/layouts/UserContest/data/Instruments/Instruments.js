@@ -1,4 +1,4 @@
-import React,{useState, useEffect, useContext} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 // import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
@@ -193,4 +193,4 @@ return (
 );
 }
 
-export default InstrumentsData;
+export default memo(InstrumentsData);

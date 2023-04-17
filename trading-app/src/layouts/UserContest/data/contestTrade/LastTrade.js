@@ -1,4 +1,4 @@
-import React,{useState, useEffect, useContext} from 'react'
+import React,{useState, useEffect, useContext, memo} from 'react'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
 import MDButton from '../../../../components/MDButton'
@@ -136,4 +136,4 @@ return (
 );
 }
 
-export default LastTrade;
+export default memo(LastTrade);

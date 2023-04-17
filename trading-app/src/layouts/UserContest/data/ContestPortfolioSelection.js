@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, memo} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
@@ -244,4 +244,4 @@ return (
 );
 }
 
-export default ContestPortfolio;
+export default memo(ContestPortfolio);

@@ -1,4 +1,4 @@
-import React,{useState, useContext} from 'react'
+import React,{useState, useContext, memo} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
@@ -234,4 +234,4 @@ function ContestDetails () {
   )
 
 }
-export default ContestDetails;
+export default memo(ContestDetails);

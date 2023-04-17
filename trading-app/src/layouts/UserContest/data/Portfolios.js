@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, memo} from 'react'
 import Grid from "@mui/material/Grid";
 import axios from "axios";
 // Material Dashboard 2 React components
@@ -276,4 +276,4 @@ const ContestPortfolioCard = ({contestId, endDate, contestName}) => {
 
 
 
-export default ContestPortfolioCard;
+export default memo(ContestPortfolioCard);

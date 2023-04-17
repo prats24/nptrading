@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
@@ -233,4 +233,4 @@ return (
 );
 }
 
-export default TradersRanking;
+export default memo(TradersRanking);

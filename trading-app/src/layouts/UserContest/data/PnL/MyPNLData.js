@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
 import MDButton from '../../../../components/MDButton'
@@ -8,7 +8,7 @@ import { CircularProgress } from "@mui/material";
 
 
 
-function MYPNLData({contestId, portfolioId, socket, Render}){
+function MYPNLData({contestId, portfolioId, socket, Render, isFromHistory}){
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
@@ -53,38 +53,73 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
 
   useEffect(()=>{
 
+
+
     let abortController;
-    (async () => {
-         abortController = new AbortController();
-         let signal = abortController.signal;    
 
-         // the signal is passed into the request(s) we want to abort using this controller
-         const { data } = await axios.get(
-          `${baseUrl}api/v1/contest/${contestId}/trades/pnl?portfolioId=${portfolioId}`,
-            
-            {
-              withCredentials: true,
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Credentials": true
-              },
-            },
-            { signal: signal }
-         );
+    if(isFromHistory){
+      (async () => {
+        abortController = new AbortController();
+        let signal = abortController.signal;    
 
-         console.log("in mypnl", data)
-         if(data){
-          setTradeData(data);
-          setIsLoading(false)
-         }
+        // the signal is passed into the request(s) we want to abort using this controller
+        const { data } = await axios.get(
+         `${baseUrl}api/v1/contest/${contestId}/trades/historyPnl?portfolioId=${portfolioId}`,
+           
+           {
+             withCredentials: true,
+             headers: {
+                 Accept: "application/json",
+                 "Content-Type": "application/json",
+                 "Access-Control-Allow-Credentials": true
+             },
+           },
+           { signal: signal }
+        );
 
-        //  setTimeout(()=>{setIsLoading(false)},500)
-        //  socket.emit('hi')
+        console.log("in mypnl", data)
+        if(data){
+         setTradeData(data);
+         setIsLoading(false)
+        }
 
-    })();
+      })();
 
-    // reRender ? setRender(false) : setRender(true);
+    } else{
+      (async () => {
+        abortController = new AbortController();
+        let signal = abortController.signal;    
+
+        // the signal is passed into the request(s) we want to abort using this controller
+        const { data } = await axios.get(
+         `${baseUrl}api/v1/contest/${contestId}/trades/pnl?portfolioId=${portfolioId}`,
+           
+           {
+             withCredentials: true,
+             headers: {
+                 Accept: "application/json",
+                 "Content-Type": "application/json",
+                 "Access-Control-Allow-Credentials": true
+             },
+           },
+           { signal: signal }
+        );
+
+        console.log("in mypnl", data)
+        if(data){
+         setTradeData(data);
+         setIsLoading(false)
+        }
+
+       //  setTimeout(()=>{setIsLoading(false)},500)
+       //  socket.emit('hi')
+
+      })();
+    }
+
+
+    
+
     return () => abortController.abort();
   }, [marketData, render])
 
@@ -255,4 +290,4 @@ return (
 );
 }
 
-export default MYPNLData;
+export default memo(MYPNLData);

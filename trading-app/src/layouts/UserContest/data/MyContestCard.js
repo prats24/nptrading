@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, memo} from 'react'
 import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import axios from "axios";
@@ -190,4 +190,4 @@ const ContestCard = () => {
 
 
 
-export default ContestCard;
+export default memo(ContestCard);
