@@ -737,7 +737,7 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
 
           <Grid item xs={12} md={6} xl={3} mt={-2}>
               <MDButton variant="outlined" style={{fontSize:10}} fullWidth color={!editablePD ? "secondary" : "success"} component="label">
-                Upload Profile Picture
+                {!formStatePD?.profilePhoto?.name ? "Upload Profile Picture" : "Upload Another File?"}
                 <input 
                 hidden 
                 disabled={!editablePD}
@@ -753,6 +753,16 @@ function MyProfile({profilePhoto,setProfilePhoto}) {
                 }
                 />
               </MDButton>
+          </Grid>
+          <Grid item xs={12} md={6} xl={3} display="flex" justifyContent="center" alignContent="center" alignItems="center">
+            <TextField
+                    disabled
+                    id="outlined-required"
+                    // label='Selected Carousel Image'
+                    fullWidth
+                    // defaultValue={portfolioData?.portfolioName}
+                    value={formStatePD?.profilePhoto?.name ? formStatePD?.profilePhoto?.name : "No Image Uploaded"}
+                />
           </Grid>
 
           </Grid>
