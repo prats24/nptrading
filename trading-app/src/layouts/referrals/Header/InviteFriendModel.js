@@ -26,7 +26,7 @@ const style = {
 
 export default function BasicModal({invited,setInvited,referralCode,referralProgramId}) {
   // const [invited,setInvited] = useState(false)
-  console.log(invited,referralCode,referralProgramId)
+  console.log(invited,referralCode,referralProgramId);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {setOpen(false);setInvited(false)};
@@ -43,6 +43,7 @@ export default function BasicModal({invited,setInvited,referralCode,referralProg
     window.getSelection().addRange(range);
     document.execCommand("copy");
     setCopied(true);
+    openSuccessSB('success', 'Copied');
   };
 
   async function onInvite() {
@@ -57,7 +58,20 @@ export default function BasicModal({invited,setInvited,referralCode,referralProg
     setFormData(formData);
     console.log("Form Data: ",formData)
 
-
+    if(!name.trim().length||!mobile.length){
+      return openErrorSB("Error", 'Enter your friend\'s credentials to continue.');
+    }
+  
+    if(mobile.length!=10){
+      if(mobile.length == 13 && mobile.startsWith('+91')){
+        mobile = mobile.substring(3);
+      }else if(mobile.length == 12 && mobile.startsWith('91')){
+        mobile = mobile.substring(2);
+      }
+      else{
+        return openErrorSB("Error", 'Enter a valid phone number');
+      }
+    }
 
     const res = await fetch(`${baseUrl}api/v1/invite`, {
       
@@ -200,10 +214,10 @@ export default function BasicModal({invited,setInvited,referralCode,referralProg
                         onChange={(e)=>{formData.mobile = e.target.value}}
                       />
                   </Grid>
-                  <Grid item xs={12} md={12} xl={12}>
-                    <MDTypography fontSize={10} display="flex" justifyContent="center">Or</MDTypography>
-                  </Grid>
-                  <Grid item xs={12} md={12} xl={12}>
+                  {/* <Grid item xs={12} md={12} xl={12}> */}
+                    {/* <MDTypography fontSize={10} display="flex" justifyContent="center">Or</MDTypography> */}
+                  {/* </Grid> */}
+                  {/* <Grid item xs={12} md={12} xl={12}>
                   <TextField
                         required
                         id="outlined-required"
@@ -212,7 +226,7 @@ export default function BasicModal({invited,setInvited,referralCode,referralProg
                         fullWidth
                         onChange={(e)=>{formData.email = e.target.value}}
                       />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12} md={12} xl={12} mt={2} display="flex" justifyContent="center">
                     <MDButton variant="contained" color="dark" size="small" onClick={onInvite}>Generate Referral Link</MDButton>
                   </Grid>
@@ -239,11 +253,11 @@ export default function BasicModal({invited,setInvited,referralCode,referralProg
 
                       <Typography fontSize={11}>👉 Participate in free options trading contests to sharpen your trading skills.</Typography>                        
 
-                      <Typography fontSize={11}>📲 Visit https://www.stoxhero.com/signup</Typography>                           
+                      <Typography fontSize={11}>📲 Visit https://www.stoxhero.com/signup/?referral=${referralCode}</Typography>                           
 
                       <Typography fontSize={11}>Use my below invitation code 👇 and get INR ₹10,00,000 in your wallet and start trading.</Typography>                             
 
-                      <Typography fontSize={11}>My Referral Code to join the StoxHero: 8APOD7E3</Typography>
+                      <Typography fontSize={11}>My Referral Code to join the StoxHero: {referralCode}</Typography>
                     </Box> 
                     </Typography>
 

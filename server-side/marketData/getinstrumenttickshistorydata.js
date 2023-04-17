@@ -12,6 +12,7 @@ const DailyPNLData = require("../models/InstrumentHistoricalData/DailyPnlDataSch
 const TraderDailyPnlData = require("../models/InstrumentHistoricalData/TraderDailyPnlDataSchema");
 const dbBackup = require("../Backup/mongoDbBackUp")
 const RetreiveOrder = require("../controllers/retreiveOrder")
+const MockTradeDetails = require("../models/mock-trade/mockTradeCompanySchema");
 
 
 
@@ -21,14 +22,36 @@ const RetreiveOrder = require("../controllers/retreiveOrder")
 
 const getInstrumentTicksHistoryData = async () => {
   getKiteCred.getAccess().then(async (data)=>{
-    const activeInstrument = await ActiveInstruments.find({status: "Active"});
-    let matchingDate;
-    for(let i = 0; i < activeInstrument.length; i++){
-      let {instrumentToken, createdOn, symbol} = activeInstrument[i];
-      let date = createdOn.split(" ")[0];
+    let date = new Date();
+    let matchingDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let instrumentDetail = await MockTradeDetails.aggregate([
+      {
+        $match: {
+          trade_time: {
+            $regex: matchingDate,
+          },
+          status: "COMPLETE",
+        },
+      },
+      {
+        $group: {
+          _id: {
+            symbol: "$symbol",
+            instrumentToken: "$instrumentToken",
+          },
+          
+        },
+      },
+      
+    ])
+    // let matchingDate;
+    for(let i = 0; i < instrumentDetail.length; i++){
+      let {instrumentToken, symbol} = instrumentDetail[i]._id;
+      // let date = createdOn.split(" ")[0];
 
-      let tempData = date.split("-");
-      matchingDate = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
+      // let tempData = date.split("-");
+      // matchingDate = `${tempData[2]}-${tempData[1]}-${tempData[0]}`
 
       const historyData = await HistoryData.find({instrumentToken: instrumentToken, timestamp: {$regex:matchingDate}})
       if(historyData.length === 0){
@@ -64,6 +87,7 @@ const getInstrumentTicksHistoryData = async () => {
 
             instrumentticks_data.save()
             .then(()=>{
+              console.log("saving", symbol, open)
             }).catch((err)=> {
                   mailSender("Fail to enter data")
               // res.status(500).json({error:"Failed to enter data"});
@@ -110,7 +134,7 @@ const getInstrumentTicksHistoryData = async () => {
       await RetreiveOrder.retreiveOrder()
 
 
-    },20000)
+    },50000)
 
   });
 };

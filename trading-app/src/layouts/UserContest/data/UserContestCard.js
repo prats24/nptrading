@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, memo} from 'react'
 import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
 import axios from "axios";
@@ -14,30 +14,31 @@ import { Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import ProgressBar from '../data/ProgressBar'
+import { CircularProgress } from "@mui/material";
+
   
 
-const ContestCard = ({isLoading,setIsLoading}) => {
+const ContestCard = () => {
 
-  const [progress, setProgress] = React.useState(10);
+  // const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
-  const [objectId,setObjectId] = useState('')
+  const [isLoading,setIsLoading] = useState(false);
+
+  // const [objectId,setObjectId] = useState('')
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+  let timerStyle = {
+    textAlign: "center", 
+    fontSize: ".75rem", 
+    color: "#003366", 
+    backgroundColor: "white", 
+    borderRadius: "5px", 
+    padding: "5px",  
+    fontWeight: "600",
+    display: "flex", 
+    alignItems: "center"
+  }
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
 
   useEffect(()=>{
   
@@ -63,10 +64,10 @@ const ContestCard = ({isLoading,setIsLoading}) => {
 
       activeData = activeData.filter((elem1) => !myData.some((elem2) => elem1._id === elem2._id));
 
-      console.log(activeData);
+      // console.log(activeData);
       setContestData(activeData);
-      setIsLoading(false)
-      // console.log("isLoading: ",isLoading)
+      setIsLoading(true)
+    
     })
     .catch((error) => {
       // Handle errors here
@@ -116,6 +117,14 @@ const ContestCard = ({isLoading,setIsLoading}) => {
 
     return (
       <>
+      {!isLoading ?    
+      <>
+      <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+      <CircularProgress color="info" />
+      </MDBox>
+      </>
+      :
+      <>
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
@@ -127,7 +136,7 @@ const ContestCard = ({isLoading,setIsLoading}) => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/${e.contestName}`,
+              pathname: `/battleground/${e.contestName}`,
             }}
             state= {{data:e._id}}
             >
@@ -148,7 +157,9 @@ const ContestCard = ({isLoading,setIsLoading}) => {
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={12} mb={1} style={{color:"white",fontSize:11}} display="flex" justifyContent="center" alignItems="center" alignContent="center">
+                      <span style={timerStyle}>
                         <AvTimerIcon/><Timer targetDate={e.contestStartDate} text="Contest Started" />
+                      </span>
                     </Grid>
 
                     <Grid item xs={12} md={6} lg={8} mb={1} display="flex" justifyContent="center">
@@ -186,8 +197,10 @@ const ContestCard = ({isLoading,setIsLoading}) => {
 
       </MDBox>
       </>
+      }
+      </>
 )}
 
 
 
-export default ContestCard;
+export default memo(ContestCard);

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {memo} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
@@ -47,4 +47,4 @@ return (
 );
 }
 
-export default ContestRules;
+export default memo(ContestRules);

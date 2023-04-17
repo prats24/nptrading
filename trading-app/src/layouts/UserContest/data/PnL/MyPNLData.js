@@ -1,21 +1,20 @@
-import React,{useState, useEffect} from 'react'
-// import MDBox from '../../../../components/MDBox'
+import React,{useState, useEffect, memo} from 'react'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
-// import MDButton from '../../../../components/MDButton'
-// import Logo from '../../../assets/images/logo1.jpeg'
-// import { Divider } from '@mui/material'
-// import { HiUserGroup } from 'react-icons/hi';
-// import { Link } from 'react-router-dom';
-// import TaskAltIcon from '@mui/icons-material/TaskAlt';
-// import { useLocation } from 'react-router-dom';
+import MDButton from '../../../../components/MDButton'
 import axios from "axios";
+import {useNavigate} from 'react-router-dom';
+import { CircularProgress } from "@mui/material";
 
-function MYPNLData({contestId, portfolioId, socket, Render}){
+
+
+function MYPNLData({contestId, portfolioId, socket, Render, isFromHistory}){
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   const [marketData, setMarketData] = useState([]);
   const [tradeData, setTradeData] = useState([]);
+  const [isLoading,setIsLoading] = useState(true)
   const {render, setReRender} = Render
+  const nevigate = useNavigate();
   let totalTransactionCost = 0;
   let totalGrossPnl = 0;
   let totalRunningLots = 0;
@@ -25,17 +24,17 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
   useEffect(()=>{
 
     let abortController;
-    (async () => {
-         abortController = new AbortController();
-         let signal = abortController.signal;    
+    // (async () => {
+    //      abortController = new AbortController();
+    //      let signal = abortController.signal;    
 
-         // the signal is passed into the request(s) we want to abort using this controller
-         const { data } = await axios.get(
-          `${baseUrl}api/v1/getliveprice`,
-             { signal: signal }
-         );
-         setMarketData(data);
-    })();
+    //      // the signal is passed into the request(s) we want to abort using this controller
+    //      const { data } = await axios.get(
+    //       `${baseUrl}api/v1/getliveprice`,
+    //          { signal: signal }
+    //      );
+    //      setMarketData(data);
+    // })();
 
 
     socket.on("contest-ticks", (data) => {
@@ -49,38 +48,78 @@ function MYPNLData({contestId, portfolioId, socket, Render}){
       });
     })
 
-    return () => abortController.abort();
+    // return () => abortController.abort();
   }, [])
 
   useEffect(()=>{
 
+
+
     let abortController;
-    (async () => {
-         abortController = new AbortController();
-         let signal = abortController.signal;    
 
-         // the signal is passed into the request(s) we want to abort using this controller
-         const { data } = await axios.get(
-          `${baseUrl}api/v1/contest/${contestId}/trades/pnl?portfolioId=${portfolioId}`,
-            
-            {
-              withCredentials: true,
-              headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  "Access-Control-Allow-Credentials": true
-              },
-            },
-            { signal: signal }
-         );
+    if(isFromHistory){
+      (async () => {
+        abortController = new AbortController();
+        let signal = abortController.signal;    
 
-         console.log("in mypnl", data)
+        // the signal is passed into the request(s) we want to abort using this controller
+        const { data } = await axios.get(
+         `${baseUrl}api/v1/contest/${contestId}/trades/historyPnl?portfolioId=${portfolioId}`,
+           
+           {
+             withCredentials: true,
+             headers: {
+                 Accept: "application/json",
+                 "Content-Type": "application/json",
+                 "Access-Control-Allow-Credentials": true
+             },
+           },
+           { signal: signal }
+        );
+
+        console.log("in mypnl", data)
+        if(data){
          setTradeData(data);
-         socket.emit('hi')
+         setIsLoading(false)
+        }
 
-    })();
+      })();
 
-    // reRender ? setRender(false) : setRender(true);
+    } else{
+      (async () => {
+        abortController = new AbortController();
+        let signal = abortController.signal;    
+
+        // the signal is passed into the request(s) we want to abort using this controller
+        const { data } = await axios.get(
+         `${baseUrl}api/v1/contest/${contestId}/trades/pnl?portfolioId=${portfolioId}`,
+           
+           {
+             withCredentials: true,
+             headers: {
+                 Accept: "application/json",
+                 "Content-Type": "application/json",
+                 "Access-Control-Allow-Credentials": true
+             },
+           },
+           { signal: signal }
+        );
+
+        console.log("in mypnl", data)
+        if(data){
+         setTradeData(data);
+         setIsLoading(false)
+        }
+
+       //  setTimeout(()=>{setIsLoading(false)},500)
+       //  socket.emit('hi')
+
+      })();
+    }
+
+
+    
+
     return () => abortController.abort();
   }, [marketData, render])
 
@@ -99,6 +138,15 @@ return (
           <MDTypography fontSize={13} color="light">My P&L</MDTypography>
         </Grid>
       </Grid>
+
+
+      {isLoading ?
+      <Grid mt={1} mb={1} display="flex" width="100%" justifyContent="center" alignItems="center">
+        <CircularProgress color="light" />
+      </Grid>
+
+      :
+      <>
 
       <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
           
@@ -205,9 +253,9 @@ return (
         </Grid>
 
       )})
-    }
+      }
 
-        <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
+        <Grid container  mt={1} mb={2} p={1} style={{border:'1px solid white',borderRadius:4, }}>
       
             <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
               <MDTypography fontSize={13} color="light">Open Quantity : {totalRunningLots}</MDTypography>
@@ -223,37 +271,23 @@ return (
             </Grid>
 
         </Grid>
-
-
-
-
-      {/* // <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
+        {/* <MDButton 
+          fontFamily={"Open Sans"} 
+          color="light" mt={1} p={1} 
+          style={{border:'1px solid white',borderRadius:4, mt: "20px", width: "100%"}} 
+          display="flex" 
+          justifyContent="center"
+          onClick={()=>{nevigate('/battleground')}}
           
-      //     <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-      //       <MDTypography fontSize={13} color="warning" style={{fontWeight:700}}>NIFTY13042023PE</MDTypography>
-      //     </Grid>
+          
+          >
+            BACK
+        </MDButton> */}
+        </>
+        }
 
-      //     <Grid item xs={12} md={12} lg={2} display="flex" justifyContent="center">
-      //       <MDTypography fontSize={13} color="warning" style={{fontWeight:700}}>0</MDTypography>
-      //     </Grid>
-
-      //     <Grid item xs={12} md={12} lg={2} display="flex" justifyContent="center">
-      //       <MDTypography fontSize={13} color="warning" style={{fontWeight:700}}>134</MDTypography>
-      //     </Grid>
-
-      //     <Grid item xs={12} md={12} lg={2} display="flex" justifyContent="center">
-      //       <MDTypography fontSize={13} color="warning" style={{fontWeight:700}}>121</MDTypography>
-      //     </Grid>
-
-      //     <Grid item xs={12} md={12} lg={3} display="flex" justifyContent="center">
-      //     <MDTypography fontSize={13} color="warning" style={{fontWeight:700}}>-150</MDTypography>
-      //     </Grid>
-
-      // </Grid>
-
-      //  */}
     </>
 );
 }
 
-export default MYPNLData;
+export default memo(MYPNLData);

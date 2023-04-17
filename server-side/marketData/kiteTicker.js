@@ -90,7 +90,6 @@ const getTicks = async (socket) => {
       return indexObj[item.instrument_token];
     });
 
-    let filteredTicks = "dy=ummy data"
     // console.log("contestInstrument", contestInstrument)
     // let contestObj = {};
     // // populate hash table with indexObj from indecies
@@ -117,7 +116,7 @@ const getTicks = async (socket) => {
       console.log(userId, instruments)
       let instrumentTokenArr = new Set(instruments); // create a Set of tokenArray elements
       console.log(instrumentTokenArr)
-      filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
+      let filteredTicks = ticks.filter(tick => instrumentTokenArr.has((tick.instrument_token).toString()));
       // let contestTicks = ticks.filter(tick => contestInstrumentSet.has((tick.instrument_token).toString()));
 
       // let userId = await client.get(socket.id)
@@ -129,7 +128,7 @@ const getTicks = async (socket) => {
       //   return await client.SISMEMBER(await client.get(socket.id), (tick.instrument_token).toString());
       // })
 
-      console.log("indexData", filteredTicks.length);
+      // console.log("in/dexData", filteredTicks);
       if(indexData?.length > 0){
         socket.emit('index-tick', indexData)
       }
@@ -137,7 +136,38 @@ const getTicks = async (socket) => {
 
       // if(filteredTicks > 0){
         // socket.emit('tick-room', ticks);
-        io.to(`${userId}`).emit('contest-ticks', filteredTicks);
+        // filteredTicks = [
+        //   {
+        //     tradable: true,
+        //     mode: 'quote',
+        //     instrument_token: 12575490,
+        //     last_price: 528.15,
+        //     last_traded_quantity: 50,
+        //     average_traded_price: 485.86,
+        //     volume_traded: 391950,
+        //     total_buy_quantity: 52000,
+        //     total_sell_quantity: 6350,
+        //     ohlc: { open: 494.9, high: 532.8, low: 427.1, close: 512.8 },
+        //     change: 2.9933697347893964
+        //   },
+        //   {
+        //     tradable: true,
+        //     mode: 'quote',
+        //     instrument_token: 12584706,
+        //     last_price: 171.45,
+        //     last_traded_quantity: 50,
+        //     average_traded_price: 213.8,
+        //     volume_traded: 12516700,
+        //     total_buy_quantity: 164000,
+        //     total_sell_quantity: 28600,
+        //     ohlc: { open: 204.55, high: 274.8, low: 167.95, close: 197.05 },
+        //     change: -12.991626490738403
+        //   }
+        // ]
+        // setInterval(() => {
+          io.to(`${userId}`).emit('contest-ticks', filteredTicks);
+        // }, 1000);
+        // io.to(`${userId}`).emit('contest-ticks', filteredTicks);
 
         io.to(`${userId}`).emit('tick-room', filteredTicks);
 
@@ -152,7 +182,7 @@ const getTicks = async (socket) => {
 
 
     } catch (err){
-      // console.log(err)
+      console.log(err)
     }
 
 
@@ -223,6 +253,6 @@ const onOrderUpdate = ()=>{
 const getTicker = () => ticker;
 module.exports = {createNewTicker, disconnectTicker, subscribeTokens, getTicker, getTicks, onError, unSubscribeTokens, onOrderUpdate, subscribeSingleToken };
 
-
+//https://vvv201214.s3.ap-south-1.amazonaws.com/cbc1.jpeg
 
 

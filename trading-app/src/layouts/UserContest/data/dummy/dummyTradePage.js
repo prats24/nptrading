@@ -1,13 +1,17 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import MDBox from '../../../../components/MDBox'
+import MDButton from '../../../../components/MDButton'
 import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import MDTypography from '../../../../components/MDTypography'
 import { Divider } from '@mui/material'
 import DemoTradersRanking from '../../data/DemoTradersRanking'
 import DummyInstrument from "./dummyInstrument"
 import DummyPnl from "./dummyPnl"
+import {useNavigate} from 'react-router-dom';
 
 function ContestRegistration () {
+    const nevigate = useNavigate();
   
     return (
     <MDBox  width="100%" bgColor="dark" color="light" p={2}>
@@ -44,4 +48,4 @@ function ContestRegistration () {
   )
 
 }
-export default ContestRegistration;
+export default memo(ContestRegistration);

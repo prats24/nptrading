@@ -1,4 +1,4 @@
-import React,{useState, useEffect, useContext} from 'react'
+import React,{useState, useEffect, useContext, memo} from 'react'
 // import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
@@ -7,6 +7,7 @@ import MDButton from '../../../../components/MDButton'
 function InstrumentsData(){
 
 return (
+
     <>
     <Grid  style={{ filter: 'blur(2px)' }}>
 
@@ -131,8 +132,9 @@ return (
           <MDTypography fontSize={20} fontWeight={900} color="light">Your Instruments will show here</MDTypography>
         </Grid>
       </Grid>
-      </>
+    </>
+
 );
 }
 
-export default InstrumentsData;
+export default memo(InstrumentsData);

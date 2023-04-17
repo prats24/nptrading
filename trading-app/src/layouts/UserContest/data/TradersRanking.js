@@ -1,14 +1,8 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
-// import MDButton from '../../../components/MDButton'
-// import Logo from '../../../assets/images/logo1.jpeg'
-// import { Divider } from '@mui/material'
-// import { HiUserGroup } from 'react-icons/hi';
-// import { Link } from 'react-router-dom';
-// import TaskAltIcon from '@mui/icons-material/TaskAlt';
-// import { useLocation } from 'react-router-dom';
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 function TradersRanking({contestId, socket}){
@@ -17,6 +11,8 @@ function TradersRanking({contestId, socket}){
   const [rankData, setRankData] = useState([]);
   const [myRank, setMyRank] = useState({});
   const [marketData, setMarketData] = useState([]);
+  const [isLoading,setIsLoading] = useState(true)
+
 
   const fetchData = async () => {
     try {
@@ -33,6 +29,7 @@ function TradersRanking({contestId, socket}){
       ]);
       setRankData(api1Response.data.data);
       setMyRank(api2Response.data.data);
+      setTimeout(()=>{setIsLoading(false)},500)
     } catch (error) {
       console.error(error);
     }
@@ -41,17 +38,17 @@ function TradersRanking({contestId, socket}){
   useEffect(() => {
     const intervalId = setInterval(fetchData, 10000); // run every 10 seconds
     fetchData(); // run once on mount
-    socket.emit('hi')
+    // socket.emit('hi')
     return () => clearInterval(intervalId);
   }, []);
 
   useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/getliveprice`)
-    .then((res) => {
-      setMarketData(res.data);
-    }).catch((err) => {
-        return new Error(err);
-    })
+    // axios.get(`${baseUrl}api/v1/getliveprice`)
+    // .then((res) => {
+    //   setMarketData(res.data);
+    // }).catch((err) => {
+    //     return new Error(err);
+    // })
     socket?.on('check', (data)=>{
       console.log("data from socket in instrument in parent", data)
     })
@@ -68,7 +65,7 @@ function TradersRanking({contestId, socket}){
       });
 
     })
-  }, [socket])
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -86,12 +83,6 @@ function TradersRanking({contestId, socket}){
 
   let myNetPnl = myRankArr[0] && myRankArr[0].totalPnl - myRankArr[0].brokerage
   let myProfitChange = myRankArr[0] && myNetPnl*100/myRankArr[0].investedAmount;
-
-
-
-
-
-
 
 
   function receiveFinalArr(rankData){
@@ -140,13 +131,21 @@ function TradersRanking({contestId, socket}){
 
 return (
     <>
+      
         <Grid item xs={12} md={6} lg={5} mb={2}>
             <MDBox color="light">
 
-                <MDTypography mb={2} color="light" display="flex" justifyContent="center">
-                    Ranks
+                <MDTypography mb={2} color="light" display="flex" justifyContent="center" style={{fontWeight:700}}>
+                    LeaderBoard
                 </MDTypography>
                 
+                {isLoading ?
+                <Grid mt={12} mb={10} display="flex" width="100%" justifyContent="center" alignItems="center">
+                  <CircularProgress color="light" />
+                </Grid>
+      
+                :
+                <>
                 <Grid container>
                     <Grid item xs={12} md={12} lg={12}>
                       <MDTypography fontSize={13} color="light">My Rank</MDTypography>
@@ -224,11 +223,14 @@ return (
                   )
 
                 })}
+                </>
+                }
 
             </MDBox>
         </Grid> 
+
     </>
 );
 }
 
-export default TradersRanking;
+export default memo(TradersRanking);

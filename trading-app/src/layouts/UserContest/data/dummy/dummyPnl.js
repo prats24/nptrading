@@ -1,9 +1,14 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 // import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import MDTypography from '../../../../components/MDTypography'
+import MDButton from '../../../../components/MDButton'
+import {useNavigate} from 'react-router-dom';
+
 
 function MYPNLData(){
+  const navigate = useNavigate();
 
 
 return (
@@ -106,8 +111,22 @@ return (
         <MDTypography fontSize={20} fontWeight={900} color="light">Your Pnl will show here</MDTypography>
       </Grid>
     </Grid>
+    {/* <MDButton> */}
+      {/* <MDButton 
+      fontFamily={"Open Sans"} 
+      color="light" mt={1} p={1} 
+      style={{border:'1px solid white',borderRadius:4, cursor: "pointer", width: "100%"}} 
+      display="flex" 
+      justifyContent="center"
+      onClick={()=>{navigate('/battleground')}}
+      
+      
+      >
+        BACK
+      </MDButton> */}
+      {/* </MDButton> */}
     </>
 );
 }
 
-export default MYPNLData;
+export default memo(MYPNLData);

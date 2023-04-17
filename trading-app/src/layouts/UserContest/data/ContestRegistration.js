@@ -1,4 +1,4 @@
-import React,{useState, useEffect} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 import { io } from "socket.io-client";
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
@@ -68,7 +68,7 @@ function ContestRegistration () {
                     {/* <InstrumentsData contestId={id} socket={socket}/>
 
                     <MYPNLData contestId={id} socket={socket}/> */}
-                    <Portfolios contestId={id} endDate={contest?.contestStartDate}/>
+                    <Portfolios contestId={id} endDate={contest?.contestStartDate} contestName={contest?.contestName}/>
                 </MDBox>
             </Grid>
 
@@ -88,4 +88,4 @@ function ContestRegistration () {
   )
 
 }
-export default ContestRegistration;
+export default memo(ContestRegistration);

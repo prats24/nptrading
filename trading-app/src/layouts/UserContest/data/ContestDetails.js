@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState, useContext, memo} from 'react'
 import MDBox from '../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../components/MDTypography'
@@ -12,16 +12,21 @@ import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import { CircularProgress } from '@mui/material';
 import Timer from '../timer'
-
-
 import PrizeDistribution from './PrizeDistribution'
 import ContestRules from './ContestRules'
+import InviteFriend from '../../referrals/Header/InviteFriendModel'
+import { userContext } from '../../../AuthContext'
 
 function ContestDetails () {
+    const getDetails = useContext(userContext);
     const [isLoading,setIsLoading] = useState(false);
     const [contest,setContest] = useState();
+    const [invited,setInvited] = useState(false)
+    const [activeReferralProgram,setActiveReferralProgram] = useState();
     const location = useLocation();
     const  id  = location?.state?.data;
+    const referralCode = getDetails.userDetails.myReferralCode
+
     console.log("Location: ",location)
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
   
@@ -32,9 +37,17 @@ function ContestDetails () {
                 setIsLoading(true);
                 setContest(res?.data?.data);
                 console.log(res?.data?.data)
-                setTimeout((e)=>{
-                    setIsLoading(false)
-                },500)
+                // setTimeout((e)=>{
+                //     setIsLoading(false)
+                // },500)
+        }).catch((err)=>{
+            return new Error(err);
+        })
+
+        axios.get(`${baseUrl}api/v1/referrals/active`)
+        .then((res)=>{
+        //    console.log(res?.data?.data[0])
+           setActiveReferralProgram(res?.data?.data[0]);
         }).catch((err)=>{
             return new Error(err);
         })
@@ -74,49 +87,12 @@ function ContestDetails () {
         return `${dateChange(date?.split("T")[0])} | ${timeChange(date?.split("T")[1])}`
     }
 
-    function substractDate(dateTimeString){
-        // const dateTimeString = "2023-04-17T18:27:36.000Z";
-        const targetDate = new Date(dateTimeString);
-        const currentDate = new Date();
-        const timeDiff = targetDate.getTime() - currentDate.getTime();
-        const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
-        const daysDiff = Math.floor(hoursDiff / 24);
-        const remainingHours = hoursDiff % 24;
-
-        return (`${daysDiff} days, ${remainingHours} hrs`);
-    }
-
-    async function joinContest(id){
-        const res = await fetch(`${baseUrl}api/v1/contest/${id}`, {
-            method: "POST",
-            credentials:"include",
-            headers: {
-                "content-type" : "application/json",
-                "Access-Control-Allow-Credentials": true
-            },
-            body: JSON.stringify({
-            })
-        });
-        
-        const data = await res.json();
-        console.log(data);
-        if(data.status === 422 || data.error || !data){
-            // window.alert(data.error);
-            console.log("invalid entry");
-        }else{
-            // setNextPage(false)
-            // window.alert("entry succesfull");
-            console.log("entry succesfull");
-        }
- 
-    }
 
     console.log("Contest Registration Data: ",contest)
-    console.log(`/arena/${contest?.contestName}/${contest?._id}`)
   
     return (
     <>
-    {isLoading ? 
+    {!isLoading ? 
         <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
             <CircularProgress color="info" />
         </MDBox>
@@ -162,7 +138,9 @@ function ContestDetails () {
                         </Grid>
 
                         <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">
-                           <MDButton variant="outlined" fontSize="small" color="light">Invite Friends</MDButton>
+                           <MDBox variant="outlined" fontSize="small" color="light" sx={{border: "1px solid white", borderRadius: "5px"}}>
+                                <InviteFriend invited={invited} setInvited={setInvited} referralCode={referralCode} referralProgramId={activeReferralProgram?._id} />
+                            </MDBox>
                         </Grid>
 
                         <Grid item xs={12} md={6} lg={8} display="flex" justifyContent="left">
@@ -207,7 +185,7 @@ function ContestDetails () {
                                 size="small" 
                                 component={Link} 
                                 to={{
-                                    pathname: `/arena/${contest?.contestName}/register`,
+                                    pathname: `/battleground/${contest?.contestName}/register`,
                                   }}
                                   state= {{data:contest?._id}}
 
@@ -222,7 +200,7 @@ function ContestDetails () {
                                 size="small" 
                                 component={Link} 
                                 to={{
-                                    pathname: `/arena`,
+                                    pathname: `/battleground`,
                                   }}
                                 //   state= {{data:contest?._id}}
                             >
@@ -250,10 +228,10 @@ function ContestDetails () {
             <ContestRules contest={contest}/>
 
         </Grid>
-    </MDBox>
+        </MDBox>
     }
     </>
   )
 
 }
-export default ContestDetails;
+export default memo(ContestDetails);

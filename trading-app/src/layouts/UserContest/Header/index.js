@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, memo} from 'react';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -12,7 +12,7 @@ import UpcomingContest from '../data/UserContestCard'
 import MyContestCard from '../data/MyContestCard'
 import MyContestHistoryCard from '../data/MyContestHistoryCard'
 
-export default function LabTabs() {
+function LabTabs() {
   const [value, setValue] = React.useState('1');
   const [isLoading,setIsLoading] = useState(false);
 
@@ -67,3 +67,4 @@ export default function LabTabs() {
     </Box>
   );
 }
+export default memo(LabTabs);

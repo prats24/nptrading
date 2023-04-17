@@ -29,6 +29,8 @@ import MDTypography from "../../components/MDTypography";
 
 function Breadcrumbs({ icon, title, route, light }) {
   const routes = route.slice(0, -1);
+  // let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:3000/"
+  let path=' ';
 
   return (
     <MDBox mr={{ xs: 0, xl: 8 }}>
@@ -50,8 +52,14 @@ function Breadcrumbs({ icon, title, route, light }) {
             <Icon>{icon}</Icon>
           </MDTypography>
         </Link>
-        {routes.map((el) => (
-          <Link to={`/${el}`} key={el}>
+        {routes.map((el) => {
+          if(path == ' '){
+            path=`${el}`
+          }else{
+            path += `/${el}`;
+          }
+          return(
+          <Link to={`/${path}`} key={el}>
             <MDTypography
               component="span"
               variant="button"
@@ -63,8 +71,8 @@ function Breadcrumbs({ icon, title, route, light }) {
             >
               {el}
             </MDTypography>
-          </Link>
-        ))}
+          </Link>)
+        })}
         <MDTypography
           variant="button"
           fontWeight="regular"

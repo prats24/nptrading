@@ -2498,4 +2498,36 @@ router.get("/getDayWiseTradersTradeDetailsCompanySide/:startDay/:endDay/:traderN
   
   })
 
+
+  router.get("/getinstrument", async(req, res)=>{
+    let date = new Date();
+    let todayDate = `${(date.getFullYear())}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+    
+    let pnlDetails = await MockTradeDetails.aggregate([
+        {
+          $match: {
+            trade_time: {
+              $regex: "2023-04-10",
+            },
+            status: "COMPLETE",
+          },
+        },
+        {
+          $group: {
+            _id: {
+              symbol: "$symbol",
+              instrumentToken: "$instrumentToken",
+            },
+            
+          },
+        },
+        
+      ])
+            
+                // //console.log(pnlDetails)
+
+        res.status(201).json(pnlDetails);
+ 
+})
+
 module.exports = router;

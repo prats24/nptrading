@@ -1,4 +1,4 @@
-import React,{useState, useEffect, useContext} from 'react'
+import React,{useState, useEffect, memo} from 'react'
 // import MDBox from '../../../../components/MDBox'
 import Grid from '@mui/material/Grid'
 import MDTypography from '../../../../components/MDTypography'
@@ -13,6 +13,8 @@ import axios from "axios";
 import { marketDataContext } from '../../../../MarketDataContext';
 import BuyModel from "./BuyModel";
 import SellModel from "./SellModel";
+import { CircularProgress } from "@mui/material";
+
 
 
 function InstrumentsData({contestId, socket, portfolioId, Render}){
@@ -21,37 +23,26 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
     let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
     const [instrumentData, setInstrumentData] = useState([]);
     const [marketData, setMarketData] = useState([]);
+    const [isLoading,setIsLoading] = useState(true)
     const {render, setReRender} = Render;
-    useEffect(()=>{
-        // console.log("contestId", contestId)
-        axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
-          withCredentials: true,
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Credentials": true
-          },
-        })
-        .then((res) => {
-            setInstrumentData(res.data)
-        }).catch((err) => {
-            return new Error(err);
-        })
-        render ? setReRender(false) : setReRender(true)
-        socket.emit('hi')
-    }, [])
 
     useEffect(()=>{
-        axios.get(`${baseUrl}api/v1/getliveprice`)
-        .then((res) => {
-          setMarketData(res.data);
-        }).catch((err) => {
-            return new Error(err);
-        })
-        socket.on('check', (data)=>{
-          console.log("data from socket in instrument in parent", data)
-        })
+        // axios.get(`${baseUrl}api/v1/getliveprice`)
+        // .then((res) => {
+        //   setMarketData(res.data);
+        // }).catch((err) => {
+        //     return new Error(err);
+        // })
+        // socket.on('check', (data)=>{
+        //   console.log("data from socket in instrument in parent", data)
+        // })
+        // socket.on("connect", () => {
+            console.log("in event 2")
+            socket.emit('userId', contestId)
     
+            // socket.emit('contest', contestId)
+            socket.emit("hi", true)
+        //   })
         // socket.on("tick", (data) => {
         socket.on("contest-ticks", (data) => {
           console.log('data from socket in instrument in parent', data);
@@ -66,10 +57,32 @@ function InstrumentsData({contestId, socket, portfolioId, Render}){
         })
     }, [])
 
+    
     useEffect(() => {
         return () => {
             socket.close();
         }
+    }, [])
+
+    useEffect(()=>{
+        // console.log("contestId", contestId)
+        axios.get(`${baseUrl}api/v1/contestInstrument/${contestId}`,{
+          withCredentials: true,
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "Access-Control-Allow-Credentials": true
+          },
+        })
+        .then((res) => {
+            setInstrumentData(res.data)
+            setIsLoading(false)
+        }).catch((err) => {
+            return new Error(err);
+        })
+        render ? setReRender(false) : setReRender(true)
+        // setTimeout(()=>{setIsLoading(false)},500)
+
     }, [])
     
     console.log("instrument", contestId, portfolioId, marketData)
@@ -81,6 +94,15 @@ return (
                 <MDTypography fontSize={13} color="light">Instruments</MDTypography>
             </Grid>
         </Grid>
+
+
+        {isLoading ?
+        <Grid mt={1} mb={1} display="flex" width="100%" justifyContent="center" alignItems="center">
+            <CircularProgress color="light" />
+        </Grid>
+
+        :
+        <>
 
         <Grid container  mt={1} p={1} style={{border:'1px solid white',borderRadius:4}}>
             
@@ -166,7 +188,9 @@ return (
             )
         })}
         </>
+        }
+    </>
 );
 }
 
-export default InstrumentsData;
+export default memo(InstrumentsData);

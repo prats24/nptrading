@@ -2,7 +2,7 @@
 import DashboardLayout from "../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import Footer from "../../examples/Footer";
-import React,{useState} from 'react'
+import React,{useState, memo} from 'react'
 
 
 // Data
@@ -22,4 +22,4 @@ function Tables() {
   );
 }
 
-export default Tables;
+export default memo(Tables);

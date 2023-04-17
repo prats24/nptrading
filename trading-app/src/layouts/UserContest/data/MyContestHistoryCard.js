@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext, memo} from 'react'
 import { Link } from 'react-router-dom';
 import Grid from "@mui/material/Grid";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 // Material Dashboard 2 React components
@@ -14,30 +15,34 @@ import { Typography } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import ProgressBar from '../data/ProgressBar'
+import { userContext } from '../../../AuthContext';
   
 
-const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
+const MyContestHistoryCard = () => {
 
-  const [progress, setProgress] = React.useState(10);
+  // const [progress, setProgress] = React.useState(10);
   const [contestData,setContestData] = useState([]);
-  const [objectId,setObjectId] = useState('')
+  const [isLoading,setIsLoading] = useState(false);
+
+  const getDetails = useContext(userContext)
+
   let baseUrl = process.env.NODE_ENV === "production" ? "/" : "http://localhost:5000/"
 
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setProgress((oldProgress) => {
-        if (oldProgress === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldProgress + diff, 100);
-      });
-    }, 500);
+  // React.useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setProgress((oldProgress) => {
+  //       if (oldProgress === 100) {
+  //         return 0;
+  //       }
+  //       const diff = Math.random() * 10;
+  //       return Math.min(oldProgress + diff, 100);
+  //     });
+  //   }, 500);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
 
 
   useEffect(()=>{
@@ -52,55 +57,68 @@ const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
     })
     .then((res)=>{
               setContestData(res.data.data);
+              setIsLoading(true)
               console.log(res.data.data)
       }).catch((err)=>{
         return new Error(err);
     })
-},[])
+  },[])
 
-      // console.log("Contest Data: ",contestData)
+  // console.log("Contest Data: ",contestData)
 
-      function dateConvert(dateConvert){
-        const dateString = dateConvert;
-        const date = new Date(dateString);
-        const options = { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric', 
-          hour: 'numeric', 
-          minute: 'numeric' 
-        };
-        
-        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
-        
-        // get day of month and add ordinal suffix
-        const dayOfMonth = date.getDate();
-        let suffix = "th";
-        if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
-          suffix = "st";
-        } else if (dayOfMonth === 2 || dayOfMonth === 22) {
-          suffix = "nd";
-        } else if (dayOfMonth === 3 || dayOfMonth === 23) {
-          suffix = "rd";
-        }
-        
-        // combine date and time string with suffix
-        const finalFormattedDate = `${dayOfMonth}${suffix} ${formattedDate?.split(" ")[0]}, ${date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
-        
-        // console.log(finalFormattedDate);
-        
-     
-
-      return finalFormattedDate
+  function dateConvert(dateConvert){
+    const dateString = dateConvert;
+    const date = new Date(dateString);
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      hour: 'numeric', 
+      minute: 'numeric' 
+    };
+    
+    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
+    
+    // get day of month and add ordinal suffix
+    const dayOfMonth = date.getDate();
+    let suffix = "th";
+    if (dayOfMonth === 1 || dayOfMonth === 21 || dayOfMonth === 31) {
+      suffix = "st";
+    } else if (dayOfMonth === 2 || dayOfMonth === 22) {
+      suffix = "nd";
+    } else if (dayOfMonth === 3 || dayOfMonth === 23) {
+      suffix = "rd";
     }
+    
+    // combine date and time string with suffix
+    const finalFormattedDate = `${dayOfMonth}${suffix} ${formattedDate?.split(" ")[0]}, ${date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}`;
+    
+    // console.log(finalFormattedDate);
+    
+  
+
+  return finalFormattedDate
+  }
       
     
 
     return (
       <>
+      {!isLoading ?    
+      <>
+      <MDBox display="flex" justifyContent="center" alignItems="center" mt={5} mb={5}>
+      <CircularProgress color="info" />
+      </MDBox>
+      </>
+      :
+      <>
       <MDBox bgColor="light" minWidth="100%" minHeight='auto'>
       <Grid container spacing={2}>
       {contestData?.map((e)=>{
+
+        let portfolioId = e?.participants?.filter((elem)=>{
+          return elem?.userId == getDetails?.userDetails?._id
+        })
 
         return <>
         
@@ -109,9 +127,16 @@ const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
             <MDButton variant="contained" color="dark" size="small" 
             component={Link} 
             to={{
-              pathname: `/arena/${e.contestName}`,
+              pathname: `/battleground/${e.contestName}/trade`,
             }}
-            state= {{data:e._id}}
+            state= {{contestId: e?._id, portfolioId: portfolioId[0].portfolioId, isFromHistory: true}}
+
+          // to={ selectedPortfolio && {
+          //     pathname: `/arena/contest/${nextPagePath}`,
+          //   }}
+          //   state= { selectedPortfolio && {contestId: contestId, portfolioId: selectedPortfolio}}
+          
+
             >
                 <Grid container>
                     <Grid item xs={12} md={6} lg={12} display="flex" justifyContent="center">
@@ -168,8 +193,10 @@ const MyContestHistoryCard = ({isObjectNew,setIsObjectNew}) => {
 
       </MDBox>
       </>
+      }
+      </>
 )}
 
 
 
-export default MyContestHistoryCard;
+export default memo(MyContestHistoryCard);
