@@ -39,7 +39,10 @@ function TradersRanking({contestId, socket}){
 
       console.log("leaderboard", api1Response.data.data)
       setRankData(api1Response.data.data);
-      setMyRank(api2Response.data.data);
+      if(api2Response.data.status == "success"){
+        setMyRank(api2Response.data.data);
+      }
+      
       setTimeout(()=>{setIsLoading(false)},500)
     } catch (error) {
       console.error("leaderboard", error);
@@ -53,30 +56,30 @@ function TradersRanking({contestId, socket}){
     return () => clearInterval(intervalId);
   }, []);
 
-  useEffect(()=>{
-    axios.get(`${baseUrl}api/v1/getliveprice`)
-    .then((res) => {
-      setMarketData(res.data);
-    }).catch((err) => {
-        return new Error(err);
-    })
-    socket?.on('check', (data)=>{
-      console.log("data from socket in instrument in parent", data)
-    })
+  // useEffect(()=>{
+  //   axios.get(`${baseUrl}api/v1/getliveprice`)
+  //   .then((res) => {
+  //     setMarketData(res.data);
+  //   }).catch((err) => {
+  //       return new Error(err);
+  //   })
+  //   socket?.on('check', (data)=>{
+  //     console.log("data from socket in instrument in parent", data)
+  //   })
 
-    // socket.on("tick", (data) => {
-    socket?.on("contest-ticks", (data) => {
-      console.log('data from socket in instrument in parent', data);
-      setMarketData(prevInstruments => {
-        const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
-        data.forEach(instrument => {
-          instrumentMap.set(instrument.instrument_token, instrument);
-        });
-        return Array.from(instrumentMap.values());
-      });
+  //   // socket.on("tick", (data) => {
+  //   socket?.on("contest-ticks", (data) => {
+  //     console.log('data from socket in instrument in parent', data);
+  //     setMarketData(prevInstruments => {
+  //       const instrumentMap = new Map(prevInstruments.map(instrument => [instrument.instrument_token, instrument]));
+  //       data.forEach(instrument => {
+  //         instrumentMap.set(instrument.instrument_token, instrument);
+  //       });
+  //       return Array.from(instrumentMap.values());
+  //     });
 
-    })
-  }, [])
+  //   })
+  // }, [])
 
   useEffect(() => {
     return () => {

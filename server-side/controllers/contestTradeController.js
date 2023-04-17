@@ -184,9 +184,9 @@ exports.getContestPnl = async(req, res, next) => {
         let pnlDetails = await ContestTrade.aggregate([
             {
               $match: {
-                trade_time: {
-                  $regex: today,
-                },
+                // trade_time: {
+                //   $regex: today,
+                // },
                 status: "COMPLETE",
                 trader: userId,
                 contestId: new ObjectId(contestId),
@@ -651,7 +651,8 @@ exports.getRedisLeaderBoard = async(req,res,next) => {
         // Match documents for the given contestId
         {
           $match: {
-            contestId: new ObjectId(id)
+            contestId: new ObjectId(id),
+            status: "COMPLETE",
           }
         },
         // Group by userId and sum the amount
@@ -660,9 +661,11 @@ exports.getRedisLeaderBoard = async(req,res,next) => {
             _id: {
               trader: "$trader",
               createdBy: "$createdBy",
-              instrumentToken: "$instrumentToken"
+              instrumentToken: "$instrumentToken",
+              symbol: "$symbol",
+              product: "$Product",
             },
-            totalAmount: { $sum: "$amount" },
+            totalAmount: { $sum: {$multiply : ["$amount",-1]} },
             investedAmount: {
               $sum: {
                 $abs: "$amount"

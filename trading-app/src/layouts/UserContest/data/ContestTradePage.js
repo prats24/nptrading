@@ -41,6 +41,7 @@ function ContestTradeView () {
     const  isDummy  = location?.state?.isDummy;
     const nevigate = useNavigate();
 
+
     // const  isDummy  = false;
 
     const [render, setReRender] = useState(true);

@@ -24,17 +24,17 @@ function MYPNLData({contestId, portfolioId, socket, Render, isFromHistory, setUs
   useEffect(()=>{
 
     let abortController;
-    // (async () => {
-    //      abortController = new AbortController();
-    //      let signal = abortController.signal;    
+    (async () => {
+         abortController = new AbortController();
+         let signal = abortController.signal;    
 
-    //      // the signal is passed into the request(s) we want to abort using this controller
-    //      const { data } = await axios.get(
-    //       `${baseUrl}api/v1/getliveprice`,
-    //          { signal: signal }
-    //      );
-    //      setMarketData(data);
-    // })();
+         // the signal is passed into the request(s) we want to abort using this controller
+         const { data } = await axios.get(
+          `${baseUrl}api/v1/getliveprice`,
+             { signal: signal }
+         );
+         setMarketData(data);
+    })();
 
 
     socket.on("contest-ticks", (data) => {
@@ -48,7 +48,7 @@ function MYPNLData({contestId, portfolioId, socket, Render, isFromHistory, setUs
       });
     })
 
-    // return () => abortController.abort();
+    return () => abortController.abort();
   }, [])
 
   useEffect(()=>{
